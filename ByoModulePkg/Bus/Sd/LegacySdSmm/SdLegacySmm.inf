@@ -1,0 +1,89 @@
+## @file
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR>
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced,
+# stored in a retrieval system, or transmitted in any form or by any
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   SdLegacySmm.inf
+#
+# Abstract:
+#   SD card Model.
+#
+# Revision History:    
+#
+#  Bug 1989:   Changed to use dynamic software SMI value instead of hard coding.
+#  TIME:       2011-6-15
+#  $AUTHOR:    Peng Xianbing
+#  $REVIEWERS:
+#  $SCOPE:     Define SwSmi value range build a PolicyData table for csm16 to 
+#              get SwSMI value.
+#  $TECHNICAL:
+#  $END-------------------------------------------------------------------------
+#
+# Bug 2026: Description of this bug.
+# TIME: 2011-05-16
+# $AUTHOR: Mac Peng
+# $REVIEWERS: Donald Guan
+# $SCOPE: SD card feature support.
+# $TECHNICAL: .
+# $END--------------------------------------------------------------------------
+#
+##
+
+[defines]
+INF_VERSION    = 0x00010005
+BASE_NAME      = SdLegacy
+FILE_GUID      = E10396FA-5E9C-40dd-9184-A93D8DB3FEEE
+MODULE_TYPE    = DXE_SMM_DRIVER
+VERSION_STRING = 1.0
+PI_SPECIFICATION_VERSION       = 0x0001000A
+ENTRY_POINT    = SdLegacyEntry
+
+[sources.common]
+  SdLegacy.c
+  SdLegacy.h
+  SdHostDriver.c
+  SdHostController.c
+  MediaDeviceDriver.c
+  MmcSdTransfer.c
+  MmcSdBlockIo.c
+#  CeAta.c
+#  CeAtaBlockIo.c
+  ../Include/MediaDeviceDriver.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  BaseMemoryLib
+  DebugLib
+  PcdLib
+
+[Protocols]
+  gEfiPciIoProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gEfiLegacySDInfProtocolGuid
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gSwSmiValuePolicyGuid
+  
+[Pcd.common]
+
+[Depex]
+  gEfiSmmSwDispatch2ProtocolGuid
+
+[BuildOptions]
+#  *_*_IA32_CC_FLAGS      = $(EDK_EDKII_DSC_FEATURE_BUILD_OPTIONS) /Od /FAsc
+#  *_*_X64_CC_FLAGS       = $(EDK_EDKII_DSC_FEATURE_BUILD_OPTIONS) /Od /FAsc

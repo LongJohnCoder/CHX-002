@@ -1,0 +1,95 @@
+## @file
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR>
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced,
+# stored in a retrieval system, or transmitted in any form or by any
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   MediaDevice.inf
+#
+# Abstract:
+#   SD card Model.
+#
+# Revision History:
+#
+# Bug 2026: Description of this bug.
+# TIME: 2011-05-16
+# $AUTHOR: Mac Peng
+# $REVIEWERS: Donald Guan
+# $SCOPE: SD card feature support.
+# $TECHNICAL: .
+# $END--------------------------------------------------------------------------
+#
+##
+#
+# This file contains an 'Intel Peripheral Driver' and uniquely
+# identified as Intel "Mobile Silicon Support Code" and is    
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may 
+# be modified by the user, subject to additional terms of the 
+# license agreement                                           
+#
+#/*++
+#
+# Copyright (c)  2007 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+
+#
+#  Module Name:
+#
+#   MediaDevice.inf
+#
+#  Abstract:
+#
+#    INF description file for Media Device
+#
+#--*/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = MediaDevice
+  FILE_GUID                      = DD223EF8-6D1B-490a-A53E-BA86FAAEB778
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = MediaDeviceDriverEntryPoint
+
+[Sources.common]
+  ComponentName.c
+  MediaDeviceDriver.c
+  MmcSdBlockIo.c
+  MmcSdTransfer.c
+#  CeAta.c
+#  CeAtaBlockIo.c
+  ../Include/MediaDeviceDriver.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  BaseMemoryLib
+  DebugLib
+  PcdLib
+
+[Protocols]
+  gEfiPciIoProtocolGuid                         ## TO_START
+  gEfiSdHostIoProtocolGuid                      ## TO_START
+  gEfiBlockIoProtocolGuid                       ## BY_START
+  
+[Pcd.common]
+

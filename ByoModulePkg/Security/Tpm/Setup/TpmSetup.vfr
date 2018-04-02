@@ -1,0 +1,139 @@
+/** @file
+
+Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+All rights reserved.This software and associated documentation (if any)
+is furnished under a license and may only be used or copied in 
+accordance with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be reproduced, 
+stored in a retrieval system, or transmitted in any form or by any 
+means without the express written consent of Byosoft Corporation.
+
+File Name:
+  TpmSetup.vfr
+
+Abstract: 
+  Setup part of TPM Module.
+
+Revision History:
+
+Bug 3128 - Move Tpm setup module part from SnbClientX64Pkg to ByoModulePkg.
+TIME: 2011-11-21
+$AUTHOR: Zhang Lin
+$REVIEWERS: 
+$SCOPE: SugarBay
+$TECHNICAL: 
+  1. dynamic insert setup package to let it be independent with Platform.
+$END--------------------------------------------------------------------
+
+
+**/
+
+/*++
+Copyright (c) 2010 Intel Corporation. All rights reserved.
+This software and associated documentation (if any) is furnished
+under a license and may only be used or copied in accordance
+with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be
+reproduced, stored in a retrieval system, or transmitted in any
+form or by any means without the express written consent of
+Intel Corporation.
+
+Module Name:
+
+  TcgSetup.sd
+
+Abstract:
+
+ Template TcgSetup Setup options
+--*/
+
+
+
+#include "TpmSetupDataStruc.h"
+
+#ifndef AUTO_ID
+#define AUTO_ID(x) x
+#endif
+
+formset
+  guid      = TPM_SETUP_CONFIG_GUID,
+  title     = STRING_TOKEN(STR_TPM_TITLE),
+  help      = STRING_TOKEN(STR_TPM_HELP),
+  classguid = EFI_HII_PLATFORM_SETUP_FORMSET_GUID,
+  class     = 17,
+  subclass  = 0,
+  
+  varstore TPM_SETUP_CONFIG,
+  name = TPM_SETUP_CONFIG,
+  guid = TPM_SETUP_CONFIG_GUID;
+
+    form formid = AUTO_ID(TPM_CONFIG_FORM_ID),
+    title = STRING_TOKEN(STR_TPM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_TPM_TITLE);
+    subtitle text = STRING_TOKEN(STR_EMPTY);
+
+    suppressif ideqval TPM_SETUP_CONFIG.PhysicalPresenceLock == 0x00 OR
+               ideqval TPM_SETUP_CONFIG.TpmPresent == 0x0;
+      subtitle 
+        text   = STRING_TOKEN(STR_TPM_PHYSICAL_PRESENCE_LOCKED);
+    endif;
+
+    suppressif ideqval TPM_SETUP_CONFIG.PhysicalPresenceLock == 0x01 OR
+               ideqval TPM_SETUP_CONFIG.TpmPresent == 0x0;
+      subtitle 
+        text   = STRING_TOKEN(STR_TPM_PHYSICAL_PRESENCE_UNLOCKED);
+    endif;
+          
+    grayoutif ideqval TPM_SETUP_CONFIG.PhysicalPresenceLock == 0x1 OR
+              ideqval TPM_SETUP_CONFIG.TpmPresent == 0x0;
+   
+      oneof
+        varid       = TPM_SETUP_CONFIG.TpmEnable,
+        questionid  = AUTO_ID(KEY_TPM_ENABLE),
+        prompt      = STRING_TOKEN(STR_TPM_DEVICE_PROMPT),
+        help        = STRING_TOKEN(STR_TPM_DEVICE_HELP),
+        flags       = INTERACTIVE,
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = 0;
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT;
+      endoneof;
+
+      oneof
+        varid       = TPM_SETUP_CONFIG.TpmState,
+        questionid  = AUTO_ID(KEY_TPM_ACTIVATE),
+        prompt      = STRING_TOKEN(STR_TPM_STATE_PROMPT),
+        help        = STRING_TOKEN(STR_TPM_STATE_HELP),
+        flags       = INTERACTIVE | RESET_REQUIRED,
+        option text = STRING_TOKEN(STR_ACTIVATE), value = 1, flags = 0;
+        option text = STRING_TOKEN(STR_DEACTIVATE), value = 0, flags = DEFAULT;
+      endoneof;
+    
+      text
+        help        = STRING_TOKEN(STR_TPM_FORCE_CLEAR_HELP),
+        text        = STRING_TOKEN(STR_TPM_FORCE_CLEAR_PROMPT),
+        text        = STRING_TOKEN(STR_NULL_STRING),
+        flags       = INTERACTIVE | RESET_REQUIRED,
+        key         = AUTO_ID(KEY_TPM_FORCE_CLEAR);
+    
+    endif;
+
+    suppressif TRUE;
+      numeric varid = TPM_SETUP_CONFIG.TpmPresent,
+        prompt      = STRING_TOKEN(0),
+        help        = STRING_TOKEN(0),
+        minimum     = 0,
+        maximum     = 0,
+      endnumeric;
+
+      numeric varid = TPM_SETUP_CONFIG.PhysicalPresenceLock,
+        prompt      = STRING_TOKEN(0),
+        help        = STRING_TOKEN(0),
+        minimum     = 0,
+        maximum     = 0,
+      endnumeric;
+    endif;
+
+
+
+  endform;
+endformset;

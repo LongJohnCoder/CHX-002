@@ -1,0 +1,15 @@
+Build
+Conf/.cache/build.db
+Conf/BiosId.env
+Conf/target.txt
+PlatformPkg/AutoBuildTime.h
+PlatformPkg/BiosId.bin
+PlatformPkg/BiosVersion.h
+PlatformPkg/PlatformAutoGen.dsc
+AsiaPkg/Asia
+*~
+*.bak
+*.si4project
+!*.exe
+!*.dll
+PlatformPkg/IA32FamilyCpuPkg/SecCore/Ia32/ResetVec.asm16

@@ -1,0 +1,112 @@
+## @file  
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in 
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced, 
+# stored in a retrieval system, or transmitted in any form or by any 
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   TcgSmm.inf
+#
+# Abstract: 
+#   TcgServiceSmm module's inf file
+#
+# Revision History:
+#
+# Bug 3592 - Cpu save state may write error under IA32 CPU. 
+# TIME:       2012-04-28
+# $AUTHOR:    ZhangLin
+# $REVIEWERS:
+# $SCOPE:     Sugar Bay.
+# $TECHNICAL: 
+#  1. R8 SMM Arch may destroy cpu save state when do writeback under
+#     IA32 CPU. So we should update save state buffer to avoid it.
+#$END--------------------------------------------------------------------
+#
+##
+
+
+#/*++
+# This file contains a 'Sample Driver' and is licensed as such  
+# under the terms of your license agreement with Intel or your  
+# vendor.  This file may be modified by the user, subject to    
+# the additional terms of the license agreement                 
+#--*/
+## @file
+# Component name for module TcgSmm
+#
+# Copyright (c) 2010 - 2011, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+#
+# NOTE: TcgSmmInstallInt1A depends on TcgSmm to provide SwSmiInputValue
+#       and it's safer that SMI handler gets registered before hooking INT1A.
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TcgSmm
+  FILE_GUID                      = CDC11AE9-01E7-42cb-88EB-FDFFD8819893
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeTcgSmm
+
+[Sources]
+  TcgSmm.c
+  TcgSmm.h
+  TisSmm.c
+  TpmComm.c
+  TpmComm.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  EdkCompatibilityPkg/EdkCompatibilityPkg.dec
+  SecurityPkg/SecurityPkg.dec
+  
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  UefiBootServicesTableLib
+  HobLib
+  UefiDriverEntryPoint
+  SmmServicesTableLib
+  BaseMemoryLib
+  DebugLib
+  TpmCommLib
+  PrintLib
+  UefiLib
+  DxeServicesLib
+  IoLib
+  
+  
+
+[Guids]
+  gEfiMemoryOverwriteControlDataGuid
+
+[Protocols]
+  gEfiSmmCpuProtocolGuid                        # PROTOCOL ALWAYS_CONSUMED
+  gEfiTcgProtocolGuid                           # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmSwDispatch2ProtocolGuid                # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmVariableProtocolGuid                   # PROTOCOL ALWAYS_CONSUMED
+  gTcgSmmInt1AReadyProtocolGuid                 # PROTOCOL ALWAYS_PRODUCED
+  gEfiSmmBaseHelperReadyProtocolGuid
+
+
+[Depex]
+  gEfiSmmSwDispatch2ProtocolGuid AND
+  gEfiSmmVariableProtocolGuid AND
+  gEfiTcgProtocolGuid
+  

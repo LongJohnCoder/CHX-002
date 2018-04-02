@@ -1,0 +1,64 @@
+## @file  
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in 
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced, 
+# stored in a retrieval system, or transmitted in any form or by any 
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   SmmUsbDispatch2OnSmmUsbDispatchThunk.inf
+#
+# Abstract: 
+#   Component description file for SMM UsbDispatch2 Protocol on SMM UsbDispatch Protocol Thunk driver.
+#
+# Revision History:
+# Bug 1920: Create some SMM thunk drivers to support framework style silicon drivers.
+# TIME: 2011-05-13
+# $AUTHOR: Cassie Liu
+# $REVIEWERS: Hawker Chen
+# $SCOPE: Invoke framework implement on EDKII platform.
+# $TECHNICAL: Produce PI style protocol consuming framework style protocol.
+# $END--------------------------------------------------------------------------
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmmUsbDispatch2OnSmmUsbDispatchThunk
+  FILE_GUID                      = EB1B3CBA-4A30-47b7-B9FF-2587BB1288FF
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = SmmUsbDispatch2ThunkMain
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  SmmUsbDispatch2OnSmmUsbDispatchThunk.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  EdkCompatibilityPkg/EdkCompatibilityPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  SmmServicesTableLib
+  BaseLib
+  IoLib
+  DebugLib
+
+[Protocols]
+  gEfiSmmUsbDispatchProtocolGuid            # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmUsbDispatch2ProtocolGuid           # PROTOCOL ALWAYS_PRODUCED
+
+[Depex]
+  gEfiSmmUsbDispatchProtocolGuid

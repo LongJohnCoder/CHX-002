@@ -1,0 +1,56 @@
+    
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ChipsetInt15Smm
+  FILE_GUID                      = C95EA427-6E22-4B3C-9E27-42DB849A34C8
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitializeChipsetInt15Smm
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  Int15Smm.c
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  PlatformPkg/PlatformPkg.dec
+
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  DebugLib
+  PcdLib
+  IoLib
+  BaseLib
+  SmmServicesTableLib
+  UefiLib
+  HobLib
+
+[Guids]
+   gPlatformSetupVariableGuid          ## CONSUME ## Guid
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+[Protocols]
+  gEfiSmmSwDispatch2ProtocolGuid                ## PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmCpuProtocolGuid                        # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmVariableProtocolGuid
+  
+[Depex]
+  gEfiSmmSwDispatch2ProtocolGuid
+
+
+

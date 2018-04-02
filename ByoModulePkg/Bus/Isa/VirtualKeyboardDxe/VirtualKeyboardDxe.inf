@@ -1,0 +1,73 @@
+## @file
+# Virtual Keyboard UEFI Driver which produce gEfiSimpleTextInProtocolGuid and gEfiSimpleTextInputExProtocolGuid
+# protocol. 
+#Copyright (c) 2006 - 2012, Byosoft Corporation.<BR>
+#All rights reserved.This software and associated documentation (if any)
+#is furnished under a license and may only be used or copied in
+#accordance with the terms of the license. Except as permitted by such
+#license, no part of this software or documentation may be reproduced,
+#stored in a retrieval system, or transmitted in any form or by any
+#means without the express written consent of Byosoft Corporation.
+#
+# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = VirtualKeyboardDxe
+  FILE_GUID                      = 48FD00B2-61C1-4e05-9A30-52DFC5A84027
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeVirtualKeyboard
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#  DRIVER_BINDING                = gKeyboardControllerDriver;
+#  COMPONENT_NAME                = gVirtualKeyboardComponentName;
+#  COMPONENT_NAME2               = gVirtualKeyboardComponentName2;
+#
+
+[Sources]
+  ComponentName.c
+  VirtualKeyboard.h
+  VirtualKbdCtrller.c
+  VirtualKbdTextIn.c
+  VirtualKeyboard.c
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  UefiRuntimeServicesTableLib
+  DebugLib
+  ReportStatusCodeLib
+  UefiBootServicesTableLib
+  UefiLib
+  UefiDriverEntryPoint
+  BaseLib
+  BaseMemoryLib
+  TimerLib
+  PcdLib
+  
+[Protocols]
+  gEfiPs2PolicyProtocolGuid                     # PROTOCOL TO_START
+  gEfiIsaIoProtocolGuid                         # PROTOCOL TO_START
+  gEfiSimpleTextInProtocolGuid                  # PROTOCOL BY_START
+  gEfiSimpleTextInputExProtocolGuid             # PROTOCOL BY_START
+  gEfiDevicePathProtocolGuid                    # PROTOCOL TO_START
+  gEfiSmmControl2ProtocolGuid
+
+[FeaturePcd]
+
+
+[Pcd]
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdPs2KeyboardRxAndDiscardPs2MouseData
+
+

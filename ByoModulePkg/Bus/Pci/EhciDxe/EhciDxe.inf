@@ -1,0 +1,80 @@
+## @file  
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in 
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced, 
+# stored in a retrieval system, or transmitted in any form or by any 
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   EhciDxe.inf
+#
+# Abstract: 
+#    USB Module file.
+#
+# Revision History:
+#
+# Bug 2517:   Create the Module StatusCodeHandler to report status code to 
+#             all supported devide in ByoModule
+# TIME:       2011-7-22
+# $AUTHOR:    Liu Chunling
+# $REVIEWERS:  
+# $SCOPE:     All Platforms
+# $TECHNICAL:  
+#   1. Create the module StatusCodeHandler to support Serial Port, Memory, Port80,
+#      Beep and OEM devices to report status code.
+#   2. Create the Port80 map table and the Beep map table to convert status code 
+#      to code byte and beep times.
+#   3. Create new libraries to support status code when StatusCodePpi,
+#      StatusCodeRuntimeProtocol, SmmStatusCodeProtocol has not been installed yet.
+# $END--------------------------------------------------------------------
+#
+##
+#
+
+[defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = NativeEhci
+  FILE_GUID                      = 043D0B5E-DAC1-463a-85BA-2CEDC33A8C4E
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = EhcDriverEntryPoint
+
+[sources]
+  Ehci.c
+  Ehci.h
+  ComponentName.c
+  ComponentName.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+    
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  BaseMemoryLib
+  DebugLib  
+  PcdLib
+  IoLib
+
+[Protocols]
+  gEfiCpuIo2ProtocolGuid
+  gUsbPolicyGuid
+  gEfiSmmBase2ProtocolGuid
+  gEfiLegacyUsbInfProtocolGuid
+  gEfiPciIoProtocolGuid                         ## TO_START
+  gEfiUsb2HcProtocolGuid                        ## BY_START`
+  gEfiUsbIoProtocolGuid                         ## BY_START
+  gEfiDevicePathProtocolGuid                    ## BY_START
+  gEfiSmmControl2ProtocolGuid
+
+
+

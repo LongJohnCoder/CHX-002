@@ -1,0 +1,64 @@
+## @file  
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in 
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced, 
+# stored in a retrieval system, or transmitted in any form or by any 
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   SmmPwrButtonDispatch2OnSmmPwrButtonDispatchThunk.inf
+#
+# Abstract: 
+#   Component description file for SMM PowerButtonDispatch2 Protocol on SMM PowerButtonDispatch Protocol Thunk driver.
+#
+# Revision History:
+# Bug 1920: Create some SMM thunk drivers to support framework style silicon drivers.
+# TIME: 2011-05-13
+# $AUTHOR: Cassie Liu
+# $REVIEWERS: Hawker Chen
+# $SCOPE: Invoke framework implement on EDKII platform.
+# $TECHNICAL: Produce PI style protocol consuming framework style protocol.
+# $END--------------------------------------------------------------------------
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmmPowerButtonDispatch2OnSmmPowerButtonDispatchThunk
+  FILE_GUID                      = 9BE11C3D-EC5E-4649-A8D6-67F16CB77071
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = SmmPowerButtonDispatch2ThunkMain
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  SmmPwrButtonDispatch2OnSmmPwrButtonDispatchThunk.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  EdkCompatibilityPkg/EdkCompatibilityPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  SmmServicesTableLib
+  BaseLib
+  IoLib
+  DebugLib
+
+[Protocols]
+  gEfiSmmPowerButtonDispatchProtocolGuid            # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmPowerButtonDispatch2ProtocolGuid           # PROTOCOL ALWAYS_PRODUCED
+
+[Depex]
+  gEfiSmmPowerButtonDispatchProtocolGuid

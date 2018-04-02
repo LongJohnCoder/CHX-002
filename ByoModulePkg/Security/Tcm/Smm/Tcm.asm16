@@ -1,0 +1,276 @@
+;/** @file
+;
+;Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+;All rights reserved.This software and associated documentation (if any)
+;is furnished under a license and may only be used or copied in 
+;accordance with the terms of the license. Except as permitted by such
+;license, no part of this software or documentation may be reproduced, 
+;stored in a retrieval system, or transmitted in any form or by any 
+;means without the express written consent of Byosoft Corporation.
+;
+;File Name:
+;  Tcm.asm16
+;
+;Abstract: 
+;  tcm int 1A legacy handler
+;
+;Revision History:
+;
+;Bug 3269 - Add TCM int1A function support. 
+;TIME: 2011-12-30
+;$AUTHOR: Zhang Lin
+;$REVIEWERS: 
+;$SCOPE: SugarBay
+;$TECHNICAL: 
+;  Use Smi to handle legacy int 1A(0xBB) interrupt.
+;$END------------------------------------------------------------
+;
+;**/
+;
+;
+;
+; This file contains a 'Sample Driver' and is licensed as such
+; under the terms of your license agreement with Intel or your
+; vendor.  This file may be modified by the user, subject to  
+; the additional terms of the license agreement               
+;
+;
+; Copyright (c)  2010 - 2011, Intel Corporation. All rights reserved
+; This software and associated documentation (if any) is furnished
+; under a license and may only be used or copied in accordance
+; with the terms of the license. Except as permitted by such
+; license, no part of this software or documentation may be
+; reproduced, stored in a retrieval system, or transmitted in any
+; form or by any means without the express written consent of
+; Intel Corporation.
+;
+;
+; Module Name:
+; 
+;    Tcm.asm16
+;
+        NAME    TCMDSR
+        TITLE   TCMDSR
+
+;====================================================================
+; INT1A Entry IF TCG Fn Jump to TCGDSR
+;--------------------------------------------------------------------
+;
+;
+; This service routine supports the following int 1Ah functions:
+;
+;       AH = 0bbh - TCG Application Interface
+;
+;          AL = 00H - TCG_StatusCheck
+;               01H - TCG_HashLogExtendEvent
+;               02h - TCG_PassThroughToTPM
+;               03h - TCG_ShutdownPreBootInterface
+;               04h - TCG_LogEvent
+;               05h - TCG_HashAll
+;               06h - TCG_TSS
+;               07h - TCG_CompactHashLogExtendEvent
+;               08h - TCG_SetMemoryOverwriteRequestBit
+;
+;------------------------------------------------------------------------
+
+;************************************************************************
+;*      Include Files                                                   *
+;************************************************************************
+.586
+
+TCM_APP_INTERFACE       equ     0BBh
+
+TCM_StatusCheck                 equ     00h
+TCM_HashLogExtendEvent          equ     01h
+TCM_PassThroughToTPM            equ     02h
+TCM_ShutdownPreBootInterface    equ     03h
+TCM_HashLogEvent                equ     04h
+TCM_HashAll                     equ     05h
+TCM_TSS                         equ     06h
+TCM_CompactHashLogExtendEvent   equ     07h
+TCM_MemoryOverwriteRequest      equ     08h
+TCM_Last_Func                   equ     08h ; sanity check for Int 1Ah interface
+
+
+ISSUE_ASMI MACRO cmd, ah_value, bx_value, cx_value, syntax
+ifnb    <syntax>
+        .err
+endif
+ifnb <cx_value>
+        push    cx
+        mov     cx,cx_value
+endif
+ifnb <bx_value>
+        push    bx
+        mov     bx,bx_value
+endif
+ifnb <ah_value>
+        mov     ah,ah_value
+endif
+
+        mov     al,cmd
+        ASMI
+
+ifnb <bx_value>
+        pop     bx
+endif
+ifnb <cx_value>
+        pop     cx
+endif
+ENDM
+
+APMC                    EQU     0B2h
+
+ASMI MACRO
+        out     APMC , al
+        WAFORIO
+ENDM
+
+MAGIC_STONE     equ     (84h)           ; An unused I/O Port
+WAFORIO macro                           ; Delay about a microsecond.
+        out     MAGIC_STONE,al          ; Must not change CPU state.
+endm                                    ;
+
+;----------------------------------------------------------------
+TCM_SMI_STATUS                  equ     TCM_StatusCheck                 ;000h
+TCM_SMI_HASHLOGEXTEND           equ     TCM_HashLogExtendEvent          ;001h
+TCM_SMI_PTTT                    equ     TCM_PassThroughToTPM            ;002h
+TCM_SMI_SHUTDOWN                equ     TCM_ShutdownPreBootInterface    ;003h
+TCM_SMI_HASHLOG                 equ     TCM_LogEvent                    ;004h
+TCM_SMI_HASH                    equ     TCM_HashAll                     ;005h
+TCM_SMI_TSS                     equ     TCM_TSS                         ;006h
+TCM_SMI_COMPACTHASHLOGEXTEND    equ     TCM_CompactHashLogExtendEvent   ;007h
+TCM_SMI_MOR                     equ     TCM_MemoryOverwriteRequest      ;008h
+TCM_SMI_DRVRINIT                equ     020h                            ;020h
+
+
+
+
+;************************************************************************
+;*      Code Segment                                                    *
+;************************************************************************
+
+TcgS SEGMENT USE16
+        assume  ds:nothing, es:nothing
+
+; to be fixed in runtime, original INT1A handler
+OldIntHandler LABEL DWORD
+        NextVectorOffset          DW      4624h ;F$
+        NextVectorSeg             DW      5849h ;XI
+
+        cmp     ah, TCM_APP_INTERFACE
+        je      short TCGDSR
+        jmp DWORD PTR cs:[OldIntHandler]
+        
+TCGDSR:
+        push    edi                             ; For most TCG INT 1Ah calls
+        push    esi                             ; all registers except EAX
+        push    ebx                             ; need to be preserved.
+        push    edx
+
+        cmp     al, TCM_StatusCheck             ; status check request?
+        je      StatusCheck                     ; yes, process it
+
+        cmp     ebx, 41504354h                  ; "TCPA" signature indicates valid
+        jne     bad_exit                        ; function call, exit if missing
+
+        cmp     al, TCM_CompactHashLogExtendEvent ; compact hash log extend request?
+        jne     not_CompactHashLogExtendEvent     ; no, process it
+
+CompactHashLogExtendEvent:
+
+        pop     edx                             ; EDX was modified when testing the
+        push    edx                             ; TPM, restore EDX and balance the stack
+
+        ; ES:DI points to the buffer to be hashed.  In preperation for the SMI
+        ; call to the TPM driver interface put the flat ES:DI pointer into EDI
+        ; then make the SMI call.
+        ;
+        mov     ebx, es
+        shl     ebx, 4
+        and     edi, 0ffffh
+        add     ebx, edi
+        mov     edi, ebx
+
+        ISSUE_ASMI byte ptr cs:[SmiCommand], TCM_SMI_COMPACTHASHLOGEXTEND
+
+        ; For Compact Hash Log Extend Event, EDX holds the event number for
+        ; the event that was extended.  The common exit code restores EDX
+        ; from the stack so we need to modify EDX on the stack.
+        ;
+        pop     ebx                             ; remove saved EDX from stack
+        push    edx                             ; put updated EDX on stack
+
+        jmp     good_exit                       ; exit with success.
+
+
+StatusCheck:
+
+        ; We will be modifying EBX, EDX, ESI and EDI so we need to
+        ; remove them from the stack until after the SMI call.
+        ;
+        pop     edx                             ; balance stack
+        pop     ebx                             ; balance stack
+        pop     esi                             ; balance stack
+        pop     edi                             ; balance stack
+
+        ISSUE_ASMI byte ptr cs:[SmiCommand], TCM_SMI_STATUS    ; SMI call
+
+        push    edi                             ; balance stack
+        push    esi                             ; balance stack
+        push    ebx                             ; balance stack
+        push    edx                             ; balance stack
+        jmp     good_exit
+
+not_CompactHashLogExtendEvent:
+        cmp     al, TCM_Last_Func               ; valid request?
+        ja      bad_exit                        ; no, exit with error
+
+        ; For most TCG INT 1Ah calls, ES:DI points to an input buffer and
+        ; DS:SI points to an output buffer.  In preparation for the SMI
+        ; call to the TPM driver interface put the flat ES:DI pointer into
+        ; EDI and the flat DS:SI pointer int ESI
+        ;
+        mov     ebx, es
+        shl     ebx, 4
+        and     edi, 0ffffh
+        add     ebx, edi
+        mov     edi, ebx
+
+        mov     ebx, ds
+        shl     ebx, 4
+        and     esi, 0ffffh
+        add     ebx, esi
+        mov     esi, ebx
+
+        ; The SMI sub-function call is the same as the TCG INT 1Ah sub
+        ; function call.  Put the sub-function call in AH and the
+        ; SMI function call in AL.
+        ;
+        shl     ax, 8
+        mov     al, byte ptr cs:[SmiCommand]
+        out     APMC, al
+        WAFORIO
+        jmp     good_exit
+
+bad_exit:
+        mov     ah, 86h                         ; On all errors, report 086h
+        stc                                     ; and set the carry flag.
+        jmp     all_exit
+
+good_exit:
+        clc                                     ; On success carry is cleared
+
+all_exit:
+        pop     edx                             ; For most TCG INT 1Ah calls
+        pop     ebx                             ; all registers except EAX
+        pop     esi                             ; need to be preserved.
+        pop     edi
+
+        iret                                    ; done
+
+SmiCommand LABEL BYTE
+        DB   024h                               ; '$'. Data to write to B2 port, fixed at runtime.
+
+TcgS ENDS
+        END

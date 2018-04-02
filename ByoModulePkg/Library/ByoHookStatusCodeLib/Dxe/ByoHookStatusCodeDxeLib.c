@@ -1,0 +1,209 @@
+/** @file
+
+Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+All rights reserved.This software and associated documentation (if any)
+is furnished under a license and may only be used or copied in 
+accordance with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be reproduced, 
+stored in a retrieval system, or transmitted in any form or by any 
+means without the express written consent of Byosoft Corporation.
+
+File Name:
+  ByoHookStatusCodeDxeLib.c
+
+Abstract: 
+  Oem Hook Status Code Dxe library instance.
+
+Revision History:
+
+Bug 2517:   Create the Module StatusCodeHandler to report status code to 
+            all supported devide in ByoModule
+TIME:       2011-7-22
+$AUTHOR:    Liu Chunling
+$REVIEWERS:  
+$SCOPE:     All Platforms
+$TECHNICAL:  
+  1. Create the module StatusCodeHandler to support Serial Port, Memory, Port80,
+     Beep and OEM devices to report status code.
+  2. Create the Port80 map table and the Beep map table to convert status code 
+     to code byte and beep times.
+  3. Create new libraries to support status code when StatusCodePpi,
+     StatusCodeRuntimeProtocol, SmmStatusCodeProtocol has not been installed yet.
+$END--------------------------------------------------------------------
+
+**/
+
+#include <ByoHookStatusCodeDxeLib.h>
+
+
+/**
+  Initialize OEM status code device .
+
+  @retval  EFI_SUCCESS   Always return EFI_SUCCESS.
+
+**/
+EFI_STATUS
+EFIAPI
+OemHookStatusCodeInitialize (
+  VOID
+  )
+{
+  EFI_PEI_HOB_POINTERS              Hob;
+  EFI_STATUS                        Status;
+  MEMORY_STATUSCODE_PACKET_HEADER   *PacketHeader;
+  MEMORY_STATUSCODE_RECORD          *Record;
+  UINTN                             Index;
+  UINTN                             MaxRecordNumber;
+	
+  if (FeaturePcdGet (PcdStatusCodeUseSerial)) {
+    Status = SerialPortInitialize();
+    ASSERT_EFI_ERROR (Status);
+  }
+  if (FeaturePcdGet (PcdStatusCodeUseMemory)) {
+    Status = RtMemoryStatusCodeInitializeWorker ();
+    ASSERT_EFI_ERROR (Status);
+  }
+  if (FeaturePcdGet (PcdStatusCodeUsePostCode)) {
+    Status = Port80StatusCodeInitialize ();
+    ASSERT_EFI_ERROR (Status);
+  }
+  if (FeaturePcdGet (PcdStatusCodeUseBeep)) {
+		Status = EFI_SUCCESS;
+  }
+  if (FeaturePcdGet (PcdStatusCodeUseOem)) {
+		Status = OemStatusCodeInitialize ();
+  }
+	
+  //
+  // Replay Status code which saved in GUID'ed HOB to all supported devices. 
+  //
+  if (FeaturePcdGet (PcdStatusCodeReplayIn)) {
+    // 
+    // Journal GUID'ed HOBs to find all record entry, if found, 
+    // then output record to support replay device.
+    //
+    Hob.Raw   = GetFirstGuidHob (&gMemoryStatusCodeRecordGuid);
+    if (Hob.Raw != NULL) {
+      PacketHeader = (MEMORY_STATUSCODE_PACKET_HEADER *) GET_GUID_HOB_DATA (Hob.Guid);
+      Record = (MEMORY_STATUSCODE_RECORD *) (PacketHeader + 1);
+      MaxRecordNumber = (UINTN) PacketHeader->RecordIndex;
+      if (PacketHeader->PacketIndex > 0) {
+        //
+        // Record has been wrapped around. So, record number has arrived at max number.
+        //
+        MaxRecordNumber = (UINTN) PacketHeader->MaxRecordsNumber;
+      }
+      for (Index = 0; Index < MaxRecordNumber; Index++) {
+        //
+        // Dispatch records to devices based on feature flag.
+        //
+        if (FeaturePcdGet (PcdStatusCodeUseSerial)) {
+          SerialStatusCodeReportWorker (
+            Record[Index].CodeType,
+            Record[Index].Value,
+            Record[Index].Instance,
+            NULL,
+            NULL
+            );
+        }
+        if (FeaturePcdGet (PcdStatusCodeUseMemory)) {
+          RtMemoryStatusCodeReportWorker (
+            Record[Index].CodeType,
+            Record[Index].Value,
+            Record[Index].Instance,
+            NULL,
+            NULL
+            );
+        }
+      }
+    }
+  }
+	
+  return EFI_SUCCESS;
+}
+
+/**
+  Report status code to OEM device.
+ 
+  @param  CodeType      Indicates the type of status code being reported.
+  @param  Value         Describes the current status of a hardware or software entity.  
+                        This included information about the class and subclass that is used to classify the entity 
+                        as well as an operation.  For progress codes, the operation is the current activity. 
+                        For error codes, it is the exception.  For debug codes, it is not defined at this time. 
+  @param  Instance      The enumeration of a hardware or software entity within the system.  
+                        A system may contain multiple entities that match a class/subclass pairing. 
+                        The instance differentiates between them.  An instance of 0 indicates that instance information is unavailable, 
+                        not meaningful, or not relevant.  Valid instance numbers start with 1.
+  @param  CallerId      This optional parameter may be used to identify the caller. 
+                        This parameter allows the status code driver to apply different rules to different callers. 
+  @param  Data          This optional parameter may be used to pass additional data
+ 
+  @retval EFI_SUCCESS   Always return EFI_SUCCESS.
+
+**/
+EFI_STATUS
+EFIAPI
+OemHookStatusCodeReport (
+  IN EFI_STATUS_CODE_TYPE     CodeType,
+  IN EFI_STATUS_CODE_VALUE    Value,
+  IN UINT32                   Instance,
+  IN EFI_GUID                 *CallerId, OPTIONAL
+  IN EFI_STATUS_CODE_DATA     *Data      OPTIONAL
+  )
+{
+  EFI_STATUS                  Status;
+
+  //
+  // Dispatch initialization request to sub-statuscode-devices.
+  // If enable UseSerial, then initialize serial port.
+  // if enable UseMemory, then initialize memory status code worker.
+  //
+  if (FeaturePcdGet (PcdStatusCodeUseSerial)) {
+    Status = SerialStatusCodeReportWorker ( 
+			         CodeType,
+			         Value,
+			         Instance,
+			         CallerId,
+			         Data
+		           );                     
+  }
+  if (FeaturePcdGet (PcdStatusCodeUseMemory)) {
+    Status = RtMemoryStatusCodeReportWorker ( 
+			         CodeType,
+			         Value,
+			         Instance,
+			         CallerId,
+			         Data
+		           );                     
+  }
+  if (FeaturePcdGet (PcdStatusCodeUsePostCode)) {
+    Status = Port80StatusCodeReportWorker ( 
+			         CodeType,
+			         Value,
+			         Instance,
+			         CallerId,
+			         Data
+		           );
+  }
+  if (FeaturePcdGet (PcdStatusCodeUseBeep)) {
+    Status = BeepStatusCodeReportWorker ( 
+			         CodeType,
+			         Value,
+			         Instance,
+			         CallerId,
+			         Data
+		           );                     
+  }
+  if (FeaturePcdGet (PcdStatusCodeUseOem)) {
+		Status = OemStatusCodeReportWorker ( 
+			         CodeType,
+			         Value,
+			         Instance,
+			         CallerId,
+			         Data
+		           );                     
+  }
+
+  return EFI_SUCCESS;
+}
+

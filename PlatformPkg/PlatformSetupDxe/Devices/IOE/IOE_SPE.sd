@@ -1,0 +1,194 @@
+/** @file
+
+Copyright (c) 2006 - 2014, Byosoft Corporation.<BR>
+All rights reserved.This software and associated documentation (if any)
+is furnished under a license and may only be used or copied in
+accordance with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be reproduced,
+stored in a retrieval system, or transmitted in any form or by any
+means without the express written consent of Byosoft Corporation.
+
+File Name:
+   Audio.sd
+
+Abstract:
+   Audio setting.
+
+Revision History:
+
+$END--------------------------------------------------------------------
+
+**/
+
+    form formid = IOE_SPE_FORM_ID,
+      title = STRING_TOKEN(STR_IOE_SPE_FORM);
+
+      subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+ 
+		
+        oneof varid = SETUP_DATA.IOESPEValue,
+          prompt      = STRING_TOKEN(STR_IOE_SPEVALUE),
+          help        = STRING_TOKEN(STR_EMPTY),
+          option text = STRING_TOKEN(STR_MANUAL), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_S),      value = 1, flags = RESET_REQUIRED ;          
+          option text = STRING_TOKEN(STR_P_S),    value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_E_P_S),  value = 3, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        endoneof;
+
+		suppressif NOT ideqval SETUP_DATA.IOESPEValue == 0;
+		 	oneof varid = SETUP_DATA.IOEGNICSPEValue,
+		    	prompt      = STRING_TOKEN(STR_IOE_GNIC_SPEVALUE),
+		     	help        = STRING_TOKEN(STR_EMPTY),
+		     	option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     	option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     	option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   	endoneof;
+
+		   oneof varid = SETUP_DATA.IOESATASPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_SATA_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXHCISPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_XHCI_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+			/*ALJ 0630 IOE*/
+		   oneof varid = SETUP_DATA.IOEEHCISPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_EHCI_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+		   
+		   oneof varid = SETUP_DATA.IOEUHCISPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_UHCI_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+		   
+			/*CJW 0818 IOE   <-Start*/
+		   oneof varid = SETUP_DATA.IOEXSPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSX_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp1D0F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP1D0F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp1D1F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP1D1F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp1D2F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP1D2F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp1D3F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP1D3F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp1D4F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP1D4F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp1D5F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP1D5F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp1D6F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP1D6F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp1D7F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP1D7F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp1D8F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP1D8F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp2D0F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP2D0F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEXp3D0F0SPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXP3D0F0_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEEphySPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXEPHY_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+
+		   oneof varid = SETUP_DATA.IOEMmioISBSPEValue,
+		     prompt      = STRING_TOKEN(STR_IOE_BUSXMMIOISB_SPEVALUE),
+		     help        = STRING_TOKEN(STR_EMPTY),
+		     option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		     option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+		     option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED;
+		   endoneof;
+			/*CJW 0818 IOE   ->End*/
+		endif;
+   endform; // end IOE_SPE_FORM_ID

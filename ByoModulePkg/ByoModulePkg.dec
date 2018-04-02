@@ -1,0 +1,383 @@
+## @file
+# EFI/PI Reference Module Package for All Architectures
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR>
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced,
+# stored in a retrieval system, or transmitted in any form or by any
+# means without the express written consent of Byosoft Corporation.
+#
+#   File Name:
+#   ByoModulePkg.dec
+#
+#   Abstract:
+#   ByoSoft Core Module Package Configuration File
+#
+#   Revision History:
+#
+# Bug 3269 - Add TCM int1A function support.
+# TIME: 2011-12-30
+# $AUTHOR: Zhang Lin
+# $REVIEWERS:
+# $SCOPE: SugarBay
+# $TECHNICAL:
+#   Use Smi to handle legacy int 1A(0xBB) interrupt.
+# $END------------------------------------------------------------
+#
+# Bug 3074 - Needs to add JPEG support
+# TIME: 2011-12-23
+# $AUTHOR: Li Hongwei
+# $REVIEWERS:
+# $SCOPE: SugarBay
+# $TECHNICAL:
+#  1. Add JPEG decoder
+#$END-------------------------------------------------------------------
+#
+# Bug 3223 - package ZTE SM3 hash source to .efi for ZTE's copyrights.
+# TIME: 2011-12-16
+# $AUTHOR: Zhang Lin
+# $REVIEWERS:
+# $SCOPE: SugarBay
+# $TECHNICAL:
+#  1. use ppi or protocol to let hash be independent.
+#$END-------------------------------------------------------------------
+#
+# Bug 3211 - Add a setup item to control enable HDD frozen or not.
+# TIME:       2011-12-09
+# $AUTHOR:    ZhangLin
+# $REVIEWERS:
+# $SCOPE:     Sugar Bay.
+# $TECHNICAL:
+#  1. add a setup save notify protocol. NV Variable should be
+#     handled by module itself.
+#$END--------------------------------------------------------------------
+#
+# Bug 3144 - Add Tcm Measurement Architecture.
+# TIME: 2011-11-24
+# $AUTHOR: Zhang Lin
+# $REVIEWERS:
+# $SCOPE: SugarBay
+# $TECHNICAL:
+#  1. PEI: Measure CRTM Version.
+#          Measure Main Bios.
+#  2. DXE: add 'TCPA' acpi table.
+#          add event log.
+#          Measure Handoff Tables.
+#          Measure All Boot Variables.
+#          Measure Action.
+#  Note: As software of SM3's hash has not been implemented, so hash
+#        function is invalid.
+#$END---------------------------------------------------------------------
+#
+# Bug 3075 - Add TCM support.
+# TIME: 2011-11-14
+# $AUTHOR: Zhang Lin
+# $REVIEWERS:
+# $SCOPE: SugarBay
+# $TECHNICAL:
+#  1. Tcm module init version.
+#     Only support setup function.
+#$END---------------------------------------------------------------------
+#
+# Bug 2746:   Create Crisis Recovery module
+# TIME:       2011-8-18
+# $AUTHOR:    Zhong Gangping
+# $REVIEWERS:
+# $SCOPE:     All Platforms
+# $TECHNICAL:
+#   1. Add the trigger to check BIOS crisis
+#   2. Add platform recovery module
+#   3. Add flash update module for recovery and BIOS flash tool
+# $END--------------------------------------------------------------------
+#
+# Bug 2517:   Create the Module StatusCodeHandler to report status code to
+#             all supported devide in ByoModule
+# TIME:       2011-7-22
+# $AUTHOR:    Liu Chunling
+# $REVIEWERS:
+# $SCOPE:     All Platforms
+# $TECHNICAL:
+#   1. Create the module StatusCodeHandler to support Serial Port, Memory, Port80,
+#      Beep and OEM devices to report status code.
+#   2. Create the Port80 map table and the Beep map table to convert status code
+#      to code byte and beep times.
+#   3. Create new libraries to support status code when StatusCodePpi,
+#      StatusCodeRuntimeProtocol, SmmStatusCodeProtocol has not been installed yet.
+# $END--------------------------------------------------------------------
+#
+# Bug 2512:  Add PeiBiosIdLib for recovery.
+# TIME:       2011-7-21
+# $AUTHOR:    Xin Shujun
+# $REVIEWERS:
+# $SCOPE:     Sugar Bay Customer Refernce Board.
+# $TECHNICAL:
+#   Bios Recovery needs BIOS ID information to check the BIOS image.
+# $END--------------------------------------------------------------------
+#
+# Bug 2263:   Needs to move R8SnbClientPkg\Platform\LegacyBiosPlatform
+#             to SnbClientX64Pkg
+# TIME:       2011-6-21
+# $AUTHOR:    Liu Chunling
+# $REVIEWERS:
+# $SCOPE:     Sugar Bay Customer Refernce Board.
+# $TECHNICAL:
+#   1. Change the name of LegacyBiosPlatform.inf to
+#      LegacyBiosPlatformDxe.inf and Revise the coding style
+#      following latest standard.
+#   2. Use EDKII libraries instead of EDK libraries.
+#   3. Add gWdtProtocolGuid to PlatformPkg.dec.
+#   4. Move the library BiosIdLib to ByoModulePkg.
+# $END------------------------------------------------------------------
+#
+#   Bug 2204:   Created Byosoft specific package "ByoModulePkg" to
+#             include Byosoft specific functionality
+#   TIME:       2011-5-30
+#   $AUTHOR:    Chen Daolin
+#   $REVIEWERS:
+#   $SCOPE:     Sugar Bay and Tunnel Customer Refernce Board
+#   $TECHNICAL:
+#   1. ByoModulePkg is created to include the features as follows:
+#        USB (Legacy/Native/Crisis Recovery)
+#        SD (Legacy/Native)
+#        Security including HDD password, TCG/TPM, TCM and Pre-boot
+#          Authentication
+#        Setup Browser (Text/Graphic mode)
+#        Debugging
+#        Binary Image (CSM16/AHCI Option Rom)
+#   2. Both of DSC and DEC in Sugar Bay and Tunnel Creek are updated
+#      to refer to the new location of drivers in ByoModulePkg.
+#   3. Reserved 630-640k for the usage of BIOS stack in int 13h handler.
+#      Previously this stack is allocated via EBDA. Sometimes this stack
+#      could be corrupted by OptionRom image's code.
+#   $END------------------------------------------------------------------
+#
+##
+
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = ByoModulePkg
+  PACKAGE_GUID                   = EFE1EC80-3C8C-4BA4-88D0-BB8974BA0506
+  PACKAGE_VERSION                = 0.1
+
+[Includes]
+  Include
+
+[LibraryClasses]
+
+[Guids]
+  ## ByoModule package token space guid
+  # Include/Guid/ByoModulePkgTokenSpace.h
+  gEfiByoModulePkgTokenSpaceGuid       = { 0x66F5976C, 0xFDA1, 0x4C50, { 0x8C, 0x94, 0x9B, 0xF2, 0x51, 0x8F, 0x21, 0xFF }}
+
+  ## HDD password variable guid
+  # Include/Guid/HddPasswordSecurityVariable.h
+  gEfiHddPasswordSecurityVariableGuid = { 0x5e22f4e2, 0x35ea, 0x421b, { 0x8f, 0xd1, 0xd4, 0xae, 0x85, 0x67, 0xa4, 0x51 }}
+
+  gEfiBiosIdGuid                  = { 0xC3E36D09, 0x8294, 0x4b97, { 0xA8, 0x57, 0xD5, 0x28, 0x8F, 0xE3, 0x3E, 0x28 } }
+
+  ##
+  gFvExtChecksumFileNameGuid = { 0x5D413B67, 0xAFDE, 0x4475, { 0xA8, 0xC9, 0x3C, 0x8, 0xA0, 0x60, 0x95, 0x6D } }
+
+  ## Include/Guid/RecoveryDevice.h
+  gRecoveryOnFatUsbDiskGuid          = { 0x0FFBCE19, 0x324C, 0x4690, { 0xA0, 0x09, 0x98, 0xC6, 0xAE, 0x2E, 0xB1, 0x86 }}
+
+  ## Include/Guid/RecoveryDevice.h
+  gRecoveryOnFatIdeDiskGuid          = { 0xB38573B6, 0x6200, 0x4AC5, { 0xB5, 0x1D, 0x82, 0xE6, 0x59, 0x38, 0xD7, 0x83 }}
+
+  ## Include/Guid/RecoveryDevice.h
+  gRecoveryOnFatFloppyDiskGuid       = { 0x2E3D2E75, 0x9B2E, 0x412D, { 0xB4, 0xB1, 0x70, 0x41, 0x6B, 0x87, 0x00, 0xFF }}
+
+  ## Include/Guid/RecoveryDevice.h
+  gRecoveryOnDataCdGuid              = { 0x5CAC0099, 0x0DC9, 0x48E5, { 0x80, 0x68, 0xBB, 0x95, 0xF5, 0x40, 0x0A, 0x9F }}
+
+  ## Include/Guid/CapsuleRecord.h
+  gRecoveryCapsuleRecordGuid = { 0x6260A830, 0x4A50, 0x43E7, { 0xFF, 0xFF, 0xFF, 0xFF, 0x65, 0x25, 0x09, 0x14 }}
+
+  ## Include/Guid/TcmEventHob.h
+  gTcmEventEntryHobGuid      = {0x62186492, 0x30bc, 0x421a, {0xa5, 0x71, 0x82, 0xe4, 0xeb, 0x7, 0xfb, 0x7 }}
+
+  ## Include/Guid/TcmSetupCfgGuid.h
+  gTcmSetupConfigGuid = {0x9849bbe5, 0x5fb9, 0x4d55, {0xa2, 0xd3, 0xe4, 0x1e, 0x1b, 0xfe, 0x3c, 0x68}}
+  
+  
+[Protocols]
+  ## This protocol was used by legacy usb driver.
+  #  Include/Protocol/LegacyUsbInf.h
+  gEfiLegacyUsbInfProtocolGuid = { 0xc28ab52, 0xd2c8, 0x4009, {0xbb, 0x9, 0x98, 0xd5, 0xa2, 0x77, 0x32, 0xbd}}
+
+  #  Include/Protocol/LegacyUsbInf.h
+  gEfiUsbMouseCommunicationProtocolGuid = { 0xf34d1b7a, 0x990d, 0x40f6, { 0xab, 0xb4, 0xb4, 0x7, 0x8b, 0x1b, 0xcd, 0x4a } }
+
+  ## This protocol was used by legacy usb driver.
+  #  Include/Protocol/LegacyUsbInf.h
+  gUsbPolicyGuid = { 0xf617b358, 0x12cf, 0x414a, {0xa0, 0x69, 0x60, 0x67, 0x7b, 0xda, 0x13, 0xb4}}
+
+  ## This protocol was used by legacy SD driver.
+  #  Include/Protocol/LegacySDInf.h
+  gEfiLegacySDInfProtocolGuid = {0xd7e2f4f8, 0x340f, 0x42e4, 0x8e, 0x60, 0xdb, 0xbb, 0xf1, 0x64, 0xa1, 0xc5}
+
+  ## This protocol was used by legacy SD driver.
+  ## Include/Protocol/SDHostIo.h
+  gEfiSdHostIoProtocolGuid = {0xb63f8ec7, 0xa9c9, 0x4472, 0xa4, 0xc0, 0x4d, 0x8b, 0xf3, 0x65, 0xcc, 0x51}
+
+  gByoPlatformBdsProtocolGuid     = { 0xD8242D52, 0x9AA6, 0x47AB, { 0x97, 0x78, 0x7A, 0x21, 0x1E, 0x9B, 0xB5, 0x04 } }
+  gEfiByoDeviceManagerSetupProtocolGuid  = { 0x392744da, 0xdf68, 0x4c3b, { 0x96, 0x6b, 0xf2, 0x0f, 0x0f, 0x47, 0xbc, 0x23 } }
+
+  ## This is used as TCG INT 1Ah service protocol
+  ## Include/Protocol/TcgSmmInt1AReady.h
+  gTcgSmmInt1AReadyProtocolGuid   = { 0x41e8252a, 0x9859, 0x4584, { 0xa0, 0x83, 0x2b, 0x6,  0x3,  0x3b, 0x5,  0x5c } }
+
+  ## Include/Protocol/LegacyInterruptHandler.h
+  gEfiLegacyInterruptHandlerProtocolGuid         = { 0xd765bf98, 0x2f0b, 0x4e07, { 0xae, 0x77, 0x7e, 0x74, 0x1c, 0xb8, 0x9e, 0xff } }
+
+  ## Include/Protocol/GlobalNvsArea.h
+  gEfiGlobalNvsAreaProtocolGuid                  = { 0x074e1e48, 0x8132, 0x47a1, { 0x8c, 0x2c, 0x3f, 0x14, 0xad, 0x9a, 0x66, 0xdc } }
+
+  ## Include/Protocol/UpdateFlash.h
+  gUpdateFlashProtocolGuid                       = { 0xC647D33A, 0x2977, 0x464F, { 0xFF, 0xFF, 0xFF, 0xFF, 0x35, 0x80, 0x10, 0x97 } }
+
+  ## Include/Protocol/TcmService.h
+  gEfiTcmProtocolGuid            = {0xf51d6c88, 0x60d4, 0x44be, {0x84, 0xdf, 0x50, 0xbc, 0xe7, 0x9b, 0x5a, 0xa5}}
+
+  ## Include/Protocol/SetupSaveNotify.h
+  gSetupSaveNotifyProtocolGuid   = {0xf49499cc, 0x867f, 0x47a8, {0x82, 0x11, 0x87, 0xb, 0xfb, 0xbe, 0x2d, 0xcd}}
+
+  ## Include/Protocol/JpegDecoder
+  gEfiJpegDecoderProtocolGuid    = {0xa9396a81, 0x6231, 0x4dd7, {0xbd, 0x9b, 0x2e, 0x6b, 0xf7, 0xec, 0x73, 0xc2}}
+
+  ## Include/Protocol/TcmHashSm3.h
+  gTcmHashSm3ProtocolGuid        = {0xfd55aff1, 0x3926, 0x4ae7, {0x9a, 0x1c, 0x88, 0x35, 0x37, 0xbf, 0xbc, 0x93}}
+
+  ## Include/Protocol/TcmSmmInt1AReady.h
+  gTcmSmmInt1AReadyProtocolGuid  = {0xea3bec1e, 0x9199, 0x4f2d, {0x8e, 0x3f, 0x9b, 0x75, 0x2e, 0x6c, 0x9b, 0x24}}
+
+  ## Include/Protocol/TcmSmmHashSm3.h
+  gTcmSmmHashSm3ProtocolGuid     = {0x039dfe95, 0xd6b3, 0x4aa5, {0x82, 0x2f, 0xa3, 0x7a, 0x96, 0x30, 0x00, 0x89}}
+
+  ## Include/Protocol/VirtualKbc.h
+  gEfiUsbVirtualKbcProtocolGuid            = {0x87d53dc2, 0x3e20, 0x459f, {0x88, 0x2d, 0x64, 0x34, 0x39, 0x44, 0x84, 0xb0}}
+
+  ## Include/Protocol/TopSwap.h
+  gFirmwareReadTopSwapProtocolGuid  = { 0xcf14ed59, 0xc171, 0x4c40, 0xa1, 0xd0, 0xa8, 0x2f, 0x39, 0x56, 0x4f, 0x4b }
+
+  ## Include/Protocol/ByoFormSetManager.h
+  gEfiByoFormsetManagerProtocolGuid = { 0x65e4992f, 0xd77c, 0x494d, { 0x9a, 0xd1, 0x68, 0x77, 0x5b, 0xb9, 0x1a, 0xa1 } }
+
+  ## Include/Protocol/ByoFormBrowserEx.h
+  gEfiByoFormBrowserExProtocolGuid = { 0xcf49d6f3, 0x35bb, 0x488c, { 0x88, 0xab, 0x47, 0x0, 0x92, 0x2f, 0x3a, 0xc4 } }
+
+  # Same as gBdsAllDriversConnectedProtocolGuid
+  gByoAllDriversConnectedProtocolGuid = { 0xdbc9fd21, 0xfad8, 0x45b0, { 0x9e, 0x78, 0x27, 0x15, 0x88, 0x67, 0xcc, 0x93 }}
+
+  ## Include/Protocol/LegacyOptionRomInfo.h
+  gLegacyOptionRomInfoProtocolGuid = { 0xeb1e3fd4, 0xb15f, 0x4870, { 0xac, 0x47, 0xa3, 0x18, 0x6f, 0x53, 0x1, 0x97 } }
+  
+  gBdsAllDriversConnectedProtocolGuid = { 0xdbc9fd21, 0xfad8, 0x45b0, { 0x9e, 0x78, 0x27, 0x15, 0x88, 0x67, 0xcc, 0x93 }}
+  
+[Guids]
+  ## This is used as the GUID of BIOS ID file
+  ## Include/Guid/BiosId.h
+  gEfiBiosIdGuid                  = { 0xC3E36D09, 0x8294, 0x4b97, { 0xA8, 0x57, 0xD5, 0x28, 0x8F, 0xE3, 0x3E, 0x28 } }
+
+  gEfiIfrFrontPageGuid            = { 0xe58809f8, 0xfbc1, 0x48e2, { 0x88, 0x3a, 0xa3, 0xf, 0xdc, 0x4b, 0x44, 0x1e } }
+
+  gEfiSetupEnterGuid              = { 0x71202EEE, 0x5F53, 0x40d9, { 0xAB, 0x3D, 0x9E, 0x0C, 0x26, 0xD9, 0x66, 0x57 }}  
+    
+  
+[Ppis]
+
+  ## Include/Ppi/Isrecvery.h
+  gPeiRecoveryJudgePpiGuid    = { 0xBCC610D9, 0x6C38, 0x4598, { 0x8E, 0x3E, 0x56, 0x56, 0x44, 0xE6, 0x47, 0x19 } }
+
+  ## Include/Ppi/TcmHashSm3.h
+  gPeiTcmHashSm3PpiGuid       = {0x99ff6eec, 0x8f28, 0x4cdb, {0xb0, 0x2, 0x73, 0xb2, 0xf4, 0x1a, 0x4, 0x4b}}
+
+
+[PcdsFeatureFlag]
+
+  ## This PCD specifies whether StatusCode is reported via Port80
+  gEfiByoModulePkgTokenSpaceGuid.PcdStatusCodeUsePostCode|TRUE|BOOLEAN|0x00010201
+
+  ## This PCD specifies whether StatusCode is reported via Beep
+  gEfiByoModulePkgTokenSpaceGuid.PcdStatusCodeUseBeep|TRUE|BOOLEAN|0x00010202
+
+  ## This PCD specifies whether StatusCode is reported via Oem
+  gEfiByoModulePkgTokenSpaceGuid.PcdStatusCodeUseOem|TRUE|BOOLEAN|0x00010203
+  
+  ## Show "PROGRESS CODE: V3040003 I0"
+  gEfiByoModulePkgTokenSpaceGuid.PcdStatusCodePrintProgressCode|TRUE|BOOLEAN|0x00010204
+
+[PcdsFixedAtBuild]
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashAreaBaseAddress|0x00000000|UINT32|0x00002012
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashAreaSize|0x00000000|UINT32|0x00002013
+
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashTestMenuBase|0x00000000|UINT32|0x00002014
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashTestMenuSize|0x00000000|UINT32|0x00002015
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainBase|0x00000000|UINT32|0x00002016
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainSize|0x00000000|UINT32|0x00002017
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecoveryBase|0x00000000|UINT32|0x00002018
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecoverySize|0x00000000|UINT32|0x00002019
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvSecBase|0x00000000|UINT32|0x00012018
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvSecSize|0x00000000|UINT32|0x00012019  
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMain2Base|0x00000000|UINT32|0x0001201A
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMain2Size|0x00000000|UINT32|0x0001201B  
+
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageBase|0x00000000|UINT32|0x0000201A
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageSize|0x00000000|UINT32|0x0000201B
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageMicrocodeBase|0x00000000|UINT32|0x0000201C
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageMicrocodeSize|0x00000000|UINT32|0x0000201D
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageEventLogBase|0x00000000|UINT32|0x0000201E
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageEventLogSize|0x00000000|UINT32|0x0000201F
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecovery2Base|0x00000000|UINT32|0x00002020
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecovery2Size|0x00000000|UINT32|0x00002021
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecovery2BackupBase|0x00000000|UINT32|0x00002022
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecovery2BackupSize|0x00000000|UINT32|0x00002023
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageMicrocodeBackupBase|0x00000000|UINT32|0x00002024
+
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMrcNormalBase|0x00000000|UINT32|0x00012025
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMrcNormalSize|0x00000000|UINT32|0x00012026
+  gEfiByoModulePkgTokenSpaceGuid.PcdFvOemBase|0x00000000|UINT32|0x00002029
+  gEfiByoModulePkgTokenSpaceGuid.PcdFvOemSize|0x00000000|UINT32|0x0000202A
+
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageSmbiosBase|0x0|UINT32|0x0000202C
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageSmbiosSize|0x0|UINT32|0x0000202D
+  
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvLogoBase|0x0|UINT32|0x00002100
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvLogoSize|0x0|UINT32|0x00002101  
+
+#Bits 0-3   : 1st Group
+#Bits 4-7   : 2st Group
+#Bits 8-11  : 3rd group
+#Bits 12-15 : 4nd group
+#Bits 16-19 : 5nd group
+#Bits 20-31 : reserved
+#HDD        : 0
+#CD-ROM     : 1
+#NETWORK    : 2
+#BEV        : 3
+#FLOPPY     : 4
+  gEfiByoModulePkgTokenSpaceGuid.PcdBootDeviceGroupDefaultPriority|0x00043210|UINT32|0x00002025
+  gEfiByoModulePkgTokenSpaceGuid.PcdBootDeviceGroupDefaultCount|5|UINT32|0x00002026
+  
+  gEfiByoModulePkgTokenSpaceGuid.PcdRecoveryFindBiosIdFirstTryTopFv|FALSE|BOOLEAN|0x00002028
+
+  gEfiByoModulePkgTokenSpaceGuid.PcdBiosRecoveryFileName|L""|VOID*|0x00002030
+  
+# 0xFFFF: No limit  
+  gEfiByoModulePkgTokenSpaceGuid.PcdBiosMaxRecoveryCapsuleCountSupport|0xFFFF|UINT16|0x00002031
+  
+  gEfiByoModulePkgTokenSpaceGuid.AcpiIoPortBaseAddress|0xFFFF|UINT16|0x00002032
+  gEfiByoModulePkgTokenSpaceGuid.SlaveAcpiIoPortBaseAddress|0xFFFF|UINT16|0x00002033
+
+[PcdsDynamic]
+  gEfiByoModulePkgTokenSpaceGuid.PcdKeepTrap64hEnable|0|UINT8|0x30000002
+  gEfiByoModulePkgTokenSpaceGuid.PcdUCREnable|0|UINT8|0x30000003
+  gEfiByoModulePkgTokenSpaceGuid.PcdHasBackupBios|0|UINT8|0x0000202B
+  gEfiByoModulePkgTokenSpaceGuid.PcdBrowserHasDataChange|FALSE|BOOLEAN|0x0000202E
+
+[PcdsPatchableInModule]
+  ## BYO_BIOS_FILE_EXTENSION
+  gEfiByoModulePkgTokenSpaceGuid.PcdBiosFileExt|L"fd"|VOID*|0x00002027

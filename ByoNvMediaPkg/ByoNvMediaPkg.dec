@@ -1,0 +1,68 @@
+## @file
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR>
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced,
+# stored in a retrieval system, or transmitted in any form or by any
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   ByoNvMediaPkg.dec
+#
+# Abstract:
+#
+# Revision History:
+# 
+# Bug 2501:  Support NV Media Access function on UNC codebase.
+# TIME:       2011-7-19
+# $AUTHOR:    Xin Shujun
+# $REVIEWERS:  
+# $SCOPE:     Sugar Bay Customer Refernce Board.
+# $TECHNICAL: 
+#   Unify NV Media Access interface, include Flash chip and CMOS.
+#   Consumers are Variable service Flash utility, etc.
+# $END--------------------------------------------------------------------
+#
+##
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = ByoNvMediaPkg
+  PACKAGE_GUID                   = 848CCC22-E45E-49e0-AE74-B14C94215F0F
+  PACKAGE_VERSION                = 1.00
+
+[Includes]
+  Include
+
+[LibraryClasses]
+
+[Guids]
+    gEfiNvMediaDeviceTokenSpaceGuid     = { 0x7bee7177, 0xfd5d, 0x4c18, { 0xa4, 0x25, 0xaa, 0xa7, 0xd7, 0x2a, 0x2d, 0x60 } }
+
+[Ppis]
+
+[Protocols]
+    ## Include/Protocol/NvMediaAccess.h
+	gEfiNvMediaAccessProtocolGuid		= { 0xf37f2747, 0xf30b, 0x4d7f, { 0xad, 0xd3, 0x75, 0x00, 0xaf, 0xb4, 0x5d, 0x60 }}
+	gEfiSmmNvMediaAccessProtocolGuid	= { 0xf18afa82, 0x5f80, 0x4a30, { 0x88, 0xb9, 0x4c, 0x23, 0x60, 0xc4, 0xc6, 0xb5 }}
+  gEfiNvMediaAccessSpiReadyGuid     = { 0x3911850e, 0x73ba, 0x42c0, { 0xb0, 0xd6, 0x3b, 0xcc, 0x25, 0xa9, 0x75, 0x11 }}
+  gEfiSmmNvMediaAccessSpiReadyGuid  = { 0x5acc2f3c, 0xf937, 0x46be, { 0x90, 0x43, 0x0, 0x16, 0x1f, 0xab, 0xf1, 0xf6 }}
+  
+  
+  
+    ## Include/Protocol/NvMediaDevice.h
+	gEfiNvMediaDeviceProtocolGuid		= { 0xa156dcc8, 0x1873, 0x45a9, { 0x93, 0x3, 0x15, 0x86, 0x28, 0x99, 0x7a, 0xf3}}
+	gEfiSmmNvMediaDeviceProtocolGuid	= { 0xa235c112, 0x5b90, 0x40ec, { 0x88, 0x20, 0xd3, 0x27, 0xe5, 0xb1, 0xc1, 0x12}}
+
+    ## Include/Protocol/PlatformAccess.h
+	gEfiPlatformAccessProtocolGuid		= { 0x409af98, 0x6f4d, 0x49c4, { 0xa9, 0xc7, 0x9d, 0xc4, 0xf1, 0x95, 0x8b, 0xdb}}
+	gEfiSmmPlatformAccessProtocolGuid	= { 0x7a64d94a, 0x17ce, 0x4bfd, { 0xb6, 0xfe, 0x71, 0x81, 0xd3, 0x41, 0x64, 0xb6}}
+
+    ## Include/Protocol/Spi.h
+	gEfiSpiProtocolGuid		            = { 0x1156efc6, 0xea32, 0x4396, { 0xb5, 0xd5, 0x26, 0x93, 0x2e, 0x83, 0xc3, 0x13}}
+	gEfiSmmSpiProtocolGuid	            = { 0xD9072C35, 0xEB8F, 0x43ad, { 0xA2, 0x20, 0x34, 0xD4, 0x0E, 0x2A, 0x82, 0x85}}
+
+[PcdsFixedAtBuild]
+    gEfiNvMediaDeviceTokenSpaceGuid.PcdNvMediaDeviceNumbers|0x1|UINT32|0x00000001

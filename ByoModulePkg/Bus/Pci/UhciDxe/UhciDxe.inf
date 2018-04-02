@@ -1,0 +1,62 @@
+#/*++
+# ========================================================================================
+#       NOTICE: Copyright (c) 2006 - 2009 Byosoft Corporation. All rights reserved.
+#               This program and associated documentation (if any) is furnished
+#               under a license. Except as permitted by such license,no part of this
+#               program or documentation may be reproduced, stored divulged or used
+#               in a public system, or transmitted in any form or by any means
+#               without the express written consent of Byosoft Corporation.
+# ========================================================================================
+# Module Name:
+#   UhciDxe.inf
+#
+# Abstract:
+#   USB Module file.
+#
+# Revision History:
+#   --------------------------------------------------------------------------------------
+#   Rev     Date        Name    Description
+#   --------------------------------------------------------------------------------------
+#   --------------------------------------------------------------------------------------
+#--*/
+
+[defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = NativeUhci
+  FILE_GUID                      = 3E0D86FF-3E9F-46fd-9BA0-3ED1372D0B4E
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  
+  ENTRY_POINT                    = UhciDriverEntryPoint
+
+[sources]
+  ComponentName.h
+  ComponentName.c
+  Uhci.h
+  Uhci.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ByoModulePkg/ByoModulePkg.dec	
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  BaseMemoryLib
+  DebugLib
+  IoLib
+
+[Protocols]
+  gEfiUsbIoProtocolGuid                         ## TO_START
+  gEfiDevicePathProtocolGuid                    ## TO_START     
+  gEfiPciIoProtocolGuid
+  gEfiUsbHcProtocolGuid
+  gEfiUsb2HcProtocolGuid
+  gEfiLegacyUsbInfProtocolGuid
+  gEfiCpuIo2ProtocolGuid
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmControl2ProtocolGuid
+

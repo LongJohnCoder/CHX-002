@@ -1,0 +1,141 @@
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BdsDxe
+  FILE_GUID                      = 6D33944A-EC75-4855-A54D-809C75241F6C
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0 
+  ENTRY_POINT                    = BdsInitialize
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  Language.h
+  Bds.h
+  HwErrRecSupport.c
+  HwErrRecSupport.h
+  Language.c
+  BdsEntry.c
+  InstallOptionRom.c
+  InstallOptionRom.h
+  BdsPlatform.c
+  PlatformData.c
+  BdsPlatform.h
+  MemoryTest.c
+  String.c
+  String.h
+  Strings.uni
+  Capsules.c  
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec  
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  PlatformPkg/PlatformPkg.dec
+  CryptoPkg/CryptoPkg.dec
+  SecurityPkg/SecurityPkg.dec
+
+  
+[LibraryClasses]
+  DevicePathLib
+  BaseLib
+  MemoryAllocationLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  ReportStatusCodeLib
+  UefiLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiBootManagerLib
+  PcdLib
+  BaseCryptLib
+  LogoLib
+  PlatformCommLib
+  HiiLib
+  TcgPhysicalPresenceLib
+  Tcg2PhysicalPresenceLib
+
+  
+[Guids]
+  gEfiGlobalVariableGuid
+  gByoGlobalVariableGuid
+  gPlatformSetupVariableGuid
+  gSetupPasswordVariableTseGuid
+  gEfiCapsuleVendorGuid
+  gEfiGlobalVariableGuid
+  gEfiEndOfDxeEventGroupGuid
+  
+
+[Protocols]
+  gEfiBdsArchProtocolGuid                       ## PROTOCOL PRODUCES
+  gEfiSimpleTextInputExProtocolGuid             ## PROTOCOL CONSUMES
+  gEfiByoFormsetManagerProtocolGuid
+  gEfiBootManagerProtocolGuid
+  gEfiPciRootBridgeIoProtocolGuid
+  gEfiLegacyBiosProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiCpuIoProtocolGuid
+  gExitPmAuthProtocolGuid
+  gEfiDxeSmmReadyToLockProtocolGuid
+  gEfiGenericMemTestProtocolGuid
+  gEfiDiskInfoProtocolGuid
+  gEfiAcpiS3SaveProtocolGuid
+  gEfiDevicePathToTextProtocolGuid
+  gEfiSimpleTextInputExProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  gEfiLegacyBiosPlatformProtocolGuid
+  gUpdateFlashProtocolGuid
+  gBdsAllDriversConnectedProtocolGuid
+  gEfiAtaPassThruProtocolGuid
+  gEfiExtScsiPassThruProtocolGuid  
+  gEfiBootLogoProtocolGuid
+
+
+  
+  
+[FeaturePcd]
+  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLangDeprecate
+  gEfiMdePkgTokenSpaceGuid.PcdUgaConsumeSupport
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLangCodes
+  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLang
+  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultPlatformLangCodes
+  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultPlatformLang
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision
+  gPlatformModuleTokenSpaceGuid.PcdBootMenuFileGuid
+  gPlatformModuleTokenSpaceGuid.PcdSetupFileGuid 
+  gPlatformModuleTokenSpaceGuid.PcdTxtScreenFileGuid   
+
+###Corresponding variable defined in UEFI spec, why not put them in MdePkg
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdHardwareErrorRecordLevel
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainBase
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainSize
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecoveryBase
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecoverySize
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdLogoFile
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdBootState
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdShellFile
+  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutColumn
+  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow  
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdLegacyBiosSupport
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashAreaBaseAddress
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdDisplayOptionRomMessage
+  gEfiMdePkgTokenSpaceGuid.PcdUgaConsumeSupport
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSupportUpdateCapsuleReset
+  
+  
+  
+[Depex]
+  TRUE

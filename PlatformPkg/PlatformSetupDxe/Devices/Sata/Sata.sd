@@ -1,0 +1,176 @@
+/** @file
+
+Copyright (c) 2006 - 2014, Byosoft Corporation.<BR>
+All rights reserved.This software and associated documentation (if any)
+is furnished under a license and may only be used or copied in
+accordance with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be reproduced,
+stored in a retrieval system, or transmitted in any form or by any
+means without the express written consent of Byosoft Corporation.
+
+File Name:
+  Sata.sd
+
+Abstract:
+  ATA setting.
+
+Revision History:
+
+$END--------------------------------------------------------------------
+
+**/
+
+#ifdef DEVICES_FORM_SET
+  #ifdef FORM_SET_GOTO
+  goto CHIPSET_SATA_FORM_ID,
+    prompt = STRING_TOKEN(STR_SATA_FORM),
+    help   = STRING_TOKEN(STR_SATA_FORM_HELP);
+  #endif
+
+  #ifdef FORM_SET_FORM
+    form formid = CHIPSET_SATA_FORM_ID,
+    title = STRING_TOKEN(STR_SATA_FORM);
+
+  text
+    help   = STRING_TOKEN(STR_EMPTY),
+    text   = STRING_TOKEN(STR_SATA_DRIVE0_NAME),
+    text   = STRING_TOKEN(STR_SATA_DRIVE0_VALUE),
+    flags  = 0,
+    key    = 0;
+  
+  text
+    help   = STRING_TOKEN(STR_EMPTY),
+    text   = STRING_TOKEN(STR_SATA_DRIVE1_NAME),
+    text   = STRING_TOKEN(STR_SATA_DRIVE1_VALUE),
+    flags  = 0,
+    key    = 0;
+
+  subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+   
+  oneof varid   = SETUP_DATA.SataEn,
+    prompt      = STRING_TOKEN(STR_SATA_CONTROLLER),
+    help        = STRING_TOKEN(STR_SATA_CONTROLLER_HELP),
+    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+    option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+  endoneof;
+  
+  suppressif NOT ideqval SETUP_DATA.SataEn == 1;  
+    oneof varid   = SETUP_DATA.SataCfg,
+      prompt      = STRING_TOKEN(STR_SATA_MODE),
+      help        = STRING_TOKEN(STR_SATA_MODE_HELP),
+      option text = STRING_TOKEN(STR_SATA_MODE_IDE),  value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_SATA_MODE_AHCI), value = 2, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+    endoneof;
+
+    // IDE 
+    suppressif NOT ideqval SETUP_DATA.SataCfg == 0;     
+#if defined(CHX002_PXP) || defined(CHX002_HAPS)    
+      oneof varid   = SETUP_DATA.IDEGen,
+        prompt      = STRING_TOKEN(STR_IDE_GEN),
+        help        = STRING_TOKEN(STR_IDE_GEN_HELP),
+        option text = STRING_TOKEN(STR_GEN1), value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_GEN2), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_GEN3), value = 3, flags = RESET_REQUIRED;
+      endoneof; 
+#else
+      oneof varid   = SETUP_DATA.IDEGen,
+        prompt      = STRING_TOKEN(STR_IDE_GEN),
+        help        = STRING_TOKEN(STR_IDE_GEN_HELP),
+        option text = STRING_TOKEN(STR_GEN1), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_GEN2), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_GEN3), value = 3, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+      endoneof; 
+#endif
+
+      suppressif ideqval SETUP_DATA.SBSPEValue == 3 OR (ideqval SETUP_DATA.SBSPEValue == 0 AND ideqval SETUP_DATA.SATASPEValue == 2); 
+        oneof varid   = SETUP_DATA.IDECapSelect,
+          prompt      = STRING_TOKEN(STR_IDE_CAP_SELECT),
+          help        = STRING_TOKEN(STR_IDE_CAP_SELECT_HELP),
+          option text = STRING_TOKEN(STR_HOTPLUG), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+          option text = STRING_TOKEN(STR_LINKPM),  value = 1, flags = RESET_REQUIRED;
+        endoneof;
+              
+        grayoutif ideqval SETUP_DATA.IDECapSelect==0;
+          oneof varid  = SETUP_DATA.IDEHIPMEn,
+           prompt      = STRING_TOKEN(STR_IDE_HIPM_EN),
+           help        = STRING_TOKEN(STR_IDE_HIPM_EN_HELP),
+           option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+           option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+          endoneof;
+        endif;
+      endif;
+    endif;
+   
+    // AHCI
+    suppressif NOT ideqval SETUP_DATA.SataCfg == 2; 
+#if defined(CHX002_PXP) || defined(CHX002_HAPS)
+      oneof varid   = SETUP_DATA.AHCIGen,
+        prompt      = STRING_TOKEN(STR_AHCI_GEN),
+        help        = STRING_TOKEN(STR_AHCI_GEN_HELP),
+        option text = STRING_TOKEN(STR_GEN1), value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_GEN2), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_GEN3), value = 3, flags = RESET_REQUIRED;
+      endoneof; 
+#else
+      oneof varid   = SETUP_DATA.AHCIGen,
+        prompt      = STRING_TOKEN(STR_AHCI_GEN),
+        help        = STRING_TOKEN(STR_AHCI_GEN_HELP),
+        option text = STRING_TOKEN(STR_GEN1), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_GEN2), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_GEN3), value = 3, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+      endoneof; 
+#endif
+
+      oneof varid   = SETUP_DATA.AHCIMSI,
+        prompt      = STRING_TOKEN(STR_AHCI_MSI),
+        help        = STRING_TOKEN(STR_AHCI_MSI_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+      endoneof;  
+    
+      oneof varid   = SETUP_DATA.AHCIMSIX,
+        prompt      = STRING_TOKEN(STR_AHCI_MSIX),
+        help        = STRING_TOKEN(STR_AHCI_MSIX_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+      endoneof; 
+      
+      oneof varid   = SETUP_DATA.AHCIHotplugEn,
+        prompt      = STRING_TOKEN(STR_AHCI_HPCP_EN),
+        help        = STRING_TOKEN(STR_AHCI_HPCP_EN_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+      endoneof;
+      
+      // Aggressive Link Power Management
+      //suppressif ideqval SETUP_DATA.CRBPlatformSelection == 1;
+        oneof varid  = SETUP_DATA.AHCIALPMEn,
+         prompt      = STRING_TOKEN(STR_AHCI_ALPM_EN),
+         help        = STRING_TOKEN(STR_AHCI_ALPM_EN_HELP),
+         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        endoneof;
+      //endif;  
+     
+    endif;
+    
+    // IDE & AHCI 
+    oneof varid   = SETUP_DATA.FuncLevelResetEn,
+      prompt      = STRING_TOKEN(STR_SATA_FUNC_LEV_EN),
+      help        = STRING_TOKEN(STR_SATA_FUNC_LEV_EN_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+    endoneof;  
+    
+    oneof varid   = SETUP_DATA.GBFlushendEn,
+      prompt      = STRING_TOKEN(STR_GB_FLUSHEND_EN),
+      help        = STRING_TOKEN(STR_GB_FLUSHEND_EN_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
+    endoneof; 
+    
+  endif;   
+  endform;  
+
+  #endif
+#endif

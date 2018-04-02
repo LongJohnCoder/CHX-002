@@ -1,0 +1,72 @@
+## @file
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR>
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced,
+# stored in a retrieval system, or transmitted in any form or by any
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   spiflashdevice.inf
+#
+# Abstract:
+#
+# Revision History:
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeMX25L16
+  FILE_GUID                      = 4E7DE644-BF76-4E2A-FF16-D12A45279123
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = DriverEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF
+#
+
+[Sources.common]
+  spiflashdevice.c
+  spiflashdevice.h
+  
+[Sources.Ia32]
+
+[Sources.X64]
+
+[Sources.IPF]
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ByoNvMediaPkg/ByoNvMediaPkg.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  CacheMaintenanceLib
+  DebugLib
+  SpiFlashLib
+
+[LibraryClasses.IA32]
+
+[LibraryClasses.X64]
+
+[Protocols]
+  gEfiNvMediaAccessProtocolGuid
+  gEfiNvMediaDeviceProtocolGuid
+  gEfiPlatformAccessProtocolGuid
+  gEfiSpiProtocolGuid
+
+[Pcd]
+  gEfiNvMediaDeviceTokenSpaceGuid.PcdNvMediaDeviceNumbers
+                                  
+[Depex]
+  gEfiNvMediaAccessProtocolGuid AND 
+  gEfiSpiProtocolGuid

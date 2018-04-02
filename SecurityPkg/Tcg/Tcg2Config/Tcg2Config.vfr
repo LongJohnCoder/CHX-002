@@ -1,0 +1,55 @@
+/** @file
+  VFR file used by the TCG2 configuration component.
+
+Copyright (c) 2015, Intel Corporation. All rights reserved.<BR>
+This program and the accompanying materials 
+are licensed and made available under the terms and conditions of the BSD License 
+which accompanies this distribution.  The full text of the license may be found at 
+http://opensource.org/licenses/bsd-license.php
+
+THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS, 
+WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+
+**/
+
+#include "Tcg2ConfigNvData.h"
+
+formset
+  guid      = TCG2_CONFIG_FORM_SET_GUID,
+  title     = STRING_TOKEN(STR_TCG2_TITLE),
+  help      = STRING_TOKEN(STR_TCG2_HELP),
+  classguid = EFI_HII_PLATFORM_SETUP_FORMSET_GUID,
+
+  varstore TCG2_CONFIGURATION,
+    varid = TCG2_CONFIGURATION_VARSTORE_ID,
+    name  = TCG2_CONFIGURATION,
+    guid  = TCG2_CONFIG_FORM_SET_GUID;
+
+  form formid = TCG2_CONFIGURATION_FORM_ID,
+    title = STRING_TOKEN(STR_TCG2_TITLE);
+    
+    subtitle text = STRING_TOKEN(STR_TCG2_PP_OPERATION);
+
+    oneof 
+      varid = TCG2_CONFIGURATION.Tpm2Operation,
+      questionid = KEY_TPM2_OPERATION,
+      prompt = STRING_TOKEN(STR_TCG2_OPERATION),
+      help   = STRING_TOKEN(STR_TCG2_OPERATION_HELP),
+      flags  = INTERACTIVE,
+      option text = STRING_TOKEN(STR_TCG2_NO_ACTION), value = TCG2_PHYSICAL_PRESENCE_NO_ACTION, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+//-   option text = STRING_TOKEN(STR_TCG2_ENABLE), value = TCG2_PHYSICAL_PRESENCE_ENABLE, flags = RESET_REQUIRED;
+//-   option text = STRING_TOKEN(STR_TCG2_DISABLE), value = TCG2_PHYSICAL_PRESENCE_DISABLE, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_TCG2_CLEAR), value = TCG2_PHYSICAL_PRESENCE_CLEAR, flags = RESET_REQUIRED;
+//-   option text = STRING_TOKEN(STR_TCG2_SET_PCD_BANKS), value = TCG2_PHYSICAL_PRESENCE_SET_PCR_BANKS, flags = RESET_REQUIRED;
+//-   option text = STRING_TOKEN(STR_TCG2_CHANGE_EPS), value = TCG2_PHYSICAL_PRESENCE_CHANGE_EPS, flags = RESET_REQUIRED;
+//-   option text = STRING_TOKEN(STR_TCG2_LOG_ALL_DIGESTS), value = TCG2_PHYSICAL_PRESENCE_LOG_ALL_DIGESTS, flags = RESET_REQUIRED;
+//-   option text = STRING_TOKEN(STR_TCG2_DISABLE_ENDORSEMENT_ENABLE_STORAGE_HIERARCHY), value = TCG2_PHYSICAL_PRESENCE_DISABLE_ENDORSEMENT_ENABLE_STORAGE_HIERARCHY, flags = RESET_REQUIRED;
+//-   option text = STRING_TOKEN(STR_TCG2_ENABLE_BLOCK_SID), value = TCG2_PHYSICAL_PRESENCE_ENABLE_BLOCK_SID, flags = RESET_REQUIRED;
+//-   option text = STRING_TOKEN(STR_TCG2_DISABLE_BLOCK_SID), value = TCG2_PHYSICAL_PRESENCE_DISABLE_BLOCK_SID, flags = RESET_REQUIRED;
+    endoneof;
+
+    subtitle text = STRING_TOKEN(STR_NULL);
+
+  endform;
+
+endformset;

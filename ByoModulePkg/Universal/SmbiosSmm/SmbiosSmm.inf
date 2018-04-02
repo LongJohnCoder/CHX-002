@@ -1,0 +1,71 @@
+## @file  
+#
+# Copyright (c) 2006 - 2015, Byosoft Corporation.<BR> 
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in 
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced, 
+# stored in a retrieval system, or transmitted in any form or by any 
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   SmbiosSmm.inf
+#
+# Abstract: 
+#   Component description file for SMM Smbios module
+#
+# Revision History:
+#
+#--*/
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmbiosSmm
+  FILE_GUID                      = 6AC0D490-4CA5-4646-887A-AD6494F154EC
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitSmbiosSmm
+
+[Sources]
+  SmbiosSmm.c
+  SmbiosSmm.h
+  PnpSmbios.c
+  PnpSmbios.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  ByoNvMediaPkg/ByoNvMediaPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  DebugLib
+  PcdLib
+  IoLib
+  PciLib
+  BaseLib
+  BaseMemoryLib
+  SmmServicesTableLib
+  MemoryAllocationLib
+  UefiRuntimeServicesTableLib
+  SetMemAttributeSmmLib
+  
+[Protocols]
+  gEfiSmmCpuProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid                # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmNvMediaAccessProtocolGuid
+  gEfiSmbiosProtocolGuid
+
+[Guids]
+  gEfiSmbiosTableGuid
+
+[Pcd]
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageSmbiosBase
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageSmbiosSize
+  
+[Depex]
+  gEfiSmmSwDispatch2ProtocolGuid  AND 
+  gEfiSmmCpuProtocolGuid AND
+  gEfiSmbiosProtocolGuid

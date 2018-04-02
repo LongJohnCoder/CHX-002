@@ -1,0 +1,66 @@
+## @file
+#  TPM device configuration for TPM 2.0
+#  
+#  By this module, user may select TPM device, clear TPM state, etc.
+#  NOTE: This module is only for reference only, each platform should have its own setup page.
+#
+# Copyright (c) 2015, Intel Corporation. All rights reserved.<BR>
+# This program and the accompanying materials
+# are licensed and made available under the terms and conditions of the BSD License
+# which accompanies this distribution. The full text of the license may be found at
+# http://opensource.org/licenses/bsd-license.php
+# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Tcg2Config2Dxe
+  FILE_GUID                      = 186C5C03-031B-4de4-91A0-75A832A0DA1C
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = Tcg2Config2DriverEntryPoint
+
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  Tcg2Config2Dxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  SecurityPkg/SecurityPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+
+  
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  UefiDriverEntryPoint
+  DebugLib
+  PcdLib
+
+
+[Guids]
+  gTcg2ConfigFormSetGuid
+
+[Protocols]
+  gEdkiiVariableLockProtocolGuid                ## CONSUMES
+  gEfiTcg2ProtocolGuid                          ## CONSUMES
+  gEfiTcgProtocolGuid
+  gExitPmAuthProtocolGuid  
+
+  
+[Pcd]
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceId            ## CONSUMES
+
+
+[Depex]
+  TRUE

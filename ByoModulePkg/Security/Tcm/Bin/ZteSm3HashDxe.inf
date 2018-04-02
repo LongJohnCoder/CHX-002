@@ -1,0 +1,48 @@
+## @file
+#
+#Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+#All rights reserved.This software and associated documentation (if any)
+#is furnished under a license and may only be used or copied in 
+#accordance with the terms of the license. Except as permitted by such
+#license, no part of this software or documentation may be reproduced, 
+#stored in a retrieval system, or transmitted in any form or by any 
+#means without the express written consent of Byosoft Corporation.
+#
+#File Name:
+#  ZteSm3HashDxe.inf
+#
+#Abstract: 
+#  Dxe sm3 hash Protocol support.
+#
+#Revision History:
+#
+# Bug 3269 - Add TCM int1A function support. 
+# TIME: 2011-12-30
+# $AUTHOR: Zhang Lin
+# $REVIEWERS: 
+# $SCOPE: SugarBay
+# $TECHNICAL: 
+#   Use Smi to handle legacy int 1A(0xBB) interrupt.
+# $END------------------------------------------------------------
+#
+##
+
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ZteSm3HashDxe
+  FILE_GUID                      = FBF1B9D5-3662-4fd9-AC15-CA4B8798C788
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+
+[Binaries.Ia32]
+  PE32|Ia32/ZteSm3HashDxe.efi|*
+
+[Binaries.X64]
+  PE32|X64/ZteSm3HashDxe.efi|*
+
+[Depex]
+  TRUE
+

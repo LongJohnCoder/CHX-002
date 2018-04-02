@@ -1,0 +1,1115 @@
+/** @file
+
+Copyright (c) 2006 - 2014, Byosoft Corporation.<BR>
+All rights reserved.This software and associated documentation (if any)
+is furnished under a license and may only be used or copied in
+accordance with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be reproduced,
+stored in a retrieval system, or transmitted in any form or by any
+means without the express written consent of Byosoft Corporation.
+
+File Name:
+   Audio.sd
+
+Abstract:
+   Audio setting.
+
+Revision History:
+
+$END--------------------------------------------------------------------
+
+**/
+
+
+
+
+
+#ifdef DEVICES_FORM_SET
+
+  #ifdef FORM_SET_GOTO
+      goto IOE_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_FORM),
+        help = STRING_TOKEN(STR_IOE_FORM_HELP);
+  #endif
+
+  #ifdef FORM_SET_FORM
+
+    form formid = IOE_FORM_ID,
+    title = STRING_TOKEN(STR_IOE_FORM);
+
+      goto IOE_PCIE_PTN_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_PCIE_PTN_FORM),
+        help = STRING_TOKEN(STR_IOE_PCIE_PTN_FORM);
+
+       goto IOE_TOP_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_TOP_FORM),
+        help = STRING_TOKEN(STR_IOE_TOP_FORM_HELP);
+
+       goto IOE_SATA_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_SATA_FORM),
+        help = STRING_TOKEN(STR_IOE_SATA_FORM_HELP);
+
+       goto IOE_GNIC_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_GNIC_FORM),
+        help = STRING_TOKEN(STR_IOE_GNIC_FORM_HELP);
+
+        goto IOE_USB_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_USB_FORM),
+        help = STRING_TOKEN(STR_IOE_USB_FORM);
+
+        goto IOE_SPE_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_SPE_FORM),
+        help = STRING_TOKEN(STR_COM_EMPTY);   		
+    endform;  //end IOE_FORM_ID
+
+    // IOE PCIE PTN
+    #include "IOE_PCIE_PTN.sd"
+ 
+    form formid = IOE_TOP_FORM_ID,
+    title = STRING_TOKEN(STR_IOE_TOP_FORM);
+
+      subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+
+      oneof varid = SETUP_DATA.Cnd003ModeSel,
+        prompt = STRING_TOKEN(STR_IOE_MODE_SEL),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        option text = STRING_TOKEN(STR_BIOS_MODE), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_SPI_MODE), value = 1, flags = RESET_REQUIRED ;
+       endoneof;
+      
+
+     oneof varid   = SETUP_DATA.Cnd003HideXbctl,
+        prompt   = STRING_TOKEN(STR_IOE_HIDE_XB_CTRL),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      endoneof; 
+
+     oneof varid   = SETUP_DATA.Cnd003HideEptrfc,
+        prompt   = STRING_TOKEN(STR_IOE_HIDE_EPTRFC),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      endoneof; 
+            
+      oneof varid   = SETUP_DATA.Cnd003TCxFavor,
+        prompt   = STRING_TOKEN(STR_IOE_TCXFAVOR),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
+      endoneof; 
+
+      oneof varid   = SETUP_DATA.Cnd003UartPinEn,
+        prompt   = STRING_TOKEN(STR_IOE_UART_PIN),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_8051_UART_ENABLED), value = 1, flags =RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_XHCI_UART_ENABLED), value = 2, flags =RESET_REQUIRED;
+      endoneof; 
+#if ZX_SECRET_CODE 
+     oneof varid   = SETUP_DATA.Cnd003DIDVIDChoose,
+        prompt   = STRING_TOKEN(STR_IOE_CHOOSE_DIDVID),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+       option text = STRING_TOKEN(STR_VIA), value = 0, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ZX), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      endoneof; 
+#endif
+     oneof varid   = SETUP_DATA.Cnd003ChangeSIDForISB,
+        prompt   = STRING_TOKEN(STR_IOE_CHANGE_SID_FOR_ISB),
+        help   = STRING_TOKEN(STR_IOE_CHANGE_SID_FOR_ISB_HELP),
+       option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      endoneof; 
+
+	  
+	  numeric varid=SETUP_DATA.Cnd003SwDbg1,
+	 	prompt   = STRING_TOKEN(STR_IOE_SW_DEBUG_1),
+	    help   = STRING_TOKEN(STR_COM_EMPTY),
+	    flags = DISPLAY_UINT_HEX,
+	    minimum=0,
+	    maximum=0xFFFFFFFF,
+	    step=0,
+	    default=0,
+	  endnumeric; 
+
+	  numeric varid=SETUP_DATA.Cnd003SwDbg2,
+	 	prompt   = STRING_TOKEN(STR_IOE_SW_DEBUG_2),
+	    help   = STRING_TOKEN(STR_COM_EMPTY),
+	    flags = DISPLAY_UINT_HEX,
+	    minimum=0,
+	    maximum=0xFFFFFFFF,
+	    step=0,
+	    default=0,
+	  endnumeric; 
+
+       goto IOE_CLK_SRCL_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_CLK_SRCL_FORM),
+        help = STRING_TOKEN(STR_COM_EMPTY);     
+	  
+       goto IOE_DEBUGSIGNAL_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_DEBUG_SIGNAL_FORM),
+        help = STRING_TOKEN(STR_COM_EMPTY);     
+      
+	   goto IOE_DBGCAP_FORM_ID,
+        prompt = STRING_TOKEN(STR_IOE_DBGCAP_FORM),
+        help = STRING_TOKEN(STR_COM_EMPTY);  	   	
+
+ 
+    endform;  //end IOE_TOP_FORM_ID
+
+    form formid = IOE_CLK_SRCL_FORM_ID,
+        title = STRING_TOKEN(STR_IOE_CLK_SRCL_FORM);
+        subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+
+        oneof varid = SETUP_DATA.CND003PLLPCIEASSCEn,
+            prompt = STRING_TOKEN(STR_IOE_PLL_PCIEASSC_EN),
+            help   = STRING_TOKEN(STR_IOE_PLL_PCIEASSC_EN_HELP),
+            option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT ;
+        endoneof; 
+
+	 suppressif NOT ideqval SETUP_DATA.CND003PLLPCIEASSCEn==1;
+   		oneof varid = SETUP_DATA.CND003PLLPCIEASSCMagnitude,
+	        prompt = STRING_TOKEN(STR_IOE_PLL_PCIEASSC_MAGNITUDE),
+	        help   = STRING_TOKEN(STR_IOE_PLL_PCIEASSC_MAGNITUDE_HELP),
+	        option text = STRING_TOKEN(STR_0_15), 	value = 0, flags = RESET_REQUIRED;
+	        option text = STRING_TOKEN(STR_0_20), 		value = 1, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_25), 		value = 2, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_30), 		value = 3, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_35), 		value = 4, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_40), 		value = 5, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT ;
+	        option text = STRING_TOKEN(STR_0_45), 		value = 6, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_50), 		value = 7, flags = RESET_REQUIRED ;
+      	endoneof;
+		oneof varid = SETUP_DATA.CND003CKGSRCPLLPCIEASSCSpread,
+				prompt = STRING_TOKEN(STR_IOE_PLL_PCIEASSC_SPREAD),
+				help   = STRING_TOKEN(STR_IOE_PLL_PCIEASSC_SPREAD_HELP),
+				option text = STRING_TOKEN(STR_DOWN_SPREAD), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_CENTRAL_SPREAD), 	value = 1, flags = RESET_REQUIRED ;
+		endoneof; 
+	 endif;
+
+	 oneof varid = SETUP_DATA.CND003PLLPCIEBSSCEn,
+				prompt = STRING_TOKEN(STR_IOE_PLL_PCIEBSSC_EN),
+				help   = STRING_TOKEN(STR_IOE_PLL_PCIEBSSC_EN_HELP),
+				option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED;
+				option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT ;
+	 endoneof; 
+	 
+  	suppressif NOT ideqval SETUP_DATA.CND003PLLPCIEBSSCEn==1;
+    	oneof varid = SETUP_DATA.CND003PLLPCIEBSSCMagnitude,
+	        prompt = STRING_TOKEN(STR_IOE_PLL_PCIEBSSC_MAGNITUDE),
+	        help   = STRING_TOKEN(STR_IOE_PLL_PCIEBSSC_MAGNITUDE_HELP),
+	        option text = STRING_TOKEN(STR_0_15), 		value = 0, flags = RESET_REQUIRED;
+	        option text = STRING_TOKEN(STR_0_20), 		value = 1, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_25), 		value = 2, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_30), 		value = 3, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_35), 		value = 4, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_40), 		value = 5, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT ;
+	        option text = STRING_TOKEN(STR_0_45), 		value = 6, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_0_50), 		value = 7, flags = RESET_REQUIRED ;
+      	endoneof;
+		oneof varid = SETUP_DATA.CND003CKGSRCPLLPCIEBSSCSpread,
+				prompt = STRING_TOKEN(STR_IOE_PLL_PCIEBSSC_SPREAD),
+				help   = STRING_TOKEN(STR_IOE_PLL_PCIEBSSC_SPREAD_HELP),
+				option text = STRING_TOKEN(STR_DOWN_SPREAD), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_CENTRAL_SPREAD), 	value = 1, flags = RESET_REQUIRED ;
+		endoneof; 
+	endif; 
+		oneof varid = SETUP_DATA.CND003USBCLKSEL,
+				prompt = STRING_TOKEN(STR_IOE_USB_CLK_SEL),
+				help   = STRING_TOKEN(STR_IOE_USB_CLK_SEL_HELP),
+				option text = STRING_TOKEN(STR_PLLA), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_PLLB), 	value = 1, flags = RESET_REQUIRED ;
+		endoneof; 
+		oneof varid = SETUP_DATA.CND003SATACLKSEL,
+				prompt = STRING_TOKEN(STR_IOE_SATA_CLK_SEL),
+				help   = STRING_TOKEN(STR_IOE_SATA_CLK_SEL_HELP),
+				option text = STRING_TOKEN(STR_PLLA), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_PLLB), 	value = 1, flags = RESET_REQUIRED ;
+		endoneof;
+
+
+
+       	numeric varid=SETUP_DATA.CND003_RPCIE_PU_IO,
+ 	      	prompt   = STRING_TOKEN(STR_IOE_RPCIE_PU_IO),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        flags = DISPLAY_UINT_HEX,
+	        minimum=0,
+	        maximum=0x3FF,
+	        step=0,
+	        default=0x3FF,
+      	endnumeric; 
+	   
+       	numeric varid=SETUP_DATA.CND003_RPCIE_TNO_IO ,
+ 	      	prompt   = STRING_TOKEN(STR_IOE_RPCIE_TNO_IO),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        flags = DISPLAY_UINT_HEX,
+	        minimum=0,
+	        maximum=0x3FF,
+	        step=0,
+	        default=0x3FF,
+      	endnumeric; 	   
+		
+
+		
+    endform;  //end IOE_CLK_SRCL_FORM_ID
+
+	
+   form formid = IOE_DEBUGSIGNAL_FORM_ID,
+    title = STRING_TOKEN(STR_IOE_DEBUG_SIGNAL_FORM);
+
+      subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+
+      oneof varid = SETUP_DATA.Cnd003DebugFromCpu,
+        prompt = STRING_TOKEN(STR_IOE_DEBUG_FROM_CPU),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_MMIO), 		value = 1, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_SMBUS), 		value = 2, flags = RESET_REQUIRED ;
+      endoneof;
+		
+			 suppressif NOT ideqval SETUP_DATA.Cnd003DebugFromCpu==1;
+			   oneof varid = SETUP_DATA.Cnd003DbgPadG0En,
+				prompt = STRING_TOKEN(STR_IOE_DEBUG_PAD_G0),
+				help   = STRING_TOKEN(STR_IOE_DEBUG_PAD_G0_HELP),
+				option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED ;
+			   endoneof; 
+			   
+			   oneof varid = SETUP_DATA.Cnd003DbgPadG1En,
+				prompt = STRING_TOKEN(STR_IOE_DEBUG_PAD_G1),
+				help   = STRING_TOKEN(STR_IOE_DEBUG_PAD_G1_HELP),
+				option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED ;
+			   endoneof; 
+			   
+			   oneof varid = SETUP_DATA.Cnd003DbgPadG2En,
+				prompt = STRING_TOKEN(STR_IOE_DEBUG_PAD_G2),
+				help   = STRING_TOKEN(STR_IOE_DEBUG_PAD_G2_HELP),
+				option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED ;
+			   endoneof; 
+			   
+			   oneof varid = SETUP_DATA.Cnd003DbgPadG3En,
+				prompt = STRING_TOKEN(STR_IOE_DEBUG_PAD_G3),
+				help   = STRING_TOKEN(STR_IOE_DEBUG_PAD_G3_HELP),
+				option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED ;
+			   endoneof; 	   
+			 endif;  // suppressif NOT ideqval SETUP_DATA.Cnd003DebugFromCpu==1;
+
+			 suppressif NOT ideqval SETUP_DATA.Cnd003DebugFromCpu==2;
+			   oneof varid = SETUP_DATA.Cnd003DbgPadG0En,
+				prompt = STRING_TOKEN(STR_IOE_DEBUG_PAD_G0),
+				help   = STRING_TOKEN(STR_IOE_DEBUG_PAD_G0_HELP),
+				option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED ;
+			   endoneof; 
+			   
+			   oneof varid = SETUP_DATA.Cnd003DbgPadG1En,
+				prompt = STRING_TOKEN(STR_IOE_DEBUG_PAD_G1),
+				help   = STRING_TOKEN(STR_IOE_DEBUG_PAD_G1_HELP),
+				option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED ;
+			   endoneof; 
+			   
+			   oneof varid = SETUP_DATA.Cnd003DbgPadG2En,
+				prompt = STRING_TOKEN(STR_IOE_DEBUG_PAD_G2),
+				help   = STRING_TOKEN(STR_IOE_DEBUG_PAD_G2_HELP),
+				option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED ;
+			   endoneof; 
+			   
+			   oneof varid = SETUP_DATA.Cnd003DbgPadG3En,
+				prompt = STRING_TOKEN(STR_IOE_DEBUG_PAD_G3),
+				help   = STRING_TOKEN(STR_IOE_DEBUG_PAD_G3_HELP),
+				option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+				option text = STRING_TOKEN(STR_ENABLE), 	value = 1, flags = RESET_REQUIRED ;
+			   endoneof; 	   
+			 endif;	  //suppressif NOT ideqval SETUP_DATA.Cnd003DebugFromCpu==2;
+
+			 
+     suppressif NOT ideqval SETUP_DATA.Cnd003DebugFromCpu==1;
+
+	   oneof varid = SETUP_DATA.Cnd003CorePowerOff,
+        prompt = STRING_TOKEN(STR_IOE_DEBUG_SUS_XX),
+        help   = STRING_TOKEN(STR_IOE_DEBUG_SUS_XX_HELP),
+        option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), 		value = 1, flags = RESET_REQUIRED ;
+       endoneof;  
+
+		
+	  suppressif NOT ideqval SETUP_DATA.Cnd003CorePowerOff==0;
+      oneof varid = SETUP_DATA.Cnd003ModuleG0,
+        prompt = STRING_TOKEN(STR_IOE_MODULE_G0),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        option text = STRING_TOKEN(STR_CLOCK_COUNTER), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_PCIEIF), 		value = 1, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_EPTRFC), 		value = 2, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_CORE), value = 3, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DBGMCU), 		value = 4, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_SATA), 			value = 5, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_CORE_D14), 	value = 6, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_CORE_D16), 	value = 7, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_GNIC), 			value = 8, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_TOP), 			value = 9, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_SUS), 		value = 10, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_INTMAP), 		value = 11, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DBGCAP), 		value = 12, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_XHCI), 		value = 13, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_PCIE), 			value = 14, flags = RESET_REQUIRED ;        
+      endoneof;
+
+
+      oneof varid = SETUP_DATA.Cnd003ModuleG1,
+        prompt = STRING_TOKEN(STR_IOE_MODULE_G1),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        option text = STRING_TOKEN(STR_CLOCK_COUNTER), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_PCIEIF), 		value = 1, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_EPTRFC), 		value = 2, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_CORE), value = 3, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DBGMCU), 		value = 4, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_SATA), 			value = 5, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_CORE_D14), 	value = 6, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_CORE_D16), 	value = 7, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_GNIC), 			value = 8, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_TOP), 			value = 9, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_SUS), 		value = 10, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_INTMAP), 		value = 11, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DBGCAP), 		value = 12, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_XHCI), 		value = 13, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_PCIE), 			value = 14, flags = RESET_REQUIRED ;        
+      endoneof;
+      
+       numeric varid=SETUP_DATA.Cnd003DebugG0,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G0),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric; 
+                 
+     numeric varid=SETUP_DATA.Cnd003DebugG1,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G1),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric; 
+      
+       numeric varid=SETUP_DATA.Cnd003DebugG2,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G2),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric; 
+
+       numeric varid=SETUP_DATA.Cnd003DebugG3,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G3),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric;
+        numeric varid=SETUP_DATA.Cnd003DebugG0_XHCI,
+ 	 prompt   = STRING_TOKEN(STR_IOE_DEBUG_G0_XHCI),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric; 
+                 
+     numeric varid=SETUP_DATA.Cnd003DebugG1_XHCI,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G1_XHCI),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric; 
+      
+       numeric varid=SETUP_DATA.Cnd003DebugG2_XHCI,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G2_XHCI),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric; 
+
+       numeric varid=SETUP_DATA.Cnd003DebugG3_XHCI,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G3_XHCI),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric;
+          
+      oneof varid = SETUP_DATA.Cnd003DebugSuspend,
+        prompt = STRING_TOKEN(STR_IOE_DEBUG_SUS),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        option text = STRING_TOKEN(STR_CLOCK_COUNTER), 	value = 0, 	flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_SPI),			value = 1, 	flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_SPIARB), 		value = 2, 	flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_SMB), 			value = 3, 	flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_PCIEIF_SUS), 	value = 4, 	flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_SUS), value = 5, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_TOPPMU), 		value = 6, 	flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_SUS_D14), 	value = 7, 	flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_SUS_D16), 	value = 8, 	flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_GNIC_SUS), 		value = 9, 	flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_EFUSE), 			value = 10, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_TOP), 			value = 11, flags = RESET_REQUIRED ;  
+        option text = STRING_TOKEN(STR_ISB_XHCI), 			value = 12, flags = RESET_REQUIRED ; 
+      endoneof;
+ 
+      oneof varid   = SETUP_DATA.Cnd003HighSpeed,
+        prompt   = STRING_TOKEN(STR_IOE_HIGHSPEED),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
+      endoneof; 
+
+		 suppressif NOT ideqval SETUP_DATA.Cnd003HighSpeed==1;
+	      oneof varid = SETUP_DATA.Cnd003HighSpeedModuleSel,
+	        prompt = STRING_TOKEN(STR_IOE_HIGHSPEED_MODULE_SEL),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        option text = STRING_TOKEN(STR_CLOCK_COUNTER), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+	        option text = STRING_TOKEN(STR_PCIEIF), 		value = 1, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_EPTRFC), 		value = 2, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_CORE), value = 3, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_DBGMCU), 		value = 4, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_SATA), 			value = 5, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_D14_USBC), 		value = 6, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_D16_USBC), 		value = 7, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_GNIC), 			value = 8, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_DBGCAP), 		value = 9, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_XHCI), 			value = 10, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_PCIE), 			value = 11, flags = RESET_REQUIRED ;
+			option text = STRING_TOKEN(STR_TOP), 			value = 12, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_GNIC_SUS), 		value = 13, flags = RESET_REQUIRED ;
+	      endoneof;  
+
+
+
+
+		  
+	 	
+	       numeric varid=SETUP_DATA.Cnd003HighSpeedDbgSel,
+	 	      prompt   = STRING_TOKEN(STR_IOE_HIGHSPEED_DBG_SEL),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        flags = DISPLAY_UINT_HEX,
+	        minimum=0,
+	        maximum=0xFFF,
+	        step=0,
+	        default=0,
+	      endnumeric;
+		 endif;   //suppressif NOT ideqval SETUP_DATA.Cnd003HighSpeed==1;
+	   endif;   //suppressif NOT ideqval SETUP_DATA.Cnd003CorePowerOff==0;
+
+		
+		
+	//-------------------
+	  suppressif NOT ideqval SETUP_DATA.Cnd003CorePowerOff==1;
+	      oneof varid = SETUP_DATA.Cnd003DebugSuspend,
+	        prompt = STRING_TOKEN(STR_IOE_DEBUG_SUS),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        option text = STRING_TOKEN(STR_CLOCK_COUNTER), 	value = 0, 	flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+	        option text = STRING_TOKEN(STR_SPI),			value = 1, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_SPIARB), 		value = 2, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_SMB), 			value = 3, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_PCIEIF_SUS), 	value = 4, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_SUS), value = 5, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_TOPPMU), 		value = 6, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_USBC_SUS_D14), 	value = 7, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_USBC_SUS_D16), 	value = 8, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_GNIC_SUS), 		value = 9, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_EFUSE), 			value = 10, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_TOP), 			value = 11, flags = RESET_REQUIRED ;  
+	        option text = STRING_TOKEN(STR_ISB_XHCI), 			value = 12, flags = RESET_REQUIRED ; 
+	      endoneof;
+
+	     numeric varid=SETUP_DATA.Cnd003DebugG1,
+	 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G1),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        flags = DISPLAY_UINT_HEX,
+	        minimum=0,
+	        maximum=0xFFF,
+	        step=0,
+	        default=0,
+	      endnumeric; 		
+	  endif;	//suppressif NOT ideqval SETUP_DATA.Cnd003CorePowerOff==1;
+	 endif;   //suppressif NOT ideqval SETUP_DATA.Cnd003DebugFromCpu==1;
+
+     suppressif NOT ideqval SETUP_DATA.Cnd003DebugFromCpu==2;
+
+	   oneof varid = SETUP_DATA.Cnd003CorePowerOff,
+        prompt = STRING_TOKEN(STR_IOE_DEBUG_SUS_XX),
+        help   = STRING_TOKEN(STR_IOE_DEBUG_SUS_XX_HELP),
+        option text = STRING_TOKEN(STR_DISBALE), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), 		value = 1, flags = RESET_REQUIRED ;
+       endoneof;  
+
+	 suppressif NOT ideqval SETUP_DATA.Cnd003CorePowerOff==0;
+      oneof varid = SETUP_DATA.Cnd003ModuleG0,
+        prompt = STRING_TOKEN(STR_IOE_MODULE_G0),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        option text = STRING_TOKEN(STR_CLOCK_COUNTER), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_PCIEIF), 		value = 1, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_EPTRFC), 		value =2, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_CORE), value = 3, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DBGMCU), 		value =4, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_SATA), 			value = 5, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_CORE_D14), 	value =6, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_CORE_D16), 	value = 7, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_GNIC), 			value =8, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_TOP), 			value = 9, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_SUS), 		value =10, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_INTMAP), 		value = 11, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DBGCAP), 		value =12, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_XHCI), 		value =13, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_PCIE), 			value = 14, flags = RESET_REQUIRED ;        
+      endoneof;
+
+
+      oneof varid = SETUP_DATA.Cnd003ModuleG1,
+        prompt = STRING_TOKEN(STR_IOE_MODULE_G1),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        option text = STRING_TOKEN(STR_CLOCK_COUNTER), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_PCIEIF), 		value = 1, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_EPTRFC), 		value = 2, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_CORE), value = 3, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DBGMCU), 		value = 4, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_SATA), 			value = 5, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_CORE_D14), 	value = 6, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_CORE_D16), 	value = 7, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_GNIC), 			value = 8, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_TOP), 			value = 9, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_SUS), 		value = 10, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_INTMAP), 		value = 11, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DBGCAP), 		value = 12, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_XHCI), 		value = 13, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_PCIE), 			value = 14, flags = RESET_REQUIRED ;        
+      endoneof;
+      
+       numeric varid=SETUP_DATA.Cnd003DebugG0,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G0),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric; 
+                 
+     numeric varid=SETUP_DATA.Cnd003DebugG1,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G1),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric; 
+      
+       numeric varid=SETUP_DATA.Cnd003DebugG2,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G2),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric; 
+
+       numeric varid=SETUP_DATA.Cnd003DebugG3,
+ 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G3),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFF,
+        step=0,
+        default=0,
+      endnumeric;
+          
+      oneof varid = SETUP_DATA.Cnd003DebugSuspend,
+        prompt = STRING_TOKEN(STR_IOE_DEBUG_SUS),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+        option text = STRING_TOKEN(STR_CLOCK_COUNTER),	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_SPI), 			value = 1, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_SPIARB), 		value = 2, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_SMB), 			value = 3, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_PCIEIF_SUS), 	value = 4, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_SUS), value = 5, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_TOPPMU), 		value = 6, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_SUS_D14), 	value = 7, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_USBC_SUS_D16), 	value = 8, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_GNIC_SUS), 		value = 9, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_EFUSE), 			value = 10, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_TOP), 			value = 11, flags = RESET_REQUIRED ;  
+      endoneof;
+ 
+      oneof varid   = SETUP_DATA.Cnd003HighSpeed,
+        prompt   = STRING_TOKEN(STR_IOE_HIGHSPEED),
+        help   = STRING_TOKEN(STR_COM_EMPTY),
+       option text = STRING_TOKEN(STR_DISABLED), 	value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), 		value = 1, flags =RESET_REQUIRED;
+      endoneof; 
+
+		 suppressif NOT ideqval SETUP_DATA.Cnd003HighSpeed==1;
+	      oneof varid = SETUP_DATA.Cnd003HighSpeedModuleSel,
+	        prompt = STRING_TOKEN(STR_IOE_HIGHSPEED_MODULE_SEL),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        option text = STRING_TOKEN(STR_CLOCK_COUNTER), 	value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+	        option text = STRING_TOKEN(STR_PCIEIF), 		value = 1, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_EPTRFC), 		value = 2, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_CORE), value = 3, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_DBGMCU), 		value = 4, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_SATA), 			value = 5, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_D14_USBC),	 	value = 6, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_D16_USBC), 		value = 7, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_GNIC), 			value = 8, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_DBGCAP), 		value = 9, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_XHCI), 			value = 10, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_PCIE), 			value = 11, flags = RESET_REQUIRED ;  
+			option text = STRING_TOKEN(STR_TOP), 			value = 12, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_GNIC_SUS), 		value = 13, flags = RESET_REQUIRED ;			
+	      endoneof;  
+	      
+	 
+	       numeric varid=SETUP_DATA.Cnd003HighSpeedDbgSel,
+	 	      prompt   = STRING_TOKEN(STR_IOE_HIGHSPEED_DBG_SEL),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        flags = DISPLAY_UINT_HEX,
+	        minimum=0,
+	        maximum=0xFFF,
+	        step=0,
+	        default=0,
+	      endnumeric;
+		 endif;  // suppressif NOT ideqval SETUP_DATA.Cnd003HighSpeed==1;
+        endif;   // suppressif NOT ideqval SETUP_DATA.Cnd003CorePowerOff==0;
+
+	//-------------------
+	  suppressif NOT ideqval SETUP_DATA.Cnd003CorePowerOff==1;
+	      oneof varid = SETUP_DATA.Cnd003DebugSuspend,
+	        prompt = STRING_TOKEN(STR_IOE_DEBUG_SUS),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        option text = STRING_TOKEN(STR_CLOCK_COUNTER), 	value = 0, 	flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+	        option text = STRING_TOKEN(STR_SPI),			value = 1, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_SPIARB), 		value = 2, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_SMB), 			value = 3, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_PCIEIF_SUS), 	value = 4, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_ISB_BUSXD0F0_SUS), value = 5, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_TOPPMU), 		value = 6, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_USBC_SUS_D14), 	value = 7, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_USBC_SUS_D16), 	value = 8, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_GNIC_SUS), 		value = 9, 	flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_EFUSE), 			value = 10, flags = RESET_REQUIRED ;
+	        option text = STRING_TOKEN(STR_TOP), 			value = 11, flags = RESET_REQUIRED ;  
+	      endoneof;
+
+	     numeric varid=SETUP_DATA.Cnd003DebugG1,
+	 	      prompt   = STRING_TOKEN(STR_IOE_DEBUG_G1),
+	        help   = STRING_TOKEN(STR_COM_EMPTY),
+	        flags = DISPLAY_UINT_HEX,
+	        minimum=0,
+	        maximum=0xFFF,
+	        step=0,
+	        default=0,
+	      endnumeric; 		
+	  endif;   //suppressif NOT ideqval SETUP_DATA.Cnd003CorePowerOff==1;		 
+	 endif; //suppressif NOT ideqval SETUP_DATA.Cnd003DebugFromCpu==2;
+
+  
+    endform;  //end IOE_DEBUGSIGNAL_FORM_ID
+
+
+    form formid = IOE_DBGCAP_FORM_ID,
+        title = STRING_TOKEN(STR_IOE_DBGCAP_FORM);
+        subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+
+      	oneof varid = SETUP_DATA.Cnd003DC,
+       		prompt = STRING_TOKEN(STR_IOE_DBGCAP),
+        	help   = STRING_TOKEN(STR_COM_EMPTY),
+        	option text = STRING_TOKEN(STR_DISABLE), 			value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        	option text = STRING_TOKEN(STR_IOE_SBDBG), 			value = 1, flags = RESET_REQUIRED ;
+        	option text = STRING_TOKEN(STR_IOE_DBGSIGNAL), 		value = 2, flags = RESET_REQUIRED ;   
+      	endoneof;		
+
+		suppressif NOT ideqval SETUP_DATA.Cnd003DC==1;
+
+	      	oneof varid = SETUP_DATA.Cnd003DCOutput,
+	       		prompt = STRING_TOKEN(STR_IOE_DC_OUTPUT),
+	        	help   = STRING_TOKEN(STR_COM_EMPTY),
+	        	option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA0), 		value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+	        	option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA1), 		value = 2, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA2), 		value = 3, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA3), 		value = 4, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA4), 		value = 5, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEB0), 		value = 6, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEB1), 		value = 7, flags = RESET_REQUIRED ;  
+	      	endoneof;
+		
+	      	oneof varid = SETUP_DATA.Cnd003DCModule,
+	       		prompt = STRING_TOKEN(STR_IOE_DC_MODULE_SEL),
+	        	help   = STRING_TOKEN(STR_COM_EMPTY),
+	        	option text = STRING_TOKEN(STR_IOE_DC_SATA), 		value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+	        	option text = STRING_TOKEN(STR_IOE_DC_XHCI), 		value = 1, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_GNIC), 		value = 2, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_MCU), 		value = 3, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_D14F012), 	value = 4, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_D14F7), 		value = 5, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_D16F012), 	value = 6, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_D16F7), 		value = 7, flags = RESET_REQUIRED ;  
+	      	endoneof;
+
+	      	oneof varid = SETUP_DATA.Cnd003DCTrans,
+	       		prompt = STRING_TOKEN(STR_IOE_DC_TRANS),
+	        	help   = STRING_TOKEN(STR_COM_EMPTY),
+	        	option text = STRING_TOKEN(STR_IOE_DC_DNRW), 		value = 0, flags = RESET_REQUIRED ;
+	        	option text = STRING_TOKEN(STR_IOE_DC_UPW), 		value = 1, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_UPR), 		value = 2, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_ALL), 		value = 3, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+	      	endoneof;
+		endif; //suppressif NOT ideqval SETUP_DATA.Cnd003DC==1;
+
+
+		suppressif NOT ideqval SETUP_DATA.Cnd003DC==2;
+
+	      	oneof varid = SETUP_DATA.Cnd003DCOutput,
+	       		prompt = STRING_TOKEN(STR_IOE_DC_OUTPUT),
+	        	help   = STRING_TOKEN(STR_COM_EMPTY),
+	        	option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA0), 		value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+	        	option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA1), 		value = 2, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA2), 		value = 3, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA3), 		value = 4, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEA4), 		value = 5, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEB0), 		value = 6, flags = RESET_REQUIRED ;  
+				option text = STRING_TOKEN(STR_IOE_DC_OUT_PEB1), 		value = 7, flags = RESET_REQUIRED ;  
+	      	endoneof;
+		
+	      	oneof varid = SETUP_DATA.Cnd003DCCfgPath,
+	       		prompt = STRING_TOKEN(STR_IOE_DC_CFGPATH),
+	        	help   = STRING_TOKEN(STR_COM_EMPTY),
+	        	option text = STRING_TOKEN(STR_IOE_DC_CFGPATH_CPU), 		value = 3, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT ;
+	        	option text = STRING_TOKEN(STR_IOE_DC_CFGPATH_SMBUS), 		value = 1, flags = RESET_REQUIRED ; 
+	      	endoneof;			
+
+    		numeric varid=SETUP_DATA.Cnd003DCChannel,
+ 	      		prompt   = STRING_TOKEN(STR_IOE_DC_CHANNEL_SEL),
+		        help   = STRING_TOKEN(STR_COM_EMPTY),
+		        flags = DISPLAY_UINT_HEX,
+		        minimum=0,
+		        maximum=0x7,
+		        step=0,
+		        default=0,
+      		endnumeric; 
+      
+    		numeric varid=SETUP_DATA.Cnd003DCDbg0Mask,
+ 	      		prompt   = STRING_TOKEN(STR_IOE_DC_DBG0_MASK),
+		        help   = STRING_TOKEN(STR_COM_EMPTY),
+		        flags = DISPLAY_UINT_HEX,
+		        minimum=0,
+		        maximum=0xFFFFFFFF,
+		        step=0,
+		        default=0,
+      		endnumeric; 
+
+    		numeric varid=SETUP_DATA.Cnd003DCDbg1Mask,
+ 	      		prompt   = STRING_TOKEN(STR_IOE_DC_DBG1_MASK),
+		        help   = STRING_TOKEN(STR_COM_EMPTY),
+		        flags = DISPLAY_UINT_HEX,
+		        minimum=0,
+		        maximum=0xFFFFFFFF,
+		        step=0,
+		        default=0,
+      		endnumeric; 
+		
+	      	oneof varid = SETUP_DATA.Cnd003DCTriggerMode,
+	       		prompt = STRING_TOKEN(STR_IOE_DC_TRIGGER_MODE),
+	        	help   = STRING_TOKEN(STR_COM_EMPTY),
+	        	option text = STRING_TOKEN(STR_IOE_DC_TM_IO), 		value = 8, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT ;
+	        	option text = STRING_TOKEN(STR_IOE_DC_TM_USER), 	value = 9, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_TM_NO_REQ), 	value = 10, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_TM_REQ_CNT), 	value = 11, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_TM_NO_TOG), 	value = 12, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_TM_REQ_PLUS), value = 13, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_TM_DATA), 	value = 14, flags = RESET_REQUIRED ; 
+				option text = STRING_TOKEN(STR_IOE_DC_TM_REQ), 		value = 15, flags = RESET_REQUIRED ; 	
+	      	endoneof;				
+
+			suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==15;
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtn,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtnMask,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN_MASK),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 				
+			endif; //suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==15;
+		
+			suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==14;
+	    		numeric varid=SETUP_DATA.Cnd003DCDataPtn,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_DATAPTN),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCDataPtnMask,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_DATAPTN_MASK),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 				
+			endif; //suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==14;
+
+
+			suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==13;
+
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtn,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtnMask,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN_MASK),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCDataPtn,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_DATAPTN),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCDataPtnMask,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_DATAPTN_MASK),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric;
+					
+	    		numeric varid=SETUP_DATA.Cnd003DCPlusTimer,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_PLUSTIMER),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 			
+			endif; //suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==13;	
+
+
+
+			suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==12;
+
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtn,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtnMask,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN_MASK),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCDataPtn,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_DATAPTN),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCDataPtnMask,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_DATAPTN_MASK),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric;
+
+			
+	    		numeric varid=SETUP_DATA.Cnd003DCStartTimer,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_START_TIMER),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCPeriodTimer,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_PERIOD_TIMER),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 			
+			endif;  	//suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==12; 
+
+			suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==10; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtn,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtnMask,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN_MASK),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+				
+	    		numeric varid=SETUP_DATA.Cnd003DCStartTimer,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_START_TIMER),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCPeriodTimer,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_PERIOD_TIMER),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 			
+			endif;  	//suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==10; 
+
+			suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==11;  
+
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtn,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+
+	    		numeric varid=SETUP_DATA.Cnd003DCReqPtnMask,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQPTN_MASK),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 
+				
+	    		numeric varid=SETUP_DATA.Cnd003DCReqCnt,
+	 	      		prompt   = STRING_TOKEN(STR_IOE_DC_REQ_CNT),
+			        help   = STRING_TOKEN(STR_COM_EMPTY),
+			        flags = DISPLAY_UINT_HEX,
+			        minimum=0,
+			        maximum=0xFFFFFFFF,
+			        step=0,
+			        default=0,
+	      		endnumeric; 		
+			endif;  	//suppressif NOT ideqval SETUP_DATA.Cnd003DCTriggerMode==11; 
+			
+		endif;   //suppressif NOT ideqval SETUP_DATA.Cnd003DC==2;
+
+    endform;   //form formid = IOE_DBGCAP_FORM_ID
+
+    // IOE SATA
+    #include "IOE_SATA.sd"
+
+    // IOE GNIC
+    #include "IOE_GNIC.sd"
+
+    // IOE USB
+    #include "IOE_USB.sd"
+
+    // IOE SPE
+    #include "IOE_SPE.sd"
+
+  #endif  //end, FORM_SET_FORM
+#endif  //end, DEVICES_FORM_SET
+

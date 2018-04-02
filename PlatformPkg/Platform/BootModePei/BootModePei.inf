@@ -1,0 +1,70 @@
+## @file
+#  This module will initialize TPM device and measure FVs in PEI phase.
+#
+# Copyright (c) 2006 - 2011, Intel Corporation. All rights reserved.<BR>
+# This program and the accompanying materials
+# are licensed and made available under the terms and conditions of the BSD License
+# which accompanies this distribution. The full text of the license may be found at
+# http://opensource.org/licenses/bsd-license.php
+# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BootModePei
+  FILE_GUID                      = 81F74855-385B-4306-A348-762674530448
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = BootModePeiEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  BootModePei.c
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  PlatformPkg/PlatformPkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  
+  
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  BaseMemoryLib
+  DebugLib
+  IoLib
+  
+
+[Guids]  
+  gEfiCapsuleVendorGuid  
+  gEfiMemoryTypeInformationGuid
+  
+  
+[Pcd]  
+  gEfiByoModulePkgTokenSpaceGuid.AcpiIoPortBaseAddress     
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainBase
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainSize    
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdBootState
+  
+    
+[Ppis]
+  gEfiPeiMasterBootModePpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+  
+  
+[Depex]
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+
+  

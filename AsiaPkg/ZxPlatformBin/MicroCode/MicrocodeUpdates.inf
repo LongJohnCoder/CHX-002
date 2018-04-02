@@ -1,0 +1,25 @@
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = MicrocodeUpdates
+  FILE_GUID                      = BEFBA685-BEB9-4c5a-ADE5-A9FE1515C7DD
+  MODULE_TYPE                    = USER_DEFINED
+  VERSION_STRING                 = 1.0
+
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+[Sources]
+ 106fcchx001_008208.mcb
+ #106fcchx001_008207.mcb
+ #106fcchx001_008204.mcb
+ #106fcchx001_008203.mcb
+ #106fcchx001_008200.mcb
+  20110809_000006FD.mcb
+  20110809_000006FC.mcb
+  
+[Packages]
+  MdePkg/MdePkg.dec

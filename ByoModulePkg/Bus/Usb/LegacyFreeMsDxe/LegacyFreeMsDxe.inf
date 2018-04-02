@@ -1,0 +1,61 @@
+#/*++
+# ==========================================================================================
+#       NOTICE: Copyright (c) 2006 - 2009 Byosoft Corporation. All rights reserved.
+#               This program and associated documentation (if any) is furnished
+#               under a license. Except as permitted by such license,no part of this
+#               program or documentation may be reproduced, stored divulged or used
+#               in a public system, or transmitted in any form or by any means
+#               without the express written consent of Byosoft Corporation.
+# ==========================================================================================
+# Module Name:
+#   LegacyFreeMsDxe.inf
+# 
+# Abstract:
+# 
+# 
+# Revision History:
+#   ----------------------------------------------------------------------------------------
+#   Rev   Date          Name    Description
+#   ----------------------------------------------------------------------------------------
+#   ----------------------------------------------------------------------------------------
+#--*/
+
+[defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = LegacyFreeMs
+  FILE_GUID                      = 2D2E62AA-9ECF-43b7-8219-94E7FC713DFE
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  
+  ENTRY_POINT                    = LegacyFreeMsDriverBindingEntryPoint
+
+
+[sources]
+  LegacyFreeUsbMs.h
+  LegacyFreeUsbMs.c
+  mousehid.h
+  mousehid.c
+  ComponentName.c
+  ComponentName.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  BaseMemoryLib
+  ReportStatusCodeLib
+  UefiUsbLib
+
+
+[Protocols]
+  gEfiUsbIoProtocolGuid                         ## TO_START
+  gEfiDevicePathProtocolGuid                    ## TO_START
+  gEfiSimplePointerProtocolGuid                 ## BY_START
+  gEfiIsaIoProtocolGuid

@@ -1,0 +1,157 @@
+## @file
+#
+#Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+#All rights reserved.This software and associated documentation (if any)
+#is furnished under a license and may only be used or copied in 
+#accordance with the terms of the license. Except as permitted by such
+#license, no part of this software or documentation may be reproduced, 
+#stored in a retrieval system, or transmitted in any form or by any 
+#means without the express written consent of Byosoft Corporation.
+#
+#File Name:
+#  TcmDxe.inf
+#
+#Abstract: 
+#  Dxe part of TCM Module.
+#
+#Revision History:
+#
+#Bug 3223 - package ZTE SM3 hash source to .efi for ZTE's copyrights.
+#TIME: 2011-12-16
+#$AUTHOR: Zhang Lin
+#$REVIEWERS: 
+#$SCOPE: SugarBay
+#$TECHNICAL: 
+#  1. use ppi or protocol to let hash be independent.
+#$END------------------------------------------------------------
+#
+#Bug 3216 - add Tcm SW SM3 hash support.
+#TIME: 2011-12-13
+#$AUTHOR: Zhang Lin
+#$REVIEWERS: 
+#$SCOPE: SugarBay
+#$TECHNICAL: 
+#  1. Use ZTE lib to do sm3 hash.
+#$END------------------------------------------------------------
+#
+#Bug 3144 - Add Tcm Measurement Architecture.
+#TIME: 2011-11-24
+#$AUTHOR: Zhang Lin
+#$REVIEWERS: 
+#$SCOPE: SugarBay
+#$TECHNICAL: 
+#  1. PEI: Measure CRTM Version.
+#          Measure Main Bios.
+#  2. DXE: add 'TCPA' acpi table.
+#          add event log.
+#          Measure Handoff Tables.
+#          Measure All Boot Variables.
+#          Measure Action.
+#  Note: As software of SM3's hash has not been implemented, so hash
+#        function is invalid.
+#$END------------------------------------------------------------
+#
+#Bug 3075 - Add TCM support.
+#TIME: 2011-11-14
+#$AUTHOR: Zhang Lin
+#$REVIEWERS: 
+#$SCOPE: SugarBay
+#$TECHNICAL: 
+#  1. Tcm module init version.
+#     Only support setup function.
+#$END------------------------------------------------------------
+#
+##
+
+#
+# This file contains 'Framework Code' and is licensed as such 
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may not be modified, except as allowed by
+# additional terms of your license agreement.                 
+#
+## @file
+# Component name for module TcgDxe
+#
+# FIX ME!
+# Copyright (c) 2006 - 2010, Intel Corporation. All rights reserved.<BR>
+#
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TcmDxe
+  FILE_GUID                      = 1B0B6B4C-D3FC-4b0b-BEBE-58C013163B48
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = TcmDxeEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF
+#
+
+[Sources]
+  TcmDxe.c
+  ../DxeCommLib/TcmDxeLib.c
+  TcmSetup.vfr
+  TcmSetup.uni
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  SecurityPkg/SecurityPkg.dec
+
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  UefiBootServicesTableLib
+  HobLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  BaseMemoryLib
+  DebugLib
+  UefiLib
+  TimerLib
+  IoLib
+  HiiLib
+  PrintLib
+  UefiHiiServicesLib
+
+
+[Guids]
+  gEfiSmbiosTableGuid
+  gEfiGlobalVariableGuid
+  gTcmEventEntryHobGuid
+  gEfiEventExitBootServicesGuid
+  gTcmSetupConfigGuid
+  
+  
+
+[Protocols]
+  gEfiTcmProtocolGuid
+  gEfiHiiConfigAccessProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gEfiAcpiTableProtocolGuid
+  gTcmHashSm3ProtocolGuid
+  gSetupSaveNotifyProtocolGuid
+  
+  
+[Pcd]
+
+
+[Depex]
+  gTcmHashSm3ProtocolGuid
+

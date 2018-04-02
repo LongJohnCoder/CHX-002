@@ -1,0 +1,229 @@
+/** @file
+
+Copyright (c) 2006 - 2014, Byosoft Corporation.<BR>
+All rights reserved.This software and associated documentation (if any)
+is furnished under a license and may only be used or copied in
+accordance with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be reproduced,
+stored in a retrieval system, or transmitted in any form or by any
+means without the express written consent of Byosoft Corporation.
+
+File Name:
+   IOE_GNIC.sd
+
+Abstract:
+   GNIC setting.
+
+Revision History:
+
+$END--------------------------------------------------------------------
+
+**/
+
+
+    form formid = IOE_GNIC_FORM_ID,
+    title = STRING_TOKEN(STR_IOE_GNIC_FORM);
+
+      subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+
+      oneof varid = SETUP_DATA.IOEGnicEn,
+        prompt = STRING_TOKEN(STR_IOE_GNIC_EN),
+        help   = STRING_TOKEN(STR_IOE_GNIC_EN_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+       endoneof;
+
+      oneof varid = SETUP_DATA.IOEGnicVEEPROM,
+        prompt = STRING_TOKEN(STR_IOE_GNIC_VEEPROMEN),
+        help   = STRING_TOKEN(STR_IOE_GNIC_VEEPROMEN_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+       endoneof;
+      
+      oneof varid   = SETUP_DATA.IOEGnicTXDCS,
+        prompt   = STRING_TOKEN(STR_IOE_GNIC_TXDCS),
+        help   = STRING_TOKEN(STR_IOE_GNIC_TXDCS_HELP),
+        option text = STRING_TOKEN(STR_NO_DELAY), value = 0, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DE0),   value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_DE01),   value = 2, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DE012),   value = 3, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_4NS),   value = 4, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_4NS_DE0),   value =5, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_4NS_DE01),   value = 6, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_4NS_DE012),   value = 7, flags = RESET_REQUIRED;
+       endoneof;
+       
+	   suppressif ideqval SETUP_DATA.IOEGnicTXDCS==0 OR ideqval SETUP_DATA.IOEGnicTXDCS==4;
+          numeric varid=SETUP_DATA.IOEGnicTXDC0,
+      	      prompt   = STRING_TOKEN(STR_IOE_GNIC_TXDC0),
+             help   = STRING_TOKEN(STR_IOE_GNIC_TXDC0_HELP),
+             minimum=0,
+             maximum=0xff,
+             step=0,
+             default=0xff,
+           endnumeric;
+	   endif;
+
+	   suppressif ideqval SETUP_DATA.IOEGnicTXDCS==0 OR ideqval SETUP_DATA.IOEGnicTXDCS==1 OR
+             	  ideqval SETUP_DATA.IOEGnicTXDCS==4 OR ideqval SETUP_DATA.IOEGnicTXDCS==5;
+          numeric varid=SETUP_DATA.IOEGnicTXDC1,
+    	      prompt   = STRING_TOKEN(STR_IOE_GNIC_TXDC1),
+           help   = STRING_TOKEN(STR_IOE_GNIC_TXDC1_HELP),
+           minimum=0,
+           maximum=0xff,
+           step=0,
+           default=0x00,
+          endnumeric;
+
+       endif;
+
+	   suppressif ideqval SETUP_DATA.IOEGnicTXDCS==0 OR ideqval SETUP_DATA.IOEGnicTXDCS==1 OR
+             	  ideqval SETUP_DATA.IOEGnicTXDCS==2 OR ideqval SETUP_DATA.IOEGnicTXDCS==4 OR
+              	  ideqval SETUP_DATA.IOEGnicTXDCS==5 OR ideqval SETUP_DATA.IOEGnicTXDCS==6;
+          numeric varid=SETUP_DATA.IOEGnicTXDC2,
+    	      prompt   = STRING_TOKEN(STR_IOE_GNIC_TXDC2),
+           help   = STRING_TOKEN(STR_IOE_GNIC_TXDC2_HELP),
+           minimum=0,
+           maximum=0xff,
+           step=0,
+           default=0x00,
+          endnumeric;
+       endif;
+          
+      oneof varid   = SETUP_DATA.IOEGnicRXDCS,
+        prompt   = STRING_TOKEN(STR_IOE_GNIC_RXDCS),
+        help   = STRING_TOKEN(STR_IOE_GNIC_TXDCS_HELP),
+        option text = STRING_TOKEN(STR_NO_DELAY), value = 0, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DE0),   value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_DE01),   value = 2, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_DE012),   value = 3, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_4NS),   value = 4, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_4NS_DE0),   value =5, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_4NS_DE01),   value = 6, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_4NS_DE012),   value = 7, flags = RESET_REQUIRED;
+       endoneof;
+
+	   suppressif ideqval SETUP_DATA.IOEGnicRXDCS==0 OR ideqval SETUP_DATA.IOEGnicRXDCS==4;       
+          numeric varid=SETUP_DATA.IOEGnicRXDC0,
+     	      prompt   = STRING_TOKEN(STR_IOE_GNIC_RXDC0),
+            help   = STRING_TOKEN(STR_IOE_GNIC_RXDC0_HELP),
+            minimum=0,
+            maximum=0xff,
+            step=0,
+            default=0x94,
+          endnumeric;
+       endif;
+
+	   suppressif ideqval SETUP_DATA.IOEGnicRXDCS==0 OR ideqval SETUP_DATA.IOEGnicRXDCS==1 OR
+              	  ideqval SETUP_DATA.IOEGnicRXDCS==4 OR ideqval SETUP_DATA.IOEGnicRXDCS==5;
+          numeric varid=SETUP_DATA.IOEGnicRXDC1,
+    	      prompt   = STRING_TOKEN(STR_IOE_GNIC_RXDC1),
+           help   = STRING_TOKEN(STR_EMPTY),
+           minimum=0,
+           maximum=0xff,
+           step=0,
+           default=0x00,
+          endnumeric;
+       endif;
+
+	   suppressif ideqval SETUP_DATA.IOEGnicRXDCS==0 OR ideqval SETUP_DATA.IOEGnicRXDCS==1 OR
+             	  ideqval SETUP_DATA.IOEGnicRXDCS==2 OR ideqval SETUP_DATA.IOEGnicRXDCS==4 OR
+              	  ideqval SETUP_DATA.IOEGnicRXDCS==5 OR ideqval SETUP_DATA.IOEGnicRXDCS==6;
+          numeric varid=SETUP_DATA.IOEGnicRXDC2,
+    	      prompt   = STRING_TOKEN(STR_IOE_GNIC_RXDC2),
+           help   = STRING_TOKEN(STR_EMPTY),
+           minimum=0,
+           maximum=0xff,
+           step=0,
+           default=0x00,
+          endnumeric; 
+       endif;
+      
+       numeric varid=SETUP_DATA.IOEGnicDPDC64,
+ 	      prompt   = STRING_TOKEN(STR_IOE_GNIC_DPDC64),
+        help   = STRING_TOKEN(STR_IOE_GNIC_DPDC64_HELP),
+        minimum=0,
+        maximum=7,
+        step=0,
+        default=7,
+      endnumeric;
+      
+       numeric varid=SETUP_DATA.IOEGnicDPDC128,
+ 	      prompt   = STRING_TOKEN(STR_IOE_GNIC_DPDC128),
+        help   = STRING_TOKEN(STR_IOE_GNIC_DPDC128_HELP),
+        minimum=0,
+        maximum=7,
+        step=0,
+        default=7,
+      endnumeric; 
+      
+       numeric varid=SETUP_DATA.IOEGnicDPDC256,
+ 	      prompt   = STRING_TOKEN(STR_IOE_GNIC_DPDC256),
+        help   = STRING_TOKEN(STR_IOE_GNIC_DPDC256_HELP),
+        minimum=0,
+        maximum=7,
+        step=0,
+        default=7,
+      endnumeric; 
+                 
+       oneof varid   = SETUP_DATA.IOEGnicForceSizeEn,
+        prompt   = STRING_TOKEN(STR_IOE_GNIC_FORCESIZE_EN),
+        help   = STRING_TOKEN(STR_IOE_GNIC_FORCESIZE_EN_HELP),
+        option text = STRING_TOKEN(STR_DEFAULT), value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_CTRL),value = 1, flags =RESET_REQUIRED;
+       endoneof;     
+
+	   suppressif ideqval SETUP_DATA.IOEGnicForceSizeEn==0;
+          oneof varid   = SETUP_DATA.IOEGnicForceRDR,
+           prompt   = STRING_TOKEN(STR_IOE_GNIC_FORCE_RDR),
+           help   = STRING_TOKEN(STR_IOE_GNIC_FORCE_RDR_HELP),
+           option text = STRING_TOKEN(STR_128_BYTE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+           option text = STRING_TOKEN(STR_256_BYTE), value = 1, flags = RESET_REQUIRED;
+          endoneof;
+	   endif;          
+
+	   suppressif ideqval SETUP_DATA.IOEGnicForceSizeEn==0;		
+          oneof varid   = SETUP_DATA.IOEGnicForcePayload,
+            prompt   = STRING_TOKEN(STR_IOE_GNIC_FORCE_PAYLOAD),
+            help   = STRING_TOKEN(STR_IOE_GNIC_FORCE_PAYLOAD_HELP),
+            option text = STRING_TOKEN(STR_128_BYTE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_256_BYTE), value = 1, flags = RESET_REQUIRED;
+          endoneof;
+       endif;
+   
+     oneof varid   = SETUP_DATA.IOEGnicEventCtrl,
+        prompt   = STRING_TOKEN(STR_IOE_GNIC_EVENT_CTRL),
+        help   = STRING_TOKEN(STR_IOE_GNIC_EVENT_CTRL_HELP),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
+      endoneof; 
+
+     oneof varid   = SETUP_DATA.IOEGnicPendingCtrl,
+        prompt   = STRING_TOKEN(STR_IOE_GNIC_PENDING_CTRL),
+        help   = STRING_TOKEN(STR_IOE_GNIC_PENDING_CTRL_HELP),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
+     endoneof; 
+
+     oneof varid   = SETUP_DATA.IOEGnicMsiCtrl,
+        prompt   = STRING_TOKEN(STR_IOE_GNIC_MSI_CTRL),
+        help   = STRING_TOKEN(STR_IOE_GNIC_MSI_CTRL_HELP),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT | MANUFACTURING |RESET_REQUIRED;
+     endoneof; 
+
+     oneof varid   = SETUP_DATA.IOEGnicMsiXCtrl,
+        prompt   = STRING_TOKEN(STR_IOE_GNIC_MSIX_CTRL),
+        help   = STRING_TOKEN(STR_IOE_GNIC_MSIX_CTRL_HELP),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT | MANUFACTURING |RESET_REQUIRED;
+     endoneof; 
+
+     oneof varid   = SETUP_DATA.IOEGnicD0PME,
+        prompt   = STRING_TOKEN(STR_IOE_GNIC_D0PME_CTRL),
+        help   = STRING_TOKEN(STR_IOE_GNIC_D0PME_CTRL_HELP),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT | MANUFACTURING |RESET_REQUIRED;
+     endoneof;      
+		  
+    endform;  //end IOE_GNIC_FORM_ID

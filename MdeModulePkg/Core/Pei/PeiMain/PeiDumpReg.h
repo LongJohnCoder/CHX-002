@@ -1,0 +1,334 @@
+//************************************************//
+//                                                //
+//   for internal Ref                             //
+//                                                //
+//************************************************//
+
+/*
+Module Name:
+
+  PeiDumpReg.h
+    
+Abstract:
+
+ PEI DUMP REG PPI 
+*/
+#ifndef _PEI_DUMP_REG_H
+#define _PEI_DUMP_REG_H
+
+#include <Ppi/DumpRegPpi.h>
+
+#include <Library/IoLib.h>
+#include <Library/DebugLib.h>
+//#include <Library/BaseLib.h>
+#include <Library/ReportStatusCodeLib.h>
+//#include <Library/BaseMemoryLib.h>
+//#include <Library/PeiServicesTablePointerLib.h>
+//#include <Library/MemoryAllocationLib.h>
+#include <Library/PlatformCommLib.h>
+#include <Library/TimerLib.h>
+
+
+
+typedef enum {
+  HX001EA = 1,
+  HX001EB,
+  HX001EC,
+  HX001ED,
+  HX001EE,
+  HX001EF,
+  HX001EG,
+  HX001EH,
+  HX001EI,
+  HX001EK,
+  HX001EL,
+  HX001EM,
+  HX001EN
+} CHX001_MB_TYPE;
+
+typedef enum {
+  TYPE_IO = 0,
+  TYPE_MEM,
+  TYPE_IDX,
+  TYPE_USB2_D14F7_L2,
+  TYPE_USB2_D16F7_L2,
+  TYPE_USB3_D18F0_L2
+ } DUMP_TYPE;
+
+
+
+typedef struct {
+	UINT8	Register;
+	UINT8	Function;
+	UINT8	Device;
+	UINT8	Bus;
+	UINT32	ExtendedRegister;
+} EFI_PCI_CONFIGURATION_ADDRESS;
+
+
+// from PeiMain.c
+typedef struct {
+	IN CHAR16 *label;
+	IN UINT32 type;
+	IN UINT32 baseAddress;
+	IN UINT32 lowerBound;
+	IN UINT32 highBound;
+}dumpRegister;
+
+#define DUMP_CFG 0
+#define DUMP_IO 1
+#define DUMP_MMIO 2
+#define	DUMP_IDX 3
+#define	DUMP_USB2_D14F7_L2 4
+#define	DUMP_USB2_D16F7_L2 5
+#define	DUMP_USB3_D18F0_L2 6
+
+#define DUMP_PCI_ADDRESS(bus, dev, func, reg)   \
+	(UINT32) ((((UINTN) (0x0E)) << 28) | \
+	(((UINTN) (bus)) << 20) | \
+	(((UINTN) (dev)) << 15) | \
+	(((UINTN) (func)) << 12) | \
+	(((UINTN) (reg))))
+#define VISA_PCI_ADDRESS(bus, dev, func, reg)   \
+	(UINT64) ((((UINTN) (bus)) << 24) | \
+	(((UINTN) (dev)) << 16) | \
+	(((UINTN) (func)) << 8) | \
+	((reg) < 256 ? ((UINTN) (reg)): ((UINT64) (reg) << 32)))
+
+#define CHX002_DUMP_D8F0_MMIO 0xD0489000
+#define CHX002_DUMP_D9F0_MMIO 0xD0488000
+
+#define CHX002_DUMP_PCIE_EPHY 0xFEB14000
+#define CHX002_DUMP_PEMCU 0xFFFFFFFF
+#define CHX002_DUMP_RCRB_H 0xFEB12000
+#define CHX002_DUMP_CRMCA 0xFEB20000
+#define CHX002_DUMP_TACTL  0xFEB11000
+#define	CHX002_DUMP_D10F1_MMIO 0xD0600100
+#define	CHX002_DUMP_D11F0_MMIO 0xD0601000
+#define	CHX002_DUMP_D14F7_MMIO 0xD0104000
+#define	CHX002_DUMP_D15F0_MSI_XT 0xD0102000
+#define	CHX002_DUMP_D15F0_MSI_XP 0xD0103000
+
+#define	CHX002_DUMP_D15F0_AHCI_MMIO 0xD0100000
+#define	CHX002_DUMP_D15F0_AHCI_MMIO_P0 0xD0100100
+#define	CHX002_DUMP_D15F0_AHCI_MMIO_P1 0xD0100180
+#define	CHX002_DUMP_D16F7_MMIO 0xD0105000
+#define CHX002_DUMP_D17F0_MMIO  0xFEB32000
+#define	CHX002_DUMP_D18F0_MMIO 0xD0106000
+#define CHX002_DUMP_WT_MMIO  	0xFEB41000
+#define	CHX002_DUMP_D20F0_MMIO	0xFEB42000
+#define	CHX002_DUMP_HPET	 	0xFEB40000 	
+#define	CHX002_DUMP_SPI	 		0xFEB30000 	
+#define	CHX002_DUMP_PMIO 0x800
+#define	CHX002_DUMP_SMIO 0x400
+#define	CHX002_DUMP_D14F0_IO 0xF0A0 
+#define	CHX002_DUMP_D16F0_IO 0xF0B0 
+#define	CHX002_DUMP_D16F1_IO 0xF0C0  
+#define	CHX002_DUMP_D15F0_PRIMARY_CHANNEL_COMMAND_IO 0xF0D0   
+#define	CHX002_DUMP_D15F0_PRIMARY_CHANNEL_CONTROL_IO 0xF0D8
+#define	CHX002_DUMP_D15F0_BUS_MASTER_IDE_IO 0xF0E0 
+
+
+	
+#define CHX002_DUMP_D0F0 DUMP_PCI_ADDRESS(0,0,0,0)
+#define CHX002_DUMP_D0F1 DUMP_PCI_ADDRESS(0,0,1,0)
+#define CHX002_DUMP_D0F2 DUMP_PCI_ADDRESS(0,0,2,0)
+#define CHX002_DUMP_D0F3 DUMP_PCI_ADDRESS(0,0,3,0)
+#define CHX002_DUMP_D0F4 DUMP_PCI_ADDRESS(0,0,4,0)
+#define CHX002_DUMP_D0F5 DUMP_PCI_ADDRESS(0,0,5,0)
+#define CHX002_DUMP_D0F6 DUMP_PCI_ADDRESS(0,0,6,0)
+#define CHX002_DUMP_D1F0 DUMP_PCI_ADDRESS(0,1,0,0)
+#define CHX002_DUMP_D1F1 DUMP_PCI_ADDRESS(0,1,1,0)
+#define CHX002_DUMP_D2F0 DUMP_PCI_ADDRESS(0,2,0,0)
+#define CHX002_DUMP_D3F0 DUMP_PCI_ADDRESS(0,3,0,0)
+#define CHX002_DUMP_D3F1 DUMP_PCI_ADDRESS(0,3,1,0)
+#define CHX002_DUMP_D3F2 DUMP_PCI_ADDRESS(0,3,2,0)
+#define CHX002_DUMP_D3F3 DUMP_PCI_ADDRESS(0,3,3,0)
+#define CHX002_DUMP_D4F0 DUMP_PCI_ADDRESS(0,4,0,0)
+#define CHX002_DUMP_D4F1 DUMP_PCI_ADDRESS(0,4,1,0)
+#define CHX002_DUMP_D5F0 DUMP_PCI_ADDRESS(0,5,0,0)
+#define CHX002_DUMP_D5F1 DUMP_PCI_ADDRESS(0,5,1,0)
+#define CHX002_DUMP_D7F0 DUMP_PCI_ADDRESS(0,7,0,0)
+#define CHX002_DUMP_D8F0 DUMP_PCI_ADDRESS(0,8,0,0)
+#define CHX002_DUMP_D9F0 DUMP_PCI_ADDRESS(0,9,0,0)
+	
+	
+	//for sb
+#define CHX002_DUMP_D10F1 					DUMP_PCI_ADDRESS(0, 10, 1, 0) // B0D11F0
+#define CHX002_DUMP_D11F0 					DUMP_PCI_ADDRESS(0, 11, 0, 0) // B0D11F0
+#define	CHX002_DUMP_D14F0_USB			 	DUMP_PCI_ADDRESS(0,14,0,0)	
+#define	CHX002_DUMP_D14F7_USB		 	DUMP_PCI_ADDRESS(0,14,7,0)	
+#define	CHX002_DUMP_D15F0_SATA              DUMP_PCI_ADDRESS(0,15,0,0)	  		
+#define	CHX002_DUMP_D16F0_USB			 	DUMP_PCI_ADDRESS(0,16,0,0)	
+#define	CHX002_DUMP_D16F1_USB 			DUMP_PCI_ADDRESS(0,16,1,0)		
+#define	CHX002_DUMP_D16F7_USB			 	DUMP_PCI_ADDRESS(0,16,7,0)	
+#define CHX002_DUMP_D17F0 DUMP_PCI_ADDRESS(0, 17, 0, 0) // B0D17F0
+#define CHX002_DUMP_D17F7 DUMP_PCI_ADDRESS(0, 17, 7, 0) // B0D17F7
+#define CHX002_DUMP_D18F0 DUMP_PCI_ADDRESS(0, 18, 0, 0) // B0D18F0
+#define CHX002_DUMP_D20F0 DUMP_PCI_ADDRESS(0, 20, 0, 0) // B0D20F0
+	
+
+
+
+#define	CHX002_DUMP_D15F0_EPHY 0
+#define	CHX002_DUMP_D14F7_PHY_CTRL 0
+#define	CHX002_DUMP_D14F7_P1_PHY 0
+#define	CHX002_DUMP_D14F7_P2_PHY 0
+#define	CHX002_DUMP_D14F7_PHY_TEST_CTRL 0
+#define	CHX002_DUMP_D14F7_PHY_P1_TEST_CTRL 0
+#define	CHX002_DUMP_D14F7_PHY_P2_TEST_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_P1_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_P2_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_P3_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_P4_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_TEST_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_P1_TEST_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_P2_TEST_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_P3_TEST_CTRL 0
+#define	CHX002_DUMP_D16F7_PHY_P4_TEST_CTRL 0
+#define	CHX002_DUMP_D18F0_OPTCFG_XHCI 0
+#define	CHX002_DUMP_D18F0_OPTCFG_HSBI 0
+#define	CHX002_DUMP_D18F0_U3IP_SSCFG_C 0
+#define	CHX002_DUMP_D18F0_U3IP_SSCFG_P 0
+#define	CHX002_DUMP_D18F0_OPTCFG_MCU 0
+
+
+
+
+
+#define CHX002_RAIDA_D8 8
+#define CHX002_RAIDA_D9 9
+#define CHX002_UART_DEV 10
+	 #define CHX002_UART0_FUN 0
+	 #define CHX002_UART1_FUN 1
+	 #define CHX002_UART2_FUN 2
+	 #define CHX002_UART3_FUN 3
+	 
+ #define CHX002_ESPI_DEV 11 	 //HYL-20160501  
+	 #define CHX002_ESPI_FUN 0
+ #define CHX002_SDIO_DEV 12
+ #define CHX002_CR_DEV 13
+ #define CHX002_UHCI0_DEV 14
+#define CHX002_SATA15_DEV 15
+#define CHX002_USBC_DEV 16
+ #define CHX002_UHCI1_DEV 16
+ #define CHX002_EHCI0_DEV 14
+ #define CHX002_EHCI1_DEV 16
+ #define CHX002_XHCI_DEV 18
+ #define CHX002_SATA_DEV 15
+ #define CHX002_BUSC_DEV 17
+	 #define CHX002_BUSC_FUN 0
+	 #define CHX002_PCCA_FUN 7
+ #define CHX002_P2PB_DEV 19
+	 #define CHX002_P2PB_FUN 0
+ #define CHX002_HDAC_DEV 20
+	  #define CHX002_HDAC_FUN 0
+
+
+#define CHX002_APIC VISA_PCI_ADDRESS(0, 0, 5, 0) // D0F5
+
+#define CHX002_D0F0 VISA_PCI_ADDRESS(0, 0, 0, 0) // D0F0
+
+
+#define CHX002_RAIIDA_08 VISA_PCI_ADDRESS(0, CHX002_RAIDA_D8, 0, 0) // D8F0
+#define CHX002_RAIIDA_09 VISA_PCI_ADDRESS(0, CHX002_RAIDA_D9, 0, 0) // D9F0
+#define CHX002_UART0 VISA_PCI_ADDRESS(0, CHX002_UART_DEV, 0, 0) // D10F0
+#define CHX002_UART1 VISA_PCI_ADDRESS(0, CHX002_UART_DEV, 1, 0) // D10F1
+#define CHX002_ESPI VISA_PCI_ADDRESS(0, CHX002_ESPI_DEV, 0, 0) // D11F0
+#define CHX002_SDIO VISA_PCI_ADDRESS(0, CHX002_SDIO_DEV, 0, 0) // D12F0
+#define CHX002_D14F0UHCI VISA_PCI_ADDRESS(0, CHX002_UHCI0_DEV, 0, 0)//D14F0
+#define CHX002_D14F7EHCI VISA_PCI_ADDRESS(0, CHX002_EHCI0_DEV, 7, 0)//D14F7
+#define CHX002_SATA VISA_PCI_ADDRESS(0, CHX002_SATA_DEV, 0, 0) // D15F0
+#define CHX002_UHC0 VISA_PCI_ADDRESS(0, CHX002_USBC_DEV, 0, 0) // D16F0
+#define CHX002_UHC1 VISA_PCI_ADDRESS(0, CHX002_USBC_DEV, 1, 0) // D16F1
+#define CHX002_EHCI VISA_PCI_ADDRESS(0, CHX002_USBC_DEV, 7, 0) // D16F7
+#define CHX002_BUSC VISA_PCI_ADDRESS(0, CHX002_BUSC_DEV, 0, 0) // D17F0
+#define CHX002_PCCA VISA_PCI_ADDRESS(0, CHX002_BUSC_DEV, 7, 0) // D17F7
+#define CHX002_XHCI VISA_PCI_ADDRESS(0, CHX002_XHCI_DEV, 0, 0) // D18F0
+#define CHX002_HDAC VISA_PCI_ADDRESS(0, CHX002_HDAC_DEV, 0, 0) // D20F0
+
+
+
+
+
+	
+#define CHX002EHCI_EHCI_MEM_MAPPED_IO_BASE_ADR 0x10 // EHCI Memory Mapped I/O Base Address
+    #define CHX002EHCI_IOBASE    0xFFFFFF00      // 0/x/x/x EHCI Memory Mapped I/O Registers Base Address
+    #define CHX002EHCI_CAP_64B   (BIT1 + BIT2)   // 00b/R/x/x Memory Mapping
+#define CHX002UHCI_USB_IO_REG_BASE_ADR 0x20 // USB I/O Register Base Address
+    #define CHX002UHCI_IOBASE_31_6 0xFFFF0000  // 0/0/x/x Reserved
+    #define CHX002UHCI_IOBASE_15_5 0xFFE0      // 7E7h/x/x/x USB I/O Register Base Address [15:5]
+    #define CHX002UHCI_IOBASE_4_0  0x1F        // 01h/R/x/x 32-Byte Aligned IO Space
+#define CHX002_XHCI_MEM_MAPPED_IO_LOW_BASE_ADR 0x10 // xHCI Memory Mapped I/O Low Base Address
+#define CHX002_D18F0_MEM_MAPPED_IO_LOW_BASE_ADR 0x10 // xHCI Memory Mapped I/O Low Base Address
+#define CHX002_D18F0_BASEADDR0_LO  0xFFFFF000      // 0/0/x/x xHCI Memory Mapped I/O Registers Low Base Address
+#define CHX002_D20F0_MEM_MAPPED_IO_LOW_BASE_ADR 0x10 // xHCI Memory Mapped I/O Low Base Address
+#define CHX002_D20F0_BASEADDR0_LO  0xFFFFC000      // 0/0/x/x xHCI Memory Mapped I/O Registers Low Base Address
+#define CHX002_ESPI_MEM_MAPPED_IO_BASE_ADR 0x10 // ESPI Memory Mapped I/O Base Address
+#define ESPI_BASEADDR0_LO  0xFFFFF000	   // 0/0/x/x xHCI Memory Mapped I/O Registers Low Base Address
+#define CHX002_D8F0_MEM_MAPPED_IO_BASE_ADR 0x10 // D8F0 Memory Mapped I/O Base Address
+#define D8F0_BASEADDR0_LO  0xFFFFF000	   // 0/0/x/x xHCI Memory Mapped I/O Registers Low Base Address
+#define CHX002_D9F0_MEM_MAPPED_IO_BASE_ADR 0x10 // D9F0 Memory Mapped I/O Base Address
+#define D9F0_BASEADDR0_LO  0xFFFFF000	   // 0/0/x/x xHCI Memory Mapped I/O Registers Low Base Address
+#define D15F0_SATA_EPHY_CTL_REG_DATA_0 0x64 // SATA EPHY Control Register Data 0
+#define D15F0_SATA_EPHY_CTL_REG_PTR 0x68 // SATA EPHY Control Register Pointer
+#define D17F0_MMIO_SPACE_BASE_ADR		0xBC	//D17F0 MMIO Space Base Address
+    #define D17F0_F0MMIOBA_31_12			0xFFFFF0	//0/x/x/x MMIO Space Base Address [31:12]
+#define D15F0_SATA_MMIO_GLOBAL_BASE_ADR  0x24
+#define D15F0_SATA_BASEADDR0_LO  0xFFFFE000	   
+#define D15F0_SATA_MSIXT_BASE_ADR  0x18
+#define D15F0_SATA_MSIXP_BASE_ADR  0x1C
+#define D15F0_MISC_CTL_2		0x45	//Miscellaneous Control 2
+#define D15F0_SUB_CLASS_CODE		0x0A	//Sub Class Code	
+#define D15F0_PRIMARY_CHANNEL_COMMAND_IO_BASE_ADR  0x10
+#define D15F0_PRIMARY_CHANNEL_CONTROL_IO_BASE_ADR  0x14
+#define D15F0_SATA_IO_BASE_ADR  0x20
+
+// function from PeiMain.c
+VOID EfiPciAddr2PciCfgAddr (IN EFI_PCI_CONFIGURATION_ADDRESS    *PciAddr );
+
+UINT8 ReadPci8 (IN UINT64   PciBusDevFunReg );
+
+UINT16 ReadPci16 (IN UINT64   PciBusDevFunReg );
+UINT32 ReadPci32 (IN UINT64   PciBusDevFunReg );
+VOID WritePci8 (
+    IN UINT64   PciBusDevFunReg,
+    IN UINT8    WriteValue8 
+  );
+
+VOID WritePci16 (
+    IN UINT64   PciBusDevFunReg,
+    IN UINT16   WriteValue16 
+  );
+
+VOID WritePci32 (
+    IN UINT64   PciBusDevFunReg,
+    IN UINT32   WriteValue32 
+  );
+
+UINT8 RwPci8 (
+    IN UINT64   PciBusDevFunReg,
+    IN UINT8    SetBit8,
+    IN UINT8    ResetBit8 
+  );
+void beforeDump(UINT32 baseAddress);
+void afterDump(UINT32 baseAddress);
+VOID DumpNBValue (
+  IN     PEI_DUMP_REG_PPI  *This,
+  IN     BOOLEAN           DefaultValue ,  
+  IN BOOLEAN			  IsBit_Layout
+  );
+VOID DumpSBValue(
+  IN     PEI_DUMP_REG_PPI  *This,
+  IN     BOOLEAN           DefaultValue,  
+  IN BOOLEAN			  IsBit_Layout
+  );
+
+VOID DumpS3Reg(
+  IN     PEI_DUMP_REG_PPI  *This,
+  IN BOOLEAN				IsBit_Layout  
+  );
+
+extern PEI_DUMP_REG_PPI mPeiDumpReg;
+#endif

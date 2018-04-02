@@ -1,0 +1,83 @@
+#/*++
+# ==========================================================================================
+#       NOTICE: Copyright (c) 2006 - 2009 Byosoft Corporation. All rights reserved.
+#               This program and associated documentation (if any) is furnished
+#               under a license. Except as permitted by such license,no part of this
+#               program or documentation may be reproduced, stored divulged or used
+#               in a public system, or transmitted in any form or by any means
+#               without the express written consent of Byosoft Corporation.
+# ==========================================================================================
+# Module Name:
+#   LegacyFreeKbDxe.inf
+# 
+# Abstract:
+#
+# 
+# Revision History:
+#   ----------------------------------------------------------------------------------------
+#   Rev   Date        Name    Description
+#   ----------------------------------------------------------------------------------------
+#   ----------------------------------------------------------------------------------------
+#--*/
+
+[defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = LegacyFreeKb
+  FILE_GUID                      = 2D2E62CF-9ECF-43b7-8219-94E7FC713DFF
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  
+  ENTRY_POINT                    = LegacyFreeDriverBindingEntryPoint
+
+
+[sources]
+  LegacyFreeUsbKb.c
+  LegacyFreeUsbKb.h
+  ComponentName.c
+  ComponentName.h
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  
+[LibraryClasses]
+  MemoryAllocationLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  BaseMemoryLib
+  ReportStatusCodeLib
+  DebugLib
+  PcdLib
+  HiiLib
+    
+[Guids]
+  ##
+  # Event registered to EFI_HII_SET_KEYBOARD_LAYOUT_EVENT_GUID group,
+  # which will be triggered by EFI_HII_DATABASE_PROTOCOL.SetKeyboardLayout().
+  #
+  gEfiHiiKeyBoardLayoutGuid                     ## SOMETIME_CONSUMES  ## Event
+  
+[Protocols]
+  gEfiUsbIoProtocolGuid                         ## TO_START
+  gEfiDevicePathProtocolGuid                    ## TO_START
+  gEfiSimpleTextInProtocolGuid                  ## BY_START
+  gEfiSimpleTextInputExProtocolGuid             ## BY_START
+  gEfiLegacyBiosProtocolGuid
+  gEfiPs2PolicyProtocolGuid
+  gEfiIsaIoProtocolGuid
+  ##
+  # If HII Database Protocol exists, then keyboard layout from HII database is used.
+  # Otherwise, USB keyboard module tries to use its carried default layout.
+  #
+  gEfiHiiDatabaseProtocolGuid                   ## SOMETIMES_CONSUMES (Default value is used if it's absent.)
+[FeaturePcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdDisableDefaultKeyboardLayoutInUsbKbDriver ## SOMETIME_CONSUMES (Checked when no layout is provided by HII.)
+  
+
+

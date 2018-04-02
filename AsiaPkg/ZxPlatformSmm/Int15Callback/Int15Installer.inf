@@ -1,0 +1,36 @@
+   
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ChipsetInt15Installer
+  FILE_GUID                      = C5E9449A-C939-4A7F-9524-6043AB750F78
+  MODULE_TYPE                    = DXE_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InstallChipsetInt15
+
+[Sources]
+  InstallInt15.c
+
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+
+  
+[LibraryClasses]
+  BaseLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  DebugLib
+  DxeServicesLib
+  HobLib
+  
+
+[Protocols]
+   gEfiLegacyBiosProtocolGuid                             # PROTOCOL ALWAYS_CONSUMED
+
+[Depex]
+  gEfiLegacyBiosProtocolGuid

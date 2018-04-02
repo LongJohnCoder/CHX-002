@@ -1,0 +1,82 @@
+/** @file
+  VFR file used by the SecureBoot configuration component.
+
+Copyright (c) 2011 - 2012, Intel Corporation. All rights reserved.<BR>
+This program and the accompanying materials 
+are licensed and made available under the terms and conditions of the BSD License 
+which accompanies this distribution.  The full text of the license may be found at 
+http://opensource.org/licenses/bsd-license.php
+
+THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS, 
+WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+
+**/
+
+#include "SecureBootConfigNvData.h"
+
+formset
+  guid      = SECUREBOOT_CONFIG_FORM_SET_GUID,
+  title     = STRING_TOKEN(STR_SECUREBOOT_TITLE),
+  help      = STRING_TOKEN(STR_NULL),
+  classguid = EFI_HII_PLATFORM_SETUP_FORMSET_GUID,
+  class     = 0x1000,
+  subclass  = 0,
+  
+  varstore SECUREBOOT_CONFIGURATION,
+    varid = SECUREBOOT_CONFIGURATION_VARSTORE_ID,
+    name  = SECUREBOOT_CONFIGURATION,
+    guid  = SECUREBOOT_CONFIG_FORM_SET_GUID;
+  
+
+  form formid = SECUREBOOT_CONFIGURATION_FORM_ID,
+    title = STRING_TOKEN(STR_SECUREBOOT_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_NULL);
+
+// SETUP_MODE  1
+// USER_MODE   0    
+    suppressif ideqval SECUREBOOT_CONFIGURATION.SetupMode == 0;
+      text
+          help   = STRING_TOKEN(STR_NULL),
+          text   = STRING_TOKEN(STR_SECURE_BOOT_STATUS_PROMPT),
+          text   = STRING_TOKEN(STR_SECURE_BOOT_STATUS_SETUP_MODE);
+    endif;
+    suppressif ideqval SECUREBOOT_CONFIGURATION.SetupMode == 1;
+      text
+          help   = STRING_TOKEN(STR_NULL),
+          text   = STRING_TOKEN(STR_SECURE_BOOT_STATUS_PROMPT),
+          text   = STRING_TOKEN(STR_SECURE_BOOT_STATUS_USER_MODE);
+    endif;    
+
+    grayoutif ideqval SECUREBOOT_CONFIGURATION.SetupMode == 1;
+      oneof 
+        varid = SECUREBOOT_CONFIGURATION.SecureBootState,
+        questionid = KEY_SECURE_BOOT_ENABLE,
+        prompt = STRING_TOKEN(STR_SECURE_BOOT_PROMPT),
+        help   = STRING_TOKEN(STR_SECURE_BOOT_HELP),
+        flags  = INTERACTIVE | RESET_REQUIRED,
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = 0;
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = 0;        
+      endoneof;
+    endif;  
+
+      suppressif ideqval SECUREBOOT_CONFIGURATION.SetupMode == 1;     // Setup     
+        text
+          help   = STRING_TOKEN(STR_RESET_TO_SETUP_MODE_HELP),    
+          text   = STRING_TOKEN(STR_RESET_TO_SETUP_MODE),
+          text   = STRING_TOKEN(STR_NULL),
+          flags  = INTERACTIVE,
+          key    = KEY_SECURE_BOOT_RESET;
+      endif;
+      
+      suppressif ideqval SECUREBOOT_CONFIGURATION.SetupMode == 0;     // User    
+        text
+          help   = STRING_TOKEN(STR_RESTORE_FACTORY_KEY_HELP),    
+          text   = STRING_TOKEN(STR_RESTORE_FACTORY_KEY),
+          text   = STRING_TOKEN(STR_NULL),
+          flags  = INTERACTIVE,
+          key    = KEY_SECURE_BOOT_RESTORE;
+      endif;
+  endform;
+  
+endformset;

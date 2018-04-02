@@ -1,0 +1,76 @@
+
+
+
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = IoTrap
+  FILE_GUID                      = F63100FA-2F63-4905-B2F6-0FD6379D64FA
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A  
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = IoTrapInit 
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  IoTrap.c
+  IoTrap.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec  
+  PlatformPkg/PlatformPkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+  
+#[includes]
+#	$(ASIA_SOURCE)\Interface\	
+#	$(ASIA_SOURCE)\Porting\Include
+#	$(ASIA_SOURCE)\Platform\$(ASIA_MBTYPE)
+#	$(ASIA_SOURCE)\Porting\Pei\Dram\$(ASIA_NBTYPE)
+
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  UefiLib                     
+  UefiBootServicesTableLib    
+  MemoryAllocationLib
+  PcdLib
+  IoLib
+  DevicePathLib
+  UefiRuntimeServicesTableLib
+  SmmServicesTableLib
+
+  
+[Protocols]
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiPciRootBridgeIoProtocolGuid
+  gEfiSmmCpuProtocolGuid
+  gEfiSmmVariableProtocolGuid
+  
+[Guids]
+   gPlatformSetupVariableGuid          ## CONSUME ## Guid
+
+  
+[Pcd]
+  gEfiByoModulePkgTokenSpaceGuid.AcpiIoPortBaseAddress  
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiMdeModulePkgTokenSpaceGuid.PcdVarServiceUseEmu 
+  
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiPciRootBridgeIoProtocolGuid AND
+  gEfiSmmCpuProtocolGuid AND
+  gEfiSmmConfigurationProtocolGuid  
+  
+

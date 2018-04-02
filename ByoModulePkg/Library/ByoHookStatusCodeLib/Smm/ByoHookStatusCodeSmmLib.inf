@@ -1,0 +1,89 @@
+## @file  
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in 
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced, 
+# stored in a retrieval system, or transmitted in any form or by any 
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   ByoHookStatusCodeSmmLib.inf
+#
+# Abstract: 
+#    Oem Hook Status Code SMM library instance
+#
+# Revision History:
+#
+# Bug 2517:   Create the Module StatusCodeHandler to report status code to 
+#             all supported devide in ByoModule
+# TIME:       2011-7-22
+# $AUTHOR:    Liu Chunling
+# $REVIEWERS:  
+# $SCOPE:     All Platforms
+# $TECHNICAL:  
+#   1. Create the module StatusCodeHandler to support Serial Port, Memory, Port80,
+#      Beep and OEM devices to report status code.
+#   2. Create the Port80 map table and the Beep map table to convert status code 
+#      to code byte and beep times.
+#   3. Create new libraries to support status code when StatusCodePpi,
+#      StatusCodeRuntimeProtocol, SmmStatusCodeProtocol has not been installed yet.
+# $END--------------------------------------------------------------------
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ByoHookStatusCodeSmm
+  FILE_GUID                      = D1539FF2-FDCA-4b88-8438-89A6D0ECF2BA
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = OemHookStatusCodeLib | DXE_SMM_DRIVER SMM_CORE
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  ByoHookStatusCodeSmmLib.c
+  SerialStatusCodeLib.c
+  MemoryStatusCodeLib.c
+  Port80StatusCodeLib.c
+  BeepStatusCodeLib.c
+  OemStatusCodeLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+
+[LibraryClasses]
+  SerialPortLib
+  PcdLib
+  PrintLib
+  DebugLib
+  SynchronizationLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  IoLib
+  TimerLib
+  
+[Guids]
+  gMemoryStatusCodeRecordGuid                   ## CONSUMES ## HOB
+  gEfiStatusCodeDataTypeStringGuid              ## CONSUMES
+
+[FeaturePcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdStatusCodeUseMemory
+  gEfiMdeModulePkgTokenSpaceGuid.PcdStatusCodeUseSerial
+  gEfiByoModulePkgTokenSpaceGuid.PcdStatusCodeUsePostCode
+  gEfiByoModulePkgTokenSpaceGuid.PcdStatusCodeUseBeep
+  gEfiByoModulePkgTokenSpaceGuid.PcdStatusCodeUseOem
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdStatusCodeMemorySize |128| PcdStatusCodeUseMemory
+

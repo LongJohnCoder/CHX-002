@@ -1,0 +1,95 @@
+## @file  
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in 
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced, 
+# stored in a retrieval system, or transmitted in any form or by any 
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   BiosIdLib.inf
+#
+# Abstract: 
+#   Component description file for BIOS ID library
+#
+# Revision History:
+#
+# Bug 2263:   Needs to move R8SnbClientPkg\Platform\LegacyBiosPlatform
+#             to SnbClientX64Pkg
+# TIME:       2011-6-21
+# $AUTHOR:    Liu Chunling 
+# $REVIEWERS: 
+# $SCOPE:     Sugar Bay Customer Refernce Board.
+# $TECHNICAL: 
+#   1. Change the name of LegacyBiosPlatform.inf to 
+#      LegacyBiosPlatformDxe.inf and Revise the coding style 
+#      following latest standard.
+#   2. Use EDKII libraries instead of EDK libraries.
+#   3. Add gWdtProtocolGuid to PlatformPkg.dec.
+#   4. Move the library BiosIdLib to ByoModulePkg.  
+# $END--------------------------------------------------------------------------
+#
+##
+#/*++
+# This file contains an 'Intel Peripheral Driver' and is        
+# licensed for Intel CPUs and chipsets under the terms of your  
+# license agreement with Intel or your vendor.  This file may   
+# be modified by the user, subject to additional terms of the   
+# license agreement                                             
+#--*/
+#/*++
+#
+# Copyright (c)  2010 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+
+#
+#  Module Name:
+#
+#   BiosIdLib.inf
+#
+#  Abstract:
+#
+#    Component description file for BIOS ID library
+#
+#--*/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BiosIdDxeLib
+  FILE_GUID                      = 35B2CD8F-8638-4629-AFE1-1F5DE188C1AD
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = BiosIdLib|DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SMM_DRIVER
+
+
+[Sources]
+  BiosIdDxeLib.c
+  
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ByoModulePkg/ByoModulePkg.dec
+
+  
+[LibraryClasses]
+  DebugLib
+  BaseLib
+  PcdLib
+   
+
+[Guids]
+  gEfiBiosIdGuid
+  
+[Pcd]
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainBase  
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainSize
+  

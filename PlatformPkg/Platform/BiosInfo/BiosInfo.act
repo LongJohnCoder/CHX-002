@@ -1,0 +1,85 @@
+
+
+#include <ByoBiosInfo.h>
+
+
+#define IMAGE_BLOCK_INFO_COUNT          7 
+ 
+typedef struct {
+  BYO_BIOS_INFO_HEADER   Header;
+  BIOS_IMAGE_BLOCK_INFO  Info[IMAGE_BLOCK_INFO_COUNT];
+} MY_BYO_BIOS_INFO;
+
+
+MY_BYO_BIOS_INFO gByoBiosInfo = {
+  {
+    BYO_BIOS_INFO_SIGNATURE,
+    sizeof(MY_BYO_BIOS_INFO),
+    BYO_BIOS_INFO_VERSION,
+    0,
+    BYO_BIOS_INFO_SIGNATURE2,
+    _PCD_VALUE_PcdFlashAreaBaseAddress,
+    _PCD_VALUE_PcdFlashAreaSize,
+    IMAGE_BLOCK_INFO_COUNT
+  },
+  {
+    {
+      BIOS_BLOCK_TYPE_FV_SEC, 
+      _PCD_VALUE_PcdFlashFvSecBase,
+      _PCD_VALUE_PcdFlashFvSecSize,
+      0
+    },
+    {
+      BIOS_BLOCK_TYPE_FV_BB,
+      _PCD_VALUE_PcdFlashFvRecoveryBase,
+      _PCD_VALUE_PcdFlashFvRecoverySize,
+      0      
+    },
+    {
+      BIOS_BLOCK_TYPE_FV_MAIN,
+      _PCD_VALUE_PcdFlashFvMainBase,
+      _PCD_VALUE_PcdFlashFvMainSize,
+      0      
+    },
+    {
+      BIOS_BLOCK_TYPE_FV_MICROCODE,
+      _PCD_VALUE_PcdFlashNvStorageMicrocodeBase,
+      _PCD_VALUE_PcdFlashNvStorageMicrocodeSize,
+      0      
+    }, 
+    {
+      BIOS_BLOCK_TYPE_FV_LOGO,
+      _PCD_VALUE_PcdFlashNvLogoBase,
+      _PCD_VALUE_PcdFlashNvLogoSize,
+      0      
+    }, 
+    {
+      BIOS_BLOCK_TYPE_ROM_HOLE_SMBIOS,
+      _PCD_VALUE_PcdFlashNvStorageSmbiosBase,
+      _PCD_VALUE_PcdFlashNvStorageSmbiosSize,
+      0      
+    }, 
+    {
+      BIOS_BLOCK_TYPE_FV_NVRAM,
+      _PCD_VALUE_PcdFlashNvStorageVariableBase,
+      _PCD_VALUE_PcdFlashNvStorageVariableSize,
+      0      
+    },      
+  },
+};
+
+
+
+
+VOID*
+ReferenceAcpiTable (
+  VOID
+  )
+{
+  //
+  // Reference the table being generated to prevent the optimizer from removing the 
+  // data structure from the exeutable
+  //
+  return (VOID*)&gByoBiosInfo;
+}
+

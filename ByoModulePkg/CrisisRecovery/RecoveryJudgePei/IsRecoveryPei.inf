@@ -1,0 +1,87 @@
+## @file  
+#
+# Copyright (c) 2006 - 2011, Byosoft Corporation.<BR> 
+# All rights reserved.This software and associated documentation (if any)
+# is furnished under a license and may only be used or copied in 
+# accordance with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be reproduced, 
+# stored in a retrieval system, or transmitted in any form or by any 
+# means without the express written consent of Byosoft Corporation.
+#
+# File Name:
+#   IsRecovery.inf
+#
+# Abstract: 
+#   Function for checking if system should be in recovery mode
+#
+# Revision History:
+#
+# Bug 3145:  Release initial verion bios for ChiefRiver/MahoBay platform base on
+#            Sugarbay Platform core drop.
+# TIME:       2011-11-25
+# $AUTHOR:    Liu Chunling
+# $REVIEWERS:
+# $SCOPE:     ChiefRiver/MahoBay Customer Refernce Board.
+# $TECHNICAL: 
+#   1. Change SnbClientX64Pkg to $(PLATFORM_PACKAGE) in INF file
+#      to fix failure to build other platform.
+#   2. Add the EDK debug libraries for IvyBridge Platform.
+#   3. Use UDK library IoLib in Xhci.c
+#   4. Add the Family ID and Model ID for IvyBridge processor.
+# $END--------------------------------------------------------------------------
+#
+###/*++
+#  Module Name:
+#
+#     IsRecovery.inf
+#
+#  Abstract:
+#
+#    Function for checking if system should be in recovery mode
+#
+#--*/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = RecoveryPei
+  FILE_GUID                      = 809A7473-AEA8-424E-8302-0BA12538A3CB
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = RecoveryPeiEntry
+
+[Sources]
+  IsRecovery.c
+  IsRecovery.h
+
+[LibraryClasses]
+  PcdLib
+  PeimEntryPoint
+  BaseMemoryLib
+  ReportStatusCodeLib
+  BaseLib
+  PerformanceLib
+  TimerLib
+  PeiServicesLib
+
+[Packages]
+  MdePkg\MdePkg.dec
+  MdeModulePkg\MdeModulePkg.dec
+  ByoModulePkg\ByoModulePkg.dec
+
+[PPIs]
+  gPeiRecoveryJudgePpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+[Guids]
+  gFvExtChecksumFileNameGuid
+  gEfiFirmwareFileSystem2Guid
+  gEfiMemoryTypeInformationGuid
+
+[Pcd]
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainBase
+  gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainSize
+
+[Depex]
+  TRUE
+
