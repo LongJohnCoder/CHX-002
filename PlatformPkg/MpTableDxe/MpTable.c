@@ -1181,7 +1181,7 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,		(0<<2)|2,	   0xA, 	   0x7}, 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,		(0<<2)|3,	   0xA, 	   0x4}, 
 	///////////////////////////////////////////////////////////////////////////////////////
-
+};
 
 
 #elif defined(HX002ED0_10)
