@@ -490,31 +490,19 @@ Revision History:
       oneof varid = SETUP_DATA.CpuClockControl,
         prompt      = STRING_TOKEN(STR_CPU_CLK_CTRL),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR__OC20), value = 0, flags = RESET_REQUIRED;         
-        option text = STRING_TOKEN(STR__OC15),  value = 1, flags = RESET_REQUIRED ;        
-        option text = STRING_TOKEN(STR__OC10),  value = 2, flags = RESET_REQUIRED ;         
-        option text = STRING_TOKEN(STR__OC5),  value = 3, flags = RESET_REQUIRED ;
-        option text = STRING_TOKEN(STR_NO_OC), value = 4, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_OC1), value = 5, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC2), value = 6, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC3), value = 7, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC4), value = 8, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC5), value = 9, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC6), value = 10, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC7), value = 11, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC8), value = 12, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC9), value = 13, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC10), value = 14, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC11), value = 15, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC12), value = 16, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC13), value = 17, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC14), value = 18, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC15), value = 19, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC16), value = 20, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC17), value =21, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC18), value = 22, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC19), value = 23, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_OC20), value = 24, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR__OC10), value = 0,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR__OC5),  value = 1,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_NO_OC), value = 2,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_OC1),   value = 3,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OC2),   value = 4,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OC3),   value = 5,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OC4),   value = 6,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OC5),   value = 7,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OC6),   value = 8,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OC7),   value = 9,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OC8),   value = 10, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OC9),   value = 11, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OC10),  value = 12, flags = RESET_REQUIRED;
      endoneof;    
 
    /*   oneof varid = SETUP_DATA.CpuSSCControl,
