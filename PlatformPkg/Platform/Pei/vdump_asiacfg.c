@@ -84,8 +84,6 @@ VOID VPei_DumpAsiaNbCfg(
 	DEBUG((DEBUG_ERROR,"SelectDisplayDevice = %x \n",NbCfg->SelectDisplayDevice));	
 	DEBUG((DEBUG_ERROR,"DisplayDevice1 = %x \n",NbCfg->DisplayDevice1));	
 	DEBUG((DEBUG_ERROR,"DisplayDevice2 = %x \n",NbCfg->DisplayDevice2));
-	DEBUG((DEBUG_ERROR,"PanelType = %x \n",NbCfg->PanelType));
-	DEBUG((DEBUG_ERROR,"PanelType2 = %x \n",NbCfg->PanelType2));	
 	DEBUG((DEBUG_ERROR,"TVLayout = %x \n",NbCfg->TVLayout));	
 	DEBUG((DEBUG_ERROR,"TVType = %x \n",NbCfg->TVType));
 

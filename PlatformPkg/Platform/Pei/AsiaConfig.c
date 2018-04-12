@@ -513,8 +513,6 @@ GotSetupVariable:
   NbCfg->DP2        = SetupData->DP2;
   NbCfg->DVO        = SetupData->DVO;
   NbCfg->CRT        = SetupData->CRT;
-  NbCfg->PanelType= SetupData->PanelType;
-  NbCfg->PanelType2= SetupData->PanelType2;
   NbCfg->ECLKCtrl= SetupData->ECLKCtrl;
   NbCfg->ECLKFreq= SetupData->ECLKFreq; 
   NbCfg->VCLKCtrl= SetupData->VCLKCtrl;

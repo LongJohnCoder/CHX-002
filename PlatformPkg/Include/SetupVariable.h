@@ -201,8 +201,6 @@ typedef struct {
    UINT8 DP2;
    UINT8 DVO; 
    UINT8 CRT;
-   UINT8 PanelType;
-   UINT8 PanelType2;
    UINT8 ECLKCtrl;
    UINT16 ECLKFreq;
    UINT8 VCLKCtrl;

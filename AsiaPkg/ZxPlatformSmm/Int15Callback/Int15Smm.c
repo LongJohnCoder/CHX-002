@@ -124,7 +124,6 @@ ChipsetInt15SmmDispatcher (
     if(((SmmEax >> 8) & 0xff) == CHIPSET_INT15_SW_SMI){
       switch(SmmEax & 0xff) {
 	        case 0x1:
-				SmmEcx = SetupData.PanelType;
 				SmmEax = CHIPSET_INT15_SW_SMI;
 		  	    break;
 
@@ -218,7 +217,6 @@ ChipsetInt15SmmDispatcher (
 				
 				break;
 			case 0x28:
-				SmmEcx = (UINT16) SetupData.PanelType2;
 				SmmEax = (UINT16) CHIPSET_INT15_SW_SMI;
 				break;
 			case 0x2A:

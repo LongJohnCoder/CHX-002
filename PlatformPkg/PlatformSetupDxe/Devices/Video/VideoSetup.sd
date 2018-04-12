@@ -120,24 +120,6 @@ $END--------------------------------------------------------------------
  	
  	  subtitle text = STRING_TOKEN(STR_EMPTY);   
       
-      numeric varid=SETUP_DATA.PanelType,
- 	      prompt   = STRING_TOKEN(STR_PANELTYPE),
-        help   = STRING_TOKEN(STR_EMPTY),
-        minimum=0,
-        maximum=0xf,
-        step=0,
-        default=2,
-      endnumeric;
-        
-       numeric varid=SETUP_DATA.PanelType2,
-      	prompt   = STRING_TOKEN(STR_PANELTYPE2),
-        help   = STRING_TOKEN(STR_EMPTY),
-        minimum=0,
-        maximum=0xf,
-        step=0,
-        default=2,
-       endnumeric;
-     
       oneof varid   = SETUP_DATA.ECLKCtrl,
         prompt   = STRING_TOKEN(STR_ECLK_CTRL),
         help   = STRING_TOKEN(STR_EMPTY),
