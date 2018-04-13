@@ -326,7 +326,33 @@ Revision History:
         option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
         endoneof; 
+
+      //add_GRW_20180413
+      oneof varid = SETUP_DATA.SOCXHCISPEValue,
+        prompt      = STRING_TOKEN(STR_XHCI_SPE),
+        help        = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof; 
         
+      oneof varid = SETUP_DATA.SOCEHCISPEValue,
+        prompt      = STRING_TOKEN(STR_EHCI_SPE),
+        help        = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof; 
+		
+		
+      oneof varid = SETUP_DATA.SOCUHCISPEValue,
+        prompt      = STRING_TOKEN(STR_UHCI_SPE),
+        help        = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_S),  value = 0, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_P_S), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_E_P_S), value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof; 
+      //add_GRW_20180413       
  
      endif;
      

@@ -167,6 +167,9 @@ GotSetupVariable:
   SbCfg->PCCASPEValue= SetupData->PCCASPEValue;
   SbCfg->HDACSPEValue= SetupData->HDACSPEValue;   
   SbCfg->SPISPEValue=SetupData->SPISPEValue;
+  SbCfg->SOCXHCISPEValue=SetupData->SOCXHCISPEValue;
+  SbCfg->SOCEHCISPEValue=SetupData->SOCEHCISPEValue;
+  SbCfg->SOCUHCISPEValue=SetupData->SOCUHCISPEValue;
   // SbCfg->P2PBSPEValue = 2; 
   
   //this varible is needed when some TACTL linkage configuration is added in the SBInit.c

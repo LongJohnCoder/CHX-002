@@ -266,7 +266,9 @@ typedef struct {
   UINT8 PCCASPEValue;
   UINT8 HDACSPEValue;	 
   UINT8 SPISPEValue; 
-
+  UINT8 SOCXHCISPEValue;
+  UINT8 SOCEHCISPEValue;
+  UINT8 SOCUHCISPEValue; 
 
 	 
 	 //NB DEBUG
