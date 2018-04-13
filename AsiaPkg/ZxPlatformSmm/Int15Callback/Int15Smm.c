@@ -124,6 +124,7 @@ ChipsetInt15SmmDispatcher (
     if(((SmmEax >> 8) & 0xff) == CHIPSET_INT15_SW_SMI){
       switch(SmmEax & 0xff) {
 	        case 0x1:
+				// Panel type is no longer in use in CHX002.
 				SmmEax = CHIPSET_INT15_SW_SMI;
 		  	    break;
 
@@ -217,6 +218,7 @@ ChipsetInt15SmmDispatcher (
 				
 				break;
 			case 0x28:
+				// Panel type 2 is no longer in use in CHX002.
 				SmmEax = (UINT16) CHIPSET_INT15_SW_SMI;
 				break;
 			case 0x2A:
