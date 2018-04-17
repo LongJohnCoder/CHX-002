@@ -123,8 +123,8 @@ Revision History:
        oneof varid = SETUP_DATA.SVIDMVCLKControl,
         prompt      = STRING_TOKEN(STR_SVIDM_VCLK_CTRL),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
        oneof varid = SETUP_DATA.SVIDMPeriodicIoutControl,
         prompt      = STRING_TOKEN(STR_SVIDM_PERIODIC_IOUT_CTRL),
@@ -168,15 +168,15 @@ Revision History:
        oneof varid = SETUP_DATA.SVIDMC4SetPS,
         prompt      = STRING_TOKEN(STR_SVIDM_C4_SETPS),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
      suppressif NOT ideqval SETUP_DATA.SVIDMC4SetPS==1;
 	       oneof varid = SETUP_DATA.SVIDMC4SetPSSel,
 	        prompt      = STRING_TOKEN(STR_SVIDM_C4_STEPS_SEL),
 	        help        = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_PS0), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-	        option text = STRING_TOKEN(STR_PS1),  value = 1, flags = RESET_REQUIRED; 
+	        option text = STRING_TOKEN(STR_PS0), value = 0, flags = RESET_REQUIRED;
+	        option text = STRING_TOKEN(STR_PS1),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT; 
 	        option text = STRING_TOKEN(STR_PS2), value = 2, flags = RESET_REQUIRED;
 	        option text = STRING_TOKEN(STR_PS3),  value = 3, flags = RESET_REQUIRED;          
 	       endoneof;
@@ -184,8 +184,8 @@ Revision History:
        oneof varid = SETUP_DATA.SVIDMC4DecayOP,
         prompt      = STRING_TOKEN(STR_SVIDM_C4DECAYOP),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_SETDECAY), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_SETVID),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
+        option text = STRING_TOKEN(STR_SETDECAY), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_SETVID),  value = 1, flags = RESET_REQUIRED;          
        endoneof;
      suppressif NOT ideqval SETUP_DATA.SVIDMC4DecayOP==1;
        oneof varid = SETUP_DATA.VRM0VIDFSSelect,
@@ -199,8 +199,8 @@ Revision History:
        oneof varid = SETUP_DATA.VRMStableBD,
         prompt      = STRING_TOKEN(STR_VRM_STABLE_BD),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
        oneof varid = SETUP_DATA.CPU2SVIDCmdGate,
         prompt      = STRING_TOKEN(STR_CPU_2_SVID_CMD_GATE),
@@ -211,14 +211,14 @@ Revision History:
        oneof varid = SETUP_DATA.CPUPStateTOCounter,
         prompt      = STRING_TOKEN(STR_CPU_PSTATE_TO_COUNTER),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
        oneof varid = SETUP_DATA.CPUPStateSetVIDDone,
         prompt      = STRING_TOKEN(STR_CPU_PSTATE_SETVID_DONE),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
     #endif
 
