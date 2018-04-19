@@ -67,6 +67,13 @@ AdvancedFormCallback (
    if ((Type == EFI_IFR_TYPE_NUM_SIZE_8) && (Value->u8 != 0)) {
 	   CurrentSetupData.VARTSPEValue=CurrentSetupData.ESPISPEValue=CurrentSetupData.BusCtrlSPEValue\
 	   	=CurrentSetupData.PMUSPEValue=CurrentSetupData.PCCASPEValue=CurrentSetupData.HDACSPEValue=CurrentSetupData.SPISPEValue=CurrentSetupData.SBSPEValue-1;
+
+	   if(((Type == EFI_IFR_TYPE_NUM_SIZE_8) && (Value->u8 == 1))){//S mode,disable dynamic clock
+	    CurrentSetupData.SBDynamicClkControl=0;
+	   	}
+	   else{//p-e mode ,enable dynamic clock
+		   CurrentSetupData.SBDynamicClkControl=1;
+	   	}
    }
    break;
    
