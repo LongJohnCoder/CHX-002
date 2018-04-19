@@ -733,6 +733,7 @@ Revision History:
         option text = STRING_TOKEN(STR_CRMCA), value = 15, flags = RESET_REQUIRED ;      
         option text = STRING_TOKEN(STR_DDRIO), value = 16, flags = RESET_REQUIRED ;      
         option text = STRING_TOKEN(STR_VPIL), value = 17, flags = RESET_REQUIRED ;      
+       option text = STRING_TOKEN(STR_DBGPATTERN), value = 18, flags = RESET_REQUIRED ;      
       endoneof; 
  
       numeric varid=SETUP_DATA.NBGroup0ModuleSubSelect1,
@@ -781,6 +782,7 @@ Revision History:
         option text = STRING_TOKEN(STR_CRMCA), value = 15, flags = RESET_REQUIRED ;      
         option text = STRING_TOKEN(STR_DDRIO), value = 16, flags = RESET_REQUIRED ;      
         option text = STRING_TOKEN(STR_VPIL), value = 17, flags = RESET_REQUIRED ;      
+       option text = STRING_TOKEN(STR_DBGPATTERN), value = 18, flags = RESET_REQUIRED ;      
       endoneof; 
       
        numeric varid=SETUP_DATA.NBGroup1ModuleSubSelect1,
