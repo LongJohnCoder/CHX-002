@@ -23,50 +23,44 @@ PEI_DUMP_REG_PPI mPeiDumpReg={
 };
 
 static dumpRegister SBRegList[] = {
+   	{L"D17F0",								DUMP_CFG,				CHX002_DUMP_D17F0,		0x00, 		0xFF},
+	{L"D17F0 MMIO", 						DUMP_MMIO,				CHX002_DUMP_D17F0_MMIO, 0x00,		0x12F},
     {L"D10F1",								DUMP_CFG,				CHX002_DUMP_D10F1, 		0x00, 		0xFF},
-	//{L"D11F0_eSPI", 						DUMP_CFG,				CHX002_DUMP_D11F0,		0x00,		0xFF},
-  	//{L"D14F0_USB11",						DUMP_CFG,				CHX002_DUMP_D14F0_USB,	0x00, 		0xFF},
-	//{L"D14F7_USB20",						DUMP_CFG,				CHX002_DUMP_D14F7_USB,	0x00,		0xFF}, 
-	{L"D15F0_SATA", 						DUMP_CFG,				CHX002_DUMP_D15F0_SATA, 0x00,		0xFF},
-	//{L"D16F0_USB11",						DUMP_CFG,				CHX002_DUMP_D16F0_USB,	0x00,		0xFF}, 
-	//{L"D16F1_USB11",						DUMP_CFG,				CHX002_DUMP_D16F1_USB,	0x00,		0xFF}, 
-	//{L"D16F7_USB20",						DUMP_CFG,				CHX002_DUMP_D16F7_USB,	0x00,		0xFF}, 
-  	{L"D17F0",								DUMP_CFG,				CHX002_DUMP_D17F0,		0x00, 		0xFF},
+	{L"D11F0_eSPI", 						DUMP_CFG,				CHX002_DUMP_D11F0,		0x00,		0xFF},
+	{L"eSPI_MMIO",							DUMP_MMIO,				CHX002_DUMP_D11F0_MMIO, 			0x00,		0x2FF}, 
     {L"D17F7",								DUMP_CFG,				CHX002_DUMP_D17F7,		0x00, 		0xFF},		//;josh D17F7
-	//{L"D18F0_PCI",							DUMP_CFG,				CHX002_DUMP_D18F0,		0x00,		0xFF}, 
-	{L"D20F0",								DUMP_CFG,				CHX002_DUMP_D20F0,		0x00,		0x14F},
 	{L"D10F1_MMIO",							DUMP_MMIO,				CHX002_DUMP_D10F1_MMIO, 			0x00,		0x7F}, 
-	//{L"eSPI_MMIO",							DUMP_MMIO,				CHX002_DUMP_D11F0_MMIO,				0x00,		0x2FF}, 
-	//{L"D14F7_USB20_MMIO",					DUMP_MMIO,				CHX002_DUMP_D14F7_MMIO,				0x00,		0xBF}, 
+	{L"D15F0_SATA", 						DUMP_CFG,				CHX002_DUMP_D15F0_SATA, 0x00,		0xFF},
 	{L"D15F0_SATA_EPHY",					DUMP_IDX,				CHX002_DUMP_D15F0_EPHY,				0x00,		0x14F},
 	{L"D15F0_SATA_MSIXT",					DUMP_MMIO,				CHX002_DUMP_D15F0_MSI_XT,				0x00,		0x3F},	
 	{L"D15F0_SATA_MSIXP",					DUMP_MMIO,				CHX002_DUMP_D15F0_MSI_XP,				0x00,		0x0F},
-	{L"D15F0_AHCI_MMIO", 					DUMP_MMIO,				CHX002_DUMP_D15F0_AHCI_MMIO, 			0x00,		0x2B},
+	{L"D15F0_AHCI_MMIO", 					DUMP_MMIO,				CHX002_DUMP_D15F0_AHCI_MMIO, 			0x00,		0xFF},
 	{L"D15F0_AHCI_MMIO_P0",					DUMP_MMIO,				CHX002_DUMP_D15F0_AHCI_MMIO_P0,				0x00,		0x47},
 	{L"D15F0_AHCI_MMIO_P1", 				DUMP_MMIO,				CHX002_DUMP_D15F0_AHCI_MMIO_P1,				0x00,		0x47},
-	//{L"D16F7_MMIO",							DUMP_MMIO,				CHX002_DUMP_D16F7_MMIO,				0x00,		0xBF}, 
-  	{L"D17F0 MMIO",							DUMP_MMIO,				CHX002_DUMP_D17F0_MMIO, 0x00, 		0x12F},
-	//{L"WT_MMIO", 							DUMP_MMIO,				CHX002_DUMP_WT_MMIO,	0x00,		0xF},
-	//{L"D18F0_MMIO", 						DUMP_MMIO,				CHX002_DUMP_D18F0_MMIO,				0x00,		0x4BF}, 
-	{L"D20F0_MMIO_Part1", 					DUMP_MMIO,				CHX002_DUMP_D20F0_MMIO, 			0x00,		0x17F},
-	{L"D20F0_MMIO_Part2", 					DUMP_MMIO,				CHX002_DUMP_D20F0_MMIO, 			0x2030,		0x2167},	
+	{L"D15F0_PRIMARY_CHANNEL_COMMAND_IO",	DUMP_IO,				CHX002_DUMP_D15F0_PRIMARY_CHANNEL_COMMAND_IO,					0x00,		0x07},
+	{L"D15F0_PRIMARY_CHANNEL_CONTROL_IO",	DUMP_IO,				CHX002_DUMP_D15F0_PRIMARY_CHANNEL_CONTROL_IO,					0x00,		0x03},	
+	{L"D15F0_BUS_MASTER_IDE_IO",			DUMP_IO,				CHX002_DUMP_D15F0_BUS_MASTER_IDE_IO,					0x00,		0x17},	
 	{L"HPET",								DUMP_MMIO,				CHX002_DUMP_HPET,		0x00,		0x15F}, 
 	{L"SPI",								DUMP_MMIO,				CHX002_DUMP_SPI,		0x00,		0xFF},		
-	/*{L"D14F0_IO",							DUMP_IO,				CHX002_DUMP_D14F0_IO,		0x00,		0xFF},	
-	{L"D16F0_IO", 							DUMP_IO,				CHX002_DUMP_D16F0_IO,		0x00,		0xFF},	
-	{L"D16F1_IO", 							DUMP_IO,				CHX002_DUMP_D16F1_IO,		0x00,		0xFF},	
-	*/
-	{L"PMIO",								DUMP_IO,				CHX002_DUMP_PMIO,					0x00,		0xFB},	
 	{L"SMIO",								DUMP_IO,				CHX002_DUMP_SMIO,					0x00,		0x0F},	
-	{L"D15F0_PRIMARY_CHANNEL_COMMAND_IO",	DUMP_IO,				CHX002_DUMP_D15F0_PRIMARY_CHANNEL_COMMAND_IO,					0x00,		0x07},
-	{L"D15F0_PRIMARY_CHANNEL_CONTROL_IO",	DUMP_IO,				CHX002_DUMP_D15F0_PRIMARY_CHANNEL_CONTROL_IO,					0x00,		0x01},	
-	{L"D15F0_BUS_MASTER_IDE_IO",			DUMP_IO,				CHX002_DUMP_D15F0_BUS_MASTER_IDE_IO,					0x00,		0x17},	
+	{L"PMIO",								DUMP_IO,				CHX002_DUMP_PMIO,					0x00,		0xFF},	
+	//{L"PMIO",								DUMP_IO,				CHX002_DUMP_PMIO,					0x18,		0xFB},	
+	//{L"D14F0_USB11",						DUMP_CFG,				CHX002_DUMP_D14F0_USB,	0x00,		0xFF},
+	//{L"D14F7_USB20",						DUMP_CFG,				CHX002_DUMP_D14F7_USB,	0x00,		0xFF}, 
+	{L"D16F0_USB11",						DUMP_CFG,				CHX002_DUMP_D16F0_USB,	0x00,		0xFF}, 
+	//{L"D16F1_USB11",						DUMP_CFG,				CHX002_DUMP_D16F1_USB,	0x00,		0xFF}, 
+	{L"D16F7_USB20",						DUMP_CFG,				CHX002_DUMP_D16F7_USB,	0x00,		0xFF}, 
+	//{L"D18F0_PCI",							DUMP_CFG,			CHX002_DUMP_D18F0,		0x00,		0xFF}, 
+	//{L"D14F7_USB20_MMIO",					DUMP_MMIO,				CHX002_DUMP_D14F7_MMIO,				0x00,		0xBF}, 
+	{L"D16F7_MMIO", 						DUMP_MMIO,				CHX002_DUMP_D16F7_MMIO, 			0x00,		0xBF}, 
+	//{L"D18F0_MMIO",						DUMP_MMIO,				CHX002_DUMP_D18F0_MMIO, 			0x00,		0x4BF}, 
 	/*{L"D14F7_USB20_PHY_CTRL",				DUMP_USB2_D14F7_L2,		CHX002_DUMP_D14F7_PHY_CTRL,				0x00,		0x0F}, 
 	{L"D14F7_USB20_P1_PHY",					DUMP_USB2_D14F7_L2,		CHX002_DUMP_D14F7_P1_PHY,				0x1000,		0x100F}, 
 	{L"D14F7_USB20_P2_PHY", 				DUMP_USB2_D14F7_L2,		CHX002_DUMP_D14F7_P2_PHY, 			0x2000,		0x200F},
 	{L"D14F7_USB20_PHY_TEST_CTRL", 			DUMP_USB2_D14F7_L2,		CHX002_DUMP_D14F7_PHY_TEST_CTRL, 			0x10000,	0x1000F},
 	{L"D14F7_USB20_P1_PHY_TEST",    		DUMP_USB2_D14F7_L2,		CHX002_DUMP_D14F7_PHY_P1_TEST_CTRL, 			0x11000,	0x1100F},
 	{L"D14F7_USB20_P2_PHY_TEST",			DUMP_USB2_D14F7_L2,		CHX002_DUMP_D14F7_PHY_P2_TEST_CTRL,				0x12000,	0x1200F},
+	*/
 	{L"D16F7_USB20_PHY_CTRL",				DUMP_USB2_D16F7_L2,		CHX002_DUMP_D16F7_PHY_CTRL,				0x00,		0x0F},
 	{L"D16F7_USB20_P1_PHY",					DUMP_USB2_D16F7_L2,		CHX002_DUMP_D16F7_PHY_P1_CTRL,				0x1000,		0x100F},
 	{L"D16F7_USB20_P2_PHY",					DUMP_USB2_D16F7_L2,		CHX002_DUMP_D16F7_PHY_P2_CTRL,				0x2000,		0x200F},	
@@ -76,13 +70,20 @@ static dumpRegister SBRegList[] = {
 	{L"D16F7_USB20_P1_PHY_TEST", 			DUMP_USB2_D16F7_L2,		CHX002_DUMP_D16F7_PHY_P1_TEST_CTRL,				0x11000,	0x1100F},	
 	{L"D16F7_USB20_P2_PHY_TEST", 			DUMP_USB2_D16F7_L2,		CHX002_DUMP_D16F7_PHY_P2_TEST_CTRL,				0x12000,	0x1200F},	
 	{L"D16F7_USB20_P3_PHY_TEST", 			DUMP_USB2_D16F7_L2,		CHX002_DUMP_D16F7_PHY_P3_TEST_CTRL,				0x13000,	0x1300F},	
-	{L"D16F7_USB20_P4_PHY_TEST", 			DUMP_USB2_D16F7_L2,		CHX002_DUMP_D16F7_PHY_P4_TEST_CTRL,				0x14000,	0x1400F},	
-	{L"D18F0_OPTCFG_XHCI",					DUMP_USB3_D18F0_L2,		CHX002_DUMP_D18F0_OPTCFG_XHCI,				0x00,		0x15F},	
+	{L"D16F7_USB20_P4_PHY_TEST", 			DUMP_USB2_D16F7_L2,		CHX002_DUMP_D16F7_PHY_P4_TEST_CTRL,				0x14000,	0x1400F},
+	/*{L"D18F0_OPTCFG_XHCI",					DUMP_USB3_D18F0_L2,		CHX002_DUMP_D18F0_OPTCFG_XHCI,				0x00,		0x15F},	
 	{L"D18F0_OPTCFG_HSBI",					DUMP_USB3_D18F0_L2,		CHX002_DUMP_D18F0_OPTCFG_HSBI,				0x10000,	0x1063F},	
 	{L"D18F0_OPTCFG_SSPIP_C",				DUMP_USB3_D18F0_L2,		CHX002_DUMP_D18F0_U3IP_SSCFG_C,				0x20000,	0x200FF},	
 	{L"D18F0_OPTCFG_SSPIP_P",				DUMP_USB3_D18F0_L2,		CHX002_DUMP_D18F0_U3IP_SSCFG_P,				0x20100,	0x201DF},	
-	{L"D18F0_OPTCFG_MCU",					DUMP_USB3_D18F0_L2,		CHX002_DUMP_D18F0_OPTCFG_MCU,				0x30000,	0x3004F},	
-*/
+	{L"D18F0_OPTCFG_MCU",					DUMP_USB3_D18F0_L2,		CHX002_DUMP_D18F0_OPTCFG_MCU,				0x30000,	0x3004F},		
+	{L"D14F0_IO",							DUMP_IO,				CHX002_DUMP_D14F0_IO,		0x00,		0xFF},	
+	*/
+	{L"D16F0_IO", 							DUMP_IO,				CHX002_DUMP_D16F0_IO,		0x00,		0x1F},	
+	//{L"D16F1_IO", 							DUMP_IO,				CHX002_DUMP_D16F1_IO,		0x00,		0xFF},	
+	{L"WT_MMIO",							DUMP_MMIO,				CHX002_DUMP_WT_MMIO,	0x00,		0xF},
+	{L"D20F0",								DUMP_CFG,				CHX002_DUMP_D20F0,		0x00,		0x14F},
+	{L"D20F0_MMIO",					DUMP_MMIO,				CHX002_DUMP_D20F0_MMIO, 			0x00,		0x2167},
+	//{L"D20F0_MMIO_Part2",					DUMP_MMIO,				CHX002_DUMP_D20F0_MMIO, 			0x2030, 	0x2167},	
 };
 
 static dumpRegister NBRegList[] = {
@@ -107,8 +108,8 @@ static dumpRegister NBRegList[] = {
 	{L"D8F0_MMIO",	DUMP_MMIO,	CHX002_DUMP_D9F0_MMIO,				0x00,	0xFF},	
 	{L"D9F0_MMIO",	DUMP_MMIO,	CHX002_DUMP_D8F0_MMIO,				0x00,	0xFF},
 	{L"RCRB_H",  	DUMP_MMIO,	CHX002_DUMP_RCRB_H,	   		 	0x00,	0x2BF},
-	{L"PCIE_EPHY",	DUMP_MMIO,	CHX002_DUMP_PCIE_EPHY,	0x00,	0x3FFF},
-	{L"PEMCU",		DUMP_MMIO,	CHX002_DUMP_PEMCU,		0x00,	0x2F},
+	{L"PCIE_PHY",	DUMP_MMIO,	CHX002_DUMP_PCIE_EPHY,	0x00,	0x3FFF},
+	//{L"PEMCU",		DUMP_MMIO,	CHX002_DUMP_PEMCU,		0x00,	0x2F},
 	{L"TACTL",  	DUMP_MMIO,	CHX002_DUMP_TACTL,	    		0x00,	0x2FF},
 	{L"CRMCA",		DUMP_MMIO,	CHX002_DUMP_CRMCA,		0x00,	0xFF},
 };
@@ -236,6 +237,21 @@ void SB_beforeDump(UINT32 baseAddress) {
 			buffer32=CHX002_DUMP_D11F0_MMIO;
 			WritePci32(CHX002_ESPI|0x10, buffer32);
 			break;
+		case CHX002_DUMP_D14F0_USB:
+		case CHX002_DUMP_D16F0_USB:		
+		case CHX002_DUMP_D16F7_USB:
+			RwPci8(CHX002_BUSC|0x50, BIT2|BIT4|BIT5, 0);	//;Set bit, clear bit
+			buffer8=MmioRead8(CHX002_DUMP_D17F0_MMIO+0x40);
+			buffer8|=BIT0|BIT3;
+			MmioWrite8(CHX002_DUMP_D17F0_MMIO+0x40, buffer8);			
+			/*FOR XHCI
+			buffer8=IoRead8(0x800+0x80);
+			DEBUG((EFI_D_ERROR,"DLA debug. BF:IO 0x880)=0x%x\n",buffer8));
+			buffer8|=BIT3;
+			IoWrite8(0x800+0x80, buffer8);			
+			DEBUG((EFI_D_ERROR,"DLA debug. AF:IO 0x880)=0x%x\n",buffer8));
+			*/
+			break;
 
 		case CHX002_DUMP_D14F7_MMIO:			
 			RwPci8(CHX002_D14F7EHCI|0x04, 0x03, 0);	//;Set bit, clear bit
@@ -296,10 +312,13 @@ void SB_beforeDump(UINT32 baseAddress) {
 			break;
 			
 		case CHX002_DUMP_D20F0_MMIO:
+			DEBUG((EFI_D_ERROR,"DLA debug. CHX002_DUMP_D20F0_MMIO\n"));
 			RwPci8(CHX002_PCCA|0xD1, 0x00, 0x04);	//;Set bit, clear bit
 			buffer32=CHX002_DUMP_D20F0_MMIO;
 			WritePci32(CHX002_HDAC|0x10, buffer32);
 			RwPci8(CHX002_HDAC|0x4, 0x02, 0x03);	//;Set bit, clear bit			
+			DEBUG((EFI_D_ERROR,"DLA debug. DumpReg-af D20F0 Rx10(%2X)\n",ReadPci32(CHX002_HDAC|0x10)));
+			DEBUG((EFI_D_ERROR,"DLA debug. DumpReg-af D20F0 Rx04(%2X)\n",ReadPci32(CHX002_HDAC|0x4)));
 			break;	
 
 		case CHX002_DUMP_HPET:
@@ -320,16 +339,27 @@ void SB_beforeDump(UINT32 baseAddress) {
 			
 
 		case CHX002_DUMP_D14F0_IO:			
+			RwPci8(CHX002_D14F0UHCI|0x04, 0x03, 0);	//;Set bit, clear bit
 			buffer16 = CHX002_DUMP_D14F0_IO;
 			WritePci16(CHX002_D14F0UHCI|0x20, buffer16);
 			break;
 
-		case CHX002_DUMP_D16F0_IO:			
-			buffer16 = CHX002_DUMP_D16F0_IO;
-			WritePci16(CHX002_UHC0|0x20, buffer16);
-			break;
+		case CHX002_DUMP_D16F0_IO:
+			
+			RwPci8(CHX002_UHC0|0x04, 0x03, 0);	//;Set bit, clear bit
+			DEBUG((EFI_D_ERROR,"DLA debug. DumpReg-bf D16F0 Rx20=0x%x\n",ReadPci32(CHX002_UHC0|0x20)));
+			buffer32 = CHX002_DUMP_D16F0_IO;
+			WritePci32(CHX002_UHC0|0x20, buffer32);
+			DEBUG((EFI_D_ERROR,"DLA debug. DumpReg-af D16F0 Rx20=0x%x\n",ReadPci32(CHX002_UHC0|0x20)));
+		 	buffer32=ReadPci32(CHX002_EHCI|0xA0);
+/*			DEBUG((EFI_D_ERROR,"DLA debug. DumpReg-bf D16F7 RxA0=0x%x\n",ReadPci32(CHX002_EHCI|0xA0)));
+			buffer32=0xBBBBBB00| (0xFF & buffer32); 
+	        WritePci32 ((CHX002_EHCI|0xA0), buffer32); 
+			DEBUG((EFI_D_ERROR,"DLA debug. DumpReg-af D16F7 RxA0=0x%x\n",ReadPci32(CHX002_EHCI|0xA0)));
+*/			break;
 
 		case CHX002_DUMP_D16F1_IO:			
+			RwPci8(CHX002_UHC1|0x04, 0x03, 0);	//;Set bit, clear bit
 			buffer16 = CHX002_DUMP_D16F1_IO;
 			WritePci16(CHX002_UHC1|0x20, buffer16);
 			break;
@@ -350,7 +380,7 @@ void SB_beforeDump(UINT32 baseAddress) {
 			WritePci8(CHX002_BUSC| 0xD2, buffer8);		
 			break;				
 
-		case CHX002_DUMP_D15F0_PRIMARY_CHANNEL_COMMAND_IO:
+/*		case CHX002_DUMP_D15F0_PRIMARY_CHANNEL_COMMAND_IO:
 			RwPci8(CHX002_SATA|D15F0_MISC_CTL_2, BIT7,0);
 			WritePci8(CHX002_SATA|D15F0_SUB_CLASS_CODE, 0x01);
 			WritePci32(CHX002_SATA|0x10, CHX002_DUMP_D15F0_PRIMARY_CHANNEL_COMMAND_IO);
@@ -367,7 +397,7 @@ void SB_beforeDump(UINT32 baseAddress) {
 			WritePci8(CHX002_SATA|D15F0_SUB_CLASS_CODE, 0x01);
 			WritePci32(CHX002_SATA|0x20, CHX002_DUMP_D15F0_BUS_MASTER_IDE_IO);
 			break;	
-		default :
+	*/	default :
 			break;
 	}
 }
@@ -490,7 +520,10 @@ VOID PrintRegArray(
 			data = MmioRead8(TmpBase+Index);
 		}
 		else if(RegType==TYPE_IO){
-			data = IoRead8((TmpBase+Index));
+			if(((TmpBase+Index)<0x818)&&((TmpBase+Index)>0x813))
+				data=0x0E;//Error
+			else
+				data = IoRead8((TmpBase+Index));
 		}
 		
 		else if(RegType==TYPE_IDX){
@@ -500,19 +533,19 @@ VOID PrintRegArray(
 		}
 		
 		else if(RegType==TYPE_USB2_D14F7_L2){
-			RwPci8(VISA_PCI_ADDRESS(0, 14, 7, 0x43),BIT0,0);
+			//RwPci8(VISA_PCI_ADDRESS(0, 14, 7, 0x43),BIT0,0);
 			USB3_Lev2_Off=(TmpBase+Index)-((TmpBase+Index)%4);
 			WritePci32(VISA_PCI_ADDRESS(0, 14, 7, 0x78),USB3_Lev2_Off);
 			data = ReadPci8(VISA_PCI_ADDRESS(0, 14, 7, 0x7C+((TmpBase+Index)%4)));
-			RwPci8(VISA_PCI_ADDRESS(0, 14, 7, 0x43),0,BIT0);
+			//RwPci8(VISA_PCI_ADDRESS(0, 14, 7, 0x43),0,BIT0);
 			}
 		
 		else if(RegType==TYPE_USB2_D16F7_L2){
-			RwPci8(VISA_PCI_ADDRESS(0, 16, 7, 0x43),BIT0,0);
+			//RwPci8(VISA_PCI_ADDRESS(0, 16, 7, 0x43),BIT0,0);
 			USB3_Lev2_Off=(TmpBase+Index)-((TmpBase+Index)%4);
 			WritePci32(VISA_PCI_ADDRESS(0, 16, 7, 0x78),USB3_Lev2_Off);
-			data = ReadPci8(VISA_PCI_ADDRESS(0, 18, 0, 0x7C+((TmpBase+Index)%4)));
-			RwPci8(VISA_PCI_ADDRESS(0, 16, 7, 0x43),0,BIT0);
+			data = ReadPci8(VISA_PCI_ADDRESS(0, 16, 7, 0x7C+((TmpBase+Index)%4)));
+			//RwPci8(VISA_PCI_ADDRESS(0, 16, 7, 0x43),0,BIT0);
 			}
 		
 		else if(RegType==TYPE_USB3_D18F0_L2){
@@ -567,7 +600,7 @@ DumpPciDevSetting(
  	 //PCI device not Present
 	if(MmioRead16(PciDevBase)==0xFFFF){ 
 		DEBUG((EFI_D_ERROR,"\ndebug. %s not Present\n",RegToDump->label));
-		return EFI_UNSUPPORTED;	
+		//return EFI_UNSUPPORTED;	
 	}
 	
 	Bus=(UINT8)(PciDevBase>>20);
@@ -600,10 +633,6 @@ DumpMmioReg(
 	SizeToDump = HighBound-LowBound;
 	
 	if( MmioBase==0xFFFFFFFF){ 
-		return EFI_UNSUPPORTED;	
-	}
-	 // not Present
-	if(MmioRead16(MmioBase)==0xFFFF){ 
 		DEBUG((EFI_D_ERROR,"\n %s  not Present\n",RegToDump->label));
 		return EFI_UNSUPPORTED;	
 	}
@@ -673,7 +702,7 @@ DumpIDX_USB_Reg(
 	else if(RegToDump->type==DUMP_USB2_D14F7_L2)
 		PrintRegArray(Base,LowBound,HighBound,IsBit_Layout,TYPE_USB2_D14F7_L2);
 	else if(RegToDump->type==DUMP_USB2_D16F7_L2)
-		PrintRegArray(Base,LowBound,HighBound,IsBit_Layout,TYPE_USB2_D14F7_L2);
+		PrintRegArray(Base,LowBound,HighBound,IsBit_Layout,TYPE_USB2_D16F7_L2);
 	else if(RegToDump->type==DUMP_USB3_D18F0_L2)
 		PrintRegArray(Base,LowBound,HighBound,IsBit_Layout,TYPE_USB3_D18F0_L2);
 	
@@ -793,8 +822,7 @@ VOID DumpSBValue (
 	}
 	for (Index= 0; Index < CountToDump; Index++){
 		
-		if (((SBRegList[Index].baseAddress==CHX002_DUMP_D11F0_MMIO)&&(ReadPci8(CHX002_ESPI)==0xFF))\
-		||	((SBRegList[Index].baseAddress==CHX002_DUMP_D20F0_MMIO)&&(ReadPci8(CHX002_HDAC)==0xFF)))
+		if ((SBRegList[Index].baseAddress==CHX002_DUMP_D11F0_MMIO)&&(ReadPci8(CHX002_ESPI)==0xFF))
 			continue;
 
 		if(DefaultValue){
