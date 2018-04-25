@@ -197,6 +197,12 @@ Revision History:
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
       endoneof;     
 
+       oneof varid = SETUP_DATA.C2P2FlushC2M,
+        prompt      = STRING_TOKEN(STR_C2P2_FLUSH_C2M),
+        help        = STRING_TOKEN(STR_C2P2_FLUSH_C2M_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+      endoneof; 
    #endif   
 
        oneof varid = SETUP_DATA.RoundRobin,

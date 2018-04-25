@@ -105,6 +105,7 @@ typedef struct {
   UINT8 FixCpuRatio;
   //UINT8	PartialResetEn;
   UINT8 MCASupport;
+  UINT8 C2P2FlushC2M;
 #endif  
   ////
   UINT8 IOVEnable;

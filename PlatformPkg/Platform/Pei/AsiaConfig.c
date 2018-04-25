@@ -858,6 +858,7 @@ GotSetupVariable:
   
 #ifdef ZX_SECRET_CODE
   PcdSet8(PcdCpuCoreEnabled, SetupData->KillAp);
+  NbCfg->C2P2FlushC2M = SetupData->C2P2FlushC2M;
 //YKN-2016112201 -s
 //YKN-2016112402 -s
 /*
