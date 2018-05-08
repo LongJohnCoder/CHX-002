@@ -351,7 +351,7 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
 !ifdef CHX002_HAPS
   $(ASIA_SOURCE)/Porting/Pei/Dram/$(ASIA_NBTYPE)/AsiaDramPeimlib.inf
 !else
-  $(ASIA_SOURCE)/Porting/Pei/Dram-pxp/$(ASIA_NBTYPE)/AsiaDramPeimlib.inf  
+  
 !endif  
 
 #  $(ASIA_SOURCE)/Porting/Pei/Dram/$(ASIA_NBTYPE)/AsiaDramPeimlib.inf
