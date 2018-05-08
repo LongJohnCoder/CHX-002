@@ -348,11 +348,7 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
 [Libraries.IA32]
   $(ASIA_SOURCE)/Interface/PPI/AsiaPpiLib.inf
   ### DDR4 as default.
-!ifdef CHX002_HAPS
   $(ASIA_SOURCE)/Porting/Pei/Dram/$(ASIA_NBTYPE)/AsiaDramPeimlib.inf
-!else
-  
-!endif  
 
 #  $(ASIA_SOURCE)/Porting/Pei/Dram/$(ASIA_NBTYPE)/AsiaDramPeimlib.inf
 #
