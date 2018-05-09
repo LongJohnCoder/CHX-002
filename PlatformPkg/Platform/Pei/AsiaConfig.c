@@ -465,7 +465,7 @@ GotSetupVariable:
   NbCfg->PegApciIrq = SetupData->PegApciIrq;
   NbCfg->Peg2ApciIrq = SetupData->Peg2ApciIrq;
   NbCfg->Peg3ApciIrq = SetupData->Peg3ApciIrq;
-  
+  NbCfg->PcieASPMBootArch = SetupData->PcieASPMBootArch;
   //LNA-2016122701-S
   NbCfg->PcieOBFFCtrl_PCIE = SetupData->PcieOBFFCtrl_PCIE;
   NbCfg->PcieOBFFCtrl_PMU = SetupData->PcieOBFFCtrl_PMU;
