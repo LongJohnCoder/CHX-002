@@ -31,21 +31,21 @@
 #
 ################################################################################
 [FD.ZX8711A]
-BaseAddress   = 0xFFC00000 | gEfiByoModulePkgTokenSpaceGuid.PcdFlashAreaBaseAddress
-Size          = 0x00400000 | gEfiByoModulePkgTokenSpaceGuid.PcdFlashAreaSize
+BaseAddress   = 0xFF800000 | gEfiByoModulePkgTokenSpaceGuid.PcdFlashAreaBaseAddress
+Size          = 0x00800000 | gEfiByoModulePkgTokenSpaceGuid.PcdFlashAreaSize
 ErasePolarity = 1
 BlockSize     = 0x10000
-NumBlocks     = 0x40
+NumBlocks     = 0x80
 
 
 
 ################################################################################
 #eBMC
-0x00000000|0x00010000
+0x00000000|0x00400000
 FILE = $(ASIA_SOURCE)/../ZxPlatformBin/Sme/CHX002_SME_Simple.bin
 
 #NV_VARIABLE_STORE
-0x0010000|0x00020000
+0x00410000|0x00020000
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
 DATA = {
   # ZeroVector []
@@ -77,7 +77,7 @@ DATA = {
 }
 
 #NV_FTW_WORKING
-0x0030000|0x00010000
+0x00430000|0x00010000
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize
 DATA = {
   # EFI_FAULT_TOLERANT_WORKING_BLOCK_HEADER->Signature = gEfiSystemNvDataFvGuid = {0xFFF12B8D, 0x7696, 0x4C8B,{0xA9, 0x85, 0x27, 0x47, 0x07, 0x5B, 0x4F, 0x50}}
@@ -89,46 +89,46 @@ DATA = {
 }
 
 #NV_FTW_SPARE
-0x0040000|0x00020000
+0x00440000|0x00020000
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
 
 
-0x0060000|0x00010000
+0x00460000|0x00010000
 gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageMicrocodeBase|gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageMicrocodeSize
 FILE = $(OUTPUT_DIRECTORY)/$(TARGET)_$(TOOL_CHAIN_TAG)/X64/MicrocodeUpdates.bin
 
 
-0x0070000|0x00010000
+0x00470000|0x00010000
 gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageSmbiosBase|gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvStorageSmbiosSize
 
-0x0080000|0x00010000
+0x00480000|0x00010000
 gServerCommonPkgModuleTokenSpaceGuid.PcdFlashNvStorageApeiBase|gServerCommonPkgModuleTokenSpaceGuid.PcdFlashNvStorageApeiSize
 FV = APEI_FV
 
-0x0090000|0x00030000
+0x00490000|0x00030000
 gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvLogoBase|gEfiByoModulePkgTokenSpaceGuid.PcdFlashNvLogoSize
 FV = LOGO_FV
 
-0x00C0000|0x00170000
+0x004C0000|0x001A0000
 gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainBase|gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMainSize
 FV = FVMAIN_COMPACT
 
 
 !if $(USE_PREBUILD_NETWORK_STACK) == TRUE
-0x00300000|0x00030000
+0x00680000|0x00040000
 gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMain2Base|gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMain2Size
 FILE = $(PLATFORM_PACKAGE)/Platform/Bin/NETWORK_STACK_COMPACT_x64.Fv
 !else
-0x002B0000|0x00080000
+0x00640000|0x00080000
 gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMain2Base|gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMain2Size
 FV = NETWORK_STACK_COMPACT
 !endif
 
-0x00330000|0x000C0000
+0x006C0000|0x000F0000
 gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecoveryBase|gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecoverySize
 FV = FVRECOVERY
 
-0x003F0000|0x00010000
+0x007F0000|0x00010000
 gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvSecBase|gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvSecSize
 FV = FVSEC
 
