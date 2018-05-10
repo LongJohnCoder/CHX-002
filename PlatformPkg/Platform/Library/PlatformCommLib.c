@@ -573,8 +573,8 @@ EFI_STATUS LoadXhciFw(
     //
     MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_ADR), XHCI_OPTCFG_MCU_BASE + 0x20);
     MmioWrite8(XHCI_PCI_REG(XHCI_OPT_CFG_DAT), 0x1);
-    Data    = MmioRead8(XHCI_PCI_REG(XHCI_OPT_CFG_DAT));
-    DEBUG((EFI_D_INFO, "                  MCU Software Reset(Rx30020[0]) is %X\n", (Data & BIT0)));
+    // Data    = MmioRead8(XHCI_PCI_REG(XHCI_OPT_CFG_DAT));
+    // DEBUG((EFI_D_INFO, "                  MCU Software Reset(Rx30020[0]) is %X\n", (Data & BIT0)));
 
     //
     // 9. Disable bus master and OPTCFG access
