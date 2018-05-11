@@ -281,7 +281,7 @@ GotSetupVariable:
   SbCfg->XhciMcuDmaPath   = SetupData->XhciMcuDmaPath;
   SbCfg->TRBCacheBypass   = SetupData->TRBCacheBypass;
   SbCfg->XhciOutBurstEn   = SetupData->XhciOutBurstEn;
-  SbCfg->XhciU1U2En 	  = SetupData->XhciU1U2En;
+  SbCfg->XhciU1U2En       = SetupData->XhciU1U2En;
   SbCfg->XhciMsiFlushEn   = SetupData->XhciMsiFlushEn;
   SbCfg->XhciUartEn       = SetupData->XhciUartEn;
   SbCfg->USBCFLRControl   = SetupData->USBCFLRControl;
@@ -290,7 +290,7 @@ GotSetupVariable:
   SbCfg->UsbS4Wakeup      = SetupData->UsbS4Wakeup;
   SbCfg->UsbC4Block       = SetupData->UsbC4Block;
   SbCfg->UsbOCEn          = SetupData->UsbOCEn;
-  SbCfg->UsbEITRN  		  = SetupData->UsbEITRN;
+  SbCfg->UsbEITRN         = SetupData->UsbEITRN;
 
   //CND003 USB	
   //SbCfg->IOEUsbModeSelectMode= SetupData->IOEUsbModeSelectMode;

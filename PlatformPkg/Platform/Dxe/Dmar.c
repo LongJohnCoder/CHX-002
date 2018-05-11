@@ -117,9 +117,9 @@ EFI_STATUS InstallAcpiTableDmar()
   UINT8 XHCI_RMRR_flag = 0;
   UINT8 SPIC_flag = 1;
 
-  if((gAsiaSbCfg->UsbModeSelect | SETUPVALUE_MASK) == USB_MODE_SEL_MODEB || 
-  	 (gAsiaSbCfg->UsbModeSelect | SETUPVALUE_MASK) == USB_MODE_SEL_MODEC || 
-  	 (gAsiaSbCfg->UsbModeSelect | SETUPVALUE_MASK) == USB_MODE_SEL_MODED )
+  if(gAsiaSbCfg->UsbModeSelect == USB_MODE_SEL_MODEB || 
+  	 gAsiaSbCfg->UsbModeSelect == USB_MODE_SEL_MODEC || 
+  	 gAsiaSbCfg->UsbModeSelect == USB_MODE_SEL_MODED )
   	XHCI_RMRR_flag = 1;
   else
   	XHCI_RMRR_flag = 0;
