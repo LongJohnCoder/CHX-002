@@ -64,15 +64,7 @@ $END--------------------------------------------------------------------
 
     // IDE 
     suppressif NOT ideqval SETUP_DATA.SataCfg == 0;     
-#if defined(CHX002_PXP) || defined(CHX002_HAPS)    
-      oneof varid   = SETUP_DATA.IDEGen,
-        prompt      = STRING_TOKEN(STR_IDE_GEN),
-        help        = STRING_TOKEN(STR_IDE_GEN_HELP),
-        option text = STRING_TOKEN(STR_GEN1), value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
-        option text = STRING_TOKEN(STR_GEN2), value = 2, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN3), value = 3, flags = RESET_REQUIRED;
-      endoneof; 
-#else
+
       oneof varid   = SETUP_DATA.IDEGen,
         prompt      = STRING_TOKEN(STR_IDE_GEN),
         help        = STRING_TOKEN(STR_IDE_GEN_HELP),
@@ -80,7 +72,7 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_GEN2), value = 2, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_GEN3), value = 3, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
       endoneof; 
-#endif
+
 
       suppressif ideqval SETUP_DATA.SBSPEValue == 3 OR (ideqval SETUP_DATA.SBSPEValue == 0 AND ideqval SETUP_DATA.SATASPEValue == 2); 
         oneof varid   = SETUP_DATA.IDECapSelect,
@@ -103,15 +95,7 @@ $END--------------------------------------------------------------------
    
     // AHCI
     suppressif NOT ideqval SETUP_DATA.SataCfg == 2; 
-#if defined(CHX002_PXP) || defined(CHX002_HAPS)
-      oneof varid   = SETUP_DATA.AHCIGen,
-        prompt      = STRING_TOKEN(STR_AHCI_GEN),
-        help        = STRING_TOKEN(STR_AHCI_GEN_HELP),
-        option text = STRING_TOKEN(STR_GEN1), value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
-        option text = STRING_TOKEN(STR_GEN2), value = 2, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN3), value = 3, flags = RESET_REQUIRED;
-      endoneof; 
-#else
+
       oneof varid   = SETUP_DATA.AHCIGen,
         prompt      = STRING_TOKEN(STR_AHCI_GEN),
         help        = STRING_TOKEN(STR_AHCI_GEN_HELP),
@@ -119,7 +103,7 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_GEN2), value = 2, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_GEN3), value = 3, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
       endoneof; 
-#endif
+
 
       oneof varid   = SETUP_DATA.AHCIMSI,
         prompt      = STRING_TOKEN(STR_AHCI_MSI),

@@ -29,11 +29,9 @@
 #define EFI_AHCI_IS_OFFSET                     0x0008
 #define EFI_AHCI_PI_OFFSET                     0x000C
 
-#if defined(CHX002_PXP) || defined(CHX002_HAPS)
-#define EFI_AHCI_MAX_PORTS                     1
-#else
+
 #define EFI_AHCI_MAX_PORTS                     32
-#endif
+
 
 typedef struct {
   UINT32  Lower32;

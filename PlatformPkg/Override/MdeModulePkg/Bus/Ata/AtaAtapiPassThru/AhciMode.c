@@ -2422,15 +2422,13 @@ AhciModeInitialization (
 //  2 - Gen 2
 //  3 - Gen 3
 
-      #if defined(CHX002_PXP) || defined(CHX002_HAPS)
-		   PortSpeed = 0x1;
-	  #else
+
 	  
-	      PortSpeed = PcdGet8(PcdAhciPxSCTLSPD);
-	      if(PortSpeed == 0 || PortSpeed > HostIss){
-	        PortSpeed = HostIss;   				
-	      }
-	  #endif
+      PortSpeed = PcdGet8(PcdAhciPxSCTLSPD);
+      if(PortSpeed == 0 || PortSpeed > HostIss){
+        PortSpeed = HostIss;   				
+      }
+
 				
       Offset = EFI_AHCI_PORT_START + Port * EFI_AHCI_PORT_REG_WIDTH + EFI_AHCI_PORT_SCTL;
       Data = AhciReadReg (PciIo, Offset);

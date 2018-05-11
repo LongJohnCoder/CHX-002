@@ -10,17 +10,12 @@
 #include <Protocol/DriverBinding.h>
 
 
-#if defined(CHX002_PXP) || defined(CHX002_HAPS)
-#define AHCI_MULTI_MAX_DEVICES              16
-#define AHCI_MAX_PORTS                      1
-#define IDE_MAX_CHANNELS                    1
-#define IDE_MAX_DEVICES                     1
-#else
+
 #define AHCI_MULTI_MAX_DEVICES              16
 #define AHCI_MAX_PORTS                      2
 #define IDE_MAX_CHANNELS                    1
 #define IDE_MAX_DEVICES                     2
-#endif
+
 #define SATA_CONTROLLER_SIGNATURE           SIGNATURE_32('S', 'A', 'T', 'A')
 
 typedef struct _EFI_SATA_CONTROLLER_PRIVATE_DATA {
