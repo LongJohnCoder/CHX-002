@@ -557,15 +557,11 @@ InitSmbus (
 //MmioAnd8   (LPC_PCI_REG(LPC_MISC_CFG1_REG), (UINT8)~SMBUS_SC_RTC);
 
   Status = PeiServicesInstallPpi(gSmbusPpiList);
-  ASSERT_EFI_ERROR(Status);
-//MKE_20170122_S Haps/PXP no ThermalChip  
-#if 0
+  ASSERT_EFI_ERROR(Status); 
 #if THERMAL_IC_SUPPORT 
   Status = InitThermalChip(PeiServices);
   ASSERT_EFI_ERROR(Status);  
 #endif
-#endif  
-//MKE_20170122_E
   return Status;  
 }
 
