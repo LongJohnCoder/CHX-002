@@ -283,13 +283,6 @@ EarlyPeiEntry (
   UINT8                  *TopofCar;
   UINT32                 McAddr;
 
-#ifdef CHX002_PXP
-//xxx
-#endif
-
-#ifdef FPGA_SHELL_TEST
-//xxxxx
-#endif
 
   CarTopData = BuildGuidHob(&gCarTopDataHobGuid, sizeof(CAR_TOP_DATA));
   ASSERT(CarTopData != NULL);

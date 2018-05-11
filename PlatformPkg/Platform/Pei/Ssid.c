@@ -1,3 +1,11 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**     Copyright (c) 2015 Shanghai Zhaoxin Semiconductor Co., Ltd.  **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
 #include <Uefi.h>
 #include <Library/IoLib.h>
 #include <Library/DebugLib.h>
@@ -71,9 +79,9 @@ VOID UpdateSsid(VOID)
   //MmioAnd8(EHCI_PCI_REG(USB_SSID_BDEN_REG), (UINT8)~USB_SSID_BDEN); 
 
 // HDAC
-#ifndef	CHX002_HAPS //HYL-20160916
+#ifndef	CHX002_HAPS 
   MmioOr8(HDAC_PCI_REG(HDAC_SSID_BACKDOOR_EN_REG), HDAC_SSID_BACKDOOR_EN);
   MmioWrite32(HDAC_PCI_REG(PCI_SSID_REG), MmioRead32(HDAC_PCI_REG(PCI_VID_REG)));  
   MmioAnd8(HDAC_PCI_REG(HDAC_SSID_BACKDOOR_EN_REG), (UINT8)~HDAC_SSID_BACKDOOR_EN);  
-#endif  //HYL-20160916  
+#endif  
 }

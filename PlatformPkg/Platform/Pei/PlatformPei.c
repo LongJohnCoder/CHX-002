@@ -39,7 +39,7 @@ CpuMpPeiCallback (
   IN VOID                       *Ppi
   );
 
- //JIH-20161202 FW Notify, Copy Form IOE CJW code
+
  EFI_STATUS
 EFIAPI
 FirmwareLoadCallBack (
@@ -63,15 +63,12 @@ PcieHotPlugInit (
 
   
 STATIC EFI_GUID gEfiDebugMaskPpiGuid     = EFI_DEBUG_MASK_PPI_GUID;
-#ifdef	  CHX002_HAPS
-STATIC EFI_DEBUG_MASK_PPI gDebugMaskPpi  = {EFI_D_ERROR|EFI_D_INFO};
-#else
-STATIC EFI_DEBUG_MASK_PPI gDebugMaskPpi  = {0};
 
-#endif
+STATIC EFI_DEBUG_MASK_PPI gDebugMaskPpi  = {EFI_D_ERROR|EFI_D_INFO}; // default print all info to UART
+
+
  
 
- //JIH-20161202 FW Notify, Copy Form IOE CJW code
 STATIC EFI_PEI_NOTIFY_DESCRIPTOR  gPpiNotifyList[] = {
   {
     EFI_PEI_PPI_DESCRIPTOR_NOTIFY_CALLBACK,
@@ -675,7 +672,6 @@ IN ASIA_CPU_CONFIGURATION     *CpuFeature
 #endif
 }
 
- //JIH-20161202 FW Notify, Copy Form IOE CJW code
 EFI_STATUS
 EFIAPI
 FirmwareLoadCallBack (
@@ -700,7 +696,7 @@ FirmwareLoadCallBack (
 
 	if(BootMode == BOOT_ON_S3_RESUME){
 
-      DEBUG((EFI_D_INFO, __FUNCTION__"[JIH] Load PEMCU FW in S3 Resume \n"));
+      DEBUG((EFI_D_INFO, __FUNCTION__"Load PEMCU FW in S3 Resume \n"));
       HandlePemcuFwPei(S3Record);
       DEBUG((EFI_D_INFO, __FUNCTION__"[JNY-PEI] Load PEMCU FW in S3 Resume \n"));
 
@@ -842,7 +838,6 @@ DumpCpuFeature(CpuFeature);
 
   DEBUG((EFI_D_INFO, "StartupAllAPs(%r) %d\n", Status, MissionArg.FinishCount));
 
-  // JIH-20161118
   // For S3ResumeExecuteBootScript will earlay then EndOfPeiCallback in EDKII requirement.
   // PCIe Train Gen3 with do EQ will early then load PEMCU FW.
   // "Load PEMCU FW in S3 Resume" routine put in CpuMpPeiCallback() is Temporary Workaround.

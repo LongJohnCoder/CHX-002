@@ -168,6 +168,8 @@ EnumerateBridgeDevice (
 
 /*
 PciBus: Resource Map for Root Bridge PciRoot(0x0)
+(This is only a sample explaintation, not reflect real CHX002 evb case.)
+
 Type =  Mem32; Base = 0xFDE00000;	Length = 0x200000;	Alignment = 0xFFFFF
  Base = 0xFDE00000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PPB  [00|03|00:**]
  Base = 0xFDF00000;	Length = 0x80000;	  Alignment = 0x7FFFF;	Owner = PCI  [00|01|00:10]
