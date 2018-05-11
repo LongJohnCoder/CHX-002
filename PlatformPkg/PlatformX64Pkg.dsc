@@ -840,7 +840,7 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   #Byosoft smiflash
   $(PLATFORM_PACKAGE)/SmiFlash/SmiFlash.inf
   $(PLATFORM_PACKAGE)/SmiVariable/SmiVariableSmm.inf
-!ifdef CHX002_HAPS  
+
 #USB
   ByoModulePkg/Bus/Pci/UhciDxe/UhciDxe.inf
   ByoModulePkg/Bus/Pci/EhciDxe/EhciDxe.inf
@@ -848,7 +848,7 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   ByoModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
   MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe.inf
   $(PLATFORM_PACKAGE)/Override/ByoModulePkg/Bus/Usb/LegacyUsbSmm/LegacyUsbSmm.inf
-!endif
+
 #ISA Support
   $(PLATFORM_PACKAGE)/Override/PcAtChipsetPkg/IsaAcpiDxe/IsaAcpi.inf
   IntelFrameworkModulePkg/Bus/Isa/IsaBusDxe/IsaBusDxe.inf

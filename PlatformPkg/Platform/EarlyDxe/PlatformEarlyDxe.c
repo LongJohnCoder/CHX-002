@@ -1168,10 +1168,8 @@ if(gSetupHob->PEMCU_LoadFW_WhenBoot){
  PCIE_EarlyDXE_80_PORT(PCIE_EaryDXE_PEMCU_FW_LOAD);
 
   if (BootMode != BOOT_IN_RECOVERY_MODE) {
-#ifdef CHX002_HAPS
     //Status = HandleXhciFw(); // for Normal Boot, will load XHCI FW.
     //ASSERT_EFI_ERROR(Status);
-#endif
   }
 
   PcdSet8(PcdLegacyBiosSupport, gSetupHob->Csm);
