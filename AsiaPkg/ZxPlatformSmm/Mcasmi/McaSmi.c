@@ -154,12 +154,16 @@ VOID ProgramCOMDBG()
     UINT8 Buffer8;
     UINT32 Buffer32;
 
-    //Enable 8Pin UART, PMIORxB0[26]=1, PMIORxB0[31]=0
-        Buffer32=IoRead32(PM_BASE_ADDRESS + PMIO_DVPD_PAD_CTL_REG_4);
-    Buffer32&=~(0x84000000);
-    Buffer32|=0x84000000;
+	 //Enable 4Pin UART0 and 4Pin UART1
+	 Buffer32=IoRead32(0x800 + PMIO_CR_GPIO_PAD_CTL);
+	 Buffer32&=~(0x3F000000);
+	 Buffer32|=0x13000000;
+	 IoWrite32(0x800 + PMIO_CR_GPIO_PAD_CTL,  Buffer32);
 
-    IoWrite32(PM_BASE_ADDRESS + PMIO_DVPD_PAD_CTL_REG_4, Buffer32);
+	 Buffer32=IoRead32(0x800 + PMIO_GPIO_PAD_CTL);
+	 Buffer32&=~(0x3F3F0007);
+	 Buffer32|=0x242D0002;
+	 IoWrite32(0x800 + PMIO_GPIO_PAD_CTL,  Buffer32);
 
     // set D17F0RxB2[3:0]=4h for UART0 IRQ=IRQ4
     RwPci8(CHX002_BUSC|D17F0_PCI_UART_IRQ_ROUTING_LOW, 0x04, 0x0F); //;Set bit, clear bit

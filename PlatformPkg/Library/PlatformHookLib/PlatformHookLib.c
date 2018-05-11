@@ -203,15 +203,15 @@ EFI_STATUS PciUart_Init()
  UINT32 Buffer32;
  
  //Enable 4Pin UART0 and 4Pin UART1
- Buffer32=IoRead32(0x800 + 0xB4);
+ Buffer32=IoRead32(0x800 + PMIO_CR_GPIO_PAD_CTL);
  Buffer32&=~(0x3F000000);
  Buffer32|=0x13000000;
- IoWrite32(0x800 + 0xB4,  Buffer32);
+ IoWrite32(0x800 + PMIO_CR_GPIO_PAD_CTL,  Buffer32);
 
- Buffer32=IoRead32(0x800 + 0xB8);
+ Buffer32=IoRead32(0x800 + PMIO_GPIO_PAD_CTL);
  Buffer32&=~(0x3F3F0007);
  Buffer32|=0x242D0002;
- IoWrite32(0x800 + 0xB8,  Buffer32);
+ IoWrite32(0x800 + PMIO_GPIO_PAD_CTL,  Buffer32);
 
  //Uart0
  MmioAndThenOr8(LPC_PCI_REG(LPC_UART_IRQR_LOW_REG), (UINT8)~PCI_UART0_IRQR_MASK, 4);///RxB2h
