@@ -104,16 +104,13 @@ ProtectedModeSECStart PROC NEAR PUBLIC
 IamBSP:
 
   STATUS_CODE (03h)
-  #ifdef	CHX002_HAPS
   CALL_MMX  VeryEarlyMicrocodeUpdate  
-  #endif
+
   STATUS_CODE (04h)
   CALL_MMX  PlatformInitialization
 
   STATUS_CODE (05h)
-  #ifdef	CHX002_HAPS
   CALL_MMX  ForceCpuMAXRatio
-  #endif
 
   STATUS_CODE (06h)
   CALL_MMX  CacheAsRam
@@ -369,18 +366,7 @@ PlatformInitialization    PROC    NEAR    PRIVATE
   mov   dx,  0cfch
   out   dx,  eax
   ;MIKE_CHX001_PXP_E 
-  ;MKE_20180109 Haps Need Set D17F0Rx54[5]=1,otherwise hang bios UnLock _S 
-  #ifdef	CHX002_HAPS
-  xor   eax,eax
-  mov   eax, 80000000h + (((0 shl 8) + (11h shl 3) + 0) shl 8) + 54h
-  mov   dx,  0cf8h
-  out   dx,  eax
-  mov   dx,  0cfch
-  in    ax,  dx
-  or    ax,  20h
-  out   dx,  ax
-  #endif
-  ;MKE_20180109 Haps Need Set D17F0Rx54[5]=1,otherwise hang bios UnLock _E 
+
   RET_MMX
 PlatformInitialization    ENDP
 
@@ -443,18 +429,10 @@ InitMtrrLoop:
   mov     edx, esi
   mov     ecx, MTRR_PHYS_MASK_0
   wrmsr
-  ;MKE_20170122_S  patch for 512 cache on HAPS
-  ; MKE_20161021_S Cache Whole BiosCode in CHX001 Board
-  #ifdef	CHX002_PXP
+
   mov     eax, PcdGet32(PcdFlashAreaSize)
   mov     edi, PcdGet32(PcdFlashAreaBaseAddress)
-  #endif
-  ; MKE_20161021_E
-  #ifdef	CHX002_HAPS
-  mov eax,070000h
-  mov edi,0FFF30000h
-  ;MKE_20170122_E
-  #endif
+
   ; Round up to page size
   mov     ecx, eax                      ; Save
   and     ecx, 0FFFF0000h               ; Number of pages in 64K
