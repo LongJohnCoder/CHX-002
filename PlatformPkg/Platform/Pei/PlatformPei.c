@@ -798,9 +798,8 @@ CpuMpPeiCallback (
 
  //YKN-20160803 +s
  //NOTE: VRM type and phases are MB dependent. 
- //Temply set 2 indicating 2 phase PVID(EVB2)
  //Save the VrmSupport into ASIA_CPU_CFG_HOB for setup CPU sheet display.
-  CpuFeature->VrmSupport         = 2;     // VRM-3
+  CpuFeature->VrmSupport         = 0x13;     // SVID 3-Phase
  //YKN-20160803 +e
 
 
