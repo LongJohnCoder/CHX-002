@@ -58,6 +58,12 @@ EnableAcpiCallback (
   // Disable PM sources except power button
   IoWrite16(mAcpiBaseAddr + PMIO_PM_EN, PMIO_PM_EN_PWRBTN); ///PMIO_Rx02[8] Power Button Enable
   IoWrite16(mAcpiBaseAddr + PMIO_STS_REG, 0xFFFF);        ///PMIO_Rx00[15:0] Power Management Status
+
+  ///MTN-2018051401 -S For Clear GPE0 Status and Enble Bit
+  IoWrite16(mAcpiBaseAddr + PMIO_GP_SCI_EN, 0);          ///PMIO Rx20[15:0] General Purpose Status
+  IoWrite16(mAcpiBaseAddr + PMIO_GP_STS, 0xFFFF);      ///PMIO Rx22[15:0] General Purpose SCI / RESUME Enable
+  ///MTN-2018051401 -E
+
   IoWrite16(mAcpiBaseAddr + PMIO_GPI_SCIEN_REG, 0);      ///PMIO Rx56[15:0] GPI SCI/RESUME Enable
   IoWrite16(mAcpiBaseAddr + PMIO_GPI_SCIEN1_REG, 0);    ///PMIO Rx58[15:0] General Purpose IO SCI/Resume Enable 1
   IoWrite16(mAcpiBaseAddr + PMIO_GPI_SCIEN3_REG, 0);    ///PMIO Rx5A[15:0] General Purpose IO SCI/Resume Enable 3
