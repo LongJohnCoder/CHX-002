@@ -77,6 +77,16 @@ TightLoop:
 _ModuleEntryPoint ENDP
 _TEXT_REALMODE      ENDS
 
+#ifdef ZX_SECRET_CODE
+;Add core frequence selection macro:
+; 0=3.0G/1.05V 3CA1
+; 1=2.7G/1.0V   3697
+; 2=2.2G/1.0V   2C97
+; 3=2.0G/1.0V   2897
+; 4=1.6G/1.0V   2097
+; others=Default
+CORE_FREQ_SEL = 3
+#endif
 
 ; mm0 is used to save time-stamp counter value.
 ; mm1 is used to save microcode address.
@@ -102,7 +112,35 @@ ProtectedModeSECStart PROC NEAR PUBLIC
   jmp  short @b
 
 IamBSP:
+#ifdef ZX_SECRET_CODE
 
+    mov ecx, 1440h
+    rdmsr
+    or eax, eax
+    jnz pstDone
+
+    xor edx, edx
+IF (CORE_FREQ_SEL EQ 0)
+    mov ax, 3CA1h
+ELSEIF (CORE_FREQ_SEL EQ 1)
+     mov ax, 3697h
+ELSEIF (CORE_FREQ_SEL EQ 2)
+    mov ax, 2C97h
+ELSEIF (CORE_FREQ_SEL EQ 3)
+    mov ax, 2897h
+ELSEIF (CORE_FREQ_SEL EQ 4)
+    mov ax, 2097h
+ENDIF
+
+    mov ecx, 1440h
+    bts eax, 31
+    wrmsr
+
+    inc ecx
+    bts eax, 27
+    wrmsr
+pstDone:    
+#endif
   STATUS_CODE (03h)
   CALL_MMX  VeryEarlyMicrocodeUpdate  
 
@@ -673,12 +711,10 @@ MtrrCountFixed EQU (($ - MtrrInitTable) / 2)
     DW  MTRR_PHYS_MASK_6
     DW  MTRR_PHYS_BASE_7
     DW  MTRR_PHYS_MASK_7
-    ;MIKE_CHX001_PXP_S   PXP Has 10 pairs Variable MTRR
     DW  MTRR_PHYS_BASE_8      
     DW  MTRR_PHYS_MASK_8              
     DW  MTRR_PHYS_BASE_9             
     DW  MTRR_PHYS_MASK_9              
-    ;MIKE_CHX001_PXP_E
 MtrrCount      EQU (($ - MtrrInitTable) / 2)
 
 
