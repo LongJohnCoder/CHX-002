@@ -504,7 +504,7 @@ INF  MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
 #Byosoft smiflash
 INF  $(PLATFORM_PACKAGE)/SmiFlash/SmiFlash.inf
 INF  $(PLATFORM_PACKAGE)/SmiVariable/SmiVariableSmm.inf
-!ifdef FPGA_SHELL_TEST
+
 #USB
 INF  ByoModulePkg/Bus/Pci/UhciDxe/UhciDxe.inf
 INF  ByoModulePkg/Bus/Pci/EhciDxe/EhciDxe.inf
@@ -512,7 +512,7 @@ INF  $(PLATFORM_PACKAGE)/Override/ByoModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf
 INF  ByoModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
 INF  MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe.inf
 INF  $(PLATFORM_PACKAGE)/Override/ByoModulePkg/Bus/Usb/LegacyUsbSmm/LegacyUsbSmm.inf
-!endif
+
 INF  $(PLATFORM_PACKAGE)/Override/PcAtChipsetPkg/IsaAcpiDxe/IsaAcpi.inf
 INF  IntelFrameworkModulePkg/Bus/Isa/IsaBusDxe/IsaBusDxe.inf
 INF  $(PLATFORM_PACKAGE)/Override/IntelFrameworkModulePkg/Bus/Isa/Ps2KeyboardDxe/Ps2keyboardDxe.inf
