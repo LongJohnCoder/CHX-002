@@ -72,7 +72,7 @@ EFI_STATUS MiscConfigDxe (VOID)
   gUsbPolicy.USBPeriodSupport            = LEGACY_PERIOD_UN_SUPP;
   gUsbPolicy.LegacyFreeSupport           = LEGACY_FREE_UN_SUPP;
   gUsbPolicy.LegacyUsbEnable             = gSetupData->LegacyUsbEnable?LEGACY_USB_EN:LEGACY_USB_DIS;
-  gUsbPolicy.XhcSupport                  = LEGACY_XHC_SUPP;
+  gUsbPolicy.XhcSupport                  = gSetupData->XhcSupport?LEGACY_XHC_SUPP:LEGACY_XHC_UN_SUPP;
   gUsbPolicy.UsbTimeTue                  = LEGACY_USB_TIME_TUE_ENABLE;
   gUsbPolicy.InternelHubExist            = USB_NOT_HAVE_HUB_INTERNEL;
   gUsbPolicy.EnumWaitPortStableStall     = 100;

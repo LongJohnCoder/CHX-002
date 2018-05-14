@@ -92,7 +92,6 @@ typedef struct {
   //
   //Controls whether to display the hotkey 
   //
-  UINT8  UsbMode;
   UINT8  LegacyUsbEnable;
   UINT8  XhcSupport; 
   //UINT8 IOVEnable;//NBconfig
