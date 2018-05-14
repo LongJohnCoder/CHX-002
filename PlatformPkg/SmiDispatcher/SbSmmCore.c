@@ -346,10 +346,10 @@ SbSmmCoreRegister  (
     Record->ClearSource (&Record->SrcDesc);
   }
   //ALJ2017 1205 for USB mode4,xhci intonly transfer issue
-  if(Qualified->Type!=PeriodicTimerType)
-	{
+  //if(Qualified->Type!=PeriodicTimerType)
+	//{
   SbSmmEnableSource (&Record->SrcDesc);
-  	}
+  	//}
   //
   // Child's handle will be the address linked list link in the record
   //

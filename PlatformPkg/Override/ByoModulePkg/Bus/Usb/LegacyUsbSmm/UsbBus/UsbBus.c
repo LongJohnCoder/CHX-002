@@ -69,7 +69,7 @@ $END--------------------------------------------------------------------
 #include "../UsbLib/SmmPciIo.h"
 #include "../Ohci/Ohci.h"
 #include <Protocol/SmmUsbDispatch2.h>
-#include <Protocol/SmmGpiDispatch2.h>
+//#include <Protocol/SmmGpiDispatch2.h>
 #include <Protocol/SmmPeriodicTimerDispatch2.h>
 #include <Protocol/UsbPolicy.h>
 #include <library/UefiBootServicesTableLib.h>
@@ -137,7 +137,7 @@ UsbScanPciBus(
     UINT32        PciClassCode;
     EFI_STATUS    Status;
     USB_CFG       *UsbCfg;
-	UINT32		  VIDDID;
+	//UINT32		  VIDDID;
 
     GET_USB_CFG(UsbCfg);
     if (UsbCfg->LegacyUsbEnable == 1) {
@@ -165,7 +165,7 @@ UsbScanPciBus(
                     continue;
                 }
 
-               VIDDID=PciClassCode;
+               //VIDDID=PciClassCode;
                 PciAddress = SMM_PCI_ADDRESS (PciBusNum, PciDeviceNum, PciFunctionNum, PCI_CLASS_OFFSET);
                 Status = SmmPciCfgRead (
                              gSmst,
@@ -180,14 +180,11 @@ UsbScanPciBus(
                 PciClassCode &= 0x0FFFFFF00;
                 if ((PciClassCode == PCI_USB_UHCI_CLASS) || (PciClassCode == PCI_USB_OHCI_CLASS) ||
                         (PciClassCode == PCI_USB_EHCI_CLASS) || (PciClassCode == PCI_USB_XHCI_CLASS)) {
-                    #if defined(HX001ED0_03)
-					    mPeriodicFlag=TRUE;
-					#else
-                     if(VIDDID!=0x31041d17&&VIDDID!=0x30381d17&&VIDDID!=0x92031d17&&VIDDID!=0x31041106&&VIDDID!=0x30381106&&VIDDID!=0x92031106)
+                    
+                     if(PciBusNum>0)//[ALJ20180514:for chx002,use bus num to decide work mode]
                      	{
 						 mPeriodicFlag=TRUE;
 					 }
-					#endif
                     if ((UsbCfg->XhcSupport==0)&&(PciClassCode == PCI_USB_XHCI_CLASS)) {
                         continue; //skip xhci enumerate
                     }
@@ -536,14 +533,17 @@ UsbBusEnumerate(
   UINT8                           InterfaceIndex;
   EFI_USB2_HC_PROTOCOL            *Usb2Hc;
   EFI_STATUS                      Status;
-  EFI_SMM_GPI_DISPATCH2_PROTOCOL  *GpiDispatch;
-  EFI_SMM_GPI_REGISTER_CONTEXT    GpiContext;
-  EFI_HANDLE                      GpiHandle;
-  UINT8                           gpi_regok;
+  //EFI_SMM_GPI_DISPATCH2_PROTOCOL  *GpiDispatch;
+  //EFI_SMM_GPI_REGISTER_CONTEXT    GpiContext;
+  //EFI_HANDLE                      GpiHandle;
+  //UINT8                           gpi_regok;
   EFI_SMM_PERIODIC_TIMER_DISPATCH2_PROTOCOL *PeriodDispatch;
   EFI_SMM_PERIODIC_TIMER_REGISTER_CONTEXT  PeriodContext;
   EFI_HANDLE                               PeriodicTimerHandle;
 
+  EFI_SMM_USB_DISPATCH2_PROTOCOL  *UsbDispatch;
+  EFI_SMM_USB_REGISTER_CONTEXT  UsbContext;
+  EFI_HANDLE                   UsbHandle;
   Link = mUsbBusList.ForwardLink;
   while (Link != &mUsbBusList) {
       BusInstance = USB_BUS_FROM_LINK (Link);
@@ -575,62 +575,64 @@ UsbBusEnumerate(
       }
       Link = Link->ForwardLink;
   }
-
-  if (mPeriodicFlag == 0) {
-    gpi_regok = FALSE;
-    if (gpi_regok == FALSE) {
-      Status = gSmst->SmmLocateProtocol(&gEfiSmmGpiDispatch2ProtocolGuid, NULL, &GpiDispatch);
-      if (EFI_ERROR(Status)) {
-        return EFI_UNSUPPORTED;
-      }
-      GpiContext.GpiNum = 3;
-      Status = GpiDispatch->Register(
-                                GpiDispatch,
-                                UsbSmiDispatcher,
-                                &GpiContext,
-                                &GpiHandle
-    
-                                );
-      gpi_regok = TRUE;
-    }
-  } else {
-    Status = gSmst->SmmLocateProtocol(
-                      &gEfiSmmPeriodicTimerDispatch2ProtocolGuid, 
-                      NULL, 
-                      &PeriodDispatch
-                      );
-    if (EFI_ERROR(Status)) {
-      return EFI_UNSUPPORTED;
-    }
-    PeriodContext.Period          = 0;
-    PeriodContext.SmiTickInterval = 16;
-    Status = PeriodDispatch->Register (
-                               PeriodDispatch,
-                               UsbPeriodicTimerDispatch,
-                               &PeriodContext,
-                               &PeriodicTimerHandle
-                               );
-  }
+  
   Link = mUsbBusList.ForwardLink;
-  while (Link != &mUsbBusList) {
-      BusInstance = USB_BUS_FROM_LINK (Link);
-      Usb2Hc = BusInstance->Usb2Hc;
-      Usb2Hc->EnumerationContext = BusInstance->Devices[0]->Interfaces[0];
-      Usb2Hc->BusEnumerationCallback = (EFI_USB_BUS_ENUMERATION_CALLBACK)UsbRootHubEnumeration;
-      Link = Link->ForwardLink;
-  }
-
-  Link = mUsbBusList.ForwardLink;
-  while (Link != &mUsbBusList) {
-      BusInstance = USB_BUS_FROM_LINK (Link);
-      Usb2Hc = BusInstance->Usb2Hc;
-      Status = Usb2Hc->EnableLegacySupport(Usb2Hc);
-      if (EFI_ERROR(Status))
-        break;
-      Usb2Hc->LegacyCallback(Usb2Hc);
-      Link = Link->ForwardLink;
-  }
-
+	while (Link != &mUsbBusList) {
+		BusInstance = USB_BUS_FROM_LINK (Link);
+		Usb2Hc = BusInstance->Usb2Hc;
+		Usb2Hc->EnumerationContext = BusInstance->Devices[0]->Interfaces[0];
+		Usb2Hc->BusEnumerationCallback = (EFI_USB_BUS_ENUMERATION_CALLBACK)UsbRootHubEnumeration;
+		Link = Link->ForwardLink;
+	}
+	if(mPeriodicFlag==TRUE){
+		
+	  Status = gSmst->SmmLocateProtocol(&gEfiSmmPeriodicTimerDispatch2ProtocolGuid, NULL, &PeriodDispatch);
+	  if (EFI_ERROR(Status)) {
+		return EFI_UNSUPPORTED;
+	  }
+		PeriodContext.Period		  = 0;
+		PeriodContext.SmiTickInterval = 16;
+		Status = PeriodDispatch->Register (
+								   PeriodDispatch,
+								   UsbPeriodicTimerDispatch,
+								   &PeriodContext,
+								   &PeriodicTimerHandle
+							   );
+		USB_DEBUG((EFI_D_ERROR, "Periodic mode\n"));
+	   }
+     else
+     	{	
+     	Status = gSmst->SmmLocateProtocol (
+					   &gEfiSmmUsbDispatch2ProtocolGuid,
+					   NULL,
+					   &UsbDispatch
+				   );
+		  if (EFI_ERROR(Status)) {
+			return EFI_UNSUPPORTED;
+		  }
+		  
+   	   Link = mUsbBusList.ForwardLink;
+       while (Link != &mUsbBusList) {
+           BusInstance = USB_BUS_FROM_LINK (Link);
+           Usb2Hc = BusInstance->Usb2Hc;
+		   //ALJ20170511,move legacy support to controller init part
+		   //Status = Usb2Hc->EnableLegacySupport(Usb2Hc);
+           //if (EFI_ERROR(Status))
+              // break;
+           Usb2Hc->LegacyCallback(Usb2Hc);
+           Link = Link->ForwardLink;
+       }
+	  
+	  //UsbContext.Device = BusInstance->DevicePath;
+      UsbContext.Type   = UsbLegacy;
+      Status = UsbDispatch->Register (
+                       UsbDispatch,
+                       UsbSmiDispatcher,
+                       &UsbContext,
+                       &UsbHandle
+                       );
+	  USB_DEBUG((EFI_D_ERROR, "UsbLegacy mode\n"));
+    }
   return EFI_SUCCESS;
 }
 
