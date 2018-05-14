@@ -81,7 +81,7 @@ VOID UpdateMicroCode(
   ASSERT((AsmReadMsr64(0x1205)&0xFF) == 0x01);
 //YKN-20161104 -s
   if((AsmReadMsr64(0x1205)&0xFF) != 0x01) {
-  	IoWrite8(0x80, 0x90);
+  	IoWrite8(0x80, 0xd3); //{ DXE_CPU_MICROCODE_UPDATE_FAILED, 0xD3 }
 	while(1);
   }
 //YKN-20161104 -e

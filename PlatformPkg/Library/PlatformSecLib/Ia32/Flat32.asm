@@ -321,7 +321,7 @@ luLoadPatch:
     jmp luExit
 path_err:
 ;YKN-20161104 -S
-    mov al, 90h
+    mov al, 0D3h    ;{ DXE_CPU_MICROCODE_UPDATE_FAILED, 0xD3 }
     out 80h, al
     jmp $
 ;YKN-20161104 -E
