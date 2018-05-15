@@ -59,8 +59,10 @@
     #define IRQ_ROUTING_COUNT	35	   
 #elif defined(HX002EC0_10)
     #define IRQ_ROUTING_COUNT	34	   
-#elif defined(HX002EH0_01)
-    #define IRQ_ROUTING_COUNT	30	 	
+#elif defined(HX002EH0_01_IOE_03)
+    #define IRQ_ROUTING_COUNT	30	 
+#elif defined(HX002EH0_01_IOE_23)
+    #define IRQ_ROUTING_COUNT	34	 	
 #else
      #define IRQ_ROUTING_COUNT 37 // temp
 #endif
@@ -111,10 +113,10 @@ STATIC PIR_DATA gPirData = {
   },
   {
 			{0x00, 0x01 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0}}, 0 ,0}, ///D1F0 D1F1
-			{0x00, 0x03 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},///D3F0/F1/F2/F3
-			{0x00, 0x04 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0}}, 0 ,0},///D4F0/F1
+			{0x00, 0x03 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},///D3F0/F1/F2/F3
+			{0x00, 0x04 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0,0},{0,0}}, 0 ,0},///D4F0/F1
 			{0x00, 0x05 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0}}, 0 ,0},///D5F0/F1
-			{0x00, 0x08 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0}}, 0 ,0}, ///D8F0
+			{0x00, 0x08 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0,0},{0,0}}, 0 ,0}, ///D8F0
 			{0x00, 0x09 << 3, {{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0}, ///D9F0
 			{0x00, 0x0A << 3, {{PIRQA_LINK, PIRQ_MASK},{PIRQB_LINK, PIRQ_MASK},{0, 0},{0, 0}}, 0 ,0},///D10F0/F1
 			{0x00, 0x0B << 3, {{PIRQA_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0}, ///D11F0
@@ -525,7 +527,7 @@ STATIC PIR_DATA gPirData = {
    }
 };
 
-#elif defined(HX002EH0_01) 
+#elif defined(HX002EH0_01_IOE_03) 
 
 
 STATIC PIR_DATA gPirData = {
@@ -582,6 +584,72 @@ STATIC PIR_DATA gPirData = {
 
    }
 };
+
+
+#elif defined(HX002EH0_01_IOE_23) 
+
+
+STATIC PIR_DATA gPirData = {
+  {
+    EFI_LEGACY_PIRQ_TABLE_SIGNATURE,
+    0,
+    1,
+    sizeof(PIR_DATA),
+    LPC_BUS_NO,
+    (LPC_DEV_NO<<3) + LPC_FUNC_NO,
+    0,
+    0x1106,
+    0x300A,
+    0,
+    {0},
+    0               // checksum
+  },
+  {
+		{0x00, 0x01 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0}}, 0 ,0}, ///D1F0 D1F1
+		{0x00, 0x03 << 3, {{PIRQH_LINK, PIRQ_MASK},{0,0},{PIRQH_LINK, PIRQ_MASK},{0,0}}, 0 ,0},///D3F0/F1/F2/F3
+		{0x00, 0x04 << 3, {{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0},///D4F0/F1
+		{0x00, 0x05 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0}}, 0 ,0},///D5F0/F1
+		{0x00, 0x08 << 3, {{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0}, ///D8F0
+		{0x00, 0x09 << 3, {{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0}, ///D9F0
+		{0x00, 0x0A << 3, {{PIRQA_LINK, PIRQ_MASK},{PIRQB_LINK, PIRQ_MASK},{0, 0},{0, 0}}, 0 ,0},///D10F0/F1
+		{0x00, 0x0B << 3, {{PIRQA_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0}, ///D11F0
+		{0x00, 0x0E << 3, {{PIRQA_LINK, PIRQ_MASK},{0,0},{0,0},{PIRQD_LINK,PIRQ_MASK}}, 0 ,0}, ///D14F0/F7
+		{0x00, 0x0F << 3, {{PIRQA_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0}, ///D15F0
+		{0x00, 0x10 << 3, {{PIRQA_LINK, PIRQ_MASK},{PIRQB_LINK,PIRQ_MASK},{0,0},{PIRQD_LINK,PIRQ_MASK}}, 0 ,0}, ///D16F0/F1/F7
+		{0x00, 0x12 << 3, {{PIRQA_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0}, ///D18F0
+		{0x00, 0x14 << 3, {{PIRQA_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0}, ///D20F0
+
+		{0x01, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{0,0},{0,0},{0,0}}, 0 ,0},/// IOE SwitchUpBridge B1D0F0
+			
+		{0x02, 0x01 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0},///IOE BUSX+1 D1F0 		
+		{0x02, 0x03 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0},///IOE BUSX+1 D3F0		
+		{0x02, 0x04 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0},///IOE BUSX+1 D4F0		
+		{0x02, 0x05 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0},///IOE BUSX+1 D5F0		
+		{0x02, 0x08 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0},///IOE BUSX+1 D8F0		
+
+		{0x03, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},/// IOE RC  B2D1F0 Slot		
+		{0x04, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},/// IOE RC  B2D3F0 Slot		
+		{0x05, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},/// IOE RC  B2D4F0 Slot		
+
+		{0x06, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0},/// IOE RC B2D5F0 Slot		
+		{0x07, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},/// ITE8993 PCI2PCI Bridge Slot		
+		{0x08, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0},/// IOE RC B2D8F0 Slot		
+
+		{0x09, 0x0D << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0},
+		{0x09, 0x0E << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0}, 
+		{0x09, 0x10 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},  
+		{0x09, 0x0F << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0}, 
+		{0x09, 0x12 << 3, {{PIRQH_LINK, PIRQ_MASK},{0, 0},{0, 0},{0, 0}}, 0 ,0},
+			
+		{0x0A, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},
+		{0x0B, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},
+		{0x0C, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},
+		{0x0D, 0x00 << 3, {{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK},{PIRQH_LINK, PIRQ_MASK}}, 0 ,0},
+
+   }
+};
+
+
 
 #else
 

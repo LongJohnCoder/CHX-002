@@ -20,35 +20,7 @@
 			}
 		}
 	}
-
 	
-#if defined(CHX002_HAPS)
-
-	Device (NPE1)
-	{
-		Name (_ADR, 0x00030001)  
-		Method (_PRT, 0, NotSerialized)  // _PRT: PCI Routing Table
-		{
-			If (PICM)
-			{
-				Return (AR02)
-			}
-
-			Return (PR02)
-		}
-
-		Device (PE1S)
-		{
-			Name (_ADR, Zero)  
-			Method (_PRW, 0, NotSerialized)  
-			{
-				Return (GPRW (0x10, 0x04))
-			}
-		}
-	}
-#endif
-
-
 	Device (NPE2)
 	{
 		Name (_ADR, 0x00030002)  

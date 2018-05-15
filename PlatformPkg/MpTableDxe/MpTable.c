@@ -630,25 +630,7 @@ QueryBusInfo (
       BusEntry[CurrentBusEntry].ParentBusId = PciData[0];
       MaxBusId = (MaxBusId > BusEntry[CurrentBusEntry].BusId) ? \
                  MaxBusId : BusEntry[CurrentBusEntry].BusId;
-
-#if 0
-     //YKN_20160309 +S
-	  pPciIoProtocol->GetLocation(pPciIoProtocol, &Seg, &Bus, &Dev, &Fun);
-	 ///DEBUG((EFI_D_ERROR,"[MTN-DBG]:Seg=0x%x Bus=0x%x Dev=0x%x Fun=0x%x \n",Seg,Bus,Dev,Fun));
-	  for(Index=0;Index < NUM_PCI_BRIDGES; Index++) {
-	  	if((Bus == gPlatformPciBridges[Index].Bus) &&
-			(Dev == gPlatformPciBridges[Index].Dev) &&(Fun == gPlatformPciBridges[Index].Fun)) {
-            gPlatformPciBridges[Index].Enabled = 1;
-			gPlatformPciBridges[Index].PriBus = PciData[0];
-			gPlatformPciBridges[Index].SecBus = PciData[1];
-			break;
-		}
-	  }
-	 ASSERT(Index < NUM_PCI_BRIDGES);
-#endif
 	 
-	  //YKN_20160309 +E
-
     } else {     
       //
       // Any other bridge.  
@@ -916,16 +898,16 @@ CollectCpuInfo (
 
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		0,			 9, 		  2},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		1,			 9, 		  1}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		3,			 9, 		  3},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		4,			 9, 		  4},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		8,			 9, 		  8},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		9,			 9, 		  9}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xC,			 9, 		0xC},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xD,			 9, 		0xD},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xE,			 9, 		0xE},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xF,			 9, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x8,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x8,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x8,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8,	  0xF,			 9, 		0xF},
 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|2,	   0xA, 		0xF},
@@ -976,15 +958,15 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,	         (0<<2)|3,	   0xA, 	   0x3}, 
 
 	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x7,		 (0<<2)|0,	   0xA, 	   0x1},   ///D5F0 Slot
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x7,		 (0<<2)|1,	   0xA, 	   0x2}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x7,	         (0<<2)|2,	   0xA, 	   0x3}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x7,	         (0<<2)|3,	   0xA, 	   0x0}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,		 (0<<2)|0,	   0xA, 	   0x1},   ///D5F0 Slot
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,		 (0<<2)|1,	   0xA, 	   0x2}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	         (0<<2)|2,	   0xA, 	   0x3}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	         (0<<2)|3,	   0xA, 	   0x0}, 
 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8, 	        (0<<2)|0,	   0xA, 	   0x5},   ///D5F1 Slot
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8, 	        (0<<2)|1,	   0xA, 	   0x6}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8,		(0<<2)|2,	   0xA, 	   0x7}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x8,		(0<<2)|3,	   0xA, 	   0x4}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x7, 	        (0<<2)|0,	   0xA, 	   0x5},   ///D5F1 Slot
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x7, 	        (0<<2)|1,	   0xA, 	   0x6}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x7,		(0<<2)|2,	   0xA, 	   0x7}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x7,		(0<<2)|3,	   0xA, 	   0x4}, 
 	///////////////////////////////////////////////////////////////////////////////////////
 };	
 
@@ -995,16 +977,16 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		0,			 9, 		  2},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		1,			 9, 		  1}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		3,			 9, 		  3},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		4,			 9, 		  4},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		8,			 9, 		  8},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		9,			 9, 		  9}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xC,			 9, 		0xC},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xD,			 9, 		0xD},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xE,			 9, 		0xE},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xF,			 9, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x6,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x6,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x6,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	  0xF,			 9, 		0xF},
 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|2,	   0xA, 		0xF},
@@ -1065,16 +1047,16 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		0,			 9, 		  2},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		1,			 9, 		  1}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		3,			 9, 		  3},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		4,			 9, 		  4},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		8,			 9, 		  8},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		9,			 9, 		  9}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xC,			 9, 		0xC},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xD,			 9, 		0xD},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xE,			 9, 		0xE},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xF,			 9, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x4,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x4,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x4,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x4,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x4,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x4,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x4,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x4,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x4,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x4,	  0xF,			 9, 		0xF},
 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (4<<2)|0,	   0xA, 		0x3},	
@@ -1120,16 +1102,16 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 #elif defined(HX002ED0_02)   
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		0,			 9, 		  2},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		1,			 9, 		  1}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		3,			 9, 		  3},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		4,			 9, 		  4},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		8,			 9, 		  8},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		9,			 9, 		  9}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xC,			 9, 		0xC},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xD,			 9, 		0xD},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xE,			 9, 		0xE},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xF,			 9, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x6,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x6,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x6,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x6,	  0xF,			 9, 		0xF},
 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (4<<2)|0,	   0xA, 		0x3},	
@@ -1188,16 +1170,16 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		0,			 9, 		  2},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		1,			 9, 		  1}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		3,			 9, 		  3},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		4,			 9, 		  4},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		8,			 9, 		  8},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		9,			 9, 		  9}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xC,			 9, 		0xC},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xD,			 9, 		0xD},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xE,			 9, 		0xE},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xF,			 9, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x5,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x5,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x5,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x5,	  0xF,			 9, 		0xF},
 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (4<<2)|0,	   0xA, 		0x3},	
@@ -1252,16 +1234,16 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 
 	 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 	 // 			 EntryTYPE				IntType 	Flag  SrcBusId	SrcBusIrq	DestApicId	 DestApicIn
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x12,		 0, 		  9,		   2},
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x12,		 1, 		  9,		   1}, 
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF,	 0x12,		 3, 		  9,		   3},	 
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF,	 0x12,		 4, 		  9,		   4},
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x12,		 8, 		  9,		   8},
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF,	 0x12,		 9, 		  9,		   9}, 
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x12,	   0xC, 		  9,		 0xC},	 
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x12,	   0xD, 		  9,		 0xD},
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x12,	   0xE, 		  9,		 0xE},	 
-		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x12,	   0xF, 		  9,		 0xF},
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x8,		 0, 		  9,		   2},
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x8,		 1, 		  9,		   1}, 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF,	 0x8,		 3, 		  9,		   3},	 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF,	 0x8,		 4, 		  9,		   4},
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x8,		 8, 		  9,		   8},
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF,	 0x8,		 9, 		  9,		   9}, 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x8,	   0xC, 		  9,		 0xC},	 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x8,	   0xD, 		  9,		 0xD},
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x8,	   0xE, 		  9,		 0xE},	 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x8,	   0xF, 		  9,		 0xF},
 	 
 		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0, 	(3<<2)|0,		0xA,		 0x7},
 		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0, 	(3<<2)|1,		0xA,		 0xB},
@@ -1337,16 +1319,16 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		0,			 9, 		  2},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		1,			 9, 		  1}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		3,			 9, 		  3},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		4,			 9, 		  4},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		8,			 9, 		  8},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		9,			 9, 		  9}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xC,			 9, 		0xC},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xD,			 9, 		0xD},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xE,			 9, 		0xE},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xF,			 9, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x9,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x9,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x9,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x9,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x9,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x9,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x9,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x9,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x9,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x9,	  0xF,			 9, 		0xF},
 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|1,	   0xA, 		0xB},
@@ -1421,16 +1403,16 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		0,			 9, 		  2},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		1,			 9, 		  1}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		3,			 9, 		  3},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		4,			 9, 		  4},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		8,			 9, 		  8},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		9,			 9, 		  9}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xC,			 9, 		0xC},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xD,			 9, 		0xD},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xE,			 9, 		0xE},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xF,			 9, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xE,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xE,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xE,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,	  0xF,			 9, 		0xF},
 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|2,	   0xA, 		0xF},
@@ -1549,16 +1531,16 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		0,			 9, 		  2},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		1,			 9, 		  1}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		3,			 9, 		  3},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		4,			 9, 		  4},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		8,			 9, 		  8},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		9,			 9, 		  9}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xC,			 9, 		0xC},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xD,			 9, 		0xD},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xE,			 9, 		0xE},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xF,			 9, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xD,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xD,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xD,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD,	  0xF,			 9, 		0xF},
 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (4<<2)|0,	   0xA, 		0x3},	
@@ -1667,20 +1649,20 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 };	
 
 
-#elif defined(HX002EH0_01)	
+#elif defined(HX002EH0_01_IOE_03)	
 
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		0,			 9, 		  2},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		1,			 9, 		  1}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		3,			 9, 		  3},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		4,			 9, 		  4},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,		8,			 9, 		  8},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0x12,		9,			 9, 		  9}, 
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xC,			 9, 		0xC},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xD,			 9, 		0xD},
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xE,			 9, 		0xE},	
-	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0x12,	  0xF,			 9, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xC,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xC,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xC,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC,	  0xF,			 9, 		0xF},
 
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
 	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|2,	   0xA, 		0xF},
@@ -1780,6 +1762,137 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 
 		///////////////////////////////////////////////////////////////////////////////////////	
 };	
+
+
+
+#elif defined(HX002EH0_01_IOE_23)	
+
+STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
+//				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,		0,			 9, 		  2},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,		1,			 9, 		  1}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xE,		3,			 9, 		  3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xE,		4,			 9, 		  4},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,		8,			 9, 		  8},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT, 0xF, 	0xE,		9,			 9, 		  9}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,	  0xC,			 9, 		0xC},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,	  0xD,			 9, 		0xD},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,	  0xE,			 9, 		0xE},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xE,	  0xF,			 9, 		0xF},
+
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|0,	   0xA, 		0x7},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (3<<2)|2,	   0xA, 		0xF},
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (4<<2)|0,	   0xA, 		0x3},	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (5<<2)|0,	   0xA, 		0x0}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (5<<2)|1,	   0xA, 		0x4}, 
+
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (1<<2)|0,	   0xA, 	   0x11}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (1<<2)|1,	   0xA, 	   0x12}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (8<<2)|0,	   0xA, 	   0x10}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (9<<2)|0,	   0xA, 	   0x0C},
+	
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0xA<<2)|0,	   0x9, 	   0x10}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0xA<<2)|1,	   0x9, 	   0x11}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0xB<<2)|0,	   0x9, 	   0x15}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0xE<<2)|0,	   0x9, 	   0x17}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0xE<<2)|3,	   0x9, 	   0x14}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0xF<<2)|0,	   0x9, 	   0x15}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0x10<<2)|0,	   0x9, 	   0x14}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0x10<<2)|1,	   0x9, 	   0x16}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0x10<<2)|3,	   0x9, 	   0x15}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0x12<<2)|0,	   0x9, 	   0x14}, 
+	{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0,	   (0x14<<2)|0,	   0x9, 	   0x11}, 
+
+
+	 ///////////////////////////////////////////////////////////////////////////////////////
+	       {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,  0,  1, 	      (0<<2)|0,   0xA, 		0x4}, 	
+	///////////////////////////////////////////////////////////////////////////////////////
+
+	 	 
+	 ///////////////////////////////////////////////////////////////////////////////////////
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 2,   (1<<2)|0, 	0xA,		0x5}, /// IOE RC Busxp1 D1F0
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0, 	 2,    (3<<2)|0,	0xA, 	        0x7}, /// IOE RC Busxp1 D3F0
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0, 	 2,    (4<<2)|0,	0xA, 	        0x4}, /// IOE RC Busxp1 D4F0
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 2,   (5<<2)|0, 	0xA,		0x5},/// IOE RC Busxp1 D5F0
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 2,   (8<<2)|0, 	0xA,		0x4}, /// IOE RC Busxp1 D8F0
+	 ///////////////////////////////////////////////////////////////////////////////////////
+	 
+	 
+	 ///////////////////////////////////////////////////////////////////////////////////////
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 3,   (0<<2)|0, 	0xA,		0x5}, ///IOE Busxp1 D1F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 3,   (0<<2)|1, 	0xA,		0x6}, ///IOE Busxp1 D1F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 3,   (0<<2)|2, 	0xA,		0x7}, ///IOE Busxp1 D1F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 3,   (0<<2)|3, 	0xA,		0x4}, ///IOE Busxp1 D1F0 Slot
+	 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 4,   (0<<2)|0, 	0xA,		0x7}, ///IOE Busxp1 D3F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 4,   (0<<2)|1, 	0xA,		0x4}, ///IOE Busxp1 D3F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 4,   (0<<2)|2, 	0xA,		0x5}, ///IOE Busxp1 D3F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 4,   (0<<2)|3, 	0xA,		0x6}, ///IOE Busxp1 D3F0 Slot
+
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 5,   (0<<2)|0, 	0xA,		0x4}, ///IOE Busxp1 D4F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 5,   (0<<2)|1, 	0xA,		0x5}, ///IOE Busxp1 D4F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 5,   (0<<2)|2, 	0xA,		0x6}, ///IOE Busxp1 D4F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 5,   (0<<2)|3, 	0xA,		0x7}, ///IOE Busxp1 D4F0 Slot
+
+
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 6,   (0<<2)|0, 	0xA,		0x5}, /// IOE Busxp1 D5F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 6,   (0<<2)|1, 	0xA,		0x6}, /// IOE Busxp1 D5F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 6,   (0<<2)|2, 	0xA,		0x7}, /// IOE Busxp1 D5F0 Slot
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 6,   (0<<2)|3, 	0xA,		0x4},  /// IOE Busxp1 D5F0 Slot
+	
+
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	7,	 (0<<2)|0,	   0xA, 	   0x5}, /// ITE8993 PCI2PCI Bridge
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	7,	 (0<<2)|1,	   0xA, 	   0x6}, /// ITE8993 PCI2PCI Bridge
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	7,	 (0<<2)|2,	   0xA, 	   0x7}, /// ITE8993 PCI2PCI Bridge
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	7,	 (0<<2)|3,	   0xA, 	   0x4},  /// ITE8993 PCI2PCI Bridge
+
+
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 8,   (0<<2)|0, 	0xA,		4},    /// IOE Busxp2 D0F0 PCIEIF
+	 ///////////////////////////////////////////////////////////////////////////////////////
+
+ 
+	 ///////////////////////////////////////////////////////////////////////////////////////
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9, 	(0xD<<2)|0,		0xA,		0x5}, 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9,        (0xE<<2)|0,		0xA,		0x6}, 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9, 	(0xE<<2)|1,		0xA,		0x7},
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9,        (0xE<<2)|2,		0xA,		0x4},
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9,        (0xE<<2)|3,		0xA,		0x5}, 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9, 	(0x10<<2)|0,		0xA,		0x4}, 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9,        (0x10<<2)|1, 	        0xA,		0x5},
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9,        (0x10<<2)|2, 	        0xA,		0x6},
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9,        (0x10<<2)|3, 	        0xA,		0x7}, 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9,        (0xF<<2)|0,		0xA,		0x7}, 
+		 {MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,   0,	 0x9,        (0x12<<2)|0, 	        0xA,		0x6},
+	 ///////////////////////////////////////////////////////////////////////////////////////
+
+
+		///////////////////////////////////////////////////////////////////////////////////////		
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xA,		 (0<<2)|0,	   0xA, 	   0xC},   ///D3F2 Slot
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xA,		 (0<<2)|1,	   0xA, 	   0xD},
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xA,		 (0<<2)|2,	   0xA, 	   0xE},
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xA,		 (0<<2)|3,	   0xA, 	   0xF},	
+		
+		
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xB, 	         (0<<2)|0,	   0xA, 	   0x0},   ///D4F0 Slot
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xB, 	         (0<<2)|1,	   0xA, 	   0x1}, 
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xB,		 (0<<2)|2,	   0xA, 	   0x2},
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xB,		 (0<<2)|3,	   0xA, 	   0x3}, 
+		
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC, 	 (0<<2)|0,	   0xA, 	   0x1},   ///D5F0 Slot
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC, 	 (0<<2)|1,	   0xA, 	   0x2}, 
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC,		 (0<<2)|2,	   0xA, 	   0x3}, 
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xC,		 (0<<2)|3,	   0xA, 	   0x0}, 
+		
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD, 	(0<<2)|0,	   0xA, 	   0x5},   ///D5F1 Slot
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD, 	(0<<2)|1,	   0xA, 	   0x6}, 
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD,		(0<<2)|2,	   0xA, 	   0x7}, 
+		{MP_TABLE_INT_ASSIGN_ENTRY_TYPE, INT_TYPE_INT,	 0, 	0xD,		(0<<2)|3,	   0xA, 	   0x4}, 
+
+		///////////////////////////////////////////////////////////////////////////////////////	
+};	
+
+
+
 
 
 
@@ -1898,216 +2011,9 @@ MpsTableAddIntAssignEntry (
   VOID
   )
 {
-#if 0
-  UINTN  Index, Len, Index2;
-  UINT16 Count=0;
-  UINT8  *Ptr=MpsTableCurrentPointer;
-  MP_TABLE_INT_ASSIGN_ENTRY *StartPtr, *BackupPtr;
-
-  UINT8   PEGIoApicItinIBuf[4];
-  UINT8   PEG2IoApicItinIBuf[4];
-  UINT8   PEG3IoApicItinIBuf[4];
-  UINT8   RintrApicPEG = 0;
-  UINT8   RintrApicPEG2 = 0;
-  UINT8   RintrApicPEG3 = 0;
-
-  
-///MTN-20161022 Start
-   RintrApicPEG = MmioRead8(HC_PCI_REG(D0F0_PCIE_PORT_G_INTR_ROUTING_SEL)) >> 4;
-   RintrApicPEG2 = MmioRead8(HC_PCI_REG(D0F0_PCIE_PORT_G2_INTR_ROUTING_SEL)) >> 4;
-   RintrApicPEG3 = MmioRead8(HC_PCI_REG(D0F0_PCIE_PORT_G3_INTR_ROUTING_SEL)) >> 4;
-
-  DEBUG((EFI_D_ERROR,"RintrApicPEG=0x%x\n",RintrApicPEG));
-  DEBUG((EFI_D_ERROR,"RintrApicPEG2=0x%x\n",RintrApicPEG2));
-  DEBUG((EFI_D_ERROR,"RintrApicPEG3=0x%x\n",RintrApicPEG3));
-
-  DEBUG((EFI_D_ERROR,"%a()\n",__FUNCTION__));
-  //DEBUG((EFI_D_ERROR,"%d,%d,%d,%d,%d,%d\n",BRIDGE_IRQ_START_INDEX,BRIDGE_IRQ_END_INDEX,INTNAL_DEVICE_IRQ_START_INDEX,
-  //	INTNAL_DEVICE_IRQ_END_INDEX,SLOT0_IRQ_START_INDEX,SLOT1_IRQ_START_INDEX));
- gSetupData = GetSetupDataHobData();
-  for(Index = ISA_IRQ_START_INDEX; Index <= ISA_IRQ_END_INDEX; Index++) {
-  	gType3List[Index].SourceBusId = IsaBusId;
-  }
-  StartPtr = &gType3List[ISA_IRQ_START_INDEX];
-  BackupPtr = &gType3List[ISA_IRQ_END_INDEX];
-  
-  Len = (UINT8*)(BackupPtr + 1) - (UINT8*)StartPtr;
-  CopyMem(Ptr, StartPtr, Len);
-  Ptr += Len;
-  Count = Count + ISA_IRQ_END_INDEX-ISA_IRQ_START_INDEX+1;
-
-  StartPtr = &gType3List[BRIDGE_IRQ_START_INDEX];
-  Len = sizeof(gType3List[0]);
-  for(Index = 0; Index <= NUM_PCI_BRIDGES; Index++) {
-    if(gPlatformPciBridges[Index].Enabled) {
-		CopyMem(Ptr, StartPtr, Len);
-		Ptr += Len;
-		Count++;
-    }
-	StartPtr++;
-  }
-
-  StartPtr = &gType3List[INTNAL_DEVICE_IRQ_START_INDEX];
-  BackupPtr = &gType3List[INTNAL_DEVICE_IRQ_END_INDEX];
-  Len = (UINT8*)(BackupPtr + 1) - (UINT8*)StartPtr;
-  CopyMem(Ptr, StartPtr, Len);
-  Ptr += Len;
-  Count = Count + INTNAL_DEVICE_IRQ_END_INDEX - INTNAL_DEVICE_IRQ_START_INDEX + 1;
-  	
-  StartPtr = &gType3List[SLOT0_IRQ_START_INDEX];
-  Len = 4*sizeof(MP_TABLE_INT_ASSIGN_ENTRY);
-  for(Index = 0; Index < NUM_PCI_BRIDGES; Index++) {
-  	if(gPlatformPciBridges[Index].Enabled) {
-		BackupPtr = StartPtr; 
-
-	if(gPlatformPciBridges[Index].Dev == 2) {///D2F0 PEG	
-
-	
-	switch(RintrApicPEG){	 
-	  case 0:						 
-		  PEGIoApicItinIBuf[0] = 8;
-		  PEGIoApicItinIBuf[1] = 9;
-		  PEGIoApicItinIBuf[2]= 10;
-		  PEGIoApicItinIBuf[3]= 11;
-		break;
-		
-	  case 1:						  
-		PEGIoApicItinIBuf[0] = 9; 
-		PEGIoApicItinIBuf[1] = 10;
-		PEGIoApicItinIBuf[2]= 11;
-		PEGIoApicItinIBuf[3]= 8;
-		break;
-	
-	  case 2:						  
-		PEGIoApicItinIBuf[0] = 10;
-		PEGIoApicItinIBuf[1] = 11;
-		PEGIoApicItinIBuf[2]= 8;
-		PEGIoApicItinIBuf[3]= 9;
-		break;
-		
-	  case 3:						
-		PEGIoApicItinIBuf[0] = 11; 
-		PEGIoApicItinIBuf[1] = 8;
-		PEGIoApicItinIBuf[2]= 9;
-		PEGIoApicItinIBuf[3]= 10;
-		break;		
-	}
-      }
-
-	if((gPlatformPciBridges[Index].Dev == 5) &&((gPlatformPciBridges[Index].Fun == 0))) {///D5F0 PEG2	
-	switch(RintrApicPEG2){	 
-	  case 0:						 
-		  PEG2IoApicItinIBuf[0] = 0;
-		  PEG2IoApicItinIBuf[1] = 1;
-		  PEG2IoApicItinIBuf[2]= 2;
-		  PEG2IoApicItinIBuf[3]= 3;
-		break;
-		
-	  case 1:						  
-		PEG2IoApicItinIBuf[0] = 1; 
-		PEG2IoApicItinIBuf[1] = 2;
-		PEG2IoApicItinIBuf[2]= 3;
-		PEG2IoApicItinIBuf[3]= 0;
-		break;
-	
-	  case 2:						  
-		PEG2IoApicItinIBuf[0] = 2;
-		PEG2IoApicItinIBuf[1] = 3;
-		PEG2IoApicItinIBuf[2]= 0;
-		PEG2IoApicItinIBuf[3]= 1;
-		break;
-		
-	  case 3:						
-		PEG2IoApicItinIBuf[0] = 3; 
-		PEG2IoApicItinIBuf[1] = 0;
-		PEG2IoApicItinIBuf[2]= 1;
-		PEG2IoApicItinIBuf[3]= 2;
-		break;		
-	}
-     }
-
-	if((gPlatformPciBridges[Index].Dev == 5) &&((gPlatformPciBridges[Index].Fun == 1))) {///D5F1 PEG3	
-	switch(RintrApicPEG3){	 
-	  case 0:						 
-		  PEG3IoApicItinIBuf[0] = 4;
-		  PEG3IoApicItinIBuf[1] = 5;
-		  PEG3IoApicItinIBuf[2]= 6;
-		  PEG3IoApicItinIBuf[3]= 7;
-		break;
-		
-	  case 1:						  
-		PEG3IoApicItinIBuf[0] = 5; 
-		PEG3IoApicItinIBuf[1] = 6;
-		PEG3IoApicItinIBuf[2]= 7;
-		PEG3IoApicItinIBuf[3]= 4;
-		break;
-	
-	  case 2:						  
-		PEG3IoApicItinIBuf[0] = 6;
-		PEG3IoApicItinIBuf[1] = 7;
-		PEG3IoApicItinIBuf[2]= 4;
-		PEG3IoApicItinIBuf[3]= 5;
-		break;
-		
-	  case 3:						
-		PEG3IoApicItinIBuf[0] = 7; 
-		PEG3IoApicItinIBuf[1] = 4;
-		PEG3IoApicItinIBuf[2]= 5;
-		PEG3IoApicItinIBuf[3]= 6;
-		break;		
-	}
-     }
-	
-		//Update Bus#
-	  for(Index2 = 0; Index2 < 4; Index2++) {
-		
-	  	BackupPtr->SourceBusId = gPlatformPciBridges[Index].SecBus;
-		
-		if(gPlatformPciBridges[Index].Dev == 2) {///D2F0 PEG	
-		  	BackupPtr->DestIoApicItin = PEGIoApicItinIBuf[Index2];
-		}
-
-		if((gPlatformPciBridges[Index].Dev == 5) &&((gPlatformPciBridges[Index].Fun == 0))) {///D5F0 PEG2	
-			BackupPtr->DestIoApicItin = PEG2IoApicItinIBuf[Index2];
-		}
-		
-		if((gPlatformPciBridges[Index].Dev == 5) &&((gPlatformPciBridges[Index].Fun == 1))) {///D5F1 PEG3	
-			BackupPtr->DestIoApicItin = PEG3IoApicItinIBuf[Index2];
-		}
-		BackupPtr++;
-	  }
-	  CopyMem(Ptr, StartPtr, Len);
-	  Ptr += Len;
-	  Count += 4;
-  	}
-	StartPtr += 4;
-  }
-
-  
-
-//DEBUG((EFI_D_ERROR,"Count=%x\n",Count));
-//Ptr=MpsTableCurrentPointer;
-//StartPtr=(MP_TABLE_INT_ASSIGN_ENTRY *)MpsTableCurrentPointer;
-//for(Index=0;Index<Count;Index++) {
-//	Ptr = (UINT8*)StartPtr;
-//    for(Index2=0;Index2<sizeof(MP_TABLE_INT_ASSIGN_ENTRY);Index2++) {
-//		DEBUG((EFI_D_ERROR,"%02x  ",*Ptr));
-//		Ptr++;
-//    }
-//	DEBUG((EFI_D_ERROR,"\n"));
-//	StartPtr++;
-//}
-return Count;
-#endif
-
-	///DEBUG((EFI_D_ERROR,"[MTN-DBG]:MpsTable Add Entry.\n"));
-
-//MTN_20161214 +S
-
 	CopyMem(MpsTableCurrentPointer, gType3List, sizeof(gType3List));
 	
 return sizeof(gType3List)/sizeof(gType3List[0]);
-//MTN_20161214 +E
 }
 
 //YKN_20160309 +E

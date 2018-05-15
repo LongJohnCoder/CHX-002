@@ -19,6 +19,19 @@
 				Return (GPRW (0x10, 0x04))
 			}
 		}
+
+#if defined(IOE_EXIST)
+
+#if defined(HX002EH0_01_IOE_23)
+		   include("HX002EH0_01_IOE_23\pcieioe.asl")
+#elif defined(HX002EH0_01_IOE_03)
+		  include("HX002EH0_01_IOE_03\pcieioe.asl")
+#endif
+			
+#endif
+
+
+		
 	}
 
 

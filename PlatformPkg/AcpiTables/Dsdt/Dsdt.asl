@@ -361,6 +361,10 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
                     OperationRegion (NSCR, PCI_Config, Zero, 0x0100)
                     Field (NSCR, ByteAcc, NoLock, Preserve)
                     {
+                        Offset (0x47),
+                          , 1,
+                        P1TP,1,
+                        P2TP,1,      
                         Offset (0x5D),
                         MOBC,   1,
                         ACAD,   1,

@@ -1,6 +1,8 @@
 	Device (NPE0)
 	{
 		Name (_ADR, 0x00030000)  
+
+ 		
 		Method (_PRT, 0, NotSerialized)  // _PRT: PCI Routing Table
 		{
 			If (PICM)
@@ -19,6 +21,9 @@
 				Return (GPRW (0x10, 0x04))
 			}
 		}
+#if defined(IOE_EXIST)
+	include("HX002EC0_01_IOE_33\pcieioe.asl")
+#endif
 	}
 
 

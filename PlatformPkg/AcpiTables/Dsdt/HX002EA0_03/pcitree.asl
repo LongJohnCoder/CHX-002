@@ -1,9 +1,8 @@
 
 
-    Name(PR00, Package(22)
+    Name(PR00, Package(21)
     {
         Package(4) {0x0003FFFF, Zero, LNKH, Zero}, 
-        Package(4) {0x0003FFFF, 0x01, LNKH, Zero}, 
         Package(4) {0x0003FFFF, 0x02, LNKH, Zero}, 
         Package(4) {0x0003FFFF, 0x03, LNKH, Zero}, 
         Package(4) {0x0004FFFF, Zero, LNKH, Zero},          
@@ -26,10 +25,9 @@
         Package(4) {0x0014FFFF, Zero, LNKA, Zero}        
     })
         
-    Name(AR00, Package(22)
+    Name(AR00, Package(21)
     {
-        Package(4) {0x0003FFFF, Zero, Zero, 0x1F},         
-        Package(4) {0x0003FFFF, 0x01, Zero, 0x23},         
+        Package(4) {0x0003FFFF, Zero, Zero, 0x1F},             
         Package(4) {0x0003FFFF, 0x02, Zero, 0x27},         
         Package(4) {0x0003FFFF, 0x03, Zero, 0x2B},         
         Package(4) {0x0004FFFF, Zero, Zero, 0x1B},        
@@ -77,16 +75,6 @@
         Package(4) {0xFFFF, 0x03, Zero, 0x1F}
     })    
 
-#if defined(CHX002_HAPS)
-    //PE1S APIC Routing
-    Name(AR02, Package(4)
-    {
-        Package(4) {0xFFFF, Zero, Zero, 0x20}, 
-        Package(4) {0xFFFF, One, Zero, 0x21}, 
-        Package(4) {0xFFFF, 0x02, Zero, 0x22}, 
-        Package(4) {0xFFFF, 0x03, Zero, 0x23}
-    })
-#endif
     //PE2S APIC Routing
     Name(AR03, Package(4)
     {
