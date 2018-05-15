@@ -6,9 +6,6 @@
 #include <Protocol/AtaPassThru.h>
 #include <Protocol/ScsiPassThruExt.h>
 #include <Library/PlatformCommLib.h>
-#ifdef FPGA_SHELL_TEST
-#include <Protocol/Timer.h>
-#endif
 
 CONST UINT16 USB_LANG_ID   = 0x0409; // English
 CHAR16       mUefiPrefix[] = L"UEFI ";
@@ -1652,19 +1649,6 @@ EfiBootManagerBoot (
   gBS->SetWatchdogTimer (5 * 60, 0x0000, 0x00, NULL);
 
   REPORT_STATUS_CODE (EFI_PROGRESS_CODE, PcdGet32 (PcdProgressCodeOsLoaderStart));
- #ifdef FPGA_SHELL_TEST
- {
-	  	  EFI_TIMER_ARCH_PROTOCOL  *mTimer;
-		  UINT64  TimerPeriod;
-		  EFI_STATUS  Status;
-		  Status = gBS->LocateProtocol (&gEfiTimerArchProtocolGuid, NULL, (VOID **) &mTimer);
-          ASSERT_EFI_ERROR (Status);
-		  Status =mTimer->SetTimerPeriod(mTimer,20000);
-		  ASSERT_EFI_ERROR (Status);
-		  Status =mTimer->GetTimerPeriod(mTimer,&TimerPeriod);
-		  DEBUG((EFI_D_ERROR,"Mike_Timer:%llx\n",TimerPeriod));
- }
- #endif
   Status = gBS->StartImage (ImageHandle, &BootOption->ExitDataSize, &BootOption->ExitData);
   DEBUG ((DEBUG_INFO | DEBUG_LOAD, "Image Return Status = %r\n", Status));
 

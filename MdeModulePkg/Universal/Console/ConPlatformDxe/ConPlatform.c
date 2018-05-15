@@ -474,9 +474,6 @@ ConPlatformTextOutDriverBindingStart (
     // If the device path is an instance in the ConOut environment variable,
     // then install EfiConsoleOutDeviceGuid onto ControllerHandle
     //
-    #ifdef FPGA_SHELL_TEST
-    IsInConOutVariable = TRUE; // TGR DBG.
-    #endif
     if (IsInConOutVariable) {
       NeedClose = FALSE;
       Status = gBS->InstallMultipleProtocolInterfaces (
@@ -490,9 +487,6 @@ ConPlatformTextOutDriverBindingStart (
     // If the device path is an instance in the ErrOut environment variable,
     // then install EfiStandardErrorDeviceGuid onto ControllerHandle
     //
-    #ifdef FPGA_SHELL_TEST
-    IsInErrOutVariable = TRUE; // TGR DBG.
-    #endif
     if (IsInErrOutVariable) {
       NeedClose = FALSE;
       gBS->InstallMultipleProtocolInterfaces (

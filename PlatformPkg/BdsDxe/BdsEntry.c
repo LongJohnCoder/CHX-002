@@ -546,14 +546,7 @@ BootAllBootOptions (
       DEBUG((EFI_D_ERROR, "ThisLegacyBootOrderChanged, Need Refresh!\n"));		
       break;		
     }	
-    #ifdef FPGA_SHELL_TEST
-    if(StrCmp(BootOptions[Index].Description,L"Internal EDK Shell")==0 ){
-	  gST->ConOut->SetMode(gST->ConOut,0);
-      EfiBootManagerBoot(&BootOptions[Index]);
-    }
-	#else
 	EfiBootManagerBoot(&BootOptions[Index]);
-	#endif
   }
 }
 
@@ -1271,9 +1264,6 @@ BdsEntry (
   PERF_START (NULL, "ConnectConsoles", "BDS", 0);
   EfiBootManagerConnectAllDefaultConsoles();
   PERF_END   (NULL, "ConnectConsoles", "BDS", 0);
-  #ifdef FPGA_SHELL_TEST
-  Print(L"Press F7 to BootOption F2 to Setup\n");
-  #endif
    
 // ----------------------------- HotKey -----------------------------
   if(BootMode != BOOT_ON_FLASH_UPDATE && BootMode != BOOT_IN_RECOVERY_MODE){

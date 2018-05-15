@@ -1261,18 +1261,6 @@ GenericLegacyBoot (
     //
     EfiSignalEventLegacyBoot ();
     DEBUG ((EFI_D_INFO, "Legacy INT19 Boot...\n"));
-    #ifdef	CHX002_HAPS
-	//MKE_20180109 Haps Boot Win7/10 Restore D17F0Rx54[5] = 0, Boot XP Can't Restore, Still D17F0Rx54[5] = 1 _S
-	{   UINT8 Value8;
-		Value8 = MmioRead8(0xE0081054);
-		DEBUG((EFI_D_ERROR,"mike_D17F0Rx54_Before:%x\n",Value8));
-		Value8&=~(1<<5);
-		MmioWrite8(0xE0081054,Value8);
-	    Value8 = MmioRead8(0xE0081054);
-		DEBUG((EFI_D_ERROR,"mike_D17F0Rx54_After:%x\n",Value8));
-	}
-	//MKE_20180109 Haps Boot Win7/10 Restore D17F0Rx54[5] = 0, Boot XP Can't Restore, Still D17F0Rx54[5] = 1 _E
-	#endif
     //
     // Disable DXE Timer while executing in real mode
     //

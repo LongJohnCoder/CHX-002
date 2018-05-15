@@ -462,11 +462,7 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x0
   gEfiMdePkgTokenSpaceGuid.PcdReportStatusCodePropertyMask|0x03
 !else
-   !ifdef CHX002_PXP
-    gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x27
-   !else
-    gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2F
-   !endif
+   gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2F
    gEfiMdeModulePkgTokenSpaceGuid.PcdSerialUseHardwareFlowControl|FALSE
    gEfiMdePkgTokenSpaceGuid.PcdReportStatusCodePropertyMask|0x07
 !endif
@@ -485,11 +481,8 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   gEfiByoModulePkgTokenSpaceGuid.PcdRecoveryFindBiosIdFirstTryTopFv|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdSwSmiCmdPort|0x082F
 
-  !ifdef CHX002_PXP
+
   gPlatformModuleTokenSpaceGuid.PcdTemporaryRamBase|0xFC000000
-  !else
-  gPlatformModuleTokenSpaceGuid.PcdTemporaryRamBase|0xFFF20000
-  !endif
   gPlatformModuleTokenSpaceGuid.PcdTemporaryRamSize|0x00010000 
   gEfiCpuTokenSpaceGuid.PcdPeiTemporaryRamStackSize|0x00001800  
   
@@ -760,9 +753,6 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
   $(PLATFORM_PACKAGE)/Override/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
-!ifdef FPGA_SHELL_TEST
-  IntelFrameworkModulePkg/Universal/Console/VgaClassDxe/VgaClassDxe.inf
-!endif
   $(PLATFORM_PACKAGE)/Platform/EarlyDxe/PlatformEarlyDxe.inf {
     <LibraryClasses>
 !if $(DEBUG_MESSAGE_ENABLE) == TRUE
@@ -1075,12 +1065,6 @@ DEFINE ZX_EVB27_DUALSKT_BUILD_OPTIONS = /DZX_EVB27_DUALSOCKET
 DEFINE ZX_EVB27_DUALSKT_BUILD_OPTIONS =
 !endif
 
-!ifdef FPGA_SHELL_TEST
-DEFINE DSC_FPGA_SHELL_TEST_BUILD_OPTIONS =/DFPGA_SHELL_TEST
-!else
-DEFINE DSC_FPGA_TEST_BUILD_OPTIONS =
-!endif
-
 !ifdef CHX002_HAPS  
 DEFINE DSC_COMMON_FEATURE_BUILD_OPTIONS = $(DSC_CSM_BUILD_OPTIONS) $(ZX_SECRET_COMMON_FEATURE_BUILD_OPTIONS) $(ZX_EVB27_DUALSKT_BUILD_OPTIONS) /DCHX002_HAPS
 !else
@@ -1264,7 +1248,7 @@ DEFINE DSC_COMMON_FEATURE_BUILD_OPTIONS = $(DSC_CSM_BUILD_OPTIONS) $(ZX_SECRET_C
   DEFINE UDK_DEBUG_BUILD_OPTIONS = /DMDEPKG_NDEBUG
 !endif
 
-  DEFINE EDK_EDKII_DSC_FEATURE_BUILD_OPTIONS = $(DSC_FPGA_SHELL_TEST_BUILD_OPTIONS) $(DSC_COMMON_FEATURE_BUILD_OPTIONS) $(DSC_ACPI_BUILD_OPTIONS) $(UDK_DEBUG_BUILD_OPTIONS) $(PLATFORM_FEATURE_SUPPORT) $(DSC_PLAT_TARGET_OPT1) $(DSC_PLAT_TARGET_OPT2) $(DSC_PLAT_TARGET_OPT3) $(DSC_PLAT_TARGET_OPT4) $(DSC_PLAT_TARGET_OPT5) $(DSC_PLAT_TARGET_OPT6) $(DSC_PLAT_TARGET_OPT7) $(DSC_PLAT_TARGET_OPT8) $(DSC_PLAT_TARGET_OPT9) $(DSC_PLAT_TARGET_OPT10) $(CND003_DSC_IOE_EXIST_OPT) $(DSC_PLAT_TARGET_FW)
+  DEFINE EDK_EDKII_DSC_FEATURE_BUILD_OPTIONS = $(DSC_COMMON_FEATURE_BUILD_OPTIONS) $(DSC_ACPI_BUILD_OPTIONS) $(UDK_DEBUG_BUILD_OPTIONS) $(PLATFORM_FEATURE_SUPPORT) $(DSC_PLAT_TARGET_OPT1) $(DSC_PLAT_TARGET_OPT2) $(DSC_PLAT_TARGET_OPT3) $(DSC_PLAT_TARGET_OPT4) $(DSC_PLAT_TARGET_OPT5) $(DSC_PLAT_TARGET_OPT6) $(DSC_PLAT_TARGET_OPT7) $(DSC_PLAT_TARGET_OPT8) $(DSC_PLAT_TARGET_OPT9) $(DSC_PLAT_TARGET_OPT10) $(CND003_DSC_IOE_EXIST_OPT) $(DSC_PLAT_TARGET_FW)
 
 
   *_*_IA32_ASM_FLAGS     = $(EDK_EDKII_DSC_FEATURE_BUILD_OPTIONS)

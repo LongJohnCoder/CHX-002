@@ -16,9 +16,6 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 
 #include "BiosVideo.h"
 
-#if CHX002_PXP||CHX002_HAPS
-#include <Library/IoLib.h>
-#endif
 //
 // EFI Driver Binding Protocol Instance
 //
@@ -659,12 +656,7 @@ BiosVideoChildHandleInstall (
   //
   // Assume that Graphics Output Protocol will be produced until proven otherwise
   //
-  #ifdef FPGA_SHELL_TEST
-  BiosVideoPrivate->ProduceGraphicsOutput = FALSE;
-  #else
   BiosVideoPrivate->ProduceGraphicsOutput = TRUE;
-  #endif
-
   //
   // Set Gop Device Path, here RemainingDevicePath will not be one End of Device Path Node.
   //
@@ -811,9 +803,6 @@ BiosVideoChildHandleInstall (
     //
     // Install VGA Mini Port Protocol
     //
-    #ifdef FPGA_SHELL_TEST
-    BiosVideoPrivate->VgaMiniPort.MaxMode = 2;
-	#endif
     Status = gBS->InstallMultipleProtocolInterfaces (
                     &ParentHandle,
                     &gEfiVgaMiniPortProtocolGuid,

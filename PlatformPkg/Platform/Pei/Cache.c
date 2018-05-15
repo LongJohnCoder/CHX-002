@@ -73,15 +73,6 @@ SetCacheMtrr (
               
   MemoryBase   = 0xA0000;
   MemoryLength = 0x20000;
-  #ifdef FPGA_SHELL_TEST
-  CachePpi->SetCache (
-              PeiServices,
-              CachePpi,
-              MemoryBase,
-              MemoryLength,
-              EfiCacheTypeWriteCombining
-              );
-  #else
   CachePpi->SetCache (
               PeiServices,
               CachePpi,
@@ -89,8 +80,6 @@ SetCacheMtrr (
               MemoryLength,
               EfiCacheTypeUncacheable
               );
-  #endif
-
   MemoryBase   = 0xC0000;
   MemoryLength = 0x40000;
   CachePpi->SetCache (
@@ -152,15 +141,6 @@ SetCacheMtrrAtNormalPeiEnd (
               
   MemoryBase   = 0xA0000;
   MemoryLength = 0x20000;
-  #ifdef FPGA_SHELL_TEST
-  CachePpi->SetCache (
-              PeiServices,
-              CachePpi,
-              MemoryBase,
-              MemoryLength,
-              EfiCacheTypeWriteCombining
-              );
-  #else
   CachePpi->SetCache (
               PeiServices,
               CachePpi,
@@ -168,7 +148,6 @@ SetCacheMtrrAtNormalPeiEnd (
               MemoryLength,
               EfiCacheTypeUncacheable
               );
-  #endif
 
   MemoryBase   = 0xC0000;
   MemoryLength = 0x40000;

@@ -383,7 +383,6 @@ PlatformInitialization    PROC    NEAR    PRIVATE
   
  SkipPciReset:
 
-  ;MIKE_CHX001_PXP_S   
   ;SAD  Default Set
  ;(0,0,2,44) = 12h  (0,0,2,46) = 00h
   xor   eax,eax
@@ -403,8 +402,6 @@ PlatformInitialization    PROC    NEAR    PRIVATE
   mov   eax, 0c00fh
   mov   dx,  0cfch
   out   dx,  eax
-  ;MIKE_CHX001_PXP_E 
-
   RET_MMX
 PlatformInitialization    ENDP
 

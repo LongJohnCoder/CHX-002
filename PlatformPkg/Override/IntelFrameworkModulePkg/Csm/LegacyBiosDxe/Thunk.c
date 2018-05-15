@@ -289,7 +289,6 @@ InternalLegacyBiosFarCall (
   // interupts other than the Timer interrupt that was disabled above can not be 
   // handled properly from real mode.
   //
-  #ifndef FPGA_SHELL_TEST
   DEBUG_CODE (
     UINTN  Vector;
     UINTN  Count;
@@ -310,7 +309,6 @@ InternalLegacyBiosFarCall (
     ASSERT (Count < 2);
 	
   );
-  #endif
   //
   // If the Timer AP has enabled the 8254 timer IRQ and the current 8254 timer 
   // period is less than the CSM required rate of 54.9254, then force the 8254 

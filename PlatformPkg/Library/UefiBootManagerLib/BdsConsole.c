@@ -449,9 +449,7 @@ HasLocalDisplay (
   if (EFI_ERROR (Status)) {
     return FALSE;
   }
-  #ifdef FPGA_SHELL_TEST
-  return TRUE;
-  #else
+
   while (HandleCount-- != 0) {
     Status = gBS->OpenProtocol (
                     HandleBuffer[HandleCount],
@@ -477,7 +475,6 @@ HasLocalDisplay (
   }
   
   return FALSE;  
-  #endif
 }
 
 /**

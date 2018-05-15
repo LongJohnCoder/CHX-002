@@ -386,9 +386,6 @@ INF  ByoModulePkg/StatusCodeHandler/Smm/StatusCodeHandlerSmm.inf
 INF  MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableDxe/FirmwarePerformanceDxe.inf
 INF  MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableSmm/FirmwarePerformanceSmm.inf
 INF  MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
-!ifdef FPGA_SHELL_TEST
-INF  IntelFrameworkModulePkg/Universal/Console/VgaClassDxe/VgaClassDxe.inf
-!endif
 !endif
 !endif
 INF  MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf

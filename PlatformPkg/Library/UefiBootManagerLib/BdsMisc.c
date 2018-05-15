@@ -611,16 +611,8 @@ SetMemoryTypeInformationVariable (
     // entry/resume cycle will not fail.
     //
       if (MemoryTypeInformationModified && IsBoot && PcdGetBool(PcdResetOnMemoryTypeInformationChange)) {
-        //Mike_20170216 PXP can't warm reset _s
-		#ifdef	CHX002_PXP
-		DEBUG ((EFI_D_ERROR, "Memory Type Information settings change. PXP Can't Warm Reset!!!\n"));
-		#else
-		 #ifndef FPGA_SHELL_TEST
 		DEBUG ((EFI_D_INFO, "Memory Type Information settings change. Warm Reset!!!\n"));
         gRT->ResetSystem (EfiResetWarm, EFI_SUCCESS, 0, NULL);
-		 #endif
-		#endif
-		//Mike_20170216 PXP can't warm reset _e
       }
     }  
   }

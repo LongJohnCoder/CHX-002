@@ -36,11 +36,8 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 //
 // The default timer tick duration is set to 10 ms = 100000 100 ns units
 //
-#ifdef CHX002_HAPS
-#define DEFAULT_TIMER_TICK_DURATION ((65536*838+50)/100)
-#else
+
 #define DEFAULT_TIMER_TICK_DURATION 100000
-#endif
 
 
 #define TIMER_CONTROL_PORT          0x43

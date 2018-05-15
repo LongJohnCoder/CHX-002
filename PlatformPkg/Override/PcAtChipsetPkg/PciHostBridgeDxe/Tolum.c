@@ -74,14 +74,8 @@ VOID UpdateTolumVariable(UINTN BitsOfAlignment, UINT64 AddrLen)
     
     HobTolumMB = (UINT16)(MemInfo->Tolum >> 20); 
     if(HobTolumMB != TolumMB){
-	  #ifdef	CHX002_PXP
-	  DEBUG((EFI_D_ERROR,"Tolum Changed PXP Can't Reset\n"));
-	  #else
-	    #ifndef FPGA_SHELL_TEST
       DEBUG((EFI_D_INFO, "Tolum Changed(Hob:%X, Var:%X, Want:%X), Reset ...\n", HobTolumMB, NvInfo.Tolum, TolumMB));
       gRT->ResetSystem (EfiResetCold, EFI_SUCCESS, 0, NULL);
-	    #endif
-	  #endif
     }  
   }
 }
