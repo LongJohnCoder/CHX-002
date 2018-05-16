@@ -131,12 +131,12 @@ STATUS_CODE_TO_DATA_MAP  mProgressPort80MapTable[] = {
   //add by jenny for PCIE&IOE
   //{ PCIE_EaryDXE_PEMCU_FW_LOAD,   0x6B},             //PlatformEarlyDxeEntry () PlatformEarlyDxe.c
   //{ DXE_NB_PCIE_PRE_INIT,         0x6C},             //AsiaNbDxePrePciInit() in AsiaNbDxeInit.c
-  //{ DXE_NB_PCIE_D2D5F1_SPE        0x6D},             //AsiaNbDxePrePciInit() in AsiaNbDxeInit.c
-  //{ DXE_NB_PCIE_RCRB_SPE,         0x6E},             //AsiaNbDxePrePciInit() in AsiaNbDxeInit.c
-  //{ DXE_NB_PCIE_EPHY_SPE,         0x6F},             //AsiaNbDxePrePciInit() in AsiaNbDxeInit.c
+  //{ DXE_NB_PCIE_D3D5F1_SPE        0x6D},             //PCIeCommonSpeSetting() in NbPcieCommon.c
+  //{ DXE_NB_PCIE_RCRB_SPE,         0x6E},             //PCIeCommonSpeSetting() in NbPcieCommon.c
+  //{ DXE_NB_PCIE_EPHY_SPE,         0x6F},             //PCIeCommonSpeSetting() in NbPcieCommon.c
   //{ DXE_NB_IOE_PRE_INIT,          0x71},             //AsiaNbDxePrePciInit() in AsiaNbDxeInit.c
-  //{ DXE_NB_PCIE_POWER_CTL,        0x72},             //AsiaNbDxePrePciInit() in AsiaNbDxeInit.c
-  //{ DXE_NB_PRE_LOCK_BIT,          0x73},             //AsiaNbDxePrePciInit() in AsiaNbDxeInit.c
+  //{ DXE_NB_PCIE_AGGRESSIVE_PM,    0x72},             //PciePrePciInit in NbDxePciePrePci.c
+  //{ DXE_NB_PCIE_POWER_CTL,        0x73},             //PciePrePciInit in NbDxePciePrePci.c
   
   { DXE_SB_INIT,                  0x70 },           // PchInitEntryPoint() in PchInit.c
     // reserved for SB:           0x71 - 0x75
