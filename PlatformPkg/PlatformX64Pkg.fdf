@@ -325,6 +325,10 @@ FILE FREEFORM  = PCD(gPlatformModuleTokenSpaceGuid.PcdIoeMcuFwFile) {
     SECTION RAW = AsiaPkg/ZxPlatformBin/IOE8051_Fw.bin
     SECTION UI  = "Ioe_Mcu_Fw"
   }
+FILE FREEFORM  = PCD(gPlatformModuleTokenSpaceGuid.PcdIoeXhciFwFile) {
+    SECTION RAW = $(IOE_XHCI_FW_PATH_FILE)
+    SECTION UI  = "Ioe_Xhci_Fw"
+  }
 !endif
 FILE FREEFORM  = PCD(gPlatformModuleTokenSpaceGuid.PcdXhciMcuFwFile) {
     SECTION RAW = $(XHCI_FW_PATH_FILE)
@@ -603,6 +607,10 @@ FILE FREEFORM  = PCD(gPlatformModuleTokenSpaceGuid.PcdXhciMcuFwFile) {
 FILE FREEFORM  = PCD(gPlatformModuleTokenSpaceGuid.PcdIoeMcuFwFile) {
     SECTION RAW = AsiaPkg/ZxPlatformBin/IOE8051_Fw.bin
     SECTION UI  = "Ioe_Mcu_Fw"
+  }
+FILE FREEFORM  = PCD(gPlatformModuleTokenSpaceGuid.PcdIoeXhciFwFile) {
+    SECTION RAW = $(IOE_XHCI_FW_PATH_FILE)
+    SECTION UI  = "Ioe_Xhci_Fw"
   }
 !endif
 FILE DRIVER = dc8a96c0-c435-4014-add6-4ba1de7afdf1 {

@@ -174,12 +174,18 @@ if not exist %USB_FW_PATH%\CHX002_xHCI_R*.bin (
   goto ERROR
 )
 rem extract xhci firmware version
+set "XHCI_FW_PREFIX="
+set "XHCI_FW_VER="
+set "XHCI_FW_TYPE="
+set "XHCI_FW_PATH_FILE_NAME="
 for /f "tokens=1,2,3,4 delims=_." %%a in ('dir /b %USB_FW_PATH%') do (
   if /i "%%b" == "xhci" (
-    set "XHCI_FW_PREFIX=%%a"
-    set "XHCI_FW_VER=%%c"
-    set "XHCI_FW_TYPE=%%d"
-    set "XHCI_FW_PATH_FILE_NAME=%%a_%%b_%%c_%%d.bin"
+    if /i "%%a" == "CHX002" (
+      set "XHCI_FW_PREFIX=%%a"
+      set "XHCI_FW_VER=%%c"
+      set "XHCI_FW_TYPE=%%d"
+      set "XHCI_FW_PATH_FILE_NAME=%%a_%%b_%%c_%%d.bin"
+    )
   )
 )
 
@@ -188,6 +194,36 @@ REM echo %XHCI_FW_PREFIX%
 REM echo %XHCI_FW_VER%
 REM echo %XHCI_FW_TYPE%
 REM pause
+
+if /i "%5" == "IOE_EXIST" (
+  set "IOE_USB_FW_PATH=.\AsiaPkg\ZxPlatformBin"
+  rem xhci firmware file must exist
+  if not exist %IOE_USB_FW_PATH%\CND003_xHCI_R*.bin (
+    echo IOE xHCI FW file not exist!
+    goto ERROR
+  )
+  rem extract xhci firmware version
+  set "IOE_XHCI_FW_PREFIX="
+  set "IOE_XHCI_FW_VER="
+  set "IOE_XHCI_FW_TYPE="
+  set "IOE_XHCI_FW_PATH_FILE_NAME="
+  for /f "tokens=1,2,3,4 delims=_." %%a in ('dir /b %IOE_USB_FW_PATH%') do (
+    if /i "%%b" == "xhci" (
+      if /i "%%a" == "CND003" (
+        set "IOE_XHCI_FW_PREFIX=%%a"
+        set "IOE_XHCI_FW_VER=%%c"
+        set "IOE_XHCI_FW_TYPE=%%d"
+        set "IOE_XHCI_FW_PATH_FILE_NAME=%%a_%%b_%%c_%%d.bin"
+      )
+    )
+  )
+
+  REM set "IOE_XHCI_FW_VER=%IOE_XHCI_FW_VER:~1%"
+  REM echo %IOE_XHCI_FW_PREFIX%
+  REM echo %IOE_XHCI_FW_VER%
+  REM echo %IOE_XHCI_FW_TYPE%
+  REM pause
+)
 
 if defined PLAT_TOOL_PATH goto PLAT_TOOL_PATH_SET
 set PLAT_TOOL_PATH=%WORKSPACE%\%PLATFORM_PACKAGE%\Tools
@@ -265,6 +301,11 @@ if "%XHCI_FW_PREFIX%" neq ""      echo DEFINE XHCI_FW_PREFIX  = %XHCI_FW_PREFIX%
 if "%XHCI_FW_VER%" neq ""         echo DEFINE XHCI_FW_VER     = %XHCI_FW_VER%     >> %AUTOGEN_TARGET_FILE%
 if "%XHCI_FW_TYPE%" neq ""        echo DEFINE XHCI_FW_TYPE    = %XHCI_FW_TYPE%    >> %AUTOGEN_TARGET_FILE%
 if "%XHCI_FW_PATH_FILE_NAME%" neq ""   echo DEFINE XHCI_FW_PATH_FILE  = %USB_FW_PATH:\=/%/%XHCI_FW_PATH_FILE_NAME%  >> %AUTOGEN_TARGET_FILE%
+
+if "%IOE_XHCI_FW_PREFIX%" neq ""      echo DEFINE IOE_XHCI_FW_PREFIX  = %IOE_XHCI_FW_PREFIX%  >> %AUTOGEN_TARGET_FILE%
+if "%IOE_XHCI_FW_VER%" neq ""         echo DEFINE IOE_XHCI_FW_VER     = %IOE_XHCI_FW_VER%     >> %AUTOGEN_TARGET_FILE%
+if "%IOE_XHCI_FW_TYPE%" neq ""        echo DEFINE IOE_XHCI_FW_TYPE    = %IOE_XHCI_FW_TYPE%    >> %AUTOGEN_TARGET_FILE%
+if "%IOE_XHCI_FW_PATH_FILE_NAME%" neq ""   echo DEFINE IOE_XHCI_FW_PATH_FILE  = %IOE_USB_FW_PATH:\=/%/%IOE_XHCI_FW_PATH_FILE_NAME%  >> %AUTOGEN_TARGET_FILE%
 
 echo "Update Conf\target.txt"
 @findstr /V "ACTIVE_PLATFORM TARGET TARGET_ARCH TOOL_CHAIN_TAG BUILD_RULE_CONF MAX_CONCURRENT_THREAD_NUMBER" Conf\target.txt > %OUTPUT_DIR%\target.txt

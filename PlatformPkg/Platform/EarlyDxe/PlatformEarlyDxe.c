@@ -574,6 +574,265 @@ _FoundIoe:
 
 	return Status;
 }
+
+STATIC EFI_STATUS  
+HandleIoeXhciFwImp(
+  UINT8 Bus,
+  UINT8 Dev,
+  UINT8 Func
+)
+{
+  EFI_STATUS            Status;
+  VOID                  *Buffer;
+  UINTN                 Size;
+  EFI_PHYSICAL_ADDRESS  Address;
+  UINTN                 Pages;
+  VOID                  *IoeXhciFw;
+
+  PLATFORM_S3_RECORD    *S3Record;
+
+  //Read file from Fv 
+  //this function will allocate the buffer space for fw
+  //we need to free it when we don't need it 
+  Status = ReadFileFromFv (
+    (EFI_GUID*)PcdGetPtr(PcdIoeXhciFwFile),
+    EFI_SECTION_RAW,
+    0,
+    &Buffer,
+    &Size
+  );
+  ASSERT_EFI_ERROR(Status);
+
+  if(EFI_ERROR(Status)){
+    goto ProcExit_Ioe;
+  }
+
+  //[1]:
+  //allocate mcu instruction space
+  //and we need to ensure the start address must be 64k align
+  //this align limit is from HW designer 
+  Address = 0xFFFFFFFF;
+  Pages   = Size + SIZE_64KB;           // fw data size may be enlarged if using fw for some test cases
+  Pages   = Pages + SIZE_64KB;          // need 64K align
+  Pages   = EFI_SIZE_TO_PAGES(Pages);
+  Status  = gBS->AllocatePages(
+                AllocateMaxAddress,
+                EfiReservedMemoryType,
+                Pages,
+                &Address
+                );
+  ASSERT_EFI_ERROR(Status);
+
+//  PcdSet64(PcdxhciFWAddr, (UINT64)Address);
+//  PcdSet32(PcdxhciFWSize, (UINT32)EFI_PAGES_TO_SIZE(Pages));
+
+  IoeXhciFw = (VOID*)(UINTN)ALIGN_VALUE(Address, SIZE_64KB);
+
+  DEBUG((EFI_D_INFO, "                  IoeXhciFw = %x  FwSize = %d[0x%x]Byte\n",IoeXhciFw, Size, Size));
+
+  CopyMem(IoeXhciFw, Buffer, Size);     //Copy FW from Buffer to the space we allocated in DRAM
+  gBS->FreePool(Buffer);                //free the buffer memory 
+
+  Status = LoadIoeXhciFw(Bus, IoeXhciFw);
+
+  ASSERT_EFI_ERROR(Status);
+
+  S3Record = (PLATFORM_S3_RECORD*)(UINTN)PcdGet32(PcdS3RecordAddr);
+
+  S3Record->PcieIoeEptrfcBusNum = (UINT8)Bus;
+  S3Record->PcieIoeXhci         = (UINT64)IoeXhciFw;
+
+ProcExit_Ioe:
+  return Status;
+}
+
+STATIC EFI_STATUS
+HandleIoeXhciFw(
+  VOID
+)
+{
+#define mBusX   1
+#define mBusXp1 2
+#define mBusXp2 3
+#define mBusXp3 4
+
+  //
+  //Those code for verfy on Haps - IOE under D7F0
+  //
+  //#define VIDDID_IOE 0x01221C28
+#define VIDDID_IOE        0x071F1106
+#define DIDVID_EPTRFC     0x91011106
+#define VIDDID_IOE_ZX     0x071F1D17
+#define DIDVID_EPTRFC_ZX  0x91011D17
+
+  EFI_STATUS Status=EFI_SUCCESS;
+
+  UINT8   Tbus, Tdev, Tfunc;
+  UINT32  Tex;
+  UINT8   Tmpx, Tmpx1;
+  UINT8   HideFlag = 0;
+
+  //
+  // Read Scratch register to determine whether to load fw
+  //
+  if (! (BIT0 & MmioRead8(PCI_DEV_MMBASE(0, 0, 6) + 0x47))) {
+    DEBUG((EFI_D_ERROR, "[CND003_XHCI_FW]: SKIP CND003 Init [HandleIoeXhciFw()]\n"));
+    return EFI_SUCCESS;
+  }
+
+  DEBUG((EFI_D_INFO, "[CND003_XHCI_FW]: IoeXhci Fw load...\n"));
+
+  //
+  // Scan whole system to search IOE
+  // Here we only think the IOE connected to D7F0 
+  //
+  Tbus = 0;
+  for(Tdev = 0; Tdev < 0x32; Tdev++) {
+    for(Tfunc = 0; Tfunc < 8; Tfunc++) {
+      Tex = MmioRead32(PCI_DEV_MMBASE(Tbus, Tdev, 0) + 0x00);
+      if(Tex == 0xFFFFFFFF) {
+        break;
+      }
+      //assign temp bus number
+      MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x18, 0x00);
+      MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x19, 0x01);
+      MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x1A, 0x01);
+
+      Tex = MmioRead32(PCI_DEV_MMBASE(1, 0, 0) + 0x00);
+
+      //clear temp bus number
+      MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x19, 0x00);
+      MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x1A, 0x00);
+
+      if((Tex == VIDDID_IOE)||(Tex == VIDDID_IOE_ZX)) {
+        DEBUG((EFI_D_INFO, "                  Found Ioe [%d|%d|%d]\n",Tbus,Tdev,Tfunc));
+        goto _FoundIoe;
+      }
+    }
+  }
+  DEBUG((EFI_D_ERROR, "                  Can't find Ioe\n"));
+  Status = EFI_SUCCESS;
+  return Status;
+
+_FoundIoe:
+  //
+  //Assign temp bus number
+  //
+  MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x18, 0x00);
+  MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x19, 0x01);
+  MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x1A, 0x04);
+
+  //
+  // distinguish BIOS/SPI mode
+  //
+  DEBUG((EFI_D_INFO, "                  Rx1EA=0x%04x\n", MmioRead16(PCI_DEV_MMBASE(1, 0, 0) + 0x1EA)));
+  if( BIT15 & MmioRead16(PCI_DEV_MMBASE(1, 0, 0) + 0x1EA) ) {
+    DEBUG((EFI_D_INFO, "                  In BIOS mode\n"));
+  } else {
+    DEBUG((EFI_D_INFO, "                  In SPI mode - Exit\n"));
+    MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x19, 0x00);
+    MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x1A, 0x00);
+    return Status;
+  }
+
+  //For BusX
+  MmioWrite8(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x18, 0x01);
+  MmioWrite8(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x19, 0x02);
+  MmioWrite8(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x1A, 0x04);
+  //For BusX+1
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x18, 0x02);
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x19, 0x03);
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x1A, 0x04);
+  //For PCIEIF
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x18, 0x03);
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x19, 0x04);
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x1A, 0x04);	
+
+  //
+  // Read VID DID
+  //
+  Tex = MmioRead32(PCI_DEV_MMBASE(mBusXp3, 0, 0) + 0x00);
+  DEBUG((EFI_D_INFO, "                  EPTRFC's DIDVID = 0x%08X (Should be 0x91011D17)\n",Tex));
+  Tex = MmioRead32(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x00);
+  DEBUG((EFI_D_INFO, "                  PCIEIF's DIDVID = 0x%08X (Should be 0x07221D17)\n",Tex));
+  Tex = MmioRead32(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x00);
+  DEBUG((EFI_D_INFO, "                  PESB's DIDVID = 0x%08X (Should be 0x07211D17)\n",Tex));
+  Tex = MmioRead32(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x00);
+  DEBUG((EFI_D_INFO, "                  PEEP's DIDVID = 0x%08X (Should be 0x071F1D17)\n",Tex));
+
+  //
+  // Enable BusMaster Enable(Rx04[2])  of PCIEIF
+  //
+  Tmpx = MmioRead8(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x04);
+  DEBUG((EFI_D_INFO, "                  The value of PCIEIF Rx04 is 0x%02x\n",Tmpx));
+  Tmpx1 = ((Tmpx & (~BIT2))|BIT2);
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x04, Tmpx1);
+  DEBUG((EFI_D_INFO, "                  PCIEIF Rx04 will be set as 0x%02x\n",Tmpx1));
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x04, 0x07);
+  MmioWrite8(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x04, 0x07);
+  MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x04, 0x07);
+  DEBUG((EFI_D_INFO, "                  [%x|%x|%x][%04x] Rx04=0x%02x\n", Tbus, Tdev, Tfunc, MmioRead16(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x02), MmioRead8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x04)));
+  DEBUG((EFI_D_INFO, "                  [%x|0|0][%04x] Rx04=0x%02x\n", mBusX, MmioRead16(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x02), MmioRead8(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x04)));
+  DEBUG((EFI_D_INFO, "                  [%x|8|0][%04x] Rx04=0x%02x\n", mBusXp1, MmioRead16(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x02), MmioRead8(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x04)));
+  DEBUG((EFI_D_INFO, "                  [%x|0|0][%04x] Rx04=0x%02x\n", mBusXp2, MmioRead16(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x02), MmioRead8(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x04)));
+
+  //
+  // If EPTRFC was hiden before, show it temporary
+  //
+  MmioWrite32(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x20, 0xFE02FE02);
+  MmioWrite32(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x10, 0xFE028000);
+  if( MmioRead8(0xFE028000 + 0x1100 + 0x52) & BIT7 ) {
+    HideFlag = 1;
+    MmioWrite8(0xFE028000 + 0x1100 + 0x52,  MmioRead8(0xFE028000 + 0x1100 + 0x52) & (~(BIT7)));
+  } else {
+    HideFlag = 0;
+  }
+
+  Tex = MmioRead32(PCI_DEV_MMBASE(mBusXp3, 0, 0) + 0x00);
+  DEBUG((EFI_D_INFO, "                  EPTRFC's DIDVID = 0x%08X (Should be 0x91011106)\n",Tex));
+  ////
+  //This code path is the formal path
+  //and the next part is just for debug
+  ////
+
+  Status = HandleIoeXhciFwImp(4, 0, 0);
+
+  //
+  // Clear bus number assignment
+  //
+  //For PCIEIF
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x18, 0x00);
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x19, 0x00);
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp2, 0, 0) + 0x1A, 0x00);	
+  //For BusX+1
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x18, 0x00);
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x19, 0x00);
+  MmioWrite8(PCI_DEV_MMBASE(mBusXp1, 8, 0) + 0x1A, 0x00);
+  //For BusX
+  MmioWrite8(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x18, 0x00);
+  MmioWrite8(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x19, 0x00);
+  MmioWrite8(PCI_DEV_MMBASE(mBusX, 0, 0) + 0x1A, 0x00);
+
+
+  // Hide EPTRFC after Autofill
+  DEBUG((EFI_D_INFO, "                  HideFlag = %d\n",HideFlag));
+  if(HideFlag){
+    MmioWrite8(0xFE028000 + 0x1100 + 0x52, (MmioRead8(0xFE028000 + 0x1100 + 0x52) | (BIT7))); 
+  }
+  MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x10, 0x00000000);
+
+
+
+  //MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x04, 0x07); //Mem enable
+  MmioWrite16(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x20, 0x0000); //Base mem
+  MmioWrite16(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x22, 0x0000); //limit mem
+  //switch upstream port
+  MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x18, 0x00);
+  MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x19, 0x00);
+  MmioWrite8(PCI_DEV_MMBASE(Tbus, Tdev, Tfunc) + 0x1A, 0x00);
+
+  return Status;
+}
 #endif
 
 

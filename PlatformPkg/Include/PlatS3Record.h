@@ -62,6 +62,7 @@ typedef struct {
   UINT16 PcieIoeMcuAddr;
   UINT16 PcieIoeMcuLen;
   UINT8 PcieIoeEptrfcBusNum;
+  UINT64 PcieIoeXhci;
 #endif
 //  JNY_IOE FWLOAD -E
   MTRR_SETTINGS      MtrrTable;

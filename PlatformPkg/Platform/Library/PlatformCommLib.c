@@ -474,6 +474,104 @@ EFI_STATUS LoadIoeMcuFw(UINT8 BusOfEptrfc, VOID *FwAddr_alloc,UINT16 AutoFillAdd
   return EFI_SUCCESS;	
 }
 
+EFI_STATUS
+LoadIoeXhciFw(
+  UINT8 BusOfEptrfc,
+  VOID *FwAddr_alloc
+)
+{
+  UINT8   Dev = 18;
+  UINT8   Func = 0;
+  UINT8   TmpReg;
+  UINT16  TmpReg16;
+  UINT32  TmpReg32;
+  UINT32  FwAddr_Hi, FwAddr_Lo;
+
+  UINT64 *FwAddr;
+  
+  UINT16  AutoFillAddr    = 0x500;
+  UINT16  AutoFillLen     = 0x5000;   // 20KB
+
+  AsmWbinvd();
+  MicroSecondDelay (5);
+
+  //Setting the FW
+  FwAddr    = (UINT64 *)FwAddr_alloc;
+  FwAddr_Lo = (UINT32)((UINT64)((UINT32*)FwAddr));
+  FwAddr_Hi = (UINT32)(((UINT64)((UINT32*)FwAddr))>>32);
+  if((FwAddr_Lo & 0xFFFF0000) != FwAddr_Lo) {
+    return EFI_ACCESS_DENIED;
+  }
+
+  FwAddr_Hi = 0;
+  DEBUG((EFI_D_INFO, "                  FwAddr_Lo=%x  FwAddr_Hi=%x\n", FwAddr_Lo, FwAddr_Hi));
+
+  //enable bus master
+  MmioOr8(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+PCI_COMMAND_OFFSET, EFI_PCI_COMMAND_BUS_MASTER); 
+  TmpReg=MmioRead8(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+PCI_COMMAND_OFFSET);
+  DEBUG((EFI_D_INFO, "                  Rx04 is %x\n", TmpReg));
+
+  //operation enable
+  MmioOr8(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+XHCI_OPT_RX43, XHCI_OPT_CFG_EN); 
+  TmpReg=MmioRead8(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+XHCI_OPT_RX43);
+  DEBUG((EFI_D_INFO, "                  Rx43 is %x\n", TmpReg));
+
+  //whether the value of Xhci Openrisc Software Reset Controlled by BIOS is 1
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE+0x20);
+  TmpReg = MmioRead8(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+XHCI_OPT_CFG_DAT);  
+  DEBUG((EFI_D_INFO, "                  the default value of MCU software reset is %x\n", TmpReg));
+
+  //MCU_ON_BOARD_APP=1 Rx04[0] = 1'b
+  //SPIROM_ON_BOARD=0, MCU_INS_BUF_EN=1(Rx05[1:0]=10'b)
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+ XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE+0x04);
+  MmioWrite16(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+ XHCI_OPT_CFG_DAT, 0x0201);
+  TmpReg16 = MmioRead16(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+ XHCI_OPT_CFG_DAT);
+  DEBUG((EFI_D_INFO, "                  Rx30004  %x [0201]\n", TmpReg16));
+
+  //Set Xhci Fw Lower Base Address in system memory
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE+0x28);
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_DAT, (UINT32)(UINTN)FwAddr_Lo);
+  TmpReg32 =  MmioRead32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_DAT);
+  DEBUG((EFI_D_INFO, "                  Rx30028 FW Low Address  %x \n", TmpReg32));
+
+  //Set Xhci Fw Upper Base Address in system memory
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE+0x2C); 
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_DAT, FwAddr_Hi);   
+  TmpReg32 =  MmioRead32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_DAT);
+  DEBUG((EFI_D_INFO, "                  Rx3002C FW High Address  %x \n", TmpReg32));
+
+  //Xhci Openrisc auto fill start address
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE+0x0C);
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_DAT, AutoFillAddr); 
+  TmpReg32 =  MmioRead32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_DAT);
+  DEBUG((EFI_D_INFO, "                  Rx3000C Autofill Start Address  %x \n", TmpReg32));
+
+  //Xhci Openrisc auto fill length
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE+0x08);
+  MmioWrite16(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_DAT+2, AutoFillLen); 
+
+  TmpReg16 =  MmioRead16(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_DAT+2);
+  DEBUG((EFI_D_INFO, "                  Rx30008 Autofill Length  %x \n", TmpReg16));
+
+  //Xhci Openrisc Instruction Auto-fill Enable Rx08=1 
+  MmioWrite32(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE+0x08);
+  MmioWrite8(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func) + XHCI_OPT_CFG_DAT, 1);    
+
+  //operation disable
+  MmioAnd8(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+XHCI_OPT_RX43, (UINT8)~XHCI_OPT_CFG_EN);
+
+  DEBUG((EFI_D_INFO, "                  Auto-fill Enable and Wait...\n"));
+
+  do {
+    TmpReg32 =  MmioRead32(PCI_DEV_MMBASE(BusOfEptrfc, Dev, Func) + 0xB0);
+  } while ( (TmpReg32 & BIT0) != BIT0 );
+  DEBUG((EFI_D_INFO, "                  Xhci FW Init Done:%x\n", TmpReg32));
+
+  //disable  bus master 
+  MmioAnd8(PCI_DEV_MMBASE(BusOfEptrfc,Dev,Func)+PCI_COMMAND_OFFSET, (UINT8)~EFI_PCI_COMMAND_BUS_MASTER); 
+
+  return EFI_SUCCESS;
+}
 #endif
 
 

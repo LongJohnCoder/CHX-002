@@ -37,6 +37,11 @@ BOOLEAN CheckKbcPresent(VOID);
 BOOLEAN CheckMsPresent(VOID);
 BOOLEAN CheckKbPresent(VOID);
 #ifdef IOE_EXIST
+EFI_STATUS
+LoadIoeXhciFw(
+  UINT8 BusOfEptrfc,
+  VOID *FwAddr_alloc
+);
 //JNY_IOE Porting -S
 EFI_STATUS LoadIoeMcuFw(UINT8 BusOfEptrfc, VOID *FwAddr_alloc,UINT16 AutoFillAddr,UINT16 AutoFillLen); //CJW_IOE FWLOAD
 //JNY_IOE Porting -E

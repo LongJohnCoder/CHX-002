@@ -94,6 +94,7 @@
   gPlatformModuleTokenSpaceGuid.PcdPeMcuFwFile
   ##ifdef IOE_EXIST
   gPlatformModuleTokenSpaceGuid.PcdIoeMcuFwFile
+  gPlatformModuleTokenSpaceGuid.PcdIoeXhciFwFile
   ##endif
   gPlatformModuleTokenSpaceGuid.PcdInternalShellEnable
   gEfiMdeModulePkgTokenSpaceGuid.PcdxhciFWAddr

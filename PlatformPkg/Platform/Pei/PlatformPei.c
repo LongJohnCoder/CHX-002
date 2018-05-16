@@ -186,8 +186,7 @@ HandleIoeMcuXhciFwPei(
 	VOID *IoeMcuMemAddr;
 	UINT16 IoeMcuAddrStart,IoeMcuAddrLen;
 	UINT8 IoeEptrfcBusNum;
-  	//VOID *IoeXhciMemAddr;
-	//UINT16 IoeXhciAddrStart,IoeXhciAddrLen;
+  VOID *IoeXhciMemAddr;
 
 	
 	//
@@ -220,9 +219,7 @@ HandleIoeMcuXhciFwPei(
 	IoeMcuAddrStart = (UINT16)S3Record->PcieIoeMcuAddr;
 	IoeMcuAddrLen = (UINT16)S3Record->PcieIoeMcuLen;
   	//ttpandbg
-  	//IoeXhciMemAddr = (VOID*)(UINTN)S3Record->PcieIoeXhci;
-	//IoeXhciAddrStart = (UINT16)S3Record->PcieIoeXhciAddr;
-	//IoeXhciAddrLen = (UINT16)S3Record->PcieIoeXhciLen;
+  IoeXhciMemAddr = (VOID*)(UINTN)S3Record->PcieIoeXhci;
 
 
 
@@ -381,10 +378,10 @@ _FoundIoe:
 	}
 
 	//
-  	// IOE Xhci Fw Autofill load
-  	//
-   	//Status = LoadIoeXhciFw(IoeEptrfcBusNum,IoeXhciMemAddr, IoeXhciAddrStart,IoeXhciAddrLen);
-   	//ASSERT_EFI_ERROR(Status);
+  // IOE Xhci Fw Autofill load
+  //
+  Status = LoadIoeXhciFw(IoeEptrfcBusNum, IoeXhciMemAddr);
+  ASSERT_EFI_ERROR(Status);
 
 	//
 	// Hide EPTRFC again
