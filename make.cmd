@@ -195,8 +195,8 @@ REM echo %XHCI_FW_VER%
 REM echo %XHCI_FW_TYPE%
 REM pause
 
+set "IOE_USB_FW_PATH=.\AsiaPkg\ZxPlatformBin"
 if /i "%5" == "IOE_EXIST" (
-  set "IOE_USB_FW_PATH=.\AsiaPkg\ZxPlatformBin"
   rem xhci firmware file must exist
   if not exist %IOE_USB_FW_PATH%\CND003_xHCI_R*.bin (
     echo IOE xHCI FW file not exist!
