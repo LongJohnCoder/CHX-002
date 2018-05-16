@@ -445,11 +445,11 @@ HandleXhciFwPei(
     tVID     = MmioRead16(XHCI_PCI_REG(PCI_VID_REG));
     tDID     = MmioRead16(XHCI_PCI_REG(PCI_DID_REG));
 
-    DEBUG((EFI_D_INFO, "                  [%02X|%02X|%02X](%08X) VID = 0x%04X, DID = 0x%04X\n", XHCI_BUS_NO, XHCI_DEV_NO, XHCI_FUNC_NO, XHCI_PCI_REG(PCI_VID_REG), tVID, tDID));
+    DEBUG((EFI_D_INFO, "                  [%02X|%02X|%02X](%08X) VID = 0x%04X, DID = 0x%04X\n", 0, CHX002_XHCI_DEV, 0, XHCI_PCI_REG(PCI_VID_REG), tVID, tDID));
 
-    if( !( ((tVID == VAS_VENDOR_ID) || (tVID == VIA_VENDOR_ID)) && (tDID == XHCI_DEVICE_ID)) ) {
+    if( !( ((tVID == PCI_VID_ZX) || (tVID == PCI_VID_VIA)) && (tDID == XHCI_DEVICE_ID)) ) {
         Status = EFI_DEVICE_ERROR;
-        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: [%02X|%02X|%02X](%08X) not exist!(%r)\n", XHCI_BUS_NO, XHCI_DEV_NO, XHCI_FUNC_NO, XHCI_PCI_REG(PCI_VID_REG), Status));
+        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: [%02X|%02X|%02X](%08X) not exist!(%r)\n", 0, CHX002_XHCI_DEV, 0, XHCI_PCI_REG(PCI_VID_REG), Status));
         return Status;
     }
 

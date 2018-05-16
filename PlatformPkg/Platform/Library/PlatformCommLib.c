@@ -1080,6 +1080,7 @@ VOID ZX_DumpPciDevSetting()
   UINT8   Bus, Dev, Func;
   UINT8 Bus0Dev[] = {0,1,2,3,4,5,6,7,9,10,12,15,16,17,18,20,21};
   UINT32  MmioBase;
+  UINT16 PmioBase;
 //All devices on bus0
   Bus = 0;
   for(Index = 0; Index < sizeof(Bus0Dev)/sizeof(Bus0Dev[0]); Index++) {
@@ -1152,8 +1153,9 @@ VOID ZX_DumpPciDevSetting()
   DEBUG((EFI_D_ERROR,"======Dump D17F0 MMIO Space==========\n"));
   DumpMem8((VOID*)(UINTN)MmioBase, 0x58);
   DEBUG((EFI_D_ERROR,"======Dump PMIO Space==========\n"));
-  DumpIo4(0x800, 0x14);
-  DumpIo4(0x820, 0xD0);
+  PmioBase = PcdGet16(AcpiIoPortBaseAddress); // PlatformX64Pkg.dsc define it.
+  DumpIo4(PmioBase, 0x14);
+  DumpIo4((PmioBase+0x20), 0xD0);
 //Yankui-dbg-e
 //DumpAllPci();
 

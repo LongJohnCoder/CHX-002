@@ -489,7 +489,7 @@ SataControllerSupported (
     return EFI_UNSUPPORTED;     
   }
 
-  if(((VendorId != VIA_VENDOR_ID) && (VendorId != VAS_VENDOR_ID)) || ((DeviceId != IDE_DEVICE_ID1) && (DeviceId != IDE_DEVICE_ID2) && (DeviceId != AHCI_DEVICE_ID))){
+  if(((VendorId != PCI_VID_VIA) && (VendorId != PCI_VID_ZX)) || ((DeviceId != IDE_DEVICE_ID1) && (DeviceId != IDE_DEVICE_ID2) && (DeviceId != AHCI_DEVICE_ID))){
 	  if(SataRomSize != 0){
 	      return EFI_UNSUPPORTED; 
 	  }

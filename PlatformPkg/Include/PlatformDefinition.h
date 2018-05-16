@@ -102,40 +102,18 @@ typedef struct {
 } PLAT_NV_INFO;  
 
 
-//#define SB_UHCI_COUNT        3
-//#define SB_EHCI_COUNT        1
-//#define SB_XHCI_COUNT        1
+/////
 
-
-//#define SATA_BUS_NO    0
-//#define SATA_DEV_NO    21
-//#define SATA_FUNC_NO   0
-
-
-//#define UHCI_BUS_NO    0
-//#define UHCI_DEV_NO    16
-//#define UHCI_FUNC_NO   0
-//#define UHCI_FUNC1_NO  1
-//#define UHCI_FUNC2_NO  2
-
-//#define EHCI_BUS_NO   0
-//#define EHCI_DEV_NO   16
-//#define EHCI_FUNC_NO  7
-
-#define XHCI_BUS_NO   0
-#define XHCI_DEV_NO   18
-#define XHCI_FUNC_NO  0
-
-//#define HDAC_BUS_NO   0
-//#define HDAC_DEV_NO   20
-//#define HDAC_FUNC_NO  0
+//#define XHCI_BUS_NO   0
+//#define XHCI_DEV_NO   18 // use CHX002_XHCI_DEV replace
+//#define XHCI_FUNC_NO  0
 
 #define PCI_DEV_MMBASE(Bus, Device, Function) \
     ( \
       (UINTN)PcdGet64(PcdPciExpressBaseAddress) + (UINTN) (Bus << 20) + (UINTN) (Device << 15) + (UINTN) \
         (Function << 12) \
     )
-#define XHCI_PCI_REG(Reg)         (PCI_DEV_MMBASE(XHCI_BUS_NO, XHCI_DEV_NO, XHCI_FUNC_NO)+Reg)
+//#define XHCI_PCI_REG(Reg)         (PCI_DEV_MMBASE(0, CHX002_XHCI_DEV, 0)+Reg)
 
 /// Standard PCI Config Space registers definitions.
 #define PCI_VID_REG                          0x00
@@ -192,26 +170,7 @@ typedef struct {
 ///
 #include "..\..\AsiaPkg\Asia\Porting\Include\zxibv.h"
 
-// USB
-/*
-#define USB_SSID_BDEN_REG                    0x42
-#define USB_SSID_BDEN                          BIT4
-
-// UHCI
-#define UHCI_LEGSPT_REG                      0xC0
-
-// EHCI
-#define SB_EHCI_COMMAND_REGISTER             0x04
-#define   SB_EHCI_COMMAND_BME                  BIT2
-#define   SB_EHCI_COMMAND_MSE                  BIT1
-#define SB_EHCI_MEM_BASE                     0x10
-#define SB_EHCI_LEGEXT_CAP_REG               0x68
-#define   SB_EHCI_LEGEXT_CAP_HCBIOS            BIT16
-#define   SB_EHCI_LEGEXT_CAP_HCOS              BIT24
-*/
-////
-// XHCI
-/**/
+///
 #define SB_XHCI_COMMAND_REGISTER             0x04
 #define   SB_XHCI_COMMAND_BME                  BIT2
 #define   SB_XHCI_COMMAND_MSE                  BIT1
@@ -319,11 +278,11 @@ typedef struct {
 #define REALTEK_VENDOR_ID         0x10EC  
 
 #define REALTEK_VENDOR_ID         0x10EC 
-#define VIA_VENDOR_ID             0x1106
-#define VAS_VENDOR_ID             0x1D17 
-#define AHCI_DEVICE_ID            0x9083
-#define IDE_DEVICE_ID1            0x9002
-#define IDE_DEVICE_ID2            0x9003
+//#define VIA_VENDOR_ID             0x1106  // use PCI_VID_VIA replace
+//#define VAS_VENDOR_ID             0x1D17 // use PCI_VID_ZX replace
+//#define AHCI_DEVICE_ID            0x9083
+//#define IDE_DEVICE_ID1            0x9002
+//#define IDE_DEVICE_ID2            0x9003
 
 #define UHCI_DEVICE_ID            0x3038
 #define EHCI_DEVICE_ID            0x3104
