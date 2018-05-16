@@ -230,7 +230,8 @@ STATIC EFI_STATUS AddSmbiosType0(EFI_SMBIOS_PROTOCOL *Smbios)
     goto ProcExit;
   }
 
-  Version = TKN2VERSTR(TKN_BIOS_MAJOR_VER, TKN_BIOS_MINOR_VER);
+  //Version = TKN2VERSTR(TKN_BIOS_MAJOR_VER, TKN_BIOS_MINOR_VER);
+  Version = TKN2STR(BIOS_VEISION_NAME);
   VerStrLen = AsciiStrLen(Version);
   if (VerStrLen > SMBIOS_STRING_MAX_LENGTH) {
     Status = EFI_UNSUPPORTED;
