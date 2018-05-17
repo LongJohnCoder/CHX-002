@@ -470,9 +470,9 @@ GotSetupVariable:
   NbCfg->PE6_PcieIntx2Nb2sbIntx = SetupData->PE6_PcieIntx2Nb2sbIntx;
   NbCfg->PE7_PcieIntx2Nb2sbIntx = SetupData->PE7_PcieIntx2Nb2sbIntx;
   ///
-  NbCfg->PegApciIrq = SetupData->PegApciIrq;
-  NbCfg->Peg2ApciIrq = SetupData->Peg2ApciIrq;
-  NbCfg->Peg3ApciIrq = SetupData->Peg3ApciIrq;
+  //NbCfg->PegApciIrq = SetupData->PegApciIrq;
+  NbCfg->Pe6ApciIrq = SetupData->Pe6ApciIrq;
+  NbCfg->Pe7ApciIrq = SetupData->Pe7ApciIrq;
   NbCfg->PcieASPMBootArch = SetupData->PcieASPMBootArch;
   //LNA-2016122701-S
   NbCfg->PcieOBFFCtrl_PCIE = SetupData->PcieOBFFCtrl_PCIE;

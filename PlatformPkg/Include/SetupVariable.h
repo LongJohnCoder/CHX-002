@@ -545,9 +545,9 @@ typedef struct {
   
  // UINT8 MsiEnable;
   UINT8 PcieASPMBootArch;//dla_add_061107
-  UINT8 PegApciIrq;
-  UINT8 Peg2ApciIrq;
-  UINT8 Peg3ApciIrq;  
+  //UINT8 PegApciIrq;
+  UINT8 Pe6ApciIrq;
+  UINT8 Pe7ApciIrq;  
   //DLA_ADD_E
 
   //reset link when fail
