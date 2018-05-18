@@ -1035,6 +1035,9 @@ PlatformPeiEntry (
   PlatformPeiEntryDebug(CpuPpi);
 #endif
 
+#if DRAM_Vol_IC_SUPPORT
+  InitDramVoltageChip(PeiServices,DramCfg->DramVoltageControl);
+#endif
 
 
 //--------------------------------- Before RC ----------------------------------

@@ -183,6 +183,7 @@ typedef struct {
    UINT8 RPREA;
    UINT8 CALEn;
    UINT8 ACTimingOption;
+   UINT8 DramVoltageControl;
    UINT8 DramCL;
    UINT8 DramTrcd;
    UINT8 DramTrp;

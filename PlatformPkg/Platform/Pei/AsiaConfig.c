@@ -569,6 +569,7 @@ GotSetupVariable:
 	 DramCfg->RPREA= SetupData->RPREA;  //read preambleR	   
 	 DramCfg->CALEn= SetupData->CALEn; //CAL Latency enable
 	 DramCfg->ACTimingOption = SetupData->ACTimingOption;	
+	 DramCfg->DramVoltageControl = SetupData->DramVoltageControl;  // IVES-20180517
 	 DramCfg->DramCL= SetupData->DramCL;	
 	 DramCfg->DramTrcd= SetupData->DramTrcd;	
 	 DramCfg->DramTrp= SetupData->DramTrp;	

@@ -471,12 +471,109 @@ EFI_PEI_PPI_DESCRIPTOR gSmbusPpiList[] = {
   },
 };
 
+#if DRAM_Vol_IC_SUPPORT
+/*
+[01h] - operation                      (R/W)
+       [7] - ON_OFF :0:turn off switching converter
+                     1:turn on  switching converter
+       [5:2]:OPMARGIN<3:0>
+[02h] - ON_OFF_CONFIG                  (R/W)
+       [2] - CP : 0:ignore EN pin
+                  1:act on EN pin
+       [3] - CMD: 0:ignore ON_OFF_bit
+                  1:act on ON_OFF_bit
+[10h] - Write_Protect                  (R/W)
+     suggest set to 00h --> enable write to all commands
+[03h] - clear_faults                     (Send Byte)
+[11h] - Store_default_all                (Send Byte)
+[12h] - Restore_default_all              (Send Byte)
+[79h] - Stauts_Word                      (Read Word)
+
+[D0h] - Custom_Reg(MFR_SPECIFIC_00)      (R/W)
+       [5:0]:can store any desired non-volatile information
+[D1h] - Delay_Control(MFR_SPECIFIC_01)   (R/W)
+         [5:3]:PGD<2:0>
+         [2:0]:POD<2:0>
+[D2h] - Mode_soft_Start_Config(MFR_SPECIFIC_02)(R/W)
+         [3:2]:SST<1:0>
+         [1]  :HICLOFF
+         [0]  :CM
+[D3h] - Frequency_Config(MFR_SPECIFIC_03) (R/W)
+         [2:0]:FS<2:0>
+
+[D4h] - Vout_Adjustment(MFR_SPECIFIC_04)  (R/W)
+         [4:0]:VOA<4:0>
+[D5h] - Vout_Margin(MFR_SPECIFIC_05)      (R/W)
+         [7:4]:VOMH<3:0>
+         [3:0]:VOML<3:0>
+[D6h] - Uvlo_Threshold(MFR_SPECIFIC_06)   (R/W)
+         [2:0]:VDDINUVLO<2:0>
+*/
+
+typedef struct
+{
+	UINT8  offset;
+	UINT8  Value;
+}TP_DIMM_VOL_DATA_TABLE;
+
+
+STATIC TP_DIMM_VOL_DATA_TABLE gDramVolTable[][5]=
+{
+//  ON_OFF_CONFIG    Write-Protect     MFR_02      MFR_04        MFR _05      operation     
+	{{0x02,0x1F}  ,  {0x10,0x00}  ,/*{0xD2,0x},*/ {0xD4,0x10} , {0xD5,0x00}  ,{0x01,0xA8}  }, // 0%
+	{{0x02,0x1F}  ,  {0x10,0x00}  ,/*{0xD2,0x},*/ {0xD4,0x10} , {0xD5,0x00}  ,{0x01,0xA8}  }, // 0%
+	{{0x02,0x1F}  ,  {0x10,0x00}  ,/*{0xD2,0x},*/ {0xD4,0x10} , {0xD5,0x00}  ,{0x01,0xA8}  }, // 0%
+	{{0x02,0x1F}  ,  {0x10,0x00}  ,/*{0xD2,0x},*/ {0xD4,0x10} , {0xD5,0x00}  ,{0x01,0xA8}  }, // 0%
+	{{0x02,0x1F}  ,  {0x10,0x00}  ,/*{0xD2,0x},*/ {0xD4,0x10} , {0xD5,0x00}  ,{0x01,0xA8}  }, // 0%
+	{{0x02,0x1F}  ,  {0x10,0x00}  ,/*{0xD2,0x},*/ {0xD4,0x10} , {0xD5,0x00}  ,{0x01,0xA8}  }, // 0%
+};
+
+EFI_STATUS
+InitDramVoltageChip(
+   IN CONST EFI_PEI_SERVICES  **PeiServices,
+   IN       UINT8             Vol
+ )
+{
+	EFI_STATUS				  Status;
+	UINTN					  Index;
+	UINTN					  Count;
+	UINTN					  Length;
+	UINT8					  Data8;
+	EFI_SMBUS_DEVICE_ADDRESS  Address;
+	
+	Count = sizeof(gDramVolTable[Vol-1])/sizeof(gDramVolTable[Vol-1][0]);
+	Address.SmbusDeviceAddress = TPS53819A_SMB_SLAVE_ADDR;
+	Status = EFI_SUCCESS;
+	
+	for(Index=0;Index<Count;Index++){
+	  Length = 1;
+	  Data8  = gDramVolTable[Vol-1][Index].Value;
+	  Status = SmbusExec (
+				 (EFI_PEI_SERVICES**)PeiServices,
+				 &gPeiSmbusPpi,
+				 Address,
+				 gDramVolTable[Vol-1][Index].Offset,
+				 EfiSmbusWriteByte,
+				 FALSE,
+				 &Length,
+				 &Data8
+				 );
+	  if(EFI_ERROR(Status)){
+		break;
+	  }
+	}
+}
+
+#endif
+
+
 
 #if THERMAL_IC_SUPPORT
 typedef struct {
   UINT8  Offset;
   UINT8  Value;
 } TM_DATA_TABLE;
+
 
 
 /*
