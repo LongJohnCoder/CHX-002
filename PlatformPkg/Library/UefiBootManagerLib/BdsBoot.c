@@ -116,7 +116,7 @@ typedef struct {
 NetWorkTypeStruct mNetWorkTypeList[] = {
   { 0x15028086, L"Intel 82579LM" },
   { 0x816810EC, L"Realtek 8111G" },
-  #ifdef IOE_EXSIT
+  #ifdef IOE_EXIST
   { 0x91801D17, L"ZX-200 GNIC" },
   #endif
 };

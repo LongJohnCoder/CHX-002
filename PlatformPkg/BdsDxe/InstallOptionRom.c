@@ -7,7 +7,7 @@
 
 
 ADDITIONAL_ROM_TABLE  gRomTable[] = {
-  #ifdef IOE_EXSIT
+  #ifdef IOE_EXIST
   {0, 0, LAN_IOEOPROM_FILE_GUID,	OnBoardGnicOpRomCheck},
   #endif
   {0, 0, LAN_OPROM_FILE_GUID,  OnBoardLanOpRomCheck},
