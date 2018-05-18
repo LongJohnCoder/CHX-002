@@ -140,6 +140,7 @@ STATUS_CODE_TO_DATA_MAP  mProgressPort80MapTable[] = {
   
   { DXE_SB_INIT,                  0x70 },           // PchInitEntryPoint() in PchInit.c
     // reserved for SB:           0x71 - 0x75
+  // { DXE_NB_IOV_SNOOP_CHECK,    0x74 },           //JRZ-20180518 AsiaNbDxePreBootInit() in AsiaNbDxeInit.c
   // { DXE_SB_DEVICES_INIT,       0x76 },           // TBD
   { DXE_SIO_INIT,                 0x77 },           // SioDriverEntryPoint() in SioDriver.c
   // { DXE_ACPI_INIT,             0x78 },           // TBD
