@@ -95,6 +95,15 @@ OnBoardLanOpRomCheck(
   EFI_PCI_IO_PROTOCOL  *PciIo
   );
 
+#ifdef IOE_EXIST
+BOOLEAN 
+OnBoardGnicOpRomCheck(
+  EFI_HANDLE			 Handle,
+  EFI_PCI_IO_PROTOCOL  *PciIo
+  );
+ #endif
+
+
   
 #endif
 
