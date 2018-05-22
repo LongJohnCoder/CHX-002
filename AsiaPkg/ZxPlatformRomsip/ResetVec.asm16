@@ -39,24 +39,10 @@
     ORG     0h            ; FFFFFFA0
 
   #ifdef HX002EA0_03
-  #ifdef CHX002_HAPS
-	dd  000000000h
-	dd  0003800C8h    
-	dd  000015554h
-	dd  000000000h  
-  #endif  
-  #ifdef CHX002_PXP
-	dd  000000000h
-	dd  0003800B0h    
-	dd  00002AAA8h
-	dd  000000000h
-  #endif
-  #ifdef CHX002_A0
 	dd  000000000h
 	dd  00038FF98h     
 	dd  00003FFFCh
 	dd  000000000h  
-  #endif
   #endif
 
   #ifdef HX002EB0_00

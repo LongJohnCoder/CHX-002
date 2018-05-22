@@ -127,17 +127,11 @@ REM ********** EH0 **********
   goto ERROR
 )
 
-REM ************ make para #4: CHX002_PXP, CHX002_HAPS or CHX002_A0 ************
-if /I "%4" == "CHX002_PXP" (
-  set ZX_PLATTARGET=PXP
-  REM ---
-) else if /I "%4" == "CHX002_HAPS" (
-  set ZX_PLATTARGET=HAPS
-  REM ---
-) else if /I "%4" == "CHX002_A0" (
+REM ************ make para #4: CHX002_A0 ************
+if /I "%4" == "CHX002_A0" (
   REM ---
 ) else (
-  echo Please Input CHX002_PXP, CHX002_HAPS or CHX002_A0
+  echo Please Input CHX002_A0 etccc
   goto ERROR
 )
 

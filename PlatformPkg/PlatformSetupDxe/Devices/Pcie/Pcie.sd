@@ -138,137 +138,6 @@ $END--------------------------------------------------------------------
  		    // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =INTERACTIVE;
         // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
        // endoneof; 
-#if defined(CHX002_PXP)
-       oneof varid   = SETUP_DATA.PciePE0,
-        questionid  = KEY_VALUE_PCIE_PE0,
-        prompt   = STRING_TOKEN(STR_PCIE_PE0),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
-       endoneof; 
-      
-       oneof varid   = SETUP_DATA.PciePE1,
-        questionid  = KEY_VALUE_PCIE_PE1,
-        prompt   = STRING_TOKEN(STR_PCIE_PE1),
-        help   = STRING_TOKEN(STR_EMPTY),
-  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =INTERACTIVE ;
-       endoneof; 
-      
-       oneof varid   = SETUP_DATA.PciePE2,
-        questionid  = KEY_VALUE_PCIE_PE2,
-        prompt   = STRING_TOKEN(STR_PCIE_PE2),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
-       endoneof; 
-      
-       oneof varid   = SETUP_DATA.PciePE3,
-        questionid  = KEY_VALUE_PCIE_PE3,
-        prompt   = STRING_TOKEN(STR_PCIE_PE3),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT| INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =INTERACTIVE ;
-       endoneof; 
-      
-      oneof varid   = SETUP_DATA.PciePE4,
-       questionid  = KEY_VALUE_PCIE_PE4,
-        prompt   = STRING_TOKEN(STR_PCIE_PE4),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT| INTERACTIVE ;
-       endoneof; 
-
-       oneof varid   = SETUP_DATA.PciePE5,
-        questionid  = KEY_VALUE_PCIE_PE5,
-        prompt   = STRING_TOKEN(STR_PCIE_PE5),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =INTERACTIVE ;
-       endoneof;
-	   
-       oneof varid   = SETUP_DATA.PciePE6,
-       questionid  = KEY_VALUE_PCIE_PE6,
-        prompt   = STRING_TOKEN(STR_PCIE_PE6),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
-       endoneof; 
-
-       oneof varid   = SETUP_DATA.PciePE7,
-        questionid  = KEY_VALUE_PCIE_PE7,
-        prompt   = STRING_TOKEN(STR_PCIE_PE7),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
-       endoneof; 
-
-#elif defined(CHX002_HAPS)  
-       oneof varid   = SETUP_DATA.PciePE0,
-        questionid  = KEY_VALUE_PCIE_PE0,
-        prompt   = STRING_TOKEN(STR_PCIE_PE0),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =  DEFAULT|INTERACTIVE ;
-       endoneof; 
-      
-       oneof varid   = SETUP_DATA.PciePE1,
-        questionid  = KEY_VALUE_PCIE_PE1,
-        prompt   = STRING_TOKEN(STR_PCIE_PE1),
-        help   = STRING_TOKEN(STR_EMPTY),
-  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT|INTERACTIVE ;
-       endoneof; 
-      
-       oneof varid   = SETUP_DATA.PciePE2,
-        questionid  = KEY_VALUE_PCIE_PE2,
-        prompt   = STRING_TOKEN(STR_PCIE_PE2),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
-       endoneof; 
-      
-       oneof varid   = SETUP_DATA.PciePE3,
-        questionid  = KEY_VALUE_PCIE_PE3,
-        prompt   = STRING_TOKEN(STR_PCIE_PE3),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT| INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =INTERACTIVE ;
-       endoneof; 
-      
-      oneof varid   = SETUP_DATA.PciePE4,
-       questionid  = KEY_VALUE_PCIE_PE4,
-        prompt   = STRING_TOKEN(STR_PCIE_PE4),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT| INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
-       endoneof; 
-
-       oneof varid   = SETUP_DATA.PciePE5,
-        questionid  = KEY_VALUE_PCIE_PE5,
-        prompt   = STRING_TOKEN(STR_PCIE_PE5),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =INTERACTIVE ;
-       endoneof;
-	   
-       oneof varid   = SETUP_DATA.PciePE6,
-       questionid  = KEY_VALUE_PCIE_PE6,
-        prompt   = STRING_TOKEN(STR_PCIE_PE6),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
-       endoneof; 
-
-       oneof varid   = SETUP_DATA.PciePE7,
-        questionid  = KEY_VALUE_PCIE_PE7,
-        prompt   = STRING_TOKEN(STR_PCIE_PE7),
-        help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
-       endoneof; 
-	   
-#else
        oneof varid   = SETUP_DATA.PciePE0,
         questionid  = KEY_VALUE_PCIE_PE0,
         prompt   = STRING_TOKEN(STR_PCIE_PE0),
@@ -332,7 +201,7 @@ $END--------------------------------------------------------------------
  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
        endoneof; 
-#endif
+
     endif;//end PcieRP==1;
       
 
