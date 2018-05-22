@@ -27,7 +27,6 @@
 #include <Protocol/FirmwareVolume2.h>
 #include <Protocol/Smbios.h>
 #include <Protocol/DevicePath.h>
-#include <Protocol/FsbcDumpProtocol.h>
 #include <AsiaCpuProtocol.h>
 #include <AsiaNbProtocol.h>
 #include <AsiaSbProtocol.h>
@@ -35,6 +34,10 @@
 #include <SetupVariable.h>
 #include <Library/PlatformCommLib.h>
 #include <PlatS3Record.h>
+
+#ifdef ZX_SECRET_CODE  
+#include <Protocol/FsbcDumpProtocol.h>
+#endif
 
 
 

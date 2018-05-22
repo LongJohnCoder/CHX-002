@@ -1,6 +1,15 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**     Copyright (c) 2018 Shanghai Zhaoxin Semiconductor Co., Ltd.  **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
 
 #ifndef _FSBC_DUMP_PROTOCOL_H_
 #define _FSBC_DUMP_PROTOCOL_H_
+
+#ifdef ZX_SECRET_CODE
 
 //
 // Global ID for the EFI_FSBC_DUMP_PROTOCOL_GUID.
@@ -24,5 +33,6 @@ struct _EFI_FSBC_DUMP_PROTOCOL {
 };
 
 extern EFI_GUID gEfiFsbcDumpProtocolGuid;
+#endif
 
 #endif
