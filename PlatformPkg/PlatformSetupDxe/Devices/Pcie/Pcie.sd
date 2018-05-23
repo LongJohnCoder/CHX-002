@@ -56,40 +56,42 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof;      
 
-  
-//2  EVB-HX002EA0_03 :
-   #ifdef HX002EA0_03 
-   
+
      suppressif NOT ideqval SETUP_DATA.PcieRst==1;      
         
-
+#ifdef SETUP_VISABLE_PCIE_RP_PE0
        oneof varid   = SETUP_DATA.PcieRstPE0,
         prompt   = STRING_TOKEN(STR_PCIE_RST_PE0),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE1
        oneof varid   = SETUP_DATA.PcieRstPE1,
         prompt   = STRING_TOKEN(STR_PCIE_RST_PE1),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE2      
        oneof varid   = SETUP_DATA.PcieRstPE2,
         prompt   = STRING_TOKEN(STR_PCIE_RST_PE2),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE3      
        oneof varid   = SETUP_DATA.PcieRstPE3,
         prompt   = STRING_TOKEN(STR_PCIE_RST_PE3),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
        endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE4
 
 	    oneof varid   = SETUP_DATA.PcieRstPE4,
         prompt   = STRING_TOKEN(STR_PCIE_RST_PE4),
@@ -97,27 +99,31 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof;        
-             
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE5             
  	    oneof varid   = SETUP_DATA.PcieRstPE5,
         prompt   = STRING_TOKEN(STR_PCIE_RST_PE4),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof;        
-                  
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE6                 
 	    oneof varid   = SETUP_DATA.PcieRstPE6,
         prompt   = STRING_TOKEN(STR_PCIE_RST_PE6),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =  RESET_REQUIRED;
        endoneof;        
-             
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE7            
        oneof varid   = SETUP_DATA.PcieRstPE7,
         prompt   = STRING_TOKEN(STR_PCIE_RST_PE7),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;    
        endoneof; 
+#endif	   
      endif;//end PcieRst==1;
      
     	oneof varid   = SETUP_DATA.PcieRP,
@@ -138,6 +144,7 @@ $END--------------------------------------------------------------------
  		    // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =INTERACTIVE;
         // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
        // endoneof; 
+#ifdef SETUP_VISABLE_PCIE_RP_PE0      
        oneof varid   = SETUP_DATA.PciePE0,
         questionid  = KEY_VALUE_PCIE_PE0,
         prompt   = STRING_TOKEN(STR_PCIE_PE0),
@@ -145,7 +152,8 @@ $END--------------------------------------------------------------------
  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
        endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE1 
        oneof varid   = SETUP_DATA.PciePE1,
         questionid  = KEY_VALUE_PCIE_PE1,
         prompt   = STRING_TOKEN(STR_PCIE_PE1),
@@ -153,7 +161,8 @@ $END--------------------------------------------------------------------
   		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT|INTERACTIVE;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =INTERACTIVE ;
        endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE2      
        oneof varid   = SETUP_DATA.PciePE2,
         questionid  = KEY_VALUE_PCIE_PE2,
         prompt   = STRING_TOKEN(STR_PCIE_PE2),
@@ -161,7 +170,8 @@ $END--------------------------------------------------------------------
  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  INTERACTIVE;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT|INTERACTIVE ;
        endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE3       
        oneof varid   = SETUP_DATA.PciePE3,
         questionid  = KEY_VALUE_PCIE_PE3,
         prompt   = STRING_TOKEN(STR_PCIE_PE3),
@@ -169,7 +179,8 @@ $END--------------------------------------------------------------------
  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT| INTERACTIVE ;
        endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE4       
       oneof varid   = SETUP_DATA.PciePE4,
        questionid  = KEY_VALUE_PCIE_PE4,
         prompt   = STRING_TOKEN(STR_PCIE_PE4),
@@ -177,7 +188,8 @@ $END--------------------------------------------------------------------
  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =INTERACTIVE;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT| INTERACTIVE ;
        endoneof; 
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE5 
        oneof varid   = SETUP_DATA.PciePE5,
         questionid  = KEY_VALUE_PCIE_PE5,
         prompt   = STRING_TOKEN(STR_PCIE_PE5),
@@ -185,7 +197,8 @@ $END--------------------------------------------------------------------
  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT|INTERACTIVE;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
        endoneof;
-	   
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE6	   
        oneof varid   = SETUP_DATA.PciePE6,
        questionid  = KEY_VALUE_PCIE_PE6,
         prompt   = STRING_TOKEN(STR_PCIE_PE6),
@@ -193,6 +206,8 @@ $END--------------------------------------------------------------------
  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT| INTERACTIVE ;
        endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE7
 
        oneof varid   = SETUP_DATA.PciePE7,
         questionid  = KEY_VALUE_PCIE_PE7,
@@ -201,7 +216,7 @@ $END--------------------------------------------------------------------
  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
        endoneof; 
-
+#endif
     endif;//end PcieRP==1;
       
 
@@ -226,7 +241,7 @@ $END--------------------------------------------------------------------
         // option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
         // option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
        // endoneof; 
-       
+#ifdef SETUP_VISABLE_PCIE_RP_PE0       
         oneof varid   = SETUP_DATA.PciePE0LinkSpeed,
         prompt   = STRING_TOKEN(STR_PCIE_PE0_LINK_SPD),
         help   = STRING_TOKEN(STR_EMPTY),
@@ -235,7 +250,8 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
        endoneof; 
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE1
         oneof varid   = SETUP_DATA.PciePE1LinkSpeed,
         prompt   = STRING_TOKEN(STR_PCIE_PE1_LINK_SPD),
         help   = STRING_TOKEN(STR_EMPTY),
@@ -244,7 +260,8 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
        endoneof; 
-              
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE2              
         oneof varid   = SETUP_DATA.PciePE2LinkSpeed,
         prompt   = STRING_TOKEN(STR_PCIE_PE2_LINK_SPD),
         help   = STRING_TOKEN(STR_EMPTY),
@@ -253,7 +270,8 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
        endoneof; 
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE3
         oneof varid   = SETUP_DATA.PciePE3LinkSpeed,
         prompt   = STRING_TOKEN(STR_PCIE_PE3_LINK_SPD),
         help   = STRING_TOKEN(STR_EMPTY),
@@ -262,7 +280,8 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
       endoneof;        
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE4
         oneof varid   = SETUP_DATA.PciePE4LinkSpeed,
         prompt   = STRING_TOKEN(STR_PCIE_PE4_LINK_SPD),
         help   = STRING_TOKEN(STR_EMPTY),
@@ -271,7 +290,8 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
        endoneof; 
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE5
         oneof varid   = SETUP_DATA.PciePE5LinkSpeed,
         prompt   = STRING_TOKEN(STR_PCIE_PE5_LINK_SPD),
         help   = STRING_TOKEN(STR_EMPTY),
@@ -280,7 +300,8 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
        endoneof; 
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE6
         oneof varid   = SETUP_DATA.PciePE6LinkSpeed,
         prompt   = STRING_TOKEN(STR_PCIE_PE6_LINK_SPD),
         help   = STRING_TOKEN(STR_EMPTY),
@@ -289,7 +310,8 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
        endoneof; 
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE7
         oneof varid   = SETUP_DATA.PciePE7LinkSpeed,
         prompt   = STRING_TOKEN(STR_PCIE_PE7_LINK_SPD),
         help   = STRING_TOKEN(STR_EMPTY),
@@ -298,10 +320,11 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
        endoneof;
+#endif
+	   
      endif; //end PcieLinkSpeed==4;    
  
-    #endif  //end HX002EA0_03
- 
+
  
      
     

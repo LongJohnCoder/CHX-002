@@ -63,221 +63,63 @@ $END--------------------------------------------------------------------
       endoneof; 
 	  
 	//##################################################################################################1
-	#if 0
+
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA0
        oneof varid = SETUP_DATA.Cnd003CapPEA0,
         prompt = STRING_TOKEN(STR_IOE_CAP_PEA0),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
       endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA1
        oneof varid = SETUP_DATA.Cnd003CapPEA1,
         prompt = STRING_TOKEN(STR_IOE_CAP_PEA1),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
       endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA2      
         oneof varid = SETUP_DATA.Cnd003CapPEA2,
         prompt = STRING_TOKEN(STR_IOE_CAP_PEA2),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
       endoneof; 
-           
-           
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA3          
        oneof varid = SETUP_DATA.Cnd003CapPEA3,
         prompt = STRING_TOKEN(STR_IOE_CAP_PEA3),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
       endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA4     
       oneof varid = SETUP_DATA.Cnd003CapPEA4,
         prompt = STRING_TOKEN(STR_IOE_CAP_PEA4),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
       endoneof; 
-            
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEB0            
        oneof varid = SETUP_DATA.Cnd003CapPEB0,
         prompt = STRING_TOKEN(STR_IOE_CAP_PEB0),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
       endoneof; 
-      
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEB1     
       oneof varid = SETUP_DATA.Cnd003CapPEB1,
         prompt = STRING_TOKEN(STR_IOE_CAP_PEB1),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof;       
-	#endif
-	#ifdef HX002EC0_01_IOE_33 //EVB#3 - CFG01
-       oneof varid = SETUP_DATA.Cnd003CapPEA0,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA0),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
       endoneof; 
-      
-       oneof varid = SETUP_DATA.Cnd003CapPEA1,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA1),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-      
-        oneof varid = SETUP_DATA.Cnd003CapPEA2,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA2),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-           
-           
-       oneof varid = SETUP_DATA.Cnd003CapPEA3,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA3),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-      
-      oneof varid = SETUP_DATA.Cnd003CapPEA4,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA4),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-            
-      // oneof varid = SETUP_DATA.Cnd003CapPEB0,
-      //  prompt = STRING_TOKEN(STR_IOE_CAP_PEB0),
-      //  help   = STRING_TOKEN(STR_EMPTY),
-      //  option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-      //  option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      //endoneof; 
-      
-      //oneof varid = SETUP_DATA.Cnd003CapPEB1,
-      //  prompt = STRING_TOKEN(STR_IOE_CAP_PEB1),
-      //  help   = STRING_TOKEN(STR_EMPTY),
-      //  option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-      //  option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      //endoneof;       
-	#endif
-	#ifdef HX002EC0_10_IOE_33 //EVB#3 - CFG10 
-       oneof varid = SETUP_DATA.Cnd003CapPEA0,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA0),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-      
-       oneof varid = SETUP_DATA.Cnd003CapPEA1,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA1),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-      
-        oneof varid = SETUP_DATA.Cnd003CapPEA2,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA2),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-           
-           
-       oneof varid = SETUP_DATA.Cnd003CapPEA3,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA3),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-      
-      oneof varid = SETUP_DATA.Cnd003CapPEA4,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA4),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-            
-      // oneof varid = SETUP_DATA.Cnd003CapPEB0,
-      //  prompt = STRING_TOKEN(STR_IOE_CAP_PEB0),
-      //  help   = STRING_TOKEN(STR_EMPTY),
-      //  option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-      //  option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      //endoneof; 
-      
-      //oneof varid = SETUP_DATA.Cnd003CapPEB1,
-      //  prompt = STRING_TOKEN(STR_IOE_CAP_PEB1),
-      //  help   = STRING_TOKEN(STR_EMPTY),
-      //  option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-      //  option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      //endoneof;       
-	#endif
-	#ifdef HX002EH0_01_IOE_23 //CRB#1 - CFG1   
-       oneof varid = SETUP_DATA.Cnd003CapPEA0,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA0),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-      
-        oneof varid = SETUP_DATA.Cnd003CapPEA2,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA2),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-           
-           
-       oneof varid = SETUP_DATA.Cnd003CapPEA3,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA3),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-      
-      oneof varid = SETUP_DATA.Cnd003CapPEA4,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA4),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-            
-      // oneof varid = SETUP_DATA.Cnd003CapPEB0,
-      //  prompt = STRING_TOKEN(STR_IOE_CAP_PEB0),
-      //  help   = STRING_TOKEN(STR_EMPTY),
-      //  option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-      //  option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      //endoneof; 
-      
-      //oneof varid = SETUP_DATA.Cnd003CapPEB1,
-      //  prompt = STRING_TOKEN(STR_IOE_CAP_PEB1),
-      //  help   = STRING_TOKEN(STR_EMPTY),
-      //  option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-      //  option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      //endoneof;       
-	#endif		
-	#ifdef HX002EH0_01_IOE_03 //CRB#1 - CFG1 
-       oneof varid = SETUP_DATA.Cnd003CapPEA0,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA0),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-      
-      
-      oneof varid = SETUP_DATA.Cnd003CapPEA4,
-        prompt = STRING_TOKEN(STR_IOE_CAP_PEA4),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_GEN1), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GEN2),  value =1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      endoneof; 
-                  
-	#endif
-		
+#endif	  	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++1
 	
        oneof varid   = SETUP_DATA.IoeDnPortCtl,
@@ -289,223 +131,64 @@ $END--------------------------------------------------------------------
  
       suppressif NOT ideqval SETUP_DATA.IoeDnPortCtl==1;
 	  //##################################################################################################2
-	  #if 0
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA0 	  
        oneof varid   = SETUP_DATA.IoePEA0Ctl,
         prompt   = STRING_TOKEN(STR_IOE_PEA0_CTRL),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
        endoneof;      
- 
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA1  
        oneof varid   = SETUP_DATA.IoePEA1Ctl,
         prompt   = STRING_TOKEN(STR_IOE_PEA1_CTRL),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
        endoneof;                
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA2 
        oneof varid   = SETUP_DATA.IoePEA2Ctl,
         prompt   = STRING_TOKEN(STR_IOE_PEA2_CTRL),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
        endoneof;  
-       
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA3        
        oneof varid   = SETUP_DATA.IoePEA3Ctl,
         prompt   = STRING_TOKEN(STR_IOE_PEA3_CTRL),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
        endoneof;      
-       
-       
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA4      
        oneof varid   = SETUP_DATA.IoePEA4Ctl,
         prompt   = STRING_TOKEN(STR_IOE_PEA4_CTRL),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
        endoneof;     
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEB0 
        oneof varid   = SETUP_DATA.IoePEB0Ctl,
         prompt   = STRING_TOKEN(STR_IOE_PEB0_CTRL),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
        endoneof;      
-       
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEB1        
        oneof varid   = SETUP_DATA.IoePEB1Ctl,
         prompt   = STRING_TOKEN(STR_IOE_PEB1_CTRL),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
        endoneof; 
-	  #endif
-
-	  #ifdef HX002EC0_01_IOE_33 	//EVB#3 -ECFG01
-       oneof varid   = SETUP_DATA.IoePEA0Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA0_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;      
- 
-       oneof varid   = SETUP_DATA.IoePEA1Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA1_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;                
-
-       oneof varid   = SETUP_DATA.IoePEA2Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA2_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;  
-       
-       oneof varid   = SETUP_DATA.IoePEA3Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA3_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;      
-       
-       
-       oneof varid   = SETUP_DATA.IoePEA4Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA4_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;     
-
-       //oneof varid   = SETUP_DATA.IoePEB0Ctl,
-       // prompt   = STRING_TOKEN(STR_IOE_PEB0_CTRL),
-       // help   = STRING_TOKEN(STR_EMPTY),
-       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-      // endoneof;      
-       
-      //oneof varid   = SETUP_DATA.IoePEB1Ctl,
-       // prompt   = STRING_TOKEN(STR_IOE_PEB1_CTRL),
-       // help   = STRING_TOKEN(STR_EMPTY),
-       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       //endoneof; 
-	  #endif	  
-	  #ifdef HX002EC0_10_IOE_33 	//EVB#3 -ECFG10
-       oneof varid   = SETUP_DATA.IoePEA0Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA0_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;      
- 
-       oneof varid   = SETUP_DATA.IoePEA1Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA1_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;                
-
-       oneof varid   = SETUP_DATA.IoePEA2Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA2_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;  
-       
-       oneof varid   = SETUP_DATA.IoePEA3Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA3_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;      
-       
-       
-       oneof varid   = SETUP_DATA.IoePEA4Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA4_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;     
-
-       //oneof varid   = SETUP_DATA.IoePEB0Ctl,
-       // prompt   = STRING_TOKEN(STR_IOE_PEB0_CTRL),
-       // help   = STRING_TOKEN(STR_EMPTY),
-       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-      // endoneof;      
-       
-      //oneof varid   = SETUP_DATA.IoePEB1Ctl,
-       // prompt   = STRING_TOKEN(STR_IOE_PEB1_CTRL),
-       // help   = STRING_TOKEN(STR_EMPTY),
-       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       //endoneof; 
-	  #endif
-	  #ifdef HX002EH0_01_IOE_23	 //CRB#1 - CFG1 
-       oneof varid   = SETUP_DATA.IoePEA0Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA0_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;      
- 
-       oneof varid   = SETUP_DATA.IoePEA2Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA2_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;  
-       
-       oneof varid   = SETUP_DATA.IoePEA3Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA3_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;      
-       
-       
-       oneof varid   = SETUP_DATA.IoePEA4Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA4_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;     
-
-       //oneof varid   = SETUP_DATA.IoePEB0Ctl,
-       // prompt   = STRING_TOKEN(STR_IOE_PEB0_CTRL),
-       // help   = STRING_TOKEN(STR_EMPTY),
-       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-      // endoneof;      
-       
-      //oneof varid   = SETUP_DATA.IoePEB1Ctl,
-       // prompt   = STRING_TOKEN(STR_IOE_PEB1_CTRL),
-       // help   = STRING_TOKEN(STR_EMPTY),
-       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       //endoneof; 
-	  #endif	
-	  #ifdef HX002EH0_01_IOE_03 	//CRB#1 - CFG1 
-       oneof varid   = SETUP_DATA.IoePEA0Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA0_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;      
-       
-       oneof varid   = SETUP_DATA.IoePEA4Ctl,
-        prompt   = STRING_TOKEN(STR_IOE_PEA4_CTRL),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-       endoneof;     
-	   
-	  #endif	
-
-	  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++2
+#endif	   
       endif;     
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++2
 
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -514,7 +197,6 @@ $END--------------------------------------------------------------------
 	//PEXRST CTL
 	//
 	//
-	#ifdef HX002EC0_01_IOE_33 	//EVB#3 -ECFG1
 	    oneof varid   = SETUP_DATA.IoeDnPortPEXRST,
 	     prompt   = STRING_TOKEN(STR_IOE_PEXRST),
 	     help   = STRING_TOKEN(STR_IOE_PEXRST_HELP),
@@ -523,19 +205,23 @@ $END--------------------------------------------------------------------
 	    endoneof;
 
 	  	suppressif NOT ideqval SETUP_DATA.IoeDnPortPEXRST==1;
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA0		
 	       oneof varid   = SETUP_DATA.IoePEA0PEXRST,
 	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA0),
 	        help   = STRING_TOKEN(STR_EMPTY),
 	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
 	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
 	       endoneof;      
-	 
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA1 	 
 	       oneof varid   = SETUP_DATA.IoePEA1PEXRST,
 	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA1),
 	        help   = STRING_TOKEN(STR_EMPTY),
 	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
 	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
 	       endoneof;                
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA2 
 
 	       oneof varid   = SETUP_DATA.IoePEA2PEXRST,
 	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA2),
@@ -543,177 +229,43 @@ $END--------------------------------------------------------------------
 	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
 	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
 	       endoneof;  
-	       
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA3	       
 	       oneof varid   = SETUP_DATA.IoePEA3PEXRST,
 	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA3),
 	        help   = STRING_TOKEN(STR_EMPTY),
 	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
 	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
 	       endoneof;      
-	       
-	       
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA4        
 	       oneof varid   = SETUP_DATA.IoePEA4PEXRST,
 	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA4),
 	        help   = STRING_TOKEN(STR_EMPTY),
 	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
 	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
 	       endoneof;     
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEB0 
 
-	       //oneof varid   = SETUP_DATA.IoePEB0PEXRST,
-	       // prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEB0),
-	       // help   = STRING_TOKEN(STR_EMPTY),
-	       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	      // endoneof;      
-	       
-	      //oneof varid   = SETUP_DATA.IoePEB1PEXRST,
-	       // prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEB1),
-	       // help   = STRING_TOKEN(STR_EMPTY),
-	       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       //endoneof; 
-	  endif;
-	#endif	
-	#ifdef HX002EC0_10_IOE_33 	//EVB#3 -ECFG10
-	    oneof varid   = SETUP_DATA.IoeDnPortPEXRST,
-	     prompt   = STRING_TOKEN(STR_IOE_PEXRST),
-	     help   = STRING_TOKEN(STR_IOE_PEXRST_HELP),
-	     option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	     option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	    endoneof;
-
-	  	suppressif NOT ideqval SETUP_DATA.IoeDnPortPEXRST==1;
-	       oneof varid   = SETUP_DATA.IoePEA0PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA0),
+	       oneof varid   = SETUP_DATA.IoePEB0PEXRST,
+	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEB0),
 	        help   = STRING_TOKEN(STR_EMPTY),
 	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
 	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
 	       endoneof;      
-	 
-	       oneof varid   = SETUP_DATA.IoePEA1PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA1),
-	        help   = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       endoneof;                
-
-	       oneof varid   = SETUP_DATA.IoePEA2PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA2),
-	        help   = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       endoneof;  
-	       
-	       oneof varid   = SETUP_DATA.IoePEA3PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA3),
-	        help   = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       endoneof;      
-	       
-	       
-	       oneof varid   = SETUP_DATA.IoePEA4PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA4),
-	        help   = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       endoneof;     
-
-	       //oneof varid   = SETUP_DATA.IoePEB0PEXRST,
-	       // prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEB0),
-	       // help   = STRING_TOKEN(STR_EMPTY),
-	       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	      // endoneof;      
-	       
-	      //oneof varid   = SETUP_DATA.IoePEB1PEXRST,
-	       // prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEB1),
-	       // help   = STRING_TOKEN(STR_EMPTY),
-	       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       //endoneof; 
-	  endif;
-	#endif
-
-	#ifdef HX002EH0_01_IOE_23 	//CRB#1 - CFG1 
-	    oneof varid   = SETUP_DATA.IoeDnPortPEXRST,
-	     prompt   = STRING_TOKEN(STR_IOE_PEXRST),
-	     help   = STRING_TOKEN(STR_IOE_PEXRST_HELP),
-	     option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	     option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	    endoneof;
-
-	  	suppressif NOT ideqval SETUP_DATA.IoeDnPortPEXRST==1;
-	       oneof varid   = SETUP_DATA.IoePEA0PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA0),
-	        help   = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       endoneof;                      
-
-	       oneof varid   = SETUP_DATA.IoePEA2PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA2),
-	        help   = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       endoneof;  
-	       
-	       oneof varid   = SETUP_DATA.IoePEA3PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA3),
-	        help   = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       endoneof;      
-	       
-	       
-	       oneof varid   = SETUP_DATA.IoePEA4PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA4),
-	        help   = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       endoneof;     
-
-	       //oneof varid   = SETUP_DATA.IoePEB0PEXRST,
-	       // prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEB0),
-	       // help   = STRING_TOKEN(STR_EMPTY),
-	       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	      // endoneof;      
-	       
-	      //oneof varid   = SETUP_DATA.IoePEB1PEXRST,
-	       // prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEB1),
-	       // help   = STRING_TOKEN(STR_EMPTY),
-	       // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	       // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       //endoneof; 
-	  endif;
-	#endif
-
-	#ifdef HX002EH0_01_IOE_03 	//CRB#1 - CFG1 
-	    oneof varid   = SETUP_DATA.IoeDnPortPEXRST,
-	     prompt   = STRING_TOKEN(STR_IOE_PEXRST),
-	     help   = STRING_TOKEN(STR_IOE_PEXRST_HELP),
-	     option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
-	     option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	    endoneof;
-
-	  	suppressif NOT ideqval SETUP_DATA.IoeDnPortPEXRST==1;
-	       oneof varid   = SETUP_DATA.IoePEA0PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA0),
-	        help   = STRING_TOKEN(STR_EMPTY),
-	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
-	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-	       endoneof;        
-	       
-	       oneof varid   = SETUP_DATA.IoePEA4PEXRST,
-	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEA4),
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEB1 	       
+	      oneof varid   = SETUP_DATA.IoePEB1PEXRST,
+	        prompt   = STRING_TOKEN(STR_IOE_PEXRST_PEB1),
 	        help   = STRING_TOKEN(STR_EMPTY),
 	        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
 	        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
 	       endoneof; 
-		   
- 	  endif;
-	#endif
+#endif	       
+	  endif;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 	
 	//PCIE PEXRST# test
@@ -725,43 +277,47 @@ $END--------------------------------------------------------------------
        endoneof;      
  
       suppressif NOT ideqval SETUP_DATA.Cnd003PcieRstTest==1;
-	  //##################################################################################################3
-
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA0
        oneof varid   = SETUP_DATA.Cnd003PEA0RstTest,
         prompt   = STRING_TOKEN(STR_IOE_PEA0_RST),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof;      
- 
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA1
        oneof varid   = SETUP_DATA.Cnd003PEA1RstTest,
         prompt   = STRING_TOKEN(STR_IOE_PEA1_RST),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof;                
-
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA2
        oneof varid   = SETUP_DATA.Cnd003PEA2RstTest,
         prompt   = STRING_TOKEN(STR_IOE_PEA2_RST),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof;  
-       
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA3       
        oneof varid   = SETUP_DATA.Cnd003PEA3RstTest,
         prompt   = STRING_TOKEN(STR_IOE_PEA3_RST),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof;      
-       
-       
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEA4      
        oneof varid   = SETUP_DATA.Cnd003PEA4RstTest,
         prompt   = STRING_TOKEN(STR_IOE_PEA4_RST),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof;     
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEB0
 
        oneof varid   = SETUP_DATA.Cnd003PEB0RstTest,
         prompt   = STRING_TOKEN(STR_IOE_PEB0_RST),
@@ -769,16 +325,17 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof;      
-       
+#endif
+#ifdef SETUP_VISABLE_PCIE_IOE_PEB1       
        oneof varid   = SETUP_DATA.Cnd003PEB1RstTest,
         prompt   = STRING_TOKEN(STR_IOE_PEB1_RST),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
        endoneof; 
-	  
-	  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#endif	   
       endif;  // suppressif NOT ideqval SETUP_DATA.Cnd003PcieRstTest==1;   
+	   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	   oneof varid   = SETUP_DATA.Cnd003LinkWidth,
         prompt   = STRING_TOKEN(STR_IOE_UP_LINK_WIDTH),
