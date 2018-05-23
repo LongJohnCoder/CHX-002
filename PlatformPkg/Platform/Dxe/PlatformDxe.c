@@ -410,6 +410,32 @@ ZX_UpdateWdrt (
 
 //// 2016-10-23+E
 
+// DBZ-2017110601, +S
+EFI_STATUS
+SetShellStartupDelayVar(VOID)
+{
+	#define EDK_SHELL_ENVIRONMENT_VARIABLE_ID \
+	  {0x47c7b224, 0xc42a, 0x11d2, 0x8e, 0x57, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b}
+
+	EFI_STATUS  Status;
+	UINTN       ValSize;
+	CHAR16      String[2] = {0x32, 0x00}; // String L"2"
+	EFI_GUID    MyGuid = EDK_SHELL_ENVIRONMENT_VARIABLE_ID;
+
+	ValSize = sizeof(String);
+	Status = gRT->SetVariable(
+		L"StartupDelay",
+		&MyGuid,
+		EFI_VARIABLE_BOOTSERVICE_ACCESS,
+		ValSize,
+		String
+	);
+	
+	return Status;
+}
+// DBZ-2017110601, +E
+
+
 VOID
 EFIAPI
 PlatOnReadyToBoot (
@@ -496,6 +522,11 @@ PlatOnReadyToBoot (
 
   MtrrGetAllMtrrs(&S3Record->MtrrTable);
 
+  #if 0
+  // Set variable "StartupDelay" for shell startup.
+  SetShellStartupDelayVar();
+  #endif
+  
   ////
   DEBUG((EFI_D_ERROR,"Enable or Disable D17F0_PMU Watchdog timer \n"));
   ZX_UpdateWdrt();
