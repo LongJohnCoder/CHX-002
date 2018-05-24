@@ -146,7 +146,7 @@ VOID WaitL2L3Ready(UINT8 RootBus)
 	PciWrite8(PCI_LIB_ADDRESS(RootBus, 0, 5, 0xF0),Data8);	//RxF0
 
 	//Get current exist RPs from D0F6 Scratch registers
-	ExistRpList = PciRead16(PCI_LIB_ADDRESS(RootBus, 0, 6, 0x5A));
+	ExistRpList = PciRead16(PCI_LIB_ADDRESS(RootBus, 0, 6, 0x5A));//D0F6_BIOS_SCRATCH_REG_7+2
 	
 	if(!(ExistRpList & BIT0)){
 		PortChecker |= BIT0;
