@@ -81,6 +81,7 @@ typedef struct {
 	 UINT8   DramTrcd;
      UINT8   DramTrp;
 	 UINT8   DramTras;
+   UINT32  EfuseData[2];
      //LGE20160624 -E
 } PLATFORM_MEMORY_INFO;  
 

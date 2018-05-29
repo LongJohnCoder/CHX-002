@@ -1157,6 +1157,9 @@ PlatformPeiEntry (
   MemInfo->DramTrp = DramInfo->DramTrp;
   //LGE20160619 report AC Timing  for SETUP-E
 
+  //WDC 20180529 GET EFUSE DATA
+  MemInfo->EfuseData[0] = DramInfo->EfuseData[0];
+  MemInfo->EfuseData[1] = DramInfo->EfuseData[1];
   
   MemInfo->PhyAddrBits = 36;
   AsmCpuid(0x80000000, &RegEax, NULL, NULL, NULL);
