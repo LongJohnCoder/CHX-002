@@ -84,6 +84,87 @@ SMBIOS_TYPE41_CONTENT  gSmbiosType41ContentList[] = {
 
 
 //----------------------------------------------------------------
+
+
+//0x7F~0x79
+UINT8 gChxInfoBuf[0x80-0x79 +1];// add 1 for PopBit algorithm 
+
+
+
+CHAR8 b2ch(UINT8 x)
+{
+    return (x<10) ? (x+'0') : (x-10+'A');
+}
+
+// BitCnt range accept 1, 4, 6 only
+CHAR8 PopBit(UINT8 BitCnt)
+{
+    static UINT8 BitLocate = 0;
+    UINT16 Value;
+
+    Value = (gChxInfoBuf[BitLocate/8+1]<<8) + gChxInfoBuf[BitLocate/8];
+
+    if (BitCnt == 1)
+        Value = ( Value >> BitLocate%8 ) & 0x1;
+    else if (BitCnt == 4)
+        Value = ( Value >> BitLocate%8 ) & 0xF;  
+    else if (BitCnt == 6)
+        Value = ( Value >> BitLocate%8 ) & 0x3F;  
+    else if (BitCnt == 16)
+        Value = ( Value >> BitLocate%8 ) & 0x3F;  
+    else{
+		
+		DEBUG((EFI_D_ERROR, "Not Acceptable\n"));  
+    }
+	
+    BitLocate += BitCnt;
+    
+    return b2ch ( (UINT8)Value);    
+}
+
+
+VOID
+	 DieIDInfo (CHAR8* SerialNumber )
+{
+    UINT32 DTemp;
+	UINT8 i,j,Len;
+	UINTN SerialNumStrLen;
+	CHAR8 Str8[2]="0";
+	CHAR8* pStrTemp=NULL;
+	
+    UINT8 SerialNumber_Bitcnt[]={4,4,4,4,0,4,4,0,6,6,6,6,6,6,1};
+	PLATFORM_MEMORY_INFO		 *MemInfo;
+	
+	DEBUG((EFI_D_ERROR, "DLA:DieIDInfo()\n" ));
+	MemInfo=(PLATFORM_MEMORY_INFO*)GetPlatformMemInfo();
+
+	Len=sizeof(SerialNumber_Bitcnt)/sizeof(UINT8);
+	pStrTemp=SerialNumber;
+	SerialNumStrLen = AsciiStrLen(SerialNumber);
+    for ( i=0; i<2; i++ ) {
+        DTemp = MemInfo->EfuseData[i];
+		
+		DEBUG((EFI_D_ERROR, "DLA:EfuseData[%d]=0x%08x\n",i,DTemp ));
+        gChxInfoBuf[(i)*4] = (UINT8) DTemp;
+        gChxInfoBuf[(i)*4 + 1 ] = (UINT8) (DTemp >>  8) ;
+        gChxInfoBuf[(i)*4 + 2 ] = (UINT8) (DTemp >> 16) ;
+        gChxInfoBuf[(i)*4 + 3 ] = (UINT8) (DTemp >> 24) ;        
+    }
+	for(j=0;j<Len;j++)
+		{
+		if(SerialNumber_Bitcnt[j]==0){
+			Str8[0]=' ';
+			}
+		else{
+			Str8[0]=PopBit(SerialNumber_Bitcnt[j]);
+			}
+			AsciiStrCpy(pStrTemp, Str8);
+			pStrTemp++;
+		}
+	
+	DEBUG((EFI_D_ERROR, "DLA:SerialNumber=%a\n",SerialNumber ));
+}
+
 STATIC
 EFI_STATUS
 AddSmbiosRecord (
@@ -575,7 +656,8 @@ STATIC EFI_STATUS AddSmbiosType1(EFI_SMBIOS_PROTOCOL *Smbios)
   VerStrLen = AsciiStrLen(Version);
   ASSERT (VerStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
-  SerialNumber = TKN2STR(DMI_NOT_SET_STR);
+  SerialNumber =  " ";
+  DieIDInfo(SerialNumber);  
   SerialNumStrLen = AsciiStrLen(SerialNumber);
   ASSERT (SerialNumStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
