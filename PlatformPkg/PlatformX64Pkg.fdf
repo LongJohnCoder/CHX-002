@@ -559,12 +559,12 @@ FILE FREEFORM  = PCD(gPlatformModuleTokenSpaceGuid.PcdCsm16File) {
 
 
 FILE FREEFORM  = PCD(gPlatformModuleTokenSpaceGuid.PcdNbVcpFile) {
-   SECTION RAW = AsiaPkg/ZxPlatformBin/VgaOptionRom/CHXALL09.vcp
+   SECTION RAW = AsiaPkg/ZxPlatformBin/VgaOptionRom/CHXALL19.vcp
    SECTION UI  = "VCP"
   }
 
 FILE FREEFORM  = ABD64F12-2790-4774-B622-2D95A2973E21 {
-   SECTION RAW = AsiaPkg/ZxPlatformBin/VgaOptionRom/CHXALL09.rom
+   SECTION RAW = AsiaPkg/ZxPlatformBin/VgaOptionRom/CHXALL19.rom
    SECTION UI  = "VBIOS"
   }
 
