@@ -130,6 +130,8 @@ ELSEIF (CORE_FREQ_SEL EQ 3)
     mov ax, 2897h
 ELSEIF (CORE_FREQ_SEL EQ 4)
     mov ax, 2097h
+ELSE
+    jmp  pstDone
 ENDIF
 
     mov ecx, 1440h
