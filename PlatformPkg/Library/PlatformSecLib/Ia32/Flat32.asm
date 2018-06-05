@@ -79,11 +79,12 @@ _TEXT_REALMODE      ENDS
 
 #ifdef ZX_SECRET_CODE
 ;Add core frequence selection macro:
-; 0=3.0G/1.05V 3CA1
-; 1=2.7G/1.0V   3697
-; 2=2.2G/1.0V   2C97
-; 3=2.0G/1.0V   2897
-; 4=1.6G/1.0V   2097
+;  Freq/Vol     SVID     PVID
+; 0=3.0G/1.05V  3CA1     3C5B
+; 1=2.7G/1.0V   3697     3657
+; 2=2.2G/1.0V   2C97     3657
+; 3=2.0G/1.0V   2897     2857
+; 4=1.6G/1.0V   2097     2057
 ; others=Default
 CORE_FREQ_SEL = 3
 #endif
@@ -120,6 +121,23 @@ IamBSP:
     jnz pstDone
 
     xor edx, edx
+#ifdef HX002EB0_00
+;For PVID Board
+IF (CORE_FREQ_SEL EQ 0)
+    mov ax, 3C5Bh
+ELSEIF (CORE_FREQ_SEL EQ 1)
+     mov ax, 3657h
+ELSEIF (CORE_FREQ_SEL EQ 2)
+    mov ax, 2C57h
+ELSEIF (CORE_FREQ_SEL EQ 3)
+    mov ax, 2857h
+ELSEIF (CORE_FREQ_SEL EQ 4)
+    mov ax, 2057h
+ELSE
+    jmp  pstDone
+ENDIF
+#else
+;For SVID Board
 IF (CORE_FREQ_SEL EQ 0)
     mov ax, 3CA1h
 ELSEIF (CORE_FREQ_SEL EQ 1)
@@ -133,6 +151,8 @@ ELSEIF (CORE_FREQ_SEL EQ 4)
 ELSE
     jmp  pstDone
 ENDIF
+#endif
+
 
     mov ecx, 1440h
     bts eax, 31
