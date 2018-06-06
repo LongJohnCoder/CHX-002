@@ -1163,6 +1163,13 @@ PlatformPeiEntry (
   //WDC 20180529 GET EFUSE DATA
   MemInfo->EfuseData[0] = DramInfo->EfuseData[0];
   MemInfo->EfuseData[1] = DramInfo->EfuseData[1];
+  //MCM20180427 -ONLY FOR SCAN DRAM IOTiming -S 
+  if(DramCfg->ScanIOTiming){
+     DEBUG((DEBUG_ERROR,"ScanIOTiming Enable Tolum = 0x40000000 LGE DEBUG\r\n"));
+	
+  		MemInfo->UsableLowMemAddr = 0x40000000;      // 1G TOLUM 
+  	}
+  //MCM20180427 -ONLY FOR SCAN DRAM IOTiming -S 
   
   MemInfo->PhyAddrBits = 36;
   AsmCpuid(0x80000000, &RegEax, NULL, NULL, NULL);

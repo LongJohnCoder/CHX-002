@@ -561,6 +561,7 @@ GotSetupVariable:
      DramCfg->DynamicCKE= SetupData->DynamicCKE;
      DramCfg->RemapEn= SetupData->RemapEn;
 	 DramCfg->DramFastBoot= SetupData->DramFastBoot;
+DramCfg->DramRxTxTimingHardCode= SetupData->DramRxTxTimingHardCode;
 	 DramCfg->CHdecode = SetupData->CHdecode;   //DKS -20161212 add
 	 DramCfg->CRCEn= SetupData->CRCEn;   //CRC Enable
 	 DramCfg->CAParEn= SetupData->CAParEn;  //CA Parity check Enable

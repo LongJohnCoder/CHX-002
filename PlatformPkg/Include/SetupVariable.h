@@ -176,6 +176,7 @@ typedef struct {
    UINT8 DynamicCKE;
    UINT8 RemapEn;
    UINT8 DramFastBoot;
+UINT8 DramRxTxTimingHardCode;
    UINT8 CRCEn;
    UINT8 CAParEn;
    UINT8 CAParPerEn;
