@@ -516,7 +516,7 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   gPerformancePkgTokenSpaceGuid.PcdPerfPkgAcpiIoPortBaseAddress|0x800
   gEfiByoModulePkgTokenSpaceGuid.AcpiIoPortBaseAddress|0x800
   
-  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase|0x03F8
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase|0x02F8
   
   
   

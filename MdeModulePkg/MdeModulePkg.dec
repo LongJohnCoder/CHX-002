@@ -715,7 +715,7 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialDetectCable|FALSE|BOOLEAN|0x00020006
     
   ## Base address of 16550 serial port registers in MMIO or I/O space.  Default is 0x3F8.
-  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase|0x03F8|UINT64|0x00020002
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase|0x02F8|UINT64|0x00020002
 
   ## Baud rate for the 16550 serial port.  Default is 115200 baud.
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialBaudRate|115200|UINT32|0x00020003
