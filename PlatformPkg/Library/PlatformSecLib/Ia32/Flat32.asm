@@ -100,7 +100,48 @@ _TEXT_PROTECTED_MODE SEGMENT PARA PUBLIC USE32 'CODE'
 
 align 4
 ProtectedModeSECStart PROC NEAR PUBLIC
+;Program SPI Clock  end
+;bcfg(0,11,0,BC)[31:12] 
+mov eax, 80000000h + (((0 shl 8) + (11h shl 3) + 0) shl 8) + 0BCh
+mov dx, 0cf8h
+out dx, eax
+mov dx, 0cfch
+mov eax, (0FEB32000h shr 8)
+out dx, eax
 
+
+; D17F0MMIO_SPI_BUS_0_CTL
+mov edi, 0FEB32000h
+mov eax, 0FEDB3000h + 1h
+mov [edi], eax
+
+
+;Program SPI Clock to 27Mhz start
+mov edi, 0FEDB3000h + 063h
+mov al, [edi]
+and al, 0FEh
+mov [edi], al
+
+; SPI0MMIO_SPI_BUS_0_MISC_CTL_1
+mov edi, 0FEDB3000h + 06Dh
+mov al, 00h
+mov [edi], al
+
+mov edi, 0FEDB3000h + 06Ch
+;27Mhz
+mov al, 00h
+;27/2Mhz
+;mov al, 01h
+;27/4Mhz
+;mov al, 02h
+mov [edi], al
+
+
+;Program SPI Clock  end
+
+
+
+;DLA_DEBUG_E
 ; msr(1B).BIT8 - BSP
   mov  ecx, 1Bh
   rdmsr
