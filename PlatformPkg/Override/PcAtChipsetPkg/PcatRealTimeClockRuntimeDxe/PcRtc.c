@@ -808,12 +808,13 @@ ConvertRtcTimeToEfiTime (
   )
 {
   BOOLEAN IsPM;
-
+  
+  IsPM = FALSE;
+  if(RegisterB.Bits.Mil == 0){
   if ((Time->Hour & 0x80) != 0) {
     IsPM = TRUE;
-  } else {
-    IsPM = FALSE;
-  }
+  } 
+  	}
 
   Time->Hour = (UINT8) (Time->Hour & 0x7f);
 
