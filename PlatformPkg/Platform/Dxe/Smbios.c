@@ -635,7 +635,7 @@ STATIC EFI_STATUS AddSmbiosType1(EFI_SMBIOS_PROTOCOL *Smbios)
   CHAR8                             *Manufacturer;
   CHAR8                             *ProductName;
   CHAR8                             *Version;
-  CHAR8                             *SerialNumber;
+  CHAR8                             SerialNumber[20];
   CHAR8                             *SkuNumber;
   CHAR8                             *Family;
   EFI_SMBIOS_HANDLE                 SmbiosHandle;
@@ -656,7 +656,6 @@ STATIC EFI_STATUS AddSmbiosType1(EFI_SMBIOS_PROTOCOL *Smbios)
   VerStrLen = AsciiStrLen(Version);
   ASSERT (VerStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
-  SerialNumber =  " ";
   DieIDInfo(SerialNumber);  
   SerialNumStrLen = AsciiStrLen(SerialNumber);
   ASSERT (SerialNumStrLen <= SMBIOS_STRING_MAX_LENGTH);
