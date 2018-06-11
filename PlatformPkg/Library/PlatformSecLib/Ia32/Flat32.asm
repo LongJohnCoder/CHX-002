@@ -127,13 +127,17 @@ mov edi, 0FEDB3000h + 06Dh
 mov al, 00h
 mov [edi], al
 
+
 mov edi, 0FEDB3000h + 06Ch
-;27Mhz
-mov al, 00h
+#ifdef ZX_SPICLK_SLOWDOWN
+;27/4Mhz
+mov al, 02h
 ;27/2Mhz
 ;mov al, 01h
-;27/4Mhz
-;mov al, 02h
+#else
+;27Mhz
+mov al, 00h
+#endif
 mov [edi], al
 
 
