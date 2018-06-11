@@ -123,8 +123,7 @@ CHAR8 PopBit(UINT8 BitCnt)
 }
 
 
-VOID
-	 DieIDInfo (CHAR8* SerialNumber )
+VOID 	 DieIDInfo (CHAR8* pSerialNumber )
 {
     UINT32 DTemp;
 	UINT8 i,j,Len;
@@ -139,8 +138,8 @@ VOID
 	MemInfo=(PLATFORM_MEMORY_INFO*)GetPlatformMemInfo();
 
 	Len=sizeof(SerialNumber_Bitcnt)/sizeof(UINT8);
-	pStrTemp=SerialNumber;
-	SerialNumStrLen = AsciiStrLen(SerialNumber);
+	pStrTemp=pSerialNumber;
+	SerialNumStrLen = AsciiStrLen(pSerialNumber);
     for ( i=0; i<2; i++ ) {
         DTemp = MemInfo->EfuseData[i];
 		
@@ -162,7 +161,7 @@ VOID
 			pStrTemp++;
 		}
 	
-	DEBUG((EFI_D_ERROR, "DLA:SerialNumber=%a\n",SerialNumber ));
+	DEBUG((EFI_D_ERROR, "DLA:SerialNumber=%a\n",pSerialNumber ));
 }
 
 STATIC
