@@ -209,7 +209,7 @@ EFI_STATUS PciUart_Init()
  //IoWrite32(0x800 + PMIO_CR_GPIO_PAD_CTL,  Buffer32);
 
  Buffer32=IoRead32(0x800 + PMIO_GPIO_PAD_CTL);
- Buffer32&=~(0x3F3F0007);
+ Buffer32&=~(0x3F3F0000);
  Buffer32|=0x242D0000;
  IoWrite32(0x800 + PMIO_GPIO_PAD_CTL,  Buffer32);
 
