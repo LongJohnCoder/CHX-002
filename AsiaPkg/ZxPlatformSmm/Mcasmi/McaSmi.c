@@ -154,55 +154,55 @@ VOID ProgramCOMDBG()
     UINT8 Buffer8;
     UINT32 Buffer32;
 
-	 //Enable 4Pin UART0 and 4Pin UART1
-	 Buffer32=IoRead32(0x800 + PMIO_CR_GPIO_PAD_CTL);
-	 Buffer32&=~(0x3F000000);
-	 Buffer32|=0x13000000;
-	 IoWrite32(0x800 + PMIO_CR_GPIO_PAD_CTL,  Buffer32);
+	 //Enable  4Pin UART1
+	 //Buffer32=IoRead32(0x800 + PMIO_CR_GPIO_PAD_CTL);
+	 //Buffer32&=~(0x3F000000);
+	 //Buffer32|=0x13000000;
+	 //IoWrite32(0x800 + PMIO_CR_GPIO_PAD_CTL,  Buffer32);
 
 	 Buffer32=IoRead32(0x800 + PMIO_GPIO_PAD_CTL);
 	 Buffer32&=~(0x3F3F0007);
-	 Buffer32|=0x242D0002;
+	 Buffer32|=0x242D0000;
 	 IoWrite32(0x800 + PMIO_GPIO_PAD_CTL,  Buffer32);
 
-    // set D17F0RxB2[3:0]=4h for UART0 IRQ=IRQ4
-    RwPci8(CHX002_BUSC|D17F0_PCI_UART_IRQ_ROUTING_LOW, 0x04, 0x0F); //;Set bit, clear bit
-    // set D17F0RxB3=7Fh to set IO Base Address configuration of UART0
-    RwPci8(CHX002_BUSC|D17F0_PCI_UART_0_IO_BASE_ADR, 0x7F, 0x7F);   //;Set bit, clear bit
+    // set D17F0RxB2[3:0]=2h for UART1 IRQ=IRQ3
+    RwPci8(CHX002_BUSC|D17F0_PCI_UART_IRQ_ROUTING_LOW, 0x30, 0xF0); //;Set bit, clear bit
+    // set D17F0RxB3=7Fh to set IO Base Address configuration of UART1
+    RwPci8(CHX002_BUSC|D17F0_PCI_UART_1_IO_BASE_ADR, 0xDF, 0x7F);   //;Set bit, clear bit
     // set D17F0RxB3[7]=1 to UART0 to legacy mode
-    RwPci8(CHX002_BUSC|D17F0_PCI_UART_0_IO_BASE_ADR, 0x80, 0x80);   //;Set bit, clear bit
-    // D17F0 Rx48[0]=1b to enable UART0
-    RwPci8(CHX002_BUSC|D17F0_APIC_FSB_DATA_CTL, 0x01, 0x01);    //;Set bit, clear bit
+    RwPci8(CHX002_BUSC|D17F0_PCI_UART_1_IO_BASE_ADR, 0x80, 0x80);   //;Set bit, clear bit
+    // D17F0 Rx48[1]=1b to enable UART1
+    RwPci8(CHX002_BUSC|D17F0_APIC_FSB_DATA_CTL, 0x02, 0x02);    //;Set bit, clear bit
 
     //;======================
     //; set Word length=8
     //;======================
-    Buffer8 = IoRead8(0x3FB);
+    Buffer8 = IoRead8(0x2FB);
     Buffer8 = Buffer8 |0x03;
-    IoWrite8(0x3FB,Buffer8);
+    IoWrite8(0x2FB,Buffer8);
     //;======================
     //; set Baud rate = 115200
     //;======================
     //; Enable DLAB
-    Buffer8 = IoRead8(0x3FB);
+    Buffer8 = IoRead8(0x2FB);
     Buffer8 = Buffer8 |0x80;
-    IoWrite8(0x3FB,Buffer8);
+    IoWrite8(0x2FB,Buffer8);
     //; Set Baud rate (LSB)
-    IoWrite8(0x3F8,0x01);
+    IoWrite8(0x2F8,0x01);
     //; Set Baud rate (MSB)
-    IoWrite8(0x3F9,0x00);
+    IoWrite8(0x2F9,0x00);
     //; Disable DLAB
-    Buffer8 = IoRead8(0x3FB);
+    Buffer8 = IoRead8(0x2FB);
     Buffer8 = Buffer8 & 0x7F;
-    IoWrite8(0x3FB,Buffer8);
+    IoWrite8(0x2FB,Buffer8);
     //;=====================
     //; init UART0
     //;=====================
-    IoWrite8(0x3FA,0x00);
-    IoWrite8(0x3FA,0x02);   //; clear RCV FIFO
-    IoWrite8(0x3FA,0x04);   //; clear XMT FIFO
-    IoWrite8(0x3FA,0x01);   //; enable RCV FIFO & XMT FIFO
-    IoWrite8(0x3FA,0xC1);   //; RCV trigger level = 14 Bytes
+    IoWrite8(0x2FA,0x00);
+    IoWrite8(0x2FA,0x02);   //; clear RCV FIFO
+    IoWrite8(0x2FA,0x04);   //; clear XMT FIFO
+    IoWrite8(0x2FA,0x01);   //; enable RCV FIFO & XMT FIFO
+    IoWrite8(0x2FA,0xC1);   //; RCV trigger level = 14 Bytes
 }
 
 // ===================================================================
