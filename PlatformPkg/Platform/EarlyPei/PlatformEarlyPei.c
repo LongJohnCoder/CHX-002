@@ -283,6 +283,9 @@ EarlyPeiEntry (
   UINT8                  *TopofCar;
   UINT32                 McAddr;
 
+#ifdef ZX_SPICLK_SLOWDOWN
+   //xxx
+#endif 
 
   CarTopData = BuildGuidHob(&gCarTopDataHobGuid, sizeof(CAR_TOP_DATA));
   ASSERT(CarTopData != NULL);
