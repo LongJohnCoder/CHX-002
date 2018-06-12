@@ -6,22 +6,6 @@
 #include <PlatformDefinition.h>
 
 
-//(0,11,0,48)[0]   = 1	; UART0 Enable
-//(0,11,0,B3)[7]   = 1	; UART0 Legacy mode
-//(0,11,0,B2)[3:0] = 4	; IRQ4
-//(0,11,0,B3)[6:0] = 7F	; Io 3F8  (11 1111 1)000
-//D10F0 MMIO Rx58[3:0] = 0  (default)
-//
-//UART0 and UART1 from DVP Pad
-//GFX register are accessed through IOW 3C4(Reg), IOR 3C5, IOW 3C5(Data)
-//Set Dev1_Fun0_Rx04[0] to 1b to turn on the I/O space of GFX. 
-//Set IO_3C3[0] to 1b and IO_3C2 to 67H to enable video subsystem.
-//(0,11,0,48)[5] = 0  ; UART selected will share both GFX and PCI pad.
-//GFX_EXSR32[4]  = 1	; South Module Pad Share Enable
-//(0,11,0,B0)[7] = 1  ; multiplex with DVP pad
-//(0,11,0,54)[4] = 1  ; Enable PCI Debug Mode
-
-
 #define SIO_Index_Port 0x4E
 #define SIO_Data_Port SIO_Index_Port + 1
 
@@ -135,13 +119,13 @@ EFI_STATUS VT6576B_SIOUart_Init()
     IoWrite8 (SIO_Index_Port, 0x07);
     IoWrite8 (SIO_Data_Port, 0x00); 
 
-    //;Set base address to 2E8h
+    //;Set base address to 2F8h
     IoWrite8 (SIO_Index_Port, 0x60);
     IoWrite8 (SIO_Data_Port, 0x02);
     IoWrite8 (SIO_Index_Port, 0x61);
     IoWrite8 (SIO_Data_Port, 0xF8);
 
-    //;Set IRQ=04h
+    //;Set IRQ=03h
     IoWrite8 (SIO_Index_Port, 0x70);
     IoWrite8 (SIO_Data_Port, 0x03);
     
@@ -152,7 +136,7 @@ EFI_STATUS VT6576B_SIOUart_Init()
     //;Exit config mode by writing 0xAA to Index Port.
     IoWrite8 (SIO_Index_Port, 0xAA);
 	
-    BaseAddr = 0x3F8;		
+    BaseAddr = 0x2F8;		
     SetUartHostCtrlLegacyReg(BaseAddr);
 		
     return EFI_SUCCESS;
@@ -236,6 +220,15 @@ PlatformHookSerialPortInitialize (
   VOID
   )
 {
+	// For CHX002 EVBs, UART0's pin mux with PCIE-RST, so default use onboard UART1 as DEBUG BIOS's log output port.
+	// UART0 not initialize anymore, keep related registers' default setting. 
+	// IOBASE setting ---- UART0 : 3F8h ; UART1 : 2F8h ; UART2 : 3E8h ; UART3:2E8h 
+	// We can choose BIOS Debuging port by changing PcdBiosDebugUsePciUart
+	//       TRUE  : Internal Uart1  (Default)
+	//       FALSE : LPC Uart VT6576B
+    // Both of them use the same IO Base address = 0x2F8 and irq number = 3.
+    // When using LPC Uart VT6576B(PcdBiosDebugUsePciUat==FALSE),Internal Uart will auto be disable.
+	
 	if(PcdGetBool(PcdBiosDebugUsePciUart) == TRUE) {
 		PciUart_Init();
 	} else {
