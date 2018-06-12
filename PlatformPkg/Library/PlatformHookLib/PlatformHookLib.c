@@ -120,7 +120,7 @@ EFI_STATUS LpcUart_Init()
     return EFI_SUCCESS;
   }
 
-EFI_STATUS VT6578V_SIOUart_Init()
+EFI_STATUS VT6576B_SIOUart_Init()
 {
 	UINT16 BaseAddr;
 	
@@ -137,13 +137,13 @@ EFI_STATUS VT6578V_SIOUart_Init()
 
     //;Set base address to 2E8h
     IoWrite8 (SIO_Index_Port, 0x60);
-    IoWrite8 (SIO_Data_Port, 0x03);
+    IoWrite8 (SIO_Data_Port, 0x02);
     IoWrite8 (SIO_Index_Port, 0x61);
     IoWrite8 (SIO_Data_Port, 0xF8);
 
     //;Set IRQ=04h
     IoWrite8 (SIO_Index_Port, 0x70);
-    IoWrite8 (SIO_Data_Port, 0x04);
+    IoWrite8 (SIO_Data_Port, 0x03);
     
     //;Enable UART1
     IoWrite8 (SIO_Index_Port, 0x30);
@@ -240,7 +240,7 @@ PlatformHookSerialPortInitialize (
 		PciUart_Init();
 	} else {
 		//LpcUart_Init();
-		VT6578V_SIOUart_Init();
+		VT6576B_SIOUart_Init();
 	}
   return EFI_SUCCESS;
 }
