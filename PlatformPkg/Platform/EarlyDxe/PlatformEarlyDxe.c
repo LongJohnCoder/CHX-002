@@ -112,7 +112,9 @@ ReadFileFromFv(
   OUT UINTN             *FileDataSize
     );
 
-STATIC EFI_STATUS HandleXhciFw(VOID)
+STATIC EFI_STATUS HandleXhciFw (
+    CONST SETUP_DATA *SetupData
+    )
 {
     EFI_STATUS              Status;
     VOID                    *Buffer;
@@ -124,6 +126,14 @@ STATIC EFI_STATUS HandleXhciFw(VOID)
     UINT16                  tDID;
 
     DEBUG((EFI_D_INFO, "[CHX002_XHCI_FW]: Firmware loading for normal boot...\n"));
+    
+    if( SetupData->UsbModeSelect != USB_MODE_SEL_MODEB &&
+        SetupData->UsbModeSelect != USB_MODE_SEL_MODEC &&
+        SetupData->UsbModeSelect != USB_MODE_SEL_MODED ) {
+        Status = EFI_SUCCESS;
+        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: xHCI has been disabled, skip firmware loading.\n"));
+        return Status;
+    }
 
     tVID     = MmioRead16(XHCI_PCI_REG(PCI_VID_REG));
     tDID     = MmioRead16(XHCI_PCI_REG(PCI_DID_REG));
@@ -1427,7 +1437,7 @@ if(gSetupHob->PEMCU_LoadFW_WhenBoot){
  PCIE_EarlyDXE_80_PORT(PCIE_EaryDXE_PEMCU_FW_LOAD);
 
   if (BootMode != BOOT_IN_RECOVERY_MODE) {
-    Status = HandleXhciFw(); // for Normal Boot, will load XHCI FW.
+    Status = HandleXhciFw(gSetupHob); // for Normal Boot, will load XHCI FW.
     ASSERT_EFI_ERROR(Status);
   }
 

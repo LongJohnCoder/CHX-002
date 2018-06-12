@@ -431,8 +431,9 @@ _FoundIoe:
 
 EFI_STATUS
 HandleXhciFwPei(
-  PLATFORM_S3_RECORD *S3Record
-  )
+    PLATFORM_S3_RECORD  *S3Record,
+    CONST SETUP_DATA    *SetupData
+    )
 {
     EFI_STATUS              Status;
     UINT32                  McuFw_Lo, McuFw_Hi;
@@ -441,6 +442,14 @@ HandleXhciFwPei(
     UINT16                  tDID;
 
     DEBUG((EFI_D_INFO, "[CHX002_XHCI_FW]: Firmware loading for S3 resume...\n"));
+    
+    if( SetupData->UsbModeSelect != USB_MODE_SEL_MODEB &&
+        SetupData->UsbModeSelect != USB_MODE_SEL_MODEC &&
+        SetupData->UsbModeSelect != USB_MODE_SEL_MODED ) {
+        Status = EFI_SUCCESS;
+        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: xHCI has been disabled, skip firmware loading.\n"));
+        return Status;
+    }
 
     tVID     = MmioRead16(XHCI_PCI_REG(PCI_VID_REG));
     tDID     = MmioRead16(XHCI_PCI_REG(PCI_DID_REG));
@@ -682,6 +691,8 @@ FirmwareLoadCallBack (
 	EFI_BOOT_MODE              BootMode;
 	PLATFORM_S3_RECORD         *S3Record; 
 
+    CONST SETUP_DATA            *SetupHob;
+
 	DEBUG((EFI_D_INFO, __FUNCTION__"[CJW] This is a test call back routine!\n"));		
 
     Status = PeiServicesGetBootMode(&BootMode);
@@ -689,7 +700,7 @@ FirmwareLoadCallBack (
 
 	S3Record = (PLATFORM_S3_RECORD*)GetS3RecordTable();
 
-
+    SetupHob = (SETUP_DATA*)GetSetupDataHobData();
 
 	if(BootMode == BOOT_ON_S3_RESUME){
 
@@ -698,7 +709,7 @@ FirmwareLoadCallBack (
       DEBUG((EFI_D_INFO, __FUNCTION__"[JNY-PEI] Load PEMCU FW in S3 Resume \n"));
 
      DEBUG((EFI_D_INFO, __FUNCTION__"(): Load xHCI FW in S3 Resume...\n"));
-     Status = HandleXhciFwPei(S3Record);
+     Status = HandleXhciFwPei(S3Record, SetupHob);
      ASSERT_EFI_ERROR(Status);
 
 	}
