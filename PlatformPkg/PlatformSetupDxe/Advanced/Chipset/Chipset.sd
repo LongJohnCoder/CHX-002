@@ -951,12 +951,12 @@ Revision History:
      oneof varid = SETUP_DATA.TOPGroup0TopSelcet,
         prompt      = STRING_TOKEN(STR_TOP_G0_SEL),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_TOP_G0), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_TOP_G1),  value = 1, flags = RESET_REQUIRED;          
-        option text = STRING_TOKEN(STR_TOP_G2),  value = 2, flags = RESET_REQUIRED;          
-        option text = STRING_TOKEN(STR_TOP_G3),  value = 3, flags = RESET_REQUIRED;          
-        option text = STRING_TOKEN(STR_TOP_G4),  value = 4, flags = RESET_REQUIRED;          
-        option text = STRING_TOKEN(STR_TOP_G5),  value = 5, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_TOP_TOP), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_TOP_PCIE_PHY),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_TOP_SATA),  value = 4, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_TOP_XHCI),  value = 5, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_TOP_SATA_TXCDC),  value = 6, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_TOP_XHCI_TXCDC),  value = 7, flags = RESET_REQUIRED;          
        endoneof;     
    
    numeric varid   = SETUP_DATA.TOPGroup0ModuleSubSelcet,
@@ -974,13 +974,13 @@ Revision History:
         oneof varid = SETUP_DATA.TOPGroup1TopSelcet,
         prompt      = STRING_TOKEN(STR_TOP_G1_SEL),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_TOP_G0), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_TOP_G1),  value = 1, flags = RESET_REQUIRED;          
-        option text = STRING_TOKEN(STR_TOP_G2),  value = 2, flags = RESET_REQUIRED;          
-        option text = STRING_TOKEN(STR_TOP_G3),  value = 3, flags = RESET_REQUIRED;            
-        option text = STRING_TOKEN(STR_TOP_G4),  value = 4, flags = RESET_REQUIRED;          
-        option text = STRING_TOKEN(STR_TOP_G5),  value = 5, flags = RESET_REQUIRED;          
-       endoneof;
+        option text = STRING_TOKEN(STR_TOP_TOP), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_TOP_PCIE_PHY),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_TOP_SATA),  value = 4, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_TOP_XHCI),  value = 5, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_TOP_SATA_TXCDC),  value = 6, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_TOP_XHCI_TXCDC),  value = 7, flags = RESET_REQUIRED;          
+        endoneof;
   numeric varid   = SETUP_DATA.TOPGroup1ModuleSubSelcet,
 		prompt  = STRING_TOKEN(STR_TOP_G1_MODULE_SEL),
 		help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
