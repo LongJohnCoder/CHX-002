@@ -601,8 +601,8 @@ typedef struct {
 */
 STATIC TM_DATA_TABLE  gTmDataTable[] = {
   {0x09, 0x80},
-  {0x19, 45},
-  {0x20, 85},
+  {0x19, 10},//IVS-20180613 CPU Fan Always Work.
+  {0x20, 10},
 };
 
 EFI_STATUS
