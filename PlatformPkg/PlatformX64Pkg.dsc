@@ -67,7 +67,7 @@ DEFINE NVME_SUPPORT = FALSE
 DEFINE ZX_SECRET_CODE = TRUE
 DEFINE ZX_EVB27_DUALSOCKET = FALSE
 ## SPI Clock Freq control option
-DEFINE ZX_SPICLK_SLOWDOWN = FALSE
+DEFINE ZX_SPICLK_SLOWDOWN = TRUE
 
 
 #-------------------------------------------------------------------------------
