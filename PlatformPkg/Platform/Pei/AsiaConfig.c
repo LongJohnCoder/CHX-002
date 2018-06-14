@@ -8,6 +8,7 @@
 
 #include "PlatformPei.h"
 #include <Library/MultiPlatSupportLib.h>
+#include <Library/PciLib.h>
 #include <Uefi/UefiInternalFormRepresentation.h>
 #include <SetupVariable.h>
 #include <RtcDef.h>
