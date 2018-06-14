@@ -134,6 +134,10 @@ mov edi, 0FEDB3000h + 06Ch
 mov al, 02h
 ;27/2Mhz
 ;mov al, 01h
+; 27/32 equal 843Khz
+;mov al, 010h
+; 27/64 equal 421Khz
+;mov al, 020h
 #else
 ;27Mhz
 mov al, 00h
