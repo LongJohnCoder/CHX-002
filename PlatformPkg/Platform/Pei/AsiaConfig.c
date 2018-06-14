@@ -100,6 +100,7 @@ UpdateAsiaConfig (
   UINTN                  Size;
   BOOLEAN                IsCmosBad;
   //UINT32                 RegEax, RegEbx, RegEcx, RegEdx;
+  UINT8                  Data1,Data2;
 	
 
   SetupData = BuildGuidHob(&gPlatformSetupVariableGuid, sizeof(SETUP_DATA));
@@ -108,6 +109,12 @@ UpdateAsiaConfig (
 // CMOS 0x0E is a normal storage. If RTC battery is LOST, this value will change to 0xFF.
 // So we use this feature to judge RTC power loss or not.
 // When setup variable has been sync from HOB, set it as ZERO.
+  while(1)
+  {
+	  Data1=PciRead8(PCI_LIB_ADDRESS(0, 17, 0, 0x81))&0x04; //Rx81 bit2 Enable RTC Control Signal Gated with PSON (SUSC#) in Soft-Off Mode
+	  Data2=PciRead8(PCI_LIB_ADDRESS(0, 17, 0, 0x82))&0x40; //Rx82 bit6 PSON (SUSC#) Current State
+  if((Data1!=0)&&(Data2!=0)) break;
+  }
   IsCmosBad = (CmosRead(0x0E) & BIT7)?TRUE:FALSE;
   DEBUG((EFI_D_INFO, "IsCmosBad:%d\n", IsCmosBad));
   IsCmosBad=0;//DLA_DBG_S Patch for a0
