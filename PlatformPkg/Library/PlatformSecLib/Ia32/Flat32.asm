@@ -86,7 +86,7 @@ _TEXT_REALMODE      ENDS
 ; 3=2.0G/1.0V   2897     2857
 ; 4=1.6G/1.0V   2097     2057
 ; others=Default
-CORE_FREQ_SEL = 5
+CORE_FREQ_SEL = 3
 #endif
 
 ; mm0 is used to save time-stamp counter value.
