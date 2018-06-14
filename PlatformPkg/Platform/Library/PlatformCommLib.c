@@ -1147,11 +1147,12 @@ VOID ZX_DumpPciDevSetting()
       }
   }
 
- // MmioBase = MmioRead32(PCI_DEV_MMBASE(0, 17, 0) + 0xBC);
- // MmioBase &= 0xfffff0;
-  MmioBase = 0xFED12000; 
+  MmioBase = MmioRead32(PCI_DEV_MMBASE(0, 17, 0) + 0xBC)<<8;
+  //MmioBase &= 0xfffff0;
+  //MmioBase = 0xFEB32000; 
   DEBUG((EFI_D_ERROR,"======Dump D17F0 MMIO Space==========\n"));
-  DumpMem8((VOID*)(UINTN)MmioBase, 0x58);
+  DumpMem8((VOID*)(UINTN)MmioBase, 0x84);
+  DumpMem8((VOID*)(UINTN)(MmioBase+0x100), 0x26);
   DEBUG((EFI_D_ERROR,"======Dump PMIO Space==========\n"));
   PmioBase = PcdGet16(AcpiIoPortBaseAddress); // PlatformX64Pkg.dsc define it.
   DumpIo4(PmioBase, 0x14);
