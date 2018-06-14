@@ -959,6 +959,21 @@ Revision History:
         option text = STRING_TOKEN(STR_TOP_XHCI_TXCDC),  value = 7, flags = RESET_REQUIRED;          
        endoneof;     
    
+      suppressif NOT ideqval SETUP_DATA.TOPGroup0TopSelcet==5;  
+      numeric varid   = SETUP_DATA.TOPGroup0XhciModuleSelcet,
+				prompt  = STRING_TOKEN(STR_TOP_G0_XHCI_MODULE_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xFF,
+				step    = 0,
+				default = 0,
+				endnumeric;   
+ 		endif;
+      
+   
+   
+   
    numeric varid   = SETUP_DATA.TOPGroup0ModuleSubSelcet,
 		prompt  = STRING_TOKEN(STR_TOP_G0_MODULE_SEL),
 		help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
@@ -981,6 +996,21 @@ Revision History:
         option text = STRING_TOKEN(STR_TOP_SATA_TXCDC),  value = 6, flags = RESET_REQUIRED;          
         option text = STRING_TOKEN(STR_TOP_XHCI_TXCDC),  value = 7, flags = RESET_REQUIRED;          
         endoneof;
+ 
+    
+      suppressif NOT ideqval SETUP_DATA.TOPGroup1TopSelcet==5;  
+      numeric varid   = SETUP_DATA.TOPGroup1XhciModuleSelcet,
+				prompt  = STRING_TOKEN(STR_TOP_G1_XHCI_MODULE_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xFF,
+				step    = 0,
+				default = 0,
+				endnumeric;   
+ 		endif;
+
+
   numeric varid   = SETUP_DATA.TOPGroup1ModuleSubSelcet,
 		prompt  = STRING_TOKEN(STR_TOP_G1_MODULE_SEL),
 		help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),

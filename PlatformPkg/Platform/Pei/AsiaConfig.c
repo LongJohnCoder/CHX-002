@@ -627,9 +627,11 @@ DramCfg->DramRxTxTimingHardCode= SetupData->DramRxTxTimingHardCode;
 
   NbCfg->TOPGroup0TopSelcet= SetupData->TOPGroup0TopSelcet;  
   NbCfg->TOPGroup0ModuleSubSelcet= SetupData->TOPGroup0ModuleSubSelcet;  
+  NbCfg->TOPGroup0XhciModuleSelcet= SetupData->TOPGroup0XhciModuleSelcet;  
 
   NbCfg->TOPGroup1TopSelcet= SetupData->TOPGroup1TopSelcet;
   NbCfg->TOPGroup1ModuleSubSelcet= SetupData->TOPGroup1ModuleSubSelcet;  
+  NbCfg->TOPGroup1XhciModuleSelcet= SetupData->TOPGroup1XhciModuleSelcet;  
   NbCfg->SB_HS_DBG_SEL= SetupData->SB_HS_DBG_SEL;
   NbCfg->SB_HS_PCIE_PORT_SEL= SetupData->SB_HS_PCIE_PORT_SEL;
   NbCfg->SB_HS_DBG_CH_SEL= SetupData->SB_HS_DBG_CH_SEL;

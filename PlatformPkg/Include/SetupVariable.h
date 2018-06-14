@@ -344,8 +344,10 @@ UINT8 DramRxTxTimingHardCode;
 	UINT32	SBGroup1ModuleSubSelect;
 	
 	 UINT8	 TOPGroup0TopSelcet;
+	 UINT8	 TOPGroup0XhciModuleSelcet;
 	 UINT32	TOPGroup0ModuleSubSelcet;
 	 UINT8	 TOPGroup1TopSelcet;
+	 UINT8	 TOPGroup1XhciModuleSelcet;
 	 UINT32	TOPGroup1ModuleSubSelcet;
  	 UINT8	 FSBCGroup0TopSelcet;
 	 UINT8	 FSBCGroup1TopSelcet;  
