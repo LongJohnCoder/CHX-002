@@ -81,11 +81,12 @@ _TEXT_REALMODE      ENDS
 ;Add core frequence selection macro:
 ;  Freq/Vol     SVID     PVID
 ; 0=3.0G/1.05V  3CA1     3C5B
+; 5=3.0G/1.1V  3CAB     
 ; 1=2.7G/1.0V   3697     3657
 ; 2=2.2G/1.0V   2C97     3657
 ; 3=2.0G/1.0V   2897     2857
 ; 4=1.6G/1.0V   2097     2057
-; others=Default
+; others(above 6 )=Default
 CORE_FREQ_SEL = 3
 #endif
 
@@ -197,6 +198,8 @@ ELSEIF (CORE_FREQ_SEL EQ 3)
     mov ax, 2897h
 ELSEIF (CORE_FREQ_SEL EQ 4)
     mov ax, 2097h
+ELSEIF (CORE_FREQ_SEL EQ 5)
+    mov ax, 3CABh
 ELSE
     jmp  pstDone
 ENDIF
