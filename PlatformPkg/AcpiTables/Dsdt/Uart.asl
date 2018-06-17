@@ -123,7 +123,7 @@ Scope (^^PCI0)
             Return (BFU3)
         }
     }
-
+    /*
     Device (UAR3)
     {
         Name (_HID, EisaId ("PNP0501"))  // _HID: Hardware ID
@@ -209,6 +209,7 @@ Scope (^^PCI0)
             Return (BFU7)
         }
     }
+    */
 }
 
 
