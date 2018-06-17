@@ -117,7 +117,7 @@
   gLegacyOptionRomInfoProtocolGuid
   gIsaAcpiDeviceListGuid
   gEfiFsbcDumpProtocolGuid
-  
+  gEfiMpServiceProtocolGuid
 
 [Pcd]
   gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
@@ -139,7 +139,7 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWSize
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATAAddr
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATASize
-  
+  gEfiCpuTokenSpaceGuid.PcdFMS107B0
   
   
 [Depex]

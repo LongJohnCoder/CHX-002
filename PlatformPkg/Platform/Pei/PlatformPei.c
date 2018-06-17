@@ -717,8 +717,19 @@ FirmwareLoadCallBack (
 		  
 	return EFI_SUCCESS;
 }
-
-
+#ifdef ZX_SECRET_CODE
+VOID
+CoreFMS107B0 (
+  IN  VOID  *Buffer
+  )
+{
+  UINT64 MsrValue64;
+  MsrValue64 = AsmReadMsr64(0x1204);
+  MsrValue64&=(UINT64)0xFFFFFFFF;
+  MsrValue64|=(UINT64)0x107B000000000;
+  AsmWriteMsr64(0x1204,MsrValue64);
+}
+#endif
 EFI_STATUS
 EFIAPI
 CpuMpPeiCallback (
@@ -860,7 +871,14 @@ DumpCpuFeature(CpuFeature);
     HandlePemcuFwPei(S3Record);
 
   	}*/
-
+  #ifdef ZX_SECRET_CODE
+  if(PcdGet8(PcdFMS107B0)){
+  	if(BootMode==BOOT_ON_S3_RESUME){
+	  CoreFMS107B0(NULL);
+	  Status = MpSvr->StartupAllAPs(PeiServices, MpSvr, CoreFMS107B0, TRUE, 1000000, &MissionArg);
+	}
+  }
+  #endif
   return Status;
 }
 

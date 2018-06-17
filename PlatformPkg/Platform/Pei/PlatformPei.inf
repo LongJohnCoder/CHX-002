@@ -112,7 +112,7 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdBiosDebugUsePciUart
   gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdHighPmmMemorySize
   gEfiCpuTokenSpaceGuid.PcdCpuCoreEnabled
-  
+  gEfiCpuTokenSpaceGuid.PcdFMS107B0
 [Depex]
   gAsiaSbPpiGuid   AND
   gAsiaNbPpiGuid   AND

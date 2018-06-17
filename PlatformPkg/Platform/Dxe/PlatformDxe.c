@@ -17,6 +17,9 @@
 #include <Protocol/NvMediaAccess.h>
 #include <CHX002Reg.h>
 #include <Guid/EventLegacyBios.h>
+#ifdef ZX_SECRET_CODE
+#include <Protocol/MpService.h>
+#endif
 
 VOID
 SmbiosCallback (
@@ -795,6 +798,57 @@ IoTrapLegacyBootEventNotify (
 	return;
 }
 //ECS20161206 Add IO Trap SMI for UMA patch, Just for CHX001 A0 +E
+#ifdef ZX_SECRET_CODE   
+VOID
+CoreFMS107B0 (
+  IN  VOID  *Buffer
+  )
+{
+  UINT64 MsrValue64;
+  MsrValue64 = AsmReadMsr64(0x1204);
+  MsrValue64&=(UINT64)0xFFFFFFFF;
+  MsrValue64|=(UINT64)0x107B000000000;
+  AsmWriteMsr64(0x1204,MsrValue64);
+}
+
+VOID
+EFIAPI
+ChangFMS107B0 (
+  IN      EFI_EVENT  Event,
+  IN      VOID       *Context
+  )
+{
+  EFI_STATUS                Status;
+  EFI_MP_SERVICES_PROTOCOL  *MpService;
+  UINTN                     ProcessorIndex;
+  UINTN                     NumberOfProcessors;
+  UINTN                     NumberOfEnabledProcessors;
+  BOOLEAN                   Finished;
+  DEBUG((DEBUG_INFO, "%a()\n", __FUNCTION__));
+  Status = gBS->LocateProtocol (&gEfiMpServiceProtocolGuid, NULL,(VOID**)&MpService);
+  ASSERT_EFI_ERROR (Status);
+
+  Status = MpService->GetNumberOfProcessors (
+                        MpService, 
+                        &NumberOfProcessors, 
+                        &NumberOfEnabledProcessors
+                        );
+  ASSERT_EFI_ERROR(Status);
+  CoreFMS107B0(NULL);
+  for (ProcessorIndex = 1; ProcessorIndex < NumberOfProcessors; ProcessorIndex++) {
+  	Status = MpService->StartupThisAP (
+                            MpService, 
+                            CoreFMS107B0, 
+                            ProcessorIndex, 
+                            NULL, 
+                            0, 
+                            (VOID *)ProcessorIndex,
+                            &Finished
+                            );
+    ASSERT_EFI_ERROR(Status);
+  }
+}
+#endif
 
 
 EFI_STATUS
@@ -931,6 +985,18 @@ PlatformDxeEntry (
                   );
   ASSERT_EFI_ERROR (Status);
   //ECS20161206 Add IO Trap SMI for UMA patch, Just for CHX001 A0 +E
+  #ifdef ZX_SECRET_CODE
+  if(PcdGet8(PcdFMS107B0)){
+   DEBUG((EFI_D_ERROR,"Mike_here\n"));
+   Status = EfiCreateEventReadyToBootEx (
+             TPL_CALLBACK,
+             ChangFMS107B0,
+             NULL,
+             &Event
+             ); 
+   ASSERT_EFI_ERROR(Status);
+  }
+  #endif
   return Status;
 }
 

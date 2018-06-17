@@ -105,6 +105,7 @@ typedef struct {
   //UINT8	PartialResetEn;
   UINT8 MCASupport;
   UINT8 C2P2FlushC2M;
+  UINT8 FMS107B0;
 #endif  
   ////
   UINT8 IOVEnable;

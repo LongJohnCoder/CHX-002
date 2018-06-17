@@ -164,6 +164,13 @@ Revision History:
       endoneof;    
   
       //YKN-20161228 -s
+      oneof varid = SETUP_DATA.FMS107B0,
+        prompt      = STRING_TOKEN(STR_CPU_FMS107B0_PROMPT),
+        help        = STRING_TOKEN(STR_CPU_FMS107B0_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED ;          
+      endoneof;   
+
     #if 0
       oneof varid = SETUP_DATA.FixCpuRatio,
         prompt      = STRING_TOKEN(STR_CPU_FIX_RATIO),

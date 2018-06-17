@@ -915,7 +915,9 @@ DramCfg->DramRxTxTimingHardCode= SetupData->DramRxTxTimingHardCode;
 //YKN-2016112402 -e
  //YKN-2016112201 -e
 #endif
-  
+  #ifdef ZX_SECRET_CODE
+  PcdSet8(PcdFMS107B0,SetupData->FMS107B0);
+  #endif
   return Status;  
 }  
 
