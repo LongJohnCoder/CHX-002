@@ -20,6 +20,9 @@
 #ifdef ZX_SECRET_CODE
 #include <Protocol/MpService.h>
 #endif
+#ifdef ZX_SECRET_CODE
+#include <Protocol/MpConfig.h>
+#endif
 
 VOID
 SmbiosCallback (
@@ -540,6 +543,20 @@ PlatOnReadyToBoot (
   if(1==DUMP_SPE_VAULE){
    ZX_DumpPciDevSetting(); // tiger added. 2016-06-23
   }
+#ifdef ZX_SECRET_CODE
+  DEBUG((EFI_D_ERROR,"+++++Start Set MSR in on ready to Boot\n"));
+  
+  {  
+	  EFI_STATUS Status;
+	  EFI_MP_CONFIG_PROTOCOL*	  MpConfig;
+	  Status = gBS->LocateProtocol (&gEfiCpuMpConfigProtocolGuid, NULL,(VOID**)&MpConfig);
+	  if(Status==0){
+		 MpConfig->ConfigMsr(RDB);
+	  }
+   }
+  DEBUG((EFI_D_ERROR,"+++++After Set MSR in on ready to Boot\n"));
+#endif
+
 }
 
 
@@ -895,6 +912,20 @@ PlatformDxeEntry (
   gAsiaSbCfg = (ASIA_SB_CONFIGURATION*)gPtAsiaSb->SbCfg;  	
 
   PlatformDebugAtEntryPoint(ImageHandle, SystemTable);
+#ifdef ZX_SECRET_CODE
+	  DEBUG((EFI_D_ERROR,"+++++Start Set MSR in on DXE\n"));
+	  
+	  {  
+		  EFI_STATUS Status;
+		  EFI_MP_CONFIG_PROTOCOL*	  MpConfig;
+		  Status = gBS->LocateProtocol (&gEfiCpuMpConfigProtocolGuid, NULL,(VOID**)&
+	MpConfig);
+		  if(Status==0){
+			 MpConfig->ConfigMsr(DXE);
+		  }
+	   }
+	  DEBUG((EFI_D_ERROR,"+++++After Set MSR in on DXE\n"));
+#endif
 
   Status = gPtAsiaSb->PrePciInit(gPtAsiaSb);
   ASSERT_EFI_ERROR(Status);
@@ -987,7 +1018,6 @@ PlatformDxeEntry (
   //ECS20161206 Add IO Trap SMI for UMA patch, Just for CHX001 A0 +E
   #ifdef ZX_SECRET_CODE
   if(PcdGet8(PcdFMS107B0)){
-   DEBUG((EFI_D_ERROR,"Mike_here\n"));
    Status = EfiCreateEventReadyToBootEx (
              TPL_CALLBACK,
              ChangFMS107B0,

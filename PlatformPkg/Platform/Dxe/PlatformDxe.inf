@@ -77,7 +77,6 @@
   gEfiAcpiTableGuid
   gEfiAcpiS3ContextGuid
   gEfiSetupEnterGuid
-
   
 [Protocols]
   gEfiLegacyInterruptProtocolGuid
@@ -118,7 +117,9 @@
   gIsaAcpiDeviceListGuid
   gEfiFsbcDumpProtocolGuid
   gEfiMpServiceProtocolGuid
-
+#ifdef ZX_SECRET_CODE
+  gEfiCpuMpConfigProtocolGuid
+#endif
 [Pcd]
   gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
   gPlatformModuleTokenSpaceGuid.PcdCsm16File  

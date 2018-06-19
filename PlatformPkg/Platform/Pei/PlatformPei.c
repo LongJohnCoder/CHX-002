@@ -11,6 +11,9 @@
 #include <Library/PerformanceLib.h>
 #include <Library/MtrrLib.h>
 #include <PlatS3Record.h>
+#ifdef ZX_SECRET_CODE
+#include <Ppi/CpuMpConfig.h>
+#endif
 
 
 
@@ -677,6 +680,65 @@ IN ASIA_CPU_CONFIGURATION     *CpuFeature
   DEBUG((DEBUG_INFO,  "FSBC                           :%d\n",CpuFeature->FsbcEn)); //hxz-20171012 add for chx002 enable fsbc
 #endif
 }
+#ifdef ZX_SECRET_CODE
+#define P_MAX                   0x00
+#define MANUAL_PTx            0x01
+#pragma pack (1)
+typedef struct _BVID{
+  UINT32  Signature;
+  UINT32  Reserved4_7;
+  UINT8   OpType;
+  UINT8   Reserved9;
+  UINT16  Reserved10_11;
+  UINT16  Reserved12_15;
+}BVID;
+#pragma pack ()
+
+VOID
+ApPState(  
+  IN OUT VOID  *Buffer
+  )
+{
+  UINT64 Msr64;
+  Msr64 = *(UINT64*)Buffer;
+  AsmWriteMsr64(0x199,Msr64);
+}
+
+EFI_STATUS
+EFIAPI
+SetBVID(
+   IN EFI_PEI_SERVICES           **PeiServices,
+   EFI_PEI_MP_SERVICES_PPI       *MpSvr
+   )
+{
+  BVID* pBVid;
+  UINT64 Msr64;
+  EFI_STATUS Status = EFI_SUCCESS;
+  pBVid = (BVID*)PcdGet32(PcdBootConfigBase);
+  //"BVID"
+  if(pBVid->Signature ==0x44495642){
+  	DEBUG((EFI_D_ERROR,"========Aps Set BVID==============\n"));
+    if(pBVid->OpType==P_MAX){
+	    Msr64 = AsmReadMsr64(0x198);
+	    Msr64 = (Msr64>>32)&0xFFFF;
+    }
+	else if(pBVid->OpType>=MANUAL_PTx){
+		if(pBVid->OpType>5){
+		  return EFI_UNSUPPORTED;
+	 	}
+	    Msr64 = AsmReadMsr64(0x1440+pBVid->OpType-MANUAL_PTx);
+		Msr64 &=0xFFFF;
+	}
+	else{
+	   return EFI_UNSUPPORTED;
+	}
+   Status = MpSvr->StartupAllAPs(PeiServices, MpSvr, ApPState, TRUE, 1000000, &Msr64);
+   DEBUG((EFI_D_ERROR,"========     End    ==============\n"));
+   return Status;
+  }
+  return Status;
+}
+#endif
 
 EFI_STATUS
 EFIAPI
@@ -773,6 +835,21 @@ CpuMpPeiCallback (
   NbCfg = (ASIA_NB_CONFIGURATION*)(NbPpi->NbCfg);
   SetupHob = (SETUP_DATA*)GetSetupDataHobData();
   S3Record = (PLATFORM_S3_RECORD*)GetS3RecordTable();
+#ifdef ZX_SECRET_CODE
+		 {
+			 EFI_STATUS 				Status;
+			 EFI_CPU_CONFIG_PPI_PROTOCOL*	gPeiCpuConfigPpi;
+			 Status = PeiServicesLocatePpi (
+					 &gCpuConfigPpiGuid,
+					 0,
+					 NULL,
+					 (VOID**)&gPeiCpuConfigPpi
+					 );
+			 if(Status==0){
+				gPeiCpuConfigPpi->ConfigMsr(PeiServices,PEI0);	
+			 }
+		 }
+#endif
 
  //YKN-20160627  +S
  //Update ASIA CPU activeCpuNum
@@ -879,6 +956,29 @@ DumpCpuFeature(CpuFeature);
 	}
   }
   #endif
+#ifdef ZX_SECRET_CODE
+	 {
+		 EFI_STATUS 				Status;
+		 EFI_CPU_CONFIG_PPI_PROTOCOL*	gPeiCpuConfigPpi;
+		 Status = PeiServicesLocatePpi (
+				 &gCpuConfigPpiGuid,
+				 0,
+				 NULL,
+				 (VOID**)&gPeiCpuConfigPpi
+				 );
+		 if(Status==EFI_SUCCESS){
+		   gPeiCpuConfigPpi->ConfigMsr(PeiServices,PEI1);  
+		 }
+	 }
+	 {
+		Status = SetBVID(PeiServices,MpSvr);
+		if(EFI_ERROR(Status)){
+		  DEBUG((EFI_D_ERROR,"SetBVID_Error:(%x)\n",Status));
+		  return Status;
+		}
+	 }
+#endif
+
   return Status;
 }
 

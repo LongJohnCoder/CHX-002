@@ -65,7 +65,15 @@
   gEfiByoModulePkgTokenSpaceGuid.PcdFlashAreaBaseAddress
   gEfiByoModulePkgTokenSpaceGuid.PcdFlashAreaSize
   gEfiByoModulePkgTokenSpaceGuid.AcpiIoPortBaseAddress
-
+#ifdef ZX_SECRET_CODE
+#Conditional if directive is NOT supported in .INF file, just a marker.
+  gPlatformModuleTokenSpaceGuid.PcdMSRSEC0Base
+  gPlatformModuleTokenSpaceGuid.PcdMSRSEC0Size
+  gPlatformModuleTokenSpaceGuid.PcdMSRSEC1Base
+  gPlatformModuleTokenSpaceGuid.PcdMSRSEC1Size
+  gPlatformModuleTokenSpaceGuid.PcdBootConfigBase
+  gPlatformModuleTokenSpaceGuid.PcdBootConfigSize
+#endif
 [BuildOptions]
   MSFT:*_*_IA32_PP_FLAGS                 = /FIPlatformSecLib.h
   INTEL:*_*_IA32_PP_FLAGS                = /FIPlatformSecLib.h

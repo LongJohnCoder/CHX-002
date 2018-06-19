@@ -41,9 +41,24 @@ NumBlocks     = 0x80
 
 ################################################################################
 #eBMC
-0x00000000|0x00400000
-FILE = $(ASIA_SOURCE)/../ZxPlatformBin/Sme/CHX002_SME_Simple.bin
-
+#0x00000000|0x00400000
+#FILE = $(ASIA_SOURCE)/../ZxPlatformBin/Sme/CHX002_SME_Simple.bin
+!if $(ZX_SECRET_CODE) == TRUE
+0x00100000|0x00001000
+gPlatformModuleTokenSpaceGuid.PcdMSRSEC0Base|gPlatformModuleTokenSpaceGuid.PcdMSRSEC0Size
+0x00101000|0x00001000
+gPlatformModuleTokenSpaceGuid.PcdMSRSEC1Base|gPlatformModuleTokenSpaceGuid.PcdMSRSEC1Size
+0x00102000|0x00001000
+gPlatformModuleTokenSpaceGuid.PcdMSRPEI0Base|gPlatformModuleTokenSpaceGuid.PcdMSRPEI0Size
+0x00103000|0x00001000
+gPlatformModuleTokenSpaceGuid.PcdMSRPEI1Base|gPlatformModuleTokenSpaceGuid.PcdMSRPEI1Size
+0x00104000|0x00001000
+gPlatformModuleTokenSpaceGuid.PcdMSRDXEBase|gPlatformModuleTokenSpaceGuid.PcdMSRDXESize
+0x00105000|0x00001000
+gPlatformModuleTokenSpaceGuid.PcdMSRRDBBase|gPlatformModuleTokenSpaceGuid.PcdMSRRDBSize
+0x00106000|0x00001000
+gPlatformModuleTokenSpaceGuid.PcdBootConfigBase|gPlatformModuleTokenSpaceGuid.PcdBootConfigSize
+!endif  
 #NV_VARIABLE_STORE
 0x00410000|0x00020000
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
@@ -239,7 +254,9 @@ INF  SecurityPkg/Tcg/PhysicalPresencePei/PhysicalPresencePei.inf
 INF  SecurityPkg/Tcg/TcgPei/TcgPei.inf
 INF  SecurityPkg/Tcg/Tcg2Pei/Tcg2Pei.inf
 !endif
-
+!if $(ZX_SECRET_CODE) == TRUE
+INF  $(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/CpuMpPeiConfig/CpuMpPeiConfig.inf
+!endif
 INF  $(ASIA_SOURCE)/Foundation/Pei/Cpu/AsiaCpuPeim.inf
 INF  $(ASIA_SOURCE)/Foundation/Pei/Dram/AsiaDramPeim.inf
 INF  $(ASIA_SOURCE)/Foundation/Pei/NB/AsiaNbPeim.inf
@@ -409,6 +426,9 @@ INF  ByoModulePkg/Universal/SmbiosSmm/SmbiosSmm.inf
 INF  PcAtChipsetPkg/8259InterruptControllerDxe/8259.inf
 INF  PcAtChipsetPkg/8254TimerDxe/8254Timer.inf
 INF  $(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/CpuMpDxe/CpuMpDxe.inf
+!if $(ZX_SECRET_CODE) == TRUE
+INF  $(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/CpuMpDxeConfig/CpuMpDxeConfig.inf
+!endif
 INF  MdeModulePkg/Universal/Metronome/Metronome.inf
 
 INF  $(ASIA_SOURCE)/Foundation/Dxe/Cpu/AsiaCpuDxe.inf

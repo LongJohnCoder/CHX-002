@@ -90,7 +90,9 @@
   gEfiPeiMpServicesPpiGuid
   gEfiAcpiWakeVectorSignalPpiGuid
   gEfiPlatformLoadFwPpiGuid						# //JIH-20161202 FW Notify, Copy Form IOE CJW code
-
+#ifdef ZX_SECRET_CODE
+  gCpuConfigPpiGuid
+#endif
 
 [Pcd]
   gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress 
@@ -113,6 +115,9 @@
   gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdHighPmmMemorySize
   gEfiCpuTokenSpaceGuid.PcdCpuCoreEnabled
   gEfiCpuTokenSpaceGuid.PcdFMS107B0
+#ifdef ZX_SECRET_CODE
+  gPlatformModuleTokenSpaceGuid.PcdBootConfigBase
+#endif
 [Depex]
   gAsiaSbPpiGuid   AND
   gAsiaNbPpiGuid   AND

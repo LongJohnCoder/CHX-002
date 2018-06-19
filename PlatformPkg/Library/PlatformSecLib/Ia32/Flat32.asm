@@ -23,7 +23,26 @@ EXTRN   PcdGet32 (PcdTemporaryRamBase):DWORD
 EXTRN   PcdGet32 (PcdTemporaryRamSize):DWORD
 EXTRN   PcdGet64 (PcdPciExpressBaseAddress):DWORD
 EXTRN   PcdGet16 (AcpiIoPortBaseAddress):WORD
-
+#ifdef ZX_SECRET_CODE
+EXTRN   PcdGet32 (PcdMSRSEC0Base):DWORD
+EXTRN   PcdGet32 (PcdMSRSEC0Size):DWORD
+EXTRN   PcdGet32 (PcdMSRSEC1Base):DWORD
+EXTRN   PcdGet32 (PcdMSRSEC1Size):DWORD
+EXTRN   PcdGet32 (PcdBootConfigBase):DWORD
+EXTRN   PcdGet32 (PcdBootConfigSize):DWORD
+#endif
+#ifdef ZX_SECRET_CODE
+MAX                           EQU 00h
+MANUAL_PTx                    EQU 01h
+BVIDStruc STRUC
+  Signature             dd ?
+  Reserved4_7           dd ?
+  OpType                db ?
+  Reserved9             db ?
+  Reserved10_11         dw ?
+  Reserved12_15         dd ?
+BVIDStruc    ENDS
+#endif
 
 
 
@@ -215,9 +234,18 @@ ENDIF
     wrmsr
 pstDone:    
 #endif
+  #ifdef ZX_SECRET_CODE
+  mov  edi, PcdGet32(PcdMSRSEC0Base)
+  mov  ebx, PcdGet32(PcdMSRSEC0Size)
+  CALL_MMX  SecMsrConfig
+  #endif
   STATUS_CODE (03h)
   CALL_MMX  VeryEarlyMicrocodeUpdate  
-
+  #ifdef ZX_SECRET_CODE
+  mov  edi, PcdGet32(PcdMSRSEC1Base)
+  mov  ebx, PcdGet32(PcdMSRSEC1Size)
+  CALL_MMX  SecMsrConfig
+  #endif
   STATUS_CODE (04h)
   CALL_MMX  PlatformInitialization
 
@@ -231,7 +259,91 @@ pstDone:
   jmp  CallPeiCoreEntryPoint
 
 ProtectedModeSECStart ENDP
+#ifdef ZX_SECRET_CODE
+SecMsrConfig PROC NEAR PRIVATE
+    mov esi, edi
+    add edi, ebx
 
+FillLoop:
+    cmp  esi, edi
+    jae  FillExit
+    
+    cmp DWORD PTR [esi], 0xffffffff
+    jz  FillExit
+    
+    mov ecx, [esi]
+    rdmsr
+    mov     ebx,[esi + 8]
+    ;Byte8: Bit1:
+    ;            0:+/- OrMask
+    ;            1: |  OrMask
+    test    ebx,10b
+    jz      AddOrSub
+    mov     ebx,[esi + 16]
+    NOT	    ebx
+    and     eax, ebx
+    
+    mov     ebx,[esi + 20]
+    NOT	    ebx
+    and     edx, ebx
+	
+    or eax, [esi + 24]
+    or edx, [esi + 28]
+    wrmsr
+    jmp NextItem
+AddorSub:
+    mov     ebx,[esi + 16]
+    NOT	    ebx
+    and     ebx, eax
+    ;mm2 temp save
+    movd    mm2,ebx
+    mov     ebx,[esi + 20]
+    NOT	    ebx
+    and     ebx, edx
+    ;mm3 temp eave
+    movd    mm3,ebx
+    mov     ebx,[esi + 16]
+    and     eax,ebx
+    mov     ebx,[esi + 20] 
+    and     edx,ebx
+    cmp     eax, 0h
+    jnz     Operate
+    cmp     edx ,0h
+    jz      NextItem
+Operate:
+    mov     ebx,[esi + 8]
+    ;Byte8: Bit2:
+    ;            0:+ OrMask
+    ;            1:- OrMask
+    test    ebx,100b
+    jz      AddValue
+    sub  eax,[esi+24]
+    sub  edx,[esi+28]
+    jmp  SetValue
+AddValue:
+    ; if   ReadValue & AndMask==0 , not Set
+    ; else SetValue = (ReadValue & AndMask + OrMask)&(~AndMask)
+    add  eax,[esi+24]
+    add  edx,[esi+28]
+SetValue:
+    mov  ebx,[esi + 16]
+    and  eax,ebx
+    mov  ebx,[esi + 20]
+    and  edx,ebx
+    ;if   ReadValue & AndMask==0 , not Set
+    ;else SetValue = (ReadValue & AndMask - OrMask)&(~AndMask)
+    movd ebx, mm2
+    or   eax, ebx
+    movd ebx, mm3
+    or   edx, ebx
+    wrmsr
+NextItem:    
+    add esi, 0x20
+    jmp FillLoop
+FillExit:
+  RET_MMX
+SecMsrConfig ENDP
+#endif
 
 ForceCpuMAXRatio    PROC    NEAR    PRIVATE
 
@@ -249,7 +361,35 @@ ForceCpuMAXRatio    PROC    NEAR    PRIVATE
   rdmsr
   bts     eax,16
   wrmsr       
-
+#ifdef ZX_SECRET_CODE
+  mov     esi, PcdGet32(PcdBootConfigBase)
+  mov     edi, esi
+  add     edi, PcdGet32(PcdBootConfigSize)
+  cmp     (BVIDStruc PTR [esi]).Signature, 44495642h     ; "BVID"
+  jnz      short SetMaxPSate
+  cmp     (BVIDStruc PTR [esi]).OpType, MAX
+  jz      short SetMaxPSate
+  cmp     (BVIDStruc PTR [esi]).OpType, MANUAL_PTx 
+  jae     SetMunal_PTx 
+SetMunal_PTx:
+  mov ecx ,01440h
+  xor eax ,eax
+  mov al,(BVIDStruc PTR [esi]).OpType
+  add ecx ,eax
+  sub ecx ,MANUAL_PTx
+  cmp ecx, 1444h
+  ja  SetMaxPSate
+  rdmsr
+  cmp eax ,0h
+  je SetMaxPSate
+  mov ebx, eax
+  mov ecx, MSR_IA32_PERF_CTL
+  rdmsr
+  mov ax, bx
+  wrmsr
+  jmp   short SetTSCFreq
+SetMaxPSate:
+#endif
   mov ecx, MSR_IA32_PERF_STS
   rdmsr  
 ; [7:0]   - Current VID
@@ -263,7 +403,7 @@ ForceCpuMAXRatio    PROC    NEAR    PRIVATE
   rdmsr
   mov ax, bx  
   wrmsr
-
+SetTSCFreq:
 ;0x1203  CENT_HARDWARECTRL3 [32]
 ;  0 - TSC Always runs at the maximum frequency supported by the by the processor 
 ;  1 - TSC runs at the current operating frequency of the processor 

@@ -1,0 +1,67 @@
+## @file
+#  CPU driver installs CPU PI Multi-processor PPI.
+#
+#  Copyright (c) 2015, Intel Corporation. All rights reserved.<BR>
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution.  The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CpuMpPeiConfig
+  FILE_GUID                      = 8EF32942-069D-49B0-BECC-D916273CF4F9 
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CpuMpConfigPeimInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  CpuMpPeiConfig.c
+  CpuMpPeiConfig.h
+[Packages]
+  MdePkg/MdePkg.dec
+  PlatformPkg/IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  PlatformPkg/PlatformPkg.dec
+  
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  HobLib
+  LocalApicLib
+  MtrrLib
+  PcdLib
+  PeimEntryPoint
+  PeiServicesLib
+  ReportStatusCodeLib
+  SynchronizationLib
+  TimerLib
+  UefiCpuLib
+
+
+[Ppis]
+  gCpuConfigPpiGuid
+  gEfiPeiMpServicesPpiGuid
+
+
+[Pcd]
+  gPlatformModuleTokenSpaceGuid.PcdMSRPEI0Base
+  gPlatformModuleTokenSpaceGuid.PcdMSRPEI0Size
+  gPlatformModuleTokenSpaceGuid.PcdMSRPEI1Base
+  gPlatformModuleTokenSpaceGuid.PcdMSRPEI1Size
+
+  
+[Depex]
+  TRUE
+

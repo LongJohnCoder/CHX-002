@@ -598,7 +598,9 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
     TimerLib|$(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/Library/CpuLocalApicTimerLib/CpuLocalApicTimerLib.inf
 !endif  
   }
-
+  !if $(ZX_SECRET_CODE) == TRUE
+  $(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/CpuMpPeiConfig/CpuMpPeiConfig.inf
+  !endif  
   $(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/CpuMpPei/CpuMpPei.inf  
   $(PLATFORM_PACKAGE)/Platform/Pei/SmmRebaseS3.inf
   $(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/PiSmmCommunication/PiSmmCommunicationPei.inf
@@ -733,6 +735,9 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   UefiCpuPkg/CpuIo2Dxe/CpuIo2Dxe.inf
   $(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/CpuArchDxe/CpuArchDxe.inf
   $(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/CpuMpDxe/CpuMpDxe.inf
+  !if $(ZX_SECRET_CODE) == TRUE
+  $(PLATFORM_PACKAGE)/IA32FamilyCpuPkg/CpuMpDxeConfig/CpuMpDxeConfig.inf
+  !endif
 
   MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf  
   MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
