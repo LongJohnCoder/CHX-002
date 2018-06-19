@@ -499,8 +499,8 @@ INF  ByoNvMediaPkg/NvMediaAccess/Dxe/NvMediaAccess.inf
 #INF  ByoNvMediaPkg/FlashDevice/SST25VF032B/Dxe/spiflashdevice.inf
 INF  ByoNvMediaPkg/FlashDevice/SST26VF064B/Smm/spiflashdevice.inf
 INF  ByoNvMediaPkg/FlashDevice/SST26VF064B/Dxe/spiflashdevice.inf
-INF  ByoNvMediaPkg/FlashDevice/NumonyxM25P32/Smm/spiflashdevice.inf
-INF  ByoNvMediaPkg/FlashDevice/NumonyxM25P32/Dxe/spiflashdevice.inf 
+#INF  ByoNvMediaPkg/FlashDevice/NumonyxM25P32/Smm/spiflashdevice.inf
+#INF  ByoNvMediaPkg/FlashDevice/NumonyxM25P32/Dxe/spiflashdevice.inf 
 INF  $(PLATFORM_PACKAGE)/Override/ByoNvMediaPkg/FvbService/Smm/FvbService.inf
 INF  MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteSmm.inf
 
