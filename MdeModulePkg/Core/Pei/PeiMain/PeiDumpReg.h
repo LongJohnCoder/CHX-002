@@ -226,6 +226,7 @@ typedef struct {
  #define CHX002_HDAC_DEV 20
 	  #define CHX002_HDAC_FUN 0
 
+#define CHX002_GFXAX VISA_PCI_ADDRESS(0, 0, 0, 0) // D0F0
 
 #define CHX002_APIC VISA_PCI_ADDRESS(0, 0, 5, 0) // D0F5
 

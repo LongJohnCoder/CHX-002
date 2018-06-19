@@ -362,10 +362,12 @@ PeiCore (
   	ASSERT_EFI_ERROR (Status);
 
   	// for test
-  	TmpDumpReg->DumpNBValue(TmpDumpReg,TRUE,FALSE);
-  
-  	TmpDumpReg->DumpSBValue(TmpDumpReg,TRUE,FALSE);
-  }
+	DEBUG((EFI_D_ERROR,"# Project: CHX002\n"));
+	DEBUG((EFI_D_ERROR,"# SPE_Mode: D\n"));	 
+	DEBUG((EFI_D_ERROR,"# Dump_Mode: BIT\n\n"));
+  	TmpDumpReg->DumpNBValue(TmpDumpReg,TRUE,TRUE);
+  	TmpDumpReg->DumpSBValue(TmpDumpReg,TRUE,TRUE);
+	}
   } else {
     REPORT_STATUS_CODE (
       EFI_PROGRESS_CODE,
