@@ -72,6 +72,14 @@ DriverEntry (
 {
     EFI_STATUS Status;
     NV_MEDIA_ACCESS_PROTOCOL *pMediaAccessProtocol;
+    VOID                     *Interface;    
+
+    Status = gBS->LocateProtocol(&gEfiNvMediaDeviceProtocolGuid, NULL, &Interface);
+    if(!EFI_ERROR(Status)){
+	  DEBUG((EFI_D_INFO, "Spi Device Driver Already Run\n")); 		  
+      Status = EFI_ALREADY_STARTED;
+      goto ProcExit;
+    }    
 
     //
     // Allocate runtime private data structure for the device driver.
@@ -132,6 +140,12 @@ DriverEntry (
                      &mNvDevice->DeviceProtocol);
 
         Status = pMediaAccessProtocol->Init(pMediaAccessProtocol, (void *)&mNvDevice->DeviceProtocol, SPI_MEDIA_TYPE);
+    }else {
+      DEBUG((EFI_D_ERROR, "NOT ATMEL25DF161\n"));
+      gBS->FreePool(mNvDevice);
+      mNvDevice = NULL;
     }
+    
+ProcExit:    
     return Status;
 }

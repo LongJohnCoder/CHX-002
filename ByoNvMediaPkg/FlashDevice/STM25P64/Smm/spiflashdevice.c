@@ -74,6 +74,16 @@ DriverEntry (
 {
     EFI_STATUS Status;
     NV_MEDIA_ACCESS_PROTOCOL *pMediaAccessProtocol;
+    VOID                     *Interface;    
+
+    Status = gBS->LocateProtocol(&gEfiSmmNvMediaDeviceProtocolGuid, NULL, &Interface);
+    if(!EFI_ERROR(Status)){
+		DEBUG((EFI_D_INFO, "Spi Device Driver Already Run\n")); 	
+		gBS->FreePool(mNvDevice);
+		mNvDevice = NULL;
+      Status = EFI_ALREADY_STARTED;
+      goto ProcExit;
+    }    
 
     //
     // Allocate pool for SPI protocol instance
@@ -158,7 +168,11 @@ DriverEntry (
         */
     }
     else {
-      gSmst->SmmFreePool (mNvDevice);
+		
+	  DEBUG((EFI_D_ERROR, "NOT STM25P64\n"));
+      gSmst->SmmFreePool (mNvDevice);	  
+      mNvDevice = NULL;
     }
-    return EFI_SUCCESS;
+ProcExit:		
+    return Status;
 }

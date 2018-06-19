@@ -74,6 +74,14 @@ DriverEntry (
 {
     EFI_STATUS Status;
     NV_MEDIA_ACCESS_PROTOCOL *pMediaAccessProtocol;
+    VOID                     *Interface;
+
+    Status = gBS->LocateProtocol (&gEfiSmmNvMediaDeviceProtocolGuid, NULL, &Interface);
+    if(!EFI_ERROR(Status)){
+	  DEBUG((EFI_D_INFO, "Spi Device Driver Already Run\n")); 	  
+      Status = EFI_ALREADY_STARTED;
+      goto ProcExit;
+    }
 
     //
     // Allocate pool for SPI protocol instance
@@ -156,6 +164,12 @@ DriverEntry (
               Status = pMediaAccessProtocol->Write(pMediaAccessProtocol, 0xfffe0000,  (void *)buffer, length, SPI_MEDIA_TYPE);
               }
         */
+    }else {
+      DEBUG((EFI_D_ERROR, "NOT ATMEL26DF321\n"));
+      gSmst->SmmFreePool(mNvDevice);
+      mNvDevice = NULL;
     }
-    return EFI_SUCCESS;
+
+ProcExit:		
+    return Status;
 }

@@ -74,7 +74,15 @@ DriverEntry (
     EFI_STATUS Status;
     NV_MEDIA_ACCESS_PROTOCOL *pMediaAccessProtocol;
 
-    //
+    VOID                     *Interface;    
+
+    Status = gBS->LocateProtocol(&gEfiNvMediaDeviceProtocolGuid, NULL, &Interface);
+    if(!EFI_ERROR(Status)){
+		DEBUG((EFI_D_INFO, "Spi Device Driver Already Run\n")); 	
+      Status = EFI_ALREADY_STARTED;
+      goto ProcExit;
+    }    
+//
     // Allocate runtime private data structure for the device driver.
     //
 	 DEBUG ((EFI_D_INFO, "in spi dxe driver\n" ));
@@ -154,6 +162,12 @@ DriverEntry (
             Status = pMediaAccessProtocol->Write(pMediaAccessProtocol, 0xfffe0000,  (void *)buffer, length, SPI_MEDIA_TYPE);
             }
         */
+    }else {
+      DEBUG((EFI_D_ERROR, "NOT NumonyxN25Q064\n"));
+      gBS->FreePool(mNvDevice);
+      mNvDevice = NULL;
     }
+    
+ProcExit:    
     return Status;
 }

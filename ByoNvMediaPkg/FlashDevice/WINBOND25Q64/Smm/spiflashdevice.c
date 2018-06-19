@@ -79,6 +79,7 @@ DriverEntry (
 
     Status = gBS->LocateProtocol (&gEfiSmmNvMediaDeviceProtocolGuid, NULL, &Interface);
     if(!EFI_ERROR(Status)){
+		DEBUG((EFI_D_INFO, "Spi Device Driver Already Run\n")); 			  
       Status = EFI_ALREADY_STARTED;
       goto ProcExit;
     }

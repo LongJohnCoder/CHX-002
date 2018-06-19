@@ -75,6 +75,14 @@ DriverEntry (
 {
     EFI_STATUS Status;
     NV_MEDIA_ACCESS_PROTOCOL *pMediaAccessProtocol;
+    VOID                     *Interface;
+
+    Status = gBS->LocateProtocol (&gEfiSmmNvMediaDeviceProtocolGuid, NULL, &Interface);
+    if(!EFI_ERROR(Status)){
+		DEBUG((EFI_D_INFO, "Spi Device Driver Already Run\n")); 	
+      Status = EFI_ALREADY_STARTED;
+      goto ProcExit;
+    }
 
     //
     // Allocate pool for SPI protocol instance
@@ -137,8 +145,12 @@ DriverEntry (
         ASSERT_EFI_ERROR (Status);
 
         Status = pMediaAccessProtocol->Init(pMediaAccessProtocol, (void *)&mNvDevice->DeviceProtocol, SPI_MEDIA_TYPE);
-    } else {
-      gSmst->SmmFreePool (mNvDevice);
+    } else else {
+      DEBUG((EFI_D_ERROR, "NOT MXIC25L128\n"));
+      gSmst->SmmFreePool(mNvDevice);
+      mNvDevice = NULL;
     }
-    return EFI_SUCCESS;
+
+ProcExit:		
+    return Status;
 }

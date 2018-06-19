@@ -77,6 +77,7 @@ DriverEntry (
 
     Status = gBS->LocateProtocol(&gEfiNvMediaDeviceProtocolGuid, NULL, &Interface);
     if(!EFI_ERROR(Status)){
+		DEBUG((EFI_D_INFO, "Spi Device Driver Already Run\n")); 	
       Status = EFI_ALREADY_STARTED;
       goto ProcExit;
     }    
@@ -142,7 +143,9 @@ DriverEntry (
 
         Status = pMediaAccessProtocol->Init(pMediaAccessProtocol, (void *)&mNvDevice->DeviceProtocol, SPI_MEDIA_TYPE);
     } else {
+		DEBUG((EFI_D_ERROR, "NOT MX25L64\n"));
       gBS->FreePool (mNvDevice);
+      mNvDevice = NULL;
     }
     
 ProcExit:    

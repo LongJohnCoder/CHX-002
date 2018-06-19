@@ -72,6 +72,14 @@ DriverEntry (
 )
 {
     EFI_STATUS Status;
+	VOID					 *Interface;	
+	
+	  Status = gBS->LocateProtocol(&gEfiNvMediaDeviceProtocolGuid, NULL, &Interface);
+	  if(!EFI_ERROR(Status)){
+		  DEBUG((EFI_D_INFO, "Spi Device Driver Already Run\n"));	  
+		Status = EFI_ALREADY_STARTED;
+		goto ProcExit;
+	  }    
     NV_MEDIA_ACCESS_PROTOCOL *pMediaAccessProtocol;
 
     //
@@ -153,6 +161,13 @@ DriverEntry (
             Status = pMediaAccessProtocol->Write(pMediaAccessProtocol, 0xfffe0000,  (void *)buffer, length, SPI_MEDIA_TYPE);
             }
         */
-    }
+    }else{
+      DEBUG((EFI_D_ERROR, "NOT WINBOND25Q16\n"));
+      gBS->FreePool(mNvDevice);
+      mNvDevice = NULL;
+	}
+		
+
+ProcExit:    
     return Status;
 }
