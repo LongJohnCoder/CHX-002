@@ -229,6 +229,7 @@ GotSetupVariable:
   SbCfg->MsiSupport= SetupData->MsiSupport;
   ///
   SbCfg->SBDynamicClkControl  = SetupData->SBDynamicClkControl;  
+  SbCfg->TMRCDynamicClkControl  = SetupData->TMRCDynamicClkControl;
   SbCfg->GoNonSnoopPath       = SetupData->GoNonSnoopPath; 
 
   SbCfg->eBMCSettleTime       = SetupData->eBMCSettleTime; 
