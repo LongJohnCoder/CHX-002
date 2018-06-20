@@ -1081,7 +1081,7 @@ Revision History:
         help   = STRING_TOKEN(STR_EMPTY),
         flags = DISPLAY_UINT_HEX,
         minimum=0,
-        maximum=0xf,
+        maximum=0xff,
         step=0,
         default=0,
        endnumeric; 
