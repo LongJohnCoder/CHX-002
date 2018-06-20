@@ -232,10 +232,10 @@ Revision History:
         prompt   = STRING_TOKEN(STR_BANK_INTER),
         help   = STRING_TOKEN(STR_EMPTY), 
        option text = STRING_TOKEN(STR_SPD),value = 0, flags = RESET_REQUIRED ;
-        option text = STRING_TOKEN(STR_NON_PAGE), value = 1, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_NON_PAGE), value = 1, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_2_PAGE), value = 2, flags = RESET_REQUIRED ;
         option text = STRING_TOKEN(STR_4_PAGE), value = 3, flags = RESET_REQUIRED ;
-        option text = STRING_TOKEN(STR_8_PAGE), value = 4, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_8_PAGE), value = 4, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
       endoneof;      
      
      
@@ -285,16 +285,16 @@ Revision History:
      oneof varid = SETUP_DATA.VRInlv,
         prompt = STRING_TOKEN(STR_VRANK_INTER),
         help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_RANK_INTERLV_ONLY), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_DISABLED), value = 1, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_RANK_INTERLV_ONLY), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED), value = 1, flags =  RESET_REQUIRED;
       endoneof;
  
      suppressif  ideqval SETUP_DATA.VRInlv == 1;    
      oneof varid = SETUP_DATA.ChannelIntlv,
         prompt = STRING_TOKEN(STR_CHANNEL_INTER),
         help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_CHANNEL_INTERLV_ONLY), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_DISABLED), value = 1, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CHANNEL_INTERLV_ONLY), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED), value = 1, flags = RESET_REQUIRED;
       endoneof;
      endif; 
       
