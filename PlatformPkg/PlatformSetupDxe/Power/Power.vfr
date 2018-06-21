@@ -293,8 +293,8 @@ formset guid = POWER_FORM_SET_GUID,
      oneof varid = SETUP_DATA.SBDynamicClkControl,
       prompt   = STRING_TOKEN(STR_SB_DYNAMIC_CLK_CTRL),
       help     = STRING_TOKEN(STR_SB_DYNAMIC_CLK_CTRL_HELP),
-      option text = STRING_TOKEN(STR_DISABLED),  value = 0, flags = RESET_REQUIRED;
-      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING ;
+      option text = STRING_TOKEN(STR_DISABLED),  value = 0, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED ;
      endoneof;
     //IVS-20180620-S
 	 suppressif ideqval SETUP_DATA.SBDynamicClkControl==0;
