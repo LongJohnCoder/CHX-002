@@ -58,6 +58,11 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 
 extern UINT8  SetupBrowserStrings[];
 
+
+#ifndef EFI_IFR_EQ_ID_LIST_OP
+  #define EFI_IFR_EQ_ID_LIST_OP           0x14
+#endif
+
 //
 // Screen definitions
 //
@@ -642,6 +647,8 @@ extern BOOLEAN            bDrawSetupBackground;
 extern UINT16               gFirstFormId;
 extern BOOLEAN            bByoFormsetFlag;
 extern BOOLEAN            bDrawHelpMessage;
+extern BOOLEAN    bGotoGuidFormset;
+
 //
 // Browser Global Strings
 //
@@ -1714,6 +1721,16 @@ FormSetGuidToHiiHandle (
   EFI_GUID     *ComparingGuid
   );
 
+/**
+  Find HII Handle in the HII database associated with given form set guid and QuestionId.
+
+**/
+EFI_HII_HANDLE
+LookForFormSetHiiHandle (
+  EFI_GUID     *ComparingGuid,
+  EFI_QUESTION_ID QuestionId
+  );
+
 extern SETUP_DRIVER_PRIVATE_DATA  mPrivateData;
 
 /**
@@ -1750,4 +1767,11 @@ IsByoMainFormset (
   EFI_HII_HANDLE Handle
   );
 
+
+VOID
+RemoveModifiedStorage (
+  VOID
+  );
+
+extern BOOLEAN    gBeLoadDefaultValue;
 #endif

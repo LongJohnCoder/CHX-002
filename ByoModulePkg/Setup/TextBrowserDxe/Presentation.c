@@ -79,6 +79,60 @@ ClearLines (
 }
 
 /**
+  Repair black line on the top and bottom..
+
+**/
+VOID
+RepairScreen ()
+{
+  EFI_STATUS    Status;
+  EFI_GRAPHICS_OUTPUT_PROTOCOL     *GraphicsOutput = NULL;
+  EFI_GRAPHICS_OUTPUT_BLT_PIXEL    BackGroundBlt_Blue =   {0x98, 0x00, 0x00, 0x00};  // LIGHTBLUE
+
+  Status = gBS->HandleProtocol (
+                  gST->ConsoleOutHandle,
+                  &gEfiGraphicsOutputProtocolGuid,
+                  (VOID **) &GraphicsOutput
+                  );
+  if (!EFI_ERROR(Status)) {
+    //
+    // paint first line to repaire Black line on top.
+    //
+    Status = GraphicsOutput->Blt (
+                        GraphicsOutput,
+                        &BackGroundBlt_Blue,
+                        EfiBltVideoFill,
+                        0, //SourceX
+                        0, //SourceY
+                        0,//DestinationX
+                        0,//DestinationY
+                        EFI_GLYPH_WIDTH * gScreenDimensions.RightColumn, //Width
+                        EFI_GLYPH_HEIGHT, //Height
+                        0
+                        );
+
+    //
+    // paint last line to repaire Black line on bottom.
+    //
+    Status = GraphicsOutput->Blt (
+                        GraphicsOutput,
+                        &BackGroundBlt_Blue,
+                        EfiBltVideoFill,
+                        0, //SourceX
+                        0, //SourceY
+                        0,//DestinationX
+                        (GraphicsOutput->Mode->Info->VerticalResolution - EFI_GLYPH_HEIGHT), //DestinationY
+                        EFI_GLYPH_WIDTH * gScreenDimensions.RightColumn, //Width
+                        EFI_GLYPH_HEIGHT, //Height
+                        0
+                        );
+
+  }
+
+  return ;
+}
+
+/**
   Clear retangle with Blt of GOP, It's replace of ClearLines to improve performance.
 
   @param  LeftColumn     Left column of retangle.
@@ -280,6 +334,7 @@ DisplayPageFrame (
   UINT8                  RowIdx;
   UINT8                  ColumnIdx;
   CHAR16               *SubMenuTitle;  
+  UINTN                  SubMenuTitleLength;
 
   ZeroMem (&LocalScreen, sizeof (EFI_SCREEN_DESCRIPTOR));
   gST->ConOut->QueryMode (gST->ConOut, gST->ConOut->Mode->Mode, &LocalScreen.RightColumn, &LocalScreen.BottomRow);
@@ -337,11 +392,20 @@ DisplayPageFrame (
       if (NULL == SubMenuTitle) {
         SubMenuTitle = L"Sub Item";
       }
+      SubMenuTitleLength = GetStringWidth (SubMenuTitle) / 2 - 1;
+      if (SubMenuTitleLength > (UINTN)gMiddleVerticalLineColumn -2) {
+        SubMenuTitleLength = gMiddleVerticalLineColumn -2;
+        while (SubMenuTitle[SubMenuTitleLength] != L' ') {
+          SubMenuTitleLength--;
+        }
+        SubMenuTitle[SubMenuTitleLength] = CHAR_NULL;
+      }	  	
       PrintStringAt (
-              (LocalScreen.RightColumn - gHelpBlockWidth + LocalScreen.LeftColumn - GetStringWidth (SubMenuTitle) / 2) / 2,
+              (gMiddleVerticalLineColumn - SubMenuTitleLength) / 2 + LocalScreen.LeftColumn,
               LocalScreen.TopRow + 3,
               SubMenuTitle
               );   
+      FreePool(SubMenuTitle);
       //
       // Bar, line 4.
       //
@@ -371,11 +435,20 @@ DisplayPageFrame (
         if (NULL == SubMenuTitle) {
           SubMenuTitle = L"Sub Item";
         }
+        SubMenuTitleLength = GetStringWidth (SubMenuTitle) / 2 - 1;
+        if (SubMenuTitleLength > (UINTN)gMiddleVerticalLineColumn -2) {
+          SubMenuTitleLength = gMiddleVerticalLineColumn -2;
+          while (SubMenuTitle[SubMenuTitleLength] != L' ') {
+            SubMenuTitleLength--;
+          }
+          SubMenuTitle[SubMenuTitleLength] = CHAR_NULL;
+        }
         PrintStringAt (
-                (LocalScreen.RightColumn -GetStringWidth (SubMenuTitle) / 2) / 2,
+                (gMiddleVerticalLineColumn - SubMenuTitleLength) / 2 + LocalScreen.LeftColumn,
                 LocalScreen.TopRow + 3,
                 SubMenuTitle
                 );
+        FreePool(SubMenuTitle);
       }
     } 
   } else if ((gClassOfVfr & FORMSET_CLASS_BOOT_MANAGER) == FORMSET_CLASS_BOOT_MANAGER) {
@@ -716,6 +789,8 @@ InitializeBrowserStrings (
   return ;
 }
 
+#define SAFE_FREE_POOL(A)    if ((A)) {FreePool ((A));(A) = NULL;}
+
 /**
   Free up the resource allocated for all strings required
   by Setup Browser.
@@ -726,37 +801,37 @@ FreeBrowserStrings (
   VOID
   )
 {
-  FreePool (gEnterString);
-  FreePool (gEnterCommitString);
-  FreePool (gEnterEscapeString);
-  FreePool (gEscapeString);
-  FreePool (gMoveHighlight);
-  FreePool (gMakeSelection);
-  FreePool (gDecNumericInput);
-  FreePool (gHexNumericInput);
-  FreePool (gToggleCheckBox);
-  FreePool (gPromptForData);
-  FreePool (gPromptForPassword);
-  FreePool (gPromptForNewPassword);
-  FreePool (gConfirmPassword);
-  FreePool (gPassowordInvalid);
-  FreePool (gConfirmError);
-  FreePool (gPressEnter);
-  FreePool (gEmptyString);
-  FreePool (gAreYouSure);
-  FreePool (gYesResponse);
-  FreePool (gNoResponse);
-  FreePool (gMiniString);
-  FreePool (gPlusString);
-  FreePool (gMinusString);
-  FreePool (gAdjustNumber);
-  FreePool (gSaveChanges);
-  FreePool (gOptionMismatch);
-  FreePool (gFormSuppress);
-  FreePool (gFunctionNineString);
-  FreePool (gFunctionTenString);
-  FreePool (gResultFailed);
-  FreePool (gResultSuccess);
+  SAFE_FREE_POOL (gEnterString);
+  SAFE_FREE_POOL (gEnterCommitString);
+  SAFE_FREE_POOL (gEnterEscapeString);
+  SAFE_FREE_POOL (gEscapeString);
+  SAFE_FREE_POOL (gMoveHighlight);
+  SAFE_FREE_POOL (gMakeSelection);
+  SAFE_FREE_POOL (gDecNumericInput);
+  SAFE_FREE_POOL (gHexNumericInput);
+  SAFE_FREE_POOL (gToggleCheckBox);
+  SAFE_FREE_POOL (gPromptForData);
+  SAFE_FREE_POOL (gPromptForPassword);
+  SAFE_FREE_POOL (gPromptForNewPassword);
+  SAFE_FREE_POOL (gConfirmPassword);
+  SAFE_FREE_POOL (gPassowordInvalid);
+  SAFE_FREE_POOL (gConfirmError);
+  SAFE_FREE_POOL (gPressEnter);
+  SAFE_FREE_POOL (gEmptyString);
+  SAFE_FREE_POOL (gAreYouSure);
+  SAFE_FREE_POOL (gYesResponse);
+  SAFE_FREE_POOL (gNoResponse);
+  SAFE_FREE_POOL (gMiniString);
+  SAFE_FREE_POOL (gPlusString);
+  SAFE_FREE_POOL (gMinusString);
+  SAFE_FREE_POOL (gAdjustNumber);
+  SAFE_FREE_POOL (gSaveChanges);
+  SAFE_FREE_POOL (gOptionMismatch);
+  SAFE_FREE_POOL (gFormSuppress);
+  SAFE_FREE_POOL (gFunctionNineString);
+  SAFE_FREE_POOL (gFunctionTenString);
+  SAFE_FREE_POOL (gResultFailed);
+  SAFE_FREE_POOL (gResultSuccess);
 
   return ;
 }
@@ -1141,6 +1216,7 @@ FindNextMenu (
   CHAR16                  NoResponse;
   EFI_INPUT_KEY           Key;
   BROWSER_SETTING_SCOPE   Scope;
+  BYO_BROWSER_FORMSET    *ByoFormSet = NULL;
 
   CurrentMenu = Selection->CurrentMenu;
   mParentFormid = 0;
@@ -1290,7 +1366,19 @@ FindNextMenu (
     CurrentMenu->QuestionId = 0;
   }
 
-  Selection->Action = UI_ACTION_EXIT;
+  if (bGotoGuidFormset){
+    bGotoGuidFormset = FALSE;
+    if (NULL != gCurrentFormSetLink) {
+      ByoFormSet = BYO_FORM_BROWSER_FORMSET_FROM_LINK (gCurrentFormSetLink);
+      Selection->Action = UI_ACTION_REFRESH_FORMSET;
+      Selection->Statement = NULL;
+      Selection->Handle = FormSetGuidToHiiHandle(&ByoFormSet->Guid);
+      CopyMem (&Selection->FormSetGuid, &ByoFormSet->Guid, sizeof (EFI_GUID));
+    }
+  } else {
+    Selection->Action = UI_ACTION_EXIT;
+  }
+  
   return TRUE;
 }
 
@@ -1565,7 +1653,6 @@ SetupBrowser (
 
 
   if ((NULL == GetFormSetFromHiiHandle (Selection->Handle)) ||
-    (!IsByoMainFormset(Selection->Handle)) ||
     (TRUE == mReloadFormset)) {
     //
     // Initialize current settings of Questions in this FormSet
@@ -1580,7 +1667,7 @@ SetupBrowser (
     //
     // Remove old FormSet data when the Form Package is updated.
     //
-    if ((TRUE == mReloadFormset) || (!IsByoMainFormset(Selection->Handle))) {
+    if ((TRUE == mReloadFormset) || (NULL == GetFormSetFromHiiHandle (Selection->Handle) &&  !IsByoMainFormset(Selection->Handle))) {
       if (NULL != gOldFormSet) {
         RemoveEntryList (&gOldFormSet->Link);
         DestroyFormSet (gOldFormSet);
@@ -1953,6 +2040,11 @@ DrawSetupBackground (VOID )
     EFI_WHITE |EFI_BACKGROUND_BLUE
   );
   
+  //
+  // Repare black line.
+  //
+  RepairScreen ();
+
   Buffer = AllocateZeroPool ((gMiddleVerticalLineColumn + 1)*sizeof(CHAR16));
   ASSERT (Buffer != NULL);
   for (Index = 0; Index + 1 < gMiddleVerticalLineColumn; Index++) {
@@ -1973,9 +2065,9 @@ DrawSetupBackground (VOID )
     LocalScreen.RightColumn,
     LocalScreen.TopRow,
     LocalScreen.TopRow,
-    EFI_WHITE |EFI_BACKGROUND_BLUE
+    EFI_GREEN |EFI_BACKGROUND_BLUE
   );
-  gST->ConOut->SetAttribute (gST->ConOut, EFI_WHITE | EFI_BACKGROUND_BLUE);
+  gST->ConOut->SetAttribute (gST->ConOut, EFI_GREEN | EFI_BACKGROUND_BLUE);
   PrintStringAt (
     (LocalScreen.RightColumn + LocalScreen.LeftColumn - GetStringWidth (gByoSoftWare) / 2) / 2,
     LocalScreen.TopRow,
@@ -2168,6 +2260,88 @@ CleanHelpMessageBackground (VOID )
 }
 
 /**
+  Calculate Starting Menu Index from end to begin.
+
+**/
+UINTN
+GetStartMenuIndex (
+  IN CONST LIST_ENTRY    *FormSetList,
+  IN UINTN    CurrentIndex
+  )
+{
+  UINTN    StartItem;
+  UINTN    TotalItems;
+  BYO_BROWSER_FORMSET    *FormSet;
+  LIST_ENTRY    *Link;
+  CHAR16    *FormsetTitle;
+  UINTN    BarLength;
+  UINTN    StringWidth;
+  UINTN    MenuCount;
+
+  if (FormSetList == NULL) {
+    return (UINTN) -1;
+  }
+
+  BarLength = 3;
+  TotalItems = 0;
+  Link = GetFirstNode (FormSetList);
+  while (!IsNull (FormSetList, Link)) {
+    FormSet = BYO_FORM_BROWSER_FORMSET_FROM_LINK (Link);
+
+    if (0 != FormSet->FormSetTitle && NULL != FormSet->HiiHandle) {
+      FormsetTitle = NULL;	      
+      FormsetTitle = GetToken(FormSet->FormSetTitle, FormSet->HiiHandle);
+      if (FormsetTitle) {
+        BarLength += GetStringWidth(FormsetTitle) / 2;
+        BarLength ++;
+        FreePool (FormsetTitle);
+      }
+    }
+    TotalItems++;
+    Link = GetNextNode (FormSetList, Link);
+  }
+  if (CurrentIndex > TotalItems) {
+    return (UINTN) -1;
+  }
+  if (gScreenDimensions.RightColumn > BarLength) {
+    return 0;
+  }
+  
+  //
+  // Check if have more item to show on menu bar.
+  //
+  StartItem = 0;
+  BarLength = 3;
+  MenuCount = 0;
+  Link = GetPreviousNode (FormSetList, Link);
+  while (!IsNull (FormSetList, Link)) {
+    FormSet = BYO_FORM_BROWSER_FORMSET_FROM_LINK (Link);
+
+    if (0 != FormSet->FormSetTitle && NULL != FormSet->HiiHandle) {
+      if (CurrentIndex >= (TotalItems - MenuCount - 1)) {
+      FormsetTitle = NULL;	      
+      FormsetTitle = GetToken(FormSet->FormSetTitle, FormSet->HiiHandle);
+      if (FormsetTitle) {
+        StringWidth =  GetStringWidth(FormsetTitle) / 2;
+        if (gScreenDimensions.RightColumn < BarLength + StringWidth) {
+          StartItem = TotalItems - MenuCount;
+          break;
+        }
+        BarLength += StringWidth;
+        BarLength ++;		
+        FreePool (FormsetTitle);
+      }
+      }
+    }
+    MenuCount ++;
+    Link = GetPreviousNode (FormSetList, Link);
+  }
+  
+  return StartItem;
+}
+
+
+/**
   Draw form title.
 
   @param  Selection               Input Selection data structure.
@@ -2190,13 +2364,14 @@ DrawFormTitleBar (
   UINTN                  TotalItems;
   UINTN                  CurrentItem;
   UINTN                  StartItem;
-  UINTN                  EndItem;
-  UINTN                  TitleCount;
   UINTN                  TitleLength;
   UINTN                  StringWidth;
   CHAR16               *FormsetTitle;
   static UINTN         LastIndex = (UINTN) -1;
   static BOOLEAN    LastMainFormTitle = FALSE;
+  static UINTN    LastStartItem = 0;
+  static UINTN    LastEndItem = 0;
+
 
   if (LastMainFormTitle != bMainFormTitle || bDrawSetupBackground) {
     LastIndex = (UINTN) -1;
@@ -2251,27 +2426,35 @@ DrawFormTitleBar (
     TotalItems++;
     Link = GetNextNode (gByoFormSetList, Link);
   }
+
   //
   // Calculate start item.
   //
   StartItem = 0;
-  EndItem = MAX_TITLE_ITEMS;
-  if (MAX_TITLE_ITEMS > TotalItems) {
+  if (CurrentItem) {
+    if (LastStartItem) {
+      if (CurrentItem >= LastStartItem) {
+        StartItem = GetStartMenuIndex (gByoFormSetList, CurrentItem);;
+      } else if (CurrentItem == 0 && LastStartItem == TotalItems -1) {
+        StartItem = 0;
+        LastStartItem = 0;
+      }
+    } else {
+      StartItem = GetStartMenuIndex (gByoFormSetList, CurrentItem);
+      LastStartItem = 0;
+    }  
+  } else {
     StartItem = 0;
-    EndItem =   TotalItems;
-  } else if (MAX_TITLE_ITEMS < CurrentItem + 1) {
-    StartItem = CurrentItem - MAX_TITLE_ITEMS + 1;
-    EndItem =   StartItem + MAX_TITLE_ITEMS;
-  }  
+    LastStartItem = 0;
+  }
+
   //
   // Draw all menu title.
   //
-  if (LastIndex == (UINTN)-1) { 
-    GopBltArea (LocalScreen.LeftColumn, LocalScreen.RightColumn, LocalScreen.TopRow + 1, LocalScreen.TopRow + 1, MENU_TEXT_UNSEL | MENU_BACKGROUND_UNSEL);
-  }
+  GopBltArea (LocalScreen.LeftColumn, LocalScreen.RightColumn, LocalScreen.TopRow + 1, LocalScreen.TopRow + 1, MENU_TEXT_UNSEL | MENU_BACKGROUND_UNSEL);
+  
   CursorPos = 3;
-  TitleLength = (LocalScreen.RightColumn - LocalScreen.LeftColumn - 4)/MAX_TITLE_ITEMS;
-  for (Index = StartItem, TitleCount = 0; Index < EndItem; Index++, TitleCount++) {
+  for (Index = StartItem; Index < TotalItems; Index++) {   
 
     //
     // Get current Formset.
@@ -2295,11 +2478,17 @@ DrawFormTitleBar (
       FormsetTitle = L"NULL";
     }
     StringWidth = GetStringWidth(FormsetTitle)/2;
-
+    if (LocalScreen.RightColumn < CursorPos + StringWidth) {	
+      if (LastEndItem <= CurrentItem) {
+        LastStartItem =  LastStartItem + 1;	
+      }
+      break;
+    }
     if (FALSE == bMainFormTitle && CurrentItem != Index) {
-      CursorPos = CursorPos + StringWidth + 1;	
+      CursorPos = CursorPos + StringWidth + 1;    
       continue;
     }
+
     //
     // Draw Title.
     //
@@ -2310,12 +2499,10 @@ DrawFormTitleBar (
       PrintStringAt(CursorPos + StringWidth,  LocalScreen.TopRow + 1, L" ");
     } else {
       if (LastIndex <= TotalItems) {
-        if (LastIndex == Index) {
-          gST->ConOut->SetAttribute (gST->ConOut, MENU_TEXT_UNSEL | MENU_BACKGROUND_UNSEL);
-          PrintStringAt(CursorPos,  LocalScreen.TopRow + 1, L" ");
-          PrintStringAt(CursorPos + 1,  LocalScreen.TopRow + 1, FormsetTitle);
-          PrintStringAt(CursorPos + StringWidth,  LocalScreen.TopRow + 1, L" ");
-        }
+        gST->ConOut->SetAttribute (gST->ConOut, MENU_TEXT_UNSEL | MENU_BACKGROUND_UNSEL);
+        PrintStringAt(CursorPos,  LocalScreen.TopRow + 1, L" ");
+        PrintStringAt(CursorPos + 1,  LocalScreen.TopRow + 1, FormsetTitle);
+        PrintStringAt(CursorPos + StringWidth,  LocalScreen.TopRow + 1, L" ");
       } else {
         gST->ConOut->SetAttribute (gST->ConOut, MENU_TEXT_UNSEL | MENU_BACKGROUND_UNSEL);
         PrintStringAt(CursorPos,  LocalScreen.TopRow + 1, L" ");
@@ -2328,11 +2515,13 @@ DrawFormTitleBar (
       FreePool(FormsetTitle);
     }
 
-    CursorPos = CursorPos + StringWidth + 1;	
+    CursorPos = CursorPos + StringWidth + 1;    
   }
 
   LastIndex = CurrentItem;
   LastMainFormTitle = bMainFormTitle;
+  LastEndItem = Index - 1;
+
   //
   //Show red arrow to mark the more main fromset.
   //
@@ -2344,7 +2533,7 @@ DrawFormTitleBar (
         GEOMETRICSHAPE_LEFT_TRIANGLE
         );
   }
-  if (EndItem < TotalItems ) {
+  if (LastEndItem < TotalItems - 1) {
     gST->ConOut->SetAttribute (gST->ConOut, EFI_RED| MENU_BACKGROUND_UNSEL);
     PrintCharAt (
         LocalScreen.RightColumn-1,

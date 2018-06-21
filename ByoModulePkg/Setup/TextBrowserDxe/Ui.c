@@ -129,7 +129,7 @@ SCREEN_OPERATION_T0_CONTROL_FLAG  gScreenOperationToControlFlag[] = {
 
 BOOLEAN  mInputError;
 BOOLEAN GetLineByWidthFinished = FALSE;
-
+BOOLEAN    bGotoGuidFormset = FALSE;
 
 /**
   Draw Scroll Bar when the menu is too more.
@@ -751,7 +751,6 @@ UiAddMenuOption (
     // Data format :      [01/02/2004]      [11:22:33]
     // Line number :        0  0    1         0  0  1
     //
-    NumberOfLines = 0;
     Count = 3;
 
     if (Statement->Storage == NULL) {
@@ -774,13 +773,16 @@ UiAddMenuOption (
     MenuOption->ThisTag     = Statement;
     MenuOption->EntryNumber = MenuItemCount;
 
-    if (Index == 2) {
-      //
-      // Override LineNumber for the MenuOption in Date/Time sequence
-      //
-      MenuOption->Skip = 1;
-    } else {
-      MenuOption->Skip = NumberOfLines;
+    MenuOption->Skip = NumberOfLines;
+    if (Statement->Operand == EFI_IFR_DATE_OP || Statement->Operand == EFI_IFR_TIME_OP) {	
+      if (Index == 2) {
+        //
+        // Override LineNumber for the MenuOption in Date/Time sequence
+        //
+        MenuOption->Skip = NumberOfLines;
+      } else {
+        MenuOption->Skip = 0;
+      }
     }
     MenuOption->Sequence = Index;
 
@@ -892,7 +894,8 @@ CreateDialog (
   UINTN         CurrentAttribute;
   UINTN         DimensionsWidth;
   UINTN         DimensionsHeight;
-
+  BOOLEAN 		CursorVisible;
+  
   if (0 == gScreenDimensions.RightColumn || 0 == gScreenDimensions.BottomRow) {
     gST->ConOut->QueryMode (
                  gST->ConOut,
@@ -931,6 +934,7 @@ CreateDialog (
   //
   // Disable cursor
   //
+  CursorVisible     = gST->ConOut->Mode->CursorVisible;
   gST->ConOut->EnableCursor (gST->ConOut, FALSE);
 
   LargestString = 0;
@@ -1056,7 +1060,7 @@ CreateDialog (
   }
 
   gST->ConOut->SetAttribute (gST->ConOut, CurrentAttribute);
-  gST->ConOut->EnableCursor (gST->ConOut, TRUE);
+  gST->ConOut->EnableCursor (gST->ConOut, CursorVisible);
   return EFI_SUCCESS;
 }
 
@@ -1581,7 +1585,6 @@ GetLineByWidth (
   BOOLEAN         ReturnFlag;
   UINT16          LastSpaceOffset;
   UINT16          LastGlyphWidth;
-  BOOLEAN         FirstSpace;
 
   if (InputString == NULL || Index == NULL || OutputString == NULL) {
     return 0;
@@ -1598,7 +1601,6 @@ GetLineByWidth (
   LastGlyphWidth     = OriginalGlyphWidth;
   ReturnFlag         = FALSE;
   LastSpaceOffset    = 0;
-  FirstSpace = FALSE; 
 
   //
   // NARROW_CHAR can not be printed in screen, so if a line only contain  the two CHARs: 'NARROW_CHAR + CHAR_CARRIAGE_RETURN' , it is a empty line  in Screen.
@@ -1636,11 +1638,6 @@ GetLineByWidth (
         if ((InputString[*Index + StrOffset] == CHAR_SPACE) && (GlyphOffset <= LineWidth)) {
           LastSpaceOffset = StrOffset;
           LastGlyphWidth  = *GlyphWidth;
-          if (((*Index) == 0) && (InputString[*Index + (StrOffset/2)] == CHAR_SPACE)) {
-            FirstSpace = TRUE;
-          } else {
-            FirstSpace = FALSE;
-          }
         }
         break;
     }
@@ -1657,7 +1654,7 @@ GetLineByWidth (
     //
     // Rewind the string to last space char in this line.
     //
-    if (LastSpaceOffset != 0 && !FirstSpace) {
+    if (LastSpaceOffset != 0) {
       StrOffset   = LastSpaceOffset;
       *GlyphWidth = LastGlyphWidth;
     } else {
@@ -2199,6 +2196,134 @@ FormSetGuidToHiiHandle (
   return HiiHandle;
 }
 
+
+EFI_QUESTION_ID
+GetUniqueQuestionId (
+  EFI_HII_HANDLE    HiiHandle,
+  EFI_STRING_ID    FormSetTitle
+  )
+{
+  UINT16   QuestionId;
+  UINTN   HandleCount;
+
+  HandleCount = (UINT64)HiiHandle;
+  	
+  QuestionId =  (UINT16) (HandleCount & 0xFFFF);
+  QuestionId &=  (UINT16) (HandleCount>>16);
+  QuestionId |=  (UINT16) (FormSetTitle & 0xFFFF);
+
+  DEBUG ((EFI_D_ERROR, "GetUniqueQuestionId(), QuestionId :0x%x.\n", QuestionId));
+  return (EFI_QUESTION_ID) QuestionId;
+}
+
+
+/**
+  Find HII Handle in the HII database associated with given form set guid and QuestionId.
+
+**/
+EFI_HII_HANDLE
+LookForFormSetHiiHandle (
+  EFI_GUID     *ComparingGuid,
+  EFI_QUESTION_ID QuestionId
+  )
+{
+  EFI_HII_HANDLE               *HiiHandles;
+  UINTN                        Index;
+  EFI_HII_PACKAGE_LIST_HEADER  *HiiPackageList;
+  UINTN                        BufferSize;
+  UINT32                       Offset;
+  UINT32                       Offset2;
+  UINT32                       PackageListLength;
+  EFI_HII_PACKAGE_HEADER       PackageHeader;
+  UINT8                        *Package;
+  UINT8                        *OpCodeData;
+  EFI_STATUS                   Status;
+  EFI_HII_HANDLE               HiiHandle;
+  EFI_STRING_ID                FormSetTitle;
+  EFI_QUESTION_ID NewQuestionId;
+
+  ASSERT (ComparingGuid != NULL);
+
+  HiiHandle  = NULL;
+  //
+  // Get all the Hii handles
+  //
+  HiiHandles = HiiGetHiiHandles (NULL);
+  ASSERT (HiiHandles != NULL);
+
+
+
+  //
+  // Search for formset of each class type
+  //
+  for (Index = 0; HiiHandles[Index] != NULL; Index++) {
+    FormSetTitle = 0;
+    BufferSize = 0;
+    HiiPackageList = NULL;
+    Status = mHiiDatabase->ExportPackageLists (mHiiDatabase, HiiHandles[Index], &BufferSize, HiiPackageList);
+    if (Status == EFI_BUFFER_TOO_SMALL) {
+      HiiPackageList = AllocatePool (BufferSize);
+      ASSERT (HiiPackageList != NULL);
+
+      Status = mHiiDatabase->ExportPackageLists (mHiiDatabase, HiiHandles[Index], &BufferSize, HiiPackageList);
+    }
+    if (EFI_ERROR (Status) || HiiPackageList == NULL) {
+      return NULL;
+    }
+
+    //
+    // Get Form package from this HII package List
+    //
+    Offset = sizeof (EFI_HII_PACKAGE_LIST_HEADER);
+    Offset2 = 0;
+    CopyMem (&PackageListLength, &HiiPackageList->PackageLength, sizeof (UINT32));
+
+    while (Offset < PackageListLength) {
+      Package = ((UINT8 *) HiiPackageList) + Offset;
+      CopyMem (&PackageHeader, Package, sizeof (EFI_HII_PACKAGE_HEADER));
+
+      if (PackageHeader.Type == EFI_HII_PACKAGE_FORMS) {
+        //
+        // Search FormSet in this Form Package
+        //
+        Offset2 = sizeof (EFI_HII_PACKAGE_HEADER);
+        while (Offset2 < PackageHeader.Length) {
+          OpCodeData = Package + Offset2;
+
+          if (((EFI_IFR_OP_HEADER *) OpCodeData)->OpCode == EFI_IFR_FORM_SET_OP) {
+            //
+            // Try to compare against formset GUID
+            //
+            if (CompareGuid (ComparingGuid, (EFI_GUID *)(OpCodeData + sizeof (EFI_IFR_OP_HEADER)))) {
+              HiiHandle = HiiHandles[Index];
+              CopyMem(&FormSetTitle, &((EFI_IFR_FORM_SET*)OpCodeData)->FormSetTitle, sizeof(EFI_STRING_ID));
+              break;
+            }
+          }
+
+          Offset2 += ((EFI_IFR_OP_HEADER *) OpCodeData)->Length;
+        }
+      }
+      if (HiiHandle != NULL) {
+        break;
+      }
+      Offset += PackageHeader.Length;
+    }
+
+    FreePool (HiiPackageList);
+    if (HiiHandle != NULL) {
+      NewQuestionId = GetUniqueQuestionId(HiiHandle, FormSetTitle);
+      if (NewQuestionId == QuestionId) {        
+        break; 
+      }
+    }
+  }
+
+  FreePool (HiiHandles);
+
+  return HiiHandle;
+}
+
 /**
   Process the goto op code, update the info in the selection structure.
 
@@ -2307,7 +2432,7 @@ ProcessGotoOpCode (
     //
     Selection->Action = UI_ACTION_REFRESH_FORMSET;
 
-    Selection->Handle = FormSetGuidToHiiHandle(&Statement->HiiValue.Value.ref.FormSetGuid);
+    Selection->Handle = LookForFormSetHiiHandle(&Statement->HiiValue.Value.ref.FormSetGuid, Statement->HiiValue.Value.ref.QuestionId);
     if (Selection->Handle == NULL) {
       //
       // If target Hii Handle not found, exit
@@ -2320,6 +2445,7 @@ ProcessGotoOpCode (
     CopyMem (&Selection->FormSetGuid, &Statement->HiiValue.Value.ref.FormSetGuid, sizeof (EFI_GUID));
     Selection->FormId = Statement->HiiValue.Value.ref.FormId;
     Selection->QuestionId = Statement->HiiValue.Value.ref.QuestionId;
+    bGotoGuidFormset = TRUE;
   } else if (Statement->HiiValue.Value.ref.FormId != 0) {
     //
     // Check whether target From is suppressed.
@@ -2470,8 +2596,10 @@ UiDisplayMenu (
   LIST_ENTRY                    *TmpMenuPos;
   UINTN                            TotalSkipLines;
   UINTN                            TopSkipLines;
-  
   BOOLEAN                       bByoFormset;
+  BOOLEAN                       bClearOrderListLine;
+
+  
   bShowScrollBar = FALSE;
   SoliderLength = 6;
   bScrollBarUp = FALSE;
@@ -2731,13 +2859,13 @@ UiDisplayMenu (
         MinRefreshInterval = 0;
 
         for (Link = gMenuOption.ForwardLink; Link != &gMenuOption; Link = Link->ForwardLink) {
-        	//
-        	// Clean Row which be changed when repaint.
-        	//
-        	TmpMenuOption = MENU_OPTION_FROM_LINK (Link);
-        	TmpMenuOption->Row = 0;
+          //
+          // Clean Row which be changed when repaint.
+          //
+          TmpMenuOption = MENU_OPTION_FROM_LINK (Link);
+          TmpMenuOption->Row = 0;
         }
-        
+
         for (Link = TopOfScreen; Link != &gMenuOption; Link = Link->ForwardLink) {
           MenuOption          = MENU_OPTION_FROM_LINK (Link);
           MenuOption->Row     = Row;
@@ -2753,7 +2881,7 @@ UiDisplayMenu (
             MenuOption->Col += SUBTITLE_INDENT;
           }
 
-          if (MenuOption->GrayOut) {
+          if (!IsSelectable(MenuOption)) {
             gST->ConOut->SetAttribute (gST->ConOut, FIELD_TEXT_GRAYED | FIELD_BACKGROUND);
           } else {
             if (Statement->Operand == EFI_IFR_SUBTITLE_OP) {
@@ -2769,7 +2897,7 @@ UiDisplayMenu (
             //
             // Print Arrow for Goto button.
             //
-            if (!MenuOption->GrayOut) {
+            if (IsSelectable(MenuOption)) {
               gST->ConOut->SetAttribute (gST->ConOut, EFI_BLUE | FIELD_BACKGROUND);
             } else {
               gST->ConOut->SetAttribute (gST->ConOut, FIELD_TEXT_GRAYED | FIELD_BACKGROUND);
@@ -2908,7 +3036,7 @@ UiDisplayMenu (
             MenuUpdateEntry->Selection         = Selection;
             MenuUpdateEntry->CurrentColumn     = MenuOption->OptCol;
             MenuUpdateEntry->CurrentRow        = MenuOption->Row;
-            if (MenuOption->GrayOut) {
+            if (!IsSelectable(MenuOption)) {
               MenuUpdateEntry->CurrentAttribute = FIELD_TEXT_GRAYED | FIELD_BACKGROUND;
             } else {
               MenuUpdateEntry->CurrentAttribute = PcdGet8 (PcdBrowserFieldTextColor) | FIELD_BACKGROUND;
@@ -2943,7 +3071,7 @@ UiDisplayMenu (
             MenuRefreshEntry->Selection         = Selection;
             MenuRefreshEntry->CurrentColumn     = MenuOption->OptCol;
             MenuRefreshEntry->CurrentRow        = MenuOption->Row;
-            if (MenuOption->GrayOut) {
+            if (!IsSelectable(MenuOption)) {
               MenuRefreshEntry->CurrentAttribute = FIELD_TEXT_GRAYED | FIELD_BACKGROUND;
             } else {
               MenuRefreshEntry->CurrentAttribute = PcdGet8 (PcdBrowserFieldTextColor) | FIELD_BACKGROUND;
@@ -2965,6 +3093,11 @@ UiDisplayMenu (
             OriginalRow = Row;
             GlyphWidth = 1;
 
+            if (!IsSelectable(MenuOption)) {
+              gST->ConOut->SetAttribute (gST->ConOut, FIELD_TEXT_GRAYED | FIELD_BACKGROUND);
+            } else{
+              gST->ConOut->SetAttribute (gST->ConOut, PcdGet8 (PcdBrowserSubtitleTextColor) | FIELD_BACKGROUND);
+            }
             for (Index = 0; GetLineByWidth (StringPtr, Width, &GlyphWidth, &Index, &OutputString) != 0x0000;) {
               if ((Temp == 0) && (Row <= BottomRow)) {
                 PrintStringAt (MenuOption->OptCol, Row, OutputString);
@@ -3262,7 +3395,7 @@ UiDisplayMenu (
             FreePool (OptionString);
           } else {
             if (NewLine) {
-              if (MenuOption->GrayOut) {
+              if (!IsSelectable(MenuOption)) {
                 gST->ConOut->SetAttribute (gST->ConOut, FIELD_TEXT_GRAYED | FIELD_BACKGROUND);
               } else if (MenuOption->ThisTag->Operand == EFI_IFR_SUBTITLE_OP) {
                 gST->ConOut->SetAttribute (gST->ConOut, PcdGet8 (PcdBrowserSubtitleTextColor) | FIELD_BACKGROUND);
@@ -3358,7 +3491,7 @@ UiDisplayMenu (
         //
         if (gMenuRefreshHead != NULL) {
           for (MenuRefreshEntry = gMenuRefreshHead; MenuRefreshEntry != NULL; MenuRefreshEntry = MenuRefreshEntry->Next) {
-            if (MenuRefreshEntry->MenuOption->GrayOut) {
+            if (!IsSelectable(MenuRefreshEntry->MenuOption)) {
               MenuRefreshEntry->CurrentAttribute = FIELD_TEXT_GRAYED | FIELD_BACKGROUND;
             } else {
               MenuRefreshEntry->CurrentAttribute = PcdGet8 (PcdBrowserFieldTextColor) | FIELD_BACKGROUND;
@@ -3393,8 +3526,17 @@ UiDisplayMenu (
               gST->ConOut->SetAttribute (gST->ConOut, EFI_WHITE | EFI_BACKGROUND_BLUE);
               PrintStringAt (MenuOption->OptCol, MenuOption->Row, NUMERIC_BACKGROUND_STRING);
             }
+			
+            bClearOrderListLine = FALSE;
+            if ((Statement->Operand == EFI_IFR_ORDERED_LIST_OP) & (Statement->MaxContainers != 0)) {
+              bClearOrderListLine = TRUE;
+            }
           for (Index = 0; GetLineByWidth (OptionString, Width, &GlyphWidth, &Index, &OutputString) != 0x0000;) {
             if (MenuOption->Row >= TopRow && MenuOption->Row <= BottomRow) {
+
+              if (bClearOrderListLine) {				
+                ClearLines (MenuOption->OptCol, LocalScreen.RightColumn - gHelpBlockWidth -1, MenuOption->Row, MenuOption->Row, EFI_WHITE | FIELD_BACKGROUND);
+              }
               PrintStringAt (MenuOption->OptCol, MenuOption->Row, OutputString);
             }
             //
@@ -3406,7 +3548,7 @@ UiDisplayMenu (
 
             FreePool (OutputString);
           }
-
+          bClearOrderListLine = FALSE;
           MenuOption->Row = OriginalRow;
 
           FreePool (OptionString);
@@ -4606,6 +4748,8 @@ UiDisplayMenu (
       //
       if ((HotKey->Action & BROWSER_ACTION_DISCARD) == BROWSER_ACTION_DISCARD) {
         Status = DiscardForm (Selection->FormSet, Selection->Form, gBrowserSettingScope);
+        RemoveModifiedStorage ();
+        gBeLoadDefaultValue = FALSE;
         if (!EFI_ERROR (Status)) {
           Selection->Action = UI_ACTION_REFRESH_FORM;
           Selection->Statement = NULL;
@@ -4634,9 +4778,12 @@ UiDisplayMenu (
           // 
           if (NULL != gOldFormSet){
             ExtractDefault (gOldFormSet, NULL, 0, FormSetLevel, GetDefaultForAll,NULL, FALSE);					
-          }
-		  
+            gOldFormSet = NULL;
+          }		  
           Status = ExtractDefault (Selection->FormSet, Selection->Form, HotKey->DefaultId, gBrowserSettingScope, GetDefaultForAll,NULL, FALSE);
+          RemoveModifiedStorage ();
+          gBeLoadDefaultValue = TRUE;
+
           if (!EFI_ERROR (Status)) {
             Selection->Action = UI_ACTION_REFRESH_FORM;
             Selection->Statement = NULL;
@@ -4676,6 +4823,8 @@ UiDisplayMenu (
             //
             Status = SubmitForm (Selection->FormSet, Selection->Form, gBrowserSettingScope);
             SetupSaveNotify (SetupSaveNotifyTypeSaveValue, NULL);
+      	     RemoveModifiedStorage ();		
+      	     gBeLoadDefaultValue = FALSE;
             if (!EFI_ERROR (Status)) {
               ASSERT(MenuOption != NULL);
               UpdateStatusBar (Selection, INPUT_ERROR, MenuOption->ThisTag->QuestionFlags, FALSE);
@@ -4744,7 +4893,13 @@ UiDisplayMenu (
       //
       // Reset to default value for all forms in the whole system.
       //
+      if (NULL != gOldFormSet){
+        ExtractDefault (gOldFormSet, NULL, 0, FormSetLevel, GetDefaultForAll,NULL, FALSE);					
+        gOldFormSet = NULL;
+      }
       Status = ExtractDefault (Selection->FormSet, NULL, DefaultId, FormSetLevel, GetDefaultForAll, NULL, FALSE);
+      RemoveModifiedStorage ();
+      gBeLoadDefaultValue = TRUE;
 
       if (!EFI_ERROR (Status)) {
         Selection->Action = UI_ACTION_REFRESH_FORM;

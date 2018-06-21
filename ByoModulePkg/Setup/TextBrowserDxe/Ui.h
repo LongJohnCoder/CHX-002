@@ -665,6 +665,13 @@ ClearLines (
   );
 
 /**
+  Repair black line on the top and bottom..
+
+**/
+VOID
+RepairScreen ();
+
+/**
   Clear retangle with Blt of GOP, It's replace of ClearLines to improve performance.
 
   @param  LeftColumn     Left column of retangle.

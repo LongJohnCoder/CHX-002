@@ -42,6 +42,7 @@ LIST_ENTRY      gBrowserHotKeyList  = INITIALIZE_LIST_HEAD_VARIABLE (gBrowserHot
 LIST_ENTRY      *gCurrentFormSetLink = NULL;
 LIST_ENTRY      *gByoFormSetList = NULL;
 EFI_BYO_FORMSET_MANAGER_PROTOCOL    *gByoFormsetManager = NULL;
+LIST_ENTRY      gModifiedStorgeList  = INITIALIZE_LIST_HEAD_VARIABLE (gModifiedStorgeList);
 
 BANNER_DATA           *gBannerData;
 EFI_HII_HANDLE        gFrontPageHandle;
@@ -155,6 +156,7 @@ EFI_GUID  gSetupBrowserGuid = {
 FORM_BROWSER_FORMSET  *gOldFormSet = NULL;
 
 BOOLEAN    mSynchronizeWithOldFormset = TRUE;
+BOOLEAN    gBeLoadDefaultValue = FALSE;
 FUNCTIION_KEY_SETTING gFunctionKeySettingTable[] = {
   //
   // Boot Manager
@@ -258,6 +260,12 @@ LoadAllHiiFormset (
   UINTN                   Index;
   EFI_GUID                ZeroGuid;
   EFI_STATUS              Status;
+  static BOOLEAN    RunFlag = FALSE;
+
+  if (RunFlag) {
+    return;
+  }
+  RunFlag = TRUE;
   //
   // Open all FormSet by locate HII packages.
   // Initiliaze the maintain FormSet to store default data as back up data.
@@ -583,8 +591,12 @@ Index = 0;
     bDrawSetupBackground = TRUE;
 
     do {
+      if (IsByoMainFormset(Selection->Handle)) {
+        bByoFormsetFlag = TRUE;
+      } else {
+        bByoFormsetFlag = FALSE;
+      }
       if ((NULL == GetFormSetFromHiiHandle (Selection->Handle)) ||
-        (!IsByoMainFormset(Selection->Handle)) ||
         (TRUE == mReloadFormset)) {
         //
         // New formset.
@@ -606,7 +618,7 @@ Index = 0;
         Selection->FormSet = FormSet;
       } else {
         Selection->FormSet = GetFormSetFromHiiHandle (Selection->Handle);
-        if (mSynchronizeWithOldFormset) {
+	    if (mSynchronizeWithOldFormset && Selection->FormSet) {
           SynchronizeWithOldFormset(Selection->FormSet);
         } else {
           mSynchronizeWithOldFormset = TRUE;
@@ -632,8 +644,11 @@ Index = 0;
       Status = SetupBrowser (Selection);
       gCurrentSelection = NULL;
       if (EFI_ERROR (Status)) {
-        break;
-      }
+        //	  	
+        //Nerver return by Error Status;	  	
+        //
+        DEBUG ((EFI_D_ERROR, "SendForm(), SetupBrowser() :%r.", Status)); 	
+       }
     } while (Selection->Action == UI_ACTION_REFRESH_FORMSET);
     //
     // If no data is changed, Remove FormSet From the maintain list.
@@ -670,6 +685,8 @@ Done:
   // Restore globals used by SendForm()
   //
   RestoreBrowserContext ();
+  RemoveModifiedStorage ();
+  gBeLoadDefaultValue = FALSE;
 
   return Status;
 }
@@ -1203,6 +1220,7 @@ RunByoFormset (
   EFI_INPUT_KEY                 Key;
   UINT8                         UCREnable;
   UINT32                        Horizontal, Vertical, Column, Row;
+  BOOLEAN                       ResChanged = 0;
 
   //
   // when enter setup and UCR is disabled, then set resolution to 800 * 600
@@ -1216,12 +1234,13 @@ RunByoFormset (
   DEBUG((EFI_D_ERROR, "%a() %d*%d %d*%d %d\n", __FUNCTION__, Horizontal, Vertical, Column, Row, UCREnable));
 
   if (UCREnable == 0) {
-    if (Horizontal != 800 || Column != 100) {
-      PcdSet32 (PcdConOutColumn, 100);
-      PcdSet32 (PcdConOutRow, 31);
-      PcdSet32 (PcdVideoHorizontalResolution, 800);
-      PcdSet32 (PcdVideoVerticalResolution, 600);
+    if (Horizontal != 1024 || Column != 128) {
+      PcdSet32 (PcdConOutColumn, 128);
+      PcdSet32 (PcdConOutRow, 40);
+      PcdSet32 (PcdVideoHorizontalResolution, 1024);
+      PcdSet32 (PcdVideoVerticalResolution, 768);
       ReconnectVga ();
+      ResChanged = 1;
     }
   } else {
     //
@@ -1233,6 +1252,7 @@ RunByoFormset (
       PcdSet32 (PcdVideoHorizontalResolution, 640);
       PcdSet32 (PcdVideoVerticalResolution, 480);
       ReconnectVga ();
+      ResChanged = 1;
     }
   }
 
@@ -1322,6 +1342,7 @@ RunByoFormset (
   mCurrentFormId = 1;
   CopyGuid (&mCurrentFormSetGuid, &FormSet->Guid);
   bByoFormsetFlag = TRUE;
+  bGotoGuidFormset = FALSE;
   //
   // Send form.
   //
@@ -1352,11 +1373,13 @@ RunByoFormset (
   //
   // exit setup restore resolution
   //
-  PcdSet32 (PcdConOutColumn, Column);
-  PcdSet32 (PcdConOutRow, Row);
-  PcdSet32 (PcdVideoHorizontalResolution, Horizontal);
-  PcdSet32 (PcdVideoVerticalResolution, Vertical);
-  ReconnectVga ();
+  if(ResChanged){
+    PcdSet32 (PcdConOutColumn, Column);
+    PcdSet32 (PcdConOutRow, Row);
+    PcdSet32 (PcdVideoHorizontalResolution, Horizontal);
+    PcdSet32 (PcdVideoVerticalResolution, Vertical);
+    ReconnectVga ();
+  }
   return Status;
 }
 
@@ -4522,7 +4545,98 @@ InitializeCurrentSetting (
   return EFI_SUCCESS;
 }
 
+/**
+  Free resources of a storage.
 
+  @param  Storage                Pointer of the storage
+
+**/
+VOID
+DestroyStorage (
+  IN FORMSET_STORAGE   *Storage
+  );
+
+VOID
+RemoveModifiedStorage (
+  VOID
+  )
+{
+  LIST_ENTRY    *Link;
+  FORMSET_STORAGE    *Storage;
+	
+  while (!IsListEmpty (&gModifiedStorgeList)) {
+    Link = gModifiedStorgeList.ForwardLink;
+
+    Storage = FORMSET_STORAGE_FROM_LINK (Link);
+    RemoveEntryList (&Storage->Link);
+    DestroyStorage (Storage);
+  }
+
+  return;
+}
+
+EFI_STATUS
+BackupModifiedStorage (
+  IN OUT FORM_BROWSER_FORMSET             *FormSet
+  )
+{
+  LIST_ENTRY    *Link;
+  LIST_ENTRY    *BackupLink;
+  LIST_ENTRY    *FormsetStorageList;
+
+  FORMSET_STORAGE    *FormsetStorage;
+  FORMSET_STORAGE    *BackupStorage;
+  FORMSET_STORAGE    *NewStorage;
+
+  if (NULL == FormSet || (!IsNvUpdateRequired(FormSet))) {
+    return EFI_NOT_FOUND;
+  }
+
+  FormsetStorageList = &FormSet->StorageListHead;
+  Link = GetFirstNode (FormsetStorageList);
+  while (!IsNull (FormsetStorageList, Link)) {
+    FormsetStorage = FORMSET_STORAGE_FROM_LINK (Link);
+    Link = GetNextNode (FormsetStorageList, Link);
+
+    if (FormsetStorage->ElementCount == 0) {
+      continue;
+    }
+    //
+    // Look for and remove old strorage.
+    //
+    BackupLink = GetFirstNode (&gModifiedStorgeList);
+    while (!IsNull (&gModifiedStorgeList, BackupLink)) {
+      BackupStorage = FORMSET_STORAGE_FROM_LINK (BackupLink);
+
+      if (BackupStorage->VarStoreId == FormsetStorage->VarStoreId) {
+        RemoveEntryList (&BackupStorage->Link);
+        DestroyStorage (BackupStorage);
+        break;
+      }
+      BackupLink = GetNextNode (&gModifiedStorgeList, BackupLink);
+    }
+
+    //
+    // Copy modifed strorage and insert to Backup list.
+    //
+    NewStorage = AllocateCopyPool (sizeof (FORMSET_STORAGE), FormsetStorage);
+    if (NewStorage != NULL) {
+      NewStorage->Signature = FORMSET_STORAGE_SIGNATURE;
+      InitializeListHead (&NewStorage->NameValueListHead);
+      NewStorage->Buffer = AllocateZeroPool (FormsetStorage->Size);
+      NewStorage->EditBuffer = AllocateZeroPool (FormsetStorage->Size);
+      CopyStorage (NewStorage, FormsetStorage);
+
+      NewStorage->Name = NULL;
+      NewStorage->ConfigRequest = NULL;
+      NewStorage->ConfigHdr = NULL;
+      NewStorage->SpareStrLen = 0;	  
+      InsertTailList (&gModifiedStorgeList, &NewStorage->Link);
+    }
+  }
+
+  return EFI_SUCCESS;
+}
 
 /**
   Synchronize Storage with OldFormset.
@@ -4539,45 +4653,76 @@ SynchronizeWithOldFormset(
 {
   LIST_ENTRY              *Link;
   LIST_ENTRY              *Link2;
+  LIST_ENTRY              *BackupLink;
   FORMSET_STORAGE         *Storage;
   FORMSET_STORAGE         *StorageSrc;
   FORMSET_STORAGE         *OldStorage;
+  FORMSET_STORAGE         *BackupStorage;
   EFI_STATUS              Status;
 
-  if (gOldFormSet == NULL) {
+  if (gOldFormSet == NULL || gBeLoadDefaultValue) {
     return EFI_NOT_FOUND;
   }
-  if (!IsNvUpdateRequired(gOldFormSet)) {
+
+  if (!IsListEmpty (&gModifiedStorgeList)) {
+    UpdateNvInfoInForm(FormSet, TRUE);
+  }else if (!IsNvUpdateRequired(gOldFormSet)) {
     return EFI_UNSUPPORTED;
   }
 
+  //
+  // Synchronize.
+  //
   Link = GetFirstNode (&FormSet->StorageListHead);
   while (!IsNull (&FormSet->StorageListHead, Link)) {
     Storage = FORMSET_STORAGE_FROM_LINK (Link);
-    //
-    // Try to find the Storage in backup formset gOldFormSet
-    //
-    OldStorage = NULL;
-    Link2 = GetFirstNode (&gOldFormSet->StorageListHead);
-    while (!IsNull (&gOldFormSet->StorageListHead, Link2)) {
-      StorageSrc = FORMSET_STORAGE_FROM_LINK (Link2);
 
-      if (StorageSrc->VarStoreId == Storage->VarStoreId) {
-        OldStorage = StorageSrc;
-        break;
+    if (Storage->ElementCount != 0) {
+      //
+      // Try to find the Storage in gOldFormSet.
+      //
+      OldStorage = NULL;
+      Link2 = GetFirstNode (&gOldFormSet->StorageListHead);
+      while (!IsNull (&gOldFormSet->StorageListHead, Link2)) {
+        StorageSrc = FORMSET_STORAGE_FROM_LINK (Link2);
+        if (StorageSrc->ElementCount != 0) {	  
+          if (StorageSrc->VarStoreId == Storage->VarStoreId) {
+            OldStorage = StorageSrc;
+            break;
+          }
+        }
+        Link2 = GetNextNode (&gOldFormSet->StorageListHead, Link2);
       }
-
-      Link2 = GetNextNode (&gOldFormSet->StorageListHead, Link2);
-    }
-
-    if (OldStorage != NULL) {
-      Status = CopyStorage (Storage, OldStorage);
-
-      UpdateNvInfoInForm(FormSet, TRUE);
+        
+      if (OldStorage != NULL ) {
+        Status = CopyStorage (Storage, OldStorage);
+        UpdateNvInfoInForm(FormSet, TRUE);
+      } else {
+        //
+        // Need check backup storage list.
+        //
+        BackupLink = GetFirstNode (&gModifiedStorgeList);
+        while (!IsNull (&gModifiedStorgeList, BackupLink)) {
+          BackupStorage = FORMSET_STORAGE_FROM_LINK (BackupLink);
+          if (BackupStorage->VarStoreId == Storage->VarStoreId) {
+            Status = CopyStorage (Storage, BackupStorage);
+            UpdateNvInfoInForm(FormSet, TRUE);
+            DEBUG((EFI_D_ERROR, "jawen ____, SynchronizeWithOldFormset(), with backup storage:%s-%d.\n", Storage->Name, Storage->VarStoreId));
+            break;
+          }
+          BackupLink = GetNextNode (&gModifiedStorgeList, BackupLink);
+        }
+      }
     }
 
     Link = GetNextNode (&FormSet->StorageListHead, Link);
   }
+
+  //
+  // Backup strorage from gOldFormSet.
+  //
+  BackupModifiedStorage (gOldFormSet);
+
   return EFI_SUCCESS;
 }
 
@@ -5012,7 +5157,11 @@ GetFormSetFromHiiHandle (
 {
   LIST_ENTRY           *Link;
   FORM_BROWSER_FORMSET *FormSet;
-
+	  
+  if (IsListEmpty(&gBrowserFormSetList)) {
+    return NULL;
+  }
+	  
   Link = GetFirstNode (&gBrowserFormSetList);
   while (!IsNull (&gBrowserFormSetList, Link)) {
     FormSet = FORM_BROWSER_FORMSET_FROM_LINK (Link);
@@ -5068,7 +5217,7 @@ IsHiiHandleInBrowserContext (
 {
   LIST_ENTRY       *Link;
   BROWSER_CONTEXT  *Context;
-
+  BYO_BROWSER_FORMSET   *FormSet;
   //
   // HiiHandle is Current FormSet.
   //
@@ -5076,6 +5225,16 @@ IsHiiHandleInBrowserContext (
     return TRUE;
   }
 
+  //
+  //Check Current Byo Formset.
+  //
+  if (NULL != gCurrentFormSetLink) {
+    FormSet = BYO_FORM_BROWSER_FORMSET_FROM_LINK (gCurrentFormSetLink);
+    if (FormSet->HiiHandle == Handle) {
+      return TRUE;
+    }
+  }
+  
   //
   // Check whether HiiHandle is in BrowserContext.
   //
@@ -5348,6 +5507,10 @@ ExecuteAction (
 
     if (CreateConfirmDialog (NULL, 3, gEmptyString, Title, gEmptyString)) {
       Status = DiscardForm (gCurrentSelection->FormSet, gCurrentSelection->Form, gBrowserSettingScope);
+      RemoveModifiedStorage ();	  
+      gBeLoadDefaultValue = FALSE;
+      LoadAllHiiFormset();
+	  
       if (EFI_ERROR (Status)) {
         return Status;
       }
@@ -5358,12 +5521,20 @@ ExecuteAction (
   }
 
   //
-  // Executet the difault action.
+  // Executet the default action.
   //
   if ((Action & BROWSER_ACTION_DEFAULT) != 0) {
     if (CreateConfirmDialog (NULL, 3, gEmptyString, gAreYouSureLoadDefault, gEmptyString)) {
       mSynchronizeWithOldFormset = FALSE;
+
+      if (NULL != gOldFormSet){
+        Status = ExtractDefault (gOldFormSet, NULL, 0, FormSetLevel, GetDefaultForAll,NULL, FALSE);
+        gOldFormSet = NULL;
+      }
       Status = ExtractDefault (gCurrentSelection->FormSet, gCurrentSelection->Form, DefaultId, gBrowserSettingScope, GetDefaultForAll, NULL, FALSE);
+      RemoveModifiedStorage ();
+      gBeLoadDefaultValue = TRUE;
+
       if (EFI_ERROR (Status)) {
         return Status;
       }
@@ -5375,6 +5546,8 @@ ExecuteAction (
 
   if ((Action & BROWSER_ACTION_SAVE_USER_DEFAULT) != 0) {
     if (CreateConfirmDialog (NULL, 3, gEmptyString, gAreYouSureSaveUserDefault, gEmptyString)) {
+      RemoveModifiedStorage ();
+      gBeLoadDefaultValue = FALSE;
       LoadAllHiiFormset();
       Status = EFI_SUCCESS;
     } else {
@@ -5386,6 +5559,7 @@ ExecuteAction (
   if ((Action & BROWSER_ACTION_LOAD_USER_DEFAULT) != 0) {
     if (CreateConfirmDialog (NULL, 3, gEmptyString, gAreYouSureLoadUserDefault, gEmptyString)) {
       UpdateAllFormsetNvInfo(TRUE);
+      RemoveModifiedStorage();
       Status = EFI_SUCCESS;
     } else {
       Status = EFI_NOT_READY;
@@ -5406,6 +5580,8 @@ ExecuteAction (
 
     if (CreateConfirmDialog (NULL, 3, gEmptyString, Title, gEmptyString)) {
       Status = SubmitForm (gCurrentSelection->FormSet, gCurrentSelection->Form, gBrowserSettingScope);
+      RemoveModifiedStorage ();
+      gBeLoadDefaultValue = FALSE;
       if (EFI_ERROR (Status)) {
         return Status;
       }

@@ -95,11 +95,11 @@ ReadString (
     ScreenSize = Maximum + 1;
   }
 
-  if ((ScreenSize + 2) > DimensionsWidth) {
-    ScreenSize = DimensionsWidth - 2;
+  if ((ScreenSize + 2 + 4) > DimensionsWidth) {
+    ScreenSize = DimensionsWidth - 2 -4;
   }
-
-  BufferedString = AllocateZeroPool (ScreenSize * 2);
+  
+  BufferedString = AllocateZeroPool (DimensionsWidth * 2);
   ASSERT (BufferedString);
 
   Start = (DimensionsWidth - ScreenSize - 2) / 2 + gScreenDimensions.LeftColumn + 1;
@@ -139,14 +139,18 @@ ReadString (
       if (IsPassword) {
         PrintChar (L'*');
       }
+      if (Count > DimensionsWidth - 2 - 4 -3) {
+        break;
+      }
     }
+    BufferedString[Count] = CHAR_NULL;
 
     if (!IsPassword) {
       PrintStringAt (Start + 1, Top + 3, BufferedString);
     }
     
     gST->ConOut->SetAttribute (gST->ConOut, EFI_TEXT_ATTR (EFI_LIGHTGRAY, EFI_BLACK));
-    gST->ConOut->SetCursorPosition (gST->ConOut, Start + GetStringWidth (StringPtr) / 2, Top + 3);
+    gST->ConOut->SetCursorPosition (gST->ConOut, Start + Count, Top + 3);
   }
   
   do {
@@ -233,6 +237,7 @@ ReadString (
       //
       if ((StringPtr[0] == CHAR_NULL) && (Key.UnicodeChar != CHAR_BACKSPACE)) {
         StrnCpy (StringPtr, &Key.UnicodeChar, 1);
+        StringPtr[1] = CHAR_NULL;
         CurrentCursor++;
       } else if ((GetStringWidth (StringPtr) < ((Maximum + 1) * sizeof (CHAR16))) && (Key.UnicodeChar != CHAR_BACKSPACE)) {
         KeyPad[0] = Key.UnicodeChar;
@@ -259,8 +264,8 @@ ReadString (
       SetUnicodeMem (BufferedString, ScreenSize - 1, L' ');
       PrintStringAt (Start + 1, Top + 3, BufferedString);
 
-      if ((GetStringWidth (StringPtr) / 2) > (DimensionsWidth - 2)) {
-        Index = (GetStringWidth (StringPtr) / 2) - DimensionsWidth + 2;
+      if ((GetStringWidth (StringPtr) / 2) > (DimensionsWidth - 2 - 4)) {
+        Index = (GetStringWidth (StringPtr) / 2) - DimensionsWidth + 2 +4;
       } else {
         Index = 0;
       }
@@ -275,7 +280,11 @@ ReadString (
         if (IsPassword) {
           PrintChar (L'*');
         }
+        if (Count > DimensionsWidth - 2 - 4 -3) {
+          break;
+        }
       }
+      BufferedString[Count] = CHAR_NULL;
 
       if (!IsPassword) {
         PrintStringAt (Start + 1, Top + 3, BufferedString);
@@ -286,6 +295,7 @@ ReadString (
     gST->ConOut->SetAttribute (gST->ConOut, EFI_TEXT_ATTR (EFI_LIGHTGRAY, EFI_BLACK));
     gST->ConOut->SetCursorPosition (gST->ConOut, Start + CurrentCursor + 1, Top + 3);
   } while (TRUE);
+  gST->ConOut->EnableCursor (gST->ConOut, FALSE);
 
 }
 
@@ -572,6 +582,7 @@ GetNumericInput (
       } else {
         SetUnicodeMem (InputText, InputWidth, L' ');
       }
+      gST->ConOut->SetAttribute (gST->ConOut, PcdGet8 (PcdBrowserFieldTextColor) | FIELD_BACKGROUND);
       InputText[InputWidth + 1] = L'\0';
       PrintAt (Column, Row, InputText);
     }
@@ -584,6 +595,7 @@ GetNumericInput (
       } else {
         SetUnicodeMem (InputText, InputWidth, L' ');
       }
+      gST->ConOut->SetAttribute (gST->ConOut, PcdGet8 (PcdBrowserFieldTextColor) | FIELD_BACKGROUND);
       InputText[InputWidth + 1] = L'\0';
       PrintAt (Column, Row, InputText);
     }
@@ -993,9 +1005,6 @@ GetSelectionInputPopUp (
   ShowDownArrow     = FALSE;
   ShowUpArrow       = FALSE;
 
-  StringPtr = AllocateZeroPool ((gOptionBlockWidth + 1) * 2);
-  ASSERT (StringPtr);
-
   Question = MenuOption->ThisTag;
   if (Question->Operand == EFI_IFR_ORDERED_LIST_OP) {
     ValueArray = Question->BufferValue;
@@ -1099,6 +1108,58 @@ GetSelectionInputPopUp (
     }
 
     Link = GetNextNode (&Question->OptionListHead, Link);
+  }
+
+  //
+  //Response '-' and '+' on the One-of opcode. 
+  //Move Up('+', SCAN_RIGHT) and Down('-', SCAN_LEFT).
+  //  
+  if ((Question->Operand == EFI_IFR_ONE_OF_OP) &&
+    ( gDirection == SCAN_RIGHT || gDirection == SCAN_LEFT)) {
+
+    Index -= 1;
+    if (0 == HighlightOptionIndex) {
+      if (gDirection == SCAN_RIGHT) {
+        HighlightOptionIndex = Index;
+      } else {
+        HighlightOptionIndex += 1;
+      }
+    } else if (Index == HighlightOptionIndex) { 
+      if (gDirection == SCAN_RIGHT) {
+        HighlightOptionIndex -= 1;
+      } else {
+        HighlightOptionIndex = 0;
+      }
+    } else {
+      if (gDirection == SCAN_RIGHT) {
+        HighlightOptionIndex -= 1;
+      } else {
+        HighlightOptionIndex += 1;
+      }
+    }
+    //
+    // Set question value backward.
+    //
+    Link = GetFirstNode (&Question->OptionListHead);
+    for (Index = 0; Index < PopUpMenuLines; Index++) {
+      OneOfOption = QUESTION_OPTION_FROM_LINK (Link);
+	  
+      if (HighlightOptionIndex == Index) {
+        CopyMem (&Question->HiiValue, &OneOfOption->Value, sizeof (EFI_HII_VALUE));  
+		
+        Status = ValidateQuestion (Selection->FormSet, Selection->Form, Question, EFI_HII_EXPRESSION_INCONSISTENT_IF);
+        if (EFI_ERROR (Status)) {
+          GetQuestionValue (Selection->FormSet, Selection->Form, Question, GetSetValueWithEditBuffer);
+        } else {
+          SetQuestionValue (Selection->FormSet, Selection->Form, Question, GetSetValueWithEditBuffer);
+        }	  
+      }
+
+      Link = GetNextNode (&Question->OptionListHead, Link);
+    }
+	
+    FreePool (HiiValueArray);    
+    return EFI_DEVICE_ERROR;
   }
 
   //
@@ -1309,6 +1370,28 @@ TheKey:
           SwapListEntries (CurrentOption->Link.BackLink, &CurrentOption->Link);
         }
       }
+
+      if (Question->Operand == EFI_IFR_ONE_OF_OP) {
+        if ((TopOptionIndex > 0) && (TopOptionIndex == HighlightOptionIndex)) {
+          //
+          // Highlight reaches the top of the popup window, scroll one menu item.
+          //
+          TopOptionIndex--;
+          ShowDownArrow = TRUE;
+        }
+
+        if (TopOptionIndex == 0) {
+          ShowUpArrow = FALSE;
+        }
+
+        if (HighlightOptionIndex > 0) {
+          CurrentHighlightOptionIndex = HighlightOptionIndex;
+          HighlightOptionIndex--;
+        } else {
+          CurrentHighlightOptionIndex = 0;
+          HighlightOptionIndex = PopUpMenuLines - 1;
+        }
+      }
       break;
 
     case '-':
@@ -1336,6 +1419,29 @@ TheKey:
 
           ASSERT (CurrentOption != NULL);
           SwapListEntries (&CurrentOption->Link, CurrentOption->Link.ForwardLink);
+        }
+      }
+
+      if (Question->Operand == EFI_IFR_ONE_OF_OP) {
+        if (((TopOptionIndex + MenuLinesInView) < PopUpMenuLines) &&
+          (HighlightOptionIndex == (TopOptionIndex + MenuLinesInView - 1))) {
+          //
+          // Highlight reaches the bottom of the popup window, scroll one menu item.
+          //
+          TopOptionIndex++;
+          ShowUpArrow = TRUE;
+        }
+
+        if ((TopOptionIndex + MenuLinesInView) == PopUpMenuLines) {
+          ShowDownArrow = FALSE;
+        }
+
+        if (HighlightOptionIndex < (PopUpMenuLines - 1)) {
+          CurrentHighlightOptionIndex = HighlightOptionIndex;
+          HighlightOptionIndex++;
+        } else {
+          CurrentHighlightOptionIndex = PopUpMenuLines - 1;
+          HighlightOptionIndex = 0;
         }
       }
       break;
