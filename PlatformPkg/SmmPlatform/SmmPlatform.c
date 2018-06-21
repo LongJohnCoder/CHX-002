@@ -76,6 +76,8 @@ EnableAcpiCallback (
   IoAnd16(mAcpiBaseAddr + PMIO_GBLEN_REG, (UINT16)~(PMIO_GBLEN_GP2SMI | PMIO_GBLEN_GP3SMI)); ///PMIO_Rx2A[13][12] GP3/2 Timer Timeout SMI Enable
   IoWrite16(mAcpiBaseAddr + PMIO_GBLSTS_REG, PMIO_GBLSTS_GP2SMI|PMIO_GBLSTS_GP3SMI);               ///PMIO_Rx28[13][12]  GP3/2 Timer Timeout Status
   MmioWrite8(LPC_PCI_REG(LPC_GP23TIMER_CTRL_REG), LPC_GP23TIMER_CTRL_REG_DEF_VALUE);             ///LPC_Rx98[7:0] GP2 / GP3 Timer Control
+  //Disable Legacy USB SMI 
+  IoAnd16(mAcpiBaseAddr + PMIO_GBLEN_REG, (UINT16)~(PMIO_GBLEN_LEGUSB));
 
   // Enable SCI
   IoOr16(mAcpiBaseAddr + PMIO_PM1_CNT_REG, PMIO_PM1_CNT_SCI_EN);  ///PMIO_Rx04[0] SCI / SMI Select
