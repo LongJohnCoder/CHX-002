@@ -663,24 +663,6 @@ CpuMpPeimInit (
   ProcessorCount = CountProcessorNumber(PeiCpuMpData);
 
   CoreEnabled = PcdGet8(PcdCpuCoreEnabled);
-#ifdef ZX_SECRET_CODE
-  if(CoreEnabled &&(ProcessorCount > CoreEnabled))
-  {
-	
-	DEBUG((EFI_D_ERROR,"Need kill %x cores.\n",ProcessorCount - CoreEnabled));
-
-	for(i=ProcessorCount - 1; i>= CoreEnabled; i--) {
-        DEBUG((EFI_D_ERROR,"i=%x, Id=%x\n",i, PeiCpuMpData->CpuData[i].ApicId));
-		PeiDispatchAPAndWait (PeiCpuMpData, 
-			FALSE, 
-			PeiCpuMpData->CpuData[i].ApicId , 
-			KillAp, 
-			PeiCpuMpData);
-    }
-    PeiCpuMpData->CpuCount = CoreEnabled;
-  }
-#endif
-
 
   BufferSize = PcdGet32(PcdCpuMicroCodeSize);
   PeiCpuMpData->MicroCodeAddress = PcdGet32(PcdCpuMicroCodeAddress);
@@ -720,6 +702,23 @@ CpuMpPeimInit (
 			PeiMpEarlyInit, 
 			PeiCpuMpData);	
   
+#ifdef ZX_SECRET_CODE
+	if(CoreEnabled &&(ProcessorCount > CoreEnabled))
+	{
+	  
+	  DEBUG((EFI_D_ERROR,"Need kill %x cores.\n",ProcessorCount - CoreEnabled));
+  
+	  for(i=ProcessorCount - 1; i>= CoreEnabled; i--) {
+		  DEBUG((EFI_D_ERROR,"i=%x, Id=%x\n",i, PeiCpuMpData->CpuData[i].ApicId));
+		  PeiDispatchAPAndWait (PeiCpuMpData, 
+			  FALSE, 
+			  PeiCpuMpData->CpuData[i].ApicId , 
+			  KillAp, 
+			  PeiCpuMpData);
+	  }
+	  PeiCpuMpData->CpuCount = CoreEnabled;
+	}
+#endif
 
   BuildGuidDataHob (
     &gEfiCallerIdGuid,
