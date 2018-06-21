@@ -630,11 +630,23 @@ DramCfg->DramRxTxTimingHardCode= SetupData->DramRxTxTimingHardCode;
 
   NbCfg->TOPGroup0TopSelcet= SetupData->TOPGroup0TopSelcet;  
   NbCfg->TOPGroup0ModuleSubSelcet= SetupData->TOPGroup0ModuleSubSelcet;  
-  NbCfg->TOPGroup0XhciModuleSelcet= SetupData->TOPGroup0XhciModuleSelcet;  
+ // NbCfg->TOPGroup0XhciModuleSelcet= SetupData->TOPGroup0XhciModuleSelcet;  
+ NbCfg->TOPGroup0XhciModule0Selcet= SetupData->TOPGroup0XhciModule0Selcet;	
+ NbCfg->TOPGroup0XhciModule1Selcet= SetupData->TOPGroup0XhciModule1Selcet;	
+ NbCfg->TOPGroup0XhciGroup0Selcet= SetupData->TOPGroup0XhciGroup0Selcet;	
+ NbCfg->TOPGroup0XhciGroup1Selcet= SetupData->TOPGroup0XhciGroup1Selcet;	
+ NbCfg->TOPGroup0XhciMCUSelcet= SetupData->TOPGroup0XhciMCUSelcet;	
+ 
 
   NbCfg->TOPGroup1TopSelcet= SetupData->TOPGroup1TopSelcet;
   NbCfg->TOPGroup1ModuleSubSelcet= SetupData->TOPGroup1ModuleSubSelcet;  
-  NbCfg->TOPGroup1XhciModuleSelcet= SetupData->TOPGroup1XhciModuleSelcet;  
+ // NbCfg->TOPGroup1XhciModuleSelcet= SetupData->TOPGroup1XhciModuleSelcet;  
+  NbCfg->TOPGroup1XhciModule2Selcet= SetupData->TOPGroup1XhciModule2Selcet; 
+  NbCfg->TOPGroup1XhciModule3Selcet= SetupData->TOPGroup1XhciModule3Selcet; 
+  NbCfg->TOPGroup1XhciGroup2Selcet= SetupData->TOPGroup1XhciGroup2Selcet;	
+  NbCfg->TOPGroup1XhciGroup3Selcet= SetupData->TOPGroup1XhciGroup3Selcet;	
+  NbCfg->TOPGroup1XhciMCUSelcet= SetupData->TOPGroup1XhciMCUSelcet;  
+
   NbCfg->SB_HS_DBG_SEL= SetupData->SB_HS_DBG_SEL;
   NbCfg->SB_HS_PCIE_PORT_SEL= SetupData->SB_HS_PCIE_PORT_SEL;
   NbCfg->SB_HS_DBG_CH_SEL= SetupData->SB_HS_DBG_CH_SEL;

@@ -960,7 +960,7 @@ Revision History:
        endoneof;     
    
       suppressif NOT ideqval SETUP_DATA.TOPGroup0TopSelcet==5;  
-      numeric varid   = SETUP_DATA.TOPGroup0XhciModuleSelcet,
+    /*  numeric varid   = SETUP_DATA.TOPGroup0XhciModuleSelcet,
 				prompt  = STRING_TOKEN(STR_TOP_G0_XHCI_MODULE_SEL),
 				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
 				flags   = DISPLAY_UINT_HEX,
@@ -968,12 +968,61 @@ Revision History:
 				maximum = 0xFF,
 				step    = 0,
 				default = 0,
-				endnumeric;   
- 		endif;
+				endnumeric;  
+	*/
+				
+	 numeric varid   = SETUP_DATA.TOPGroup0XhciModule0Selcet,
+				prompt  = STRING_TOKEN(STR_TOP_G0_XHCI_MODULE0_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xF,
+				step    = 0,
+				default = 0,
+				endnumeric;  
+	 numeric varid   = SETUP_DATA.TOPGroup0XhciGroup0Selcet,
+				prompt  = STRING_TOKEN(STR_TOP_G0_XHCI_GROUP00_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xFFFF,
+				step    = 0,
+				default = 0,
+				endnumeric;
+	 numeric varid   = SETUP_DATA.TOPGroup0XhciModule1Selcet,
+				prompt  = STRING_TOKEN(STR_TOP_G0_XHCI_MODULE1_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xF,
+				step    = 0,
+				default = 0,
+				endnumeric;  
+
+	 numeric varid   = SETUP_DATA.TOPGroup0XhciGroup1Selcet,
+				prompt  = STRING_TOKEN(STR_TOP_G0_XHCI_GROUP01_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xFFFF,
+				step    = 0,
+				default = 0,
+				endnumeric;
+		numeric varid   = SETUP_DATA.TOPGroup0XhciMCUSelcet,
+				prompt  = STRING_TOKEN(STR_TOP_G0_XHCI_MCU_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xFF,
+				step    = 0,
+				default = 0,
+				endnumeric;
+		endif;//end  suppressif  NOT ideqval SETUP_DATA.TOPGroup0TopSelcet==5; 
       
    
    
-   
+   suppressif  ideqval SETUP_DATA.TOPGroup0TopSelcet==5;  
+
    numeric varid   = SETUP_DATA.TOPGroup0ModuleSubSelcet,
 		prompt  = STRING_TOKEN(STR_TOP_G0_MODULE_SEL),
 		help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
@@ -982,7 +1031,8 @@ Revision History:
 		maximum = 0xFFFFF,
 		step    = 0,
 		default = 0,
-	endnumeric;   
+	 endnumeric; 
+	 endif;  //end  suppressif  ideqval SETUP_DATA.TOPGroup0TopSelcet==5; 
  		endif;
  		
     suppressif NOT ideqval SETUP_DATA.DebugModuleSelect1==2;  
@@ -999,7 +1049,7 @@ Revision History:
  
     
       suppressif NOT ideqval SETUP_DATA.TOPGroup1TopSelcet==5;  
-      numeric varid   = SETUP_DATA.TOPGroup1XhciModuleSelcet,
+    /*  numeric varid   = SETUP_DATA.TOPGroup1XhciModuleSelcet,
 				prompt  = STRING_TOKEN(STR_TOP_G1_XHCI_MODULE_SEL),
 				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
 				flags   = DISPLAY_UINT_HEX,
@@ -1007,9 +1057,59 @@ Revision History:
 				maximum = 0xFF,
 				step    = 0,
 				default = 0,
-				endnumeric;   
+				endnumeric; 
+				*/
+	 numeric varid   = SETUP_DATA.TOPGroup1XhciModule2Selcet,
+				prompt  = STRING_TOKEN(STR_TOP_G1_XHCI_MODULE2_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xF,
+				step    = 0,
+				default = 0,
+				endnumeric;  
+    numeric varid   = SETUP_DATA.TOPGroup1XhciGroup2Selcet,
+				prompt  = STRING_TOKEN(STR_TOP_G1_XHCI_GROUP02_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xFFFF,
+				step    = 0,
+				default = 0,
+				endnumeric;
+	 numeric varid   = SETUP_DATA.TOPGroup1XhciModule3Selcet,
+				prompt  = STRING_TOKEN(STR_TOP_G1_XHCI_MODULE3_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xF,
+				step    = 0,
+				default = 0,
+				endnumeric;  
+
+
+	
+	 numeric varid   = SETUP_DATA.TOPGroup1XhciGroup3Selcet,
+				prompt  = STRING_TOKEN(STR_TOP_G1_XHCI_GROUP03_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xFFFF,
+				step    = 0,
+				default = 0,
+				endnumeric;  
+		numeric varid   = SETUP_DATA.TOPGroup1XhciMCUSelcet,
+				prompt  = STRING_TOKEN(STR_TOP_G1_XHCI_MCU_SEL),
+				help    = STRING_TOKEN(STR_HEX_NUMERIC_HELP),
+				flags   = DISPLAY_UINT_HEX,
+				minimum = 0,
+				maximum = 0xFF,
+				step    = 0,
+				default = 0,
+				endnumeric;
  		endif;
 
+   suppressif  ideqval SETUP_DATA.TOPGroup1TopSelcet==5;  
 
   numeric varid   = SETUP_DATA.TOPGroup1ModuleSubSelcet,
 		prompt  = STRING_TOKEN(STR_TOP_G1_MODULE_SEL),
@@ -1020,6 +1120,8 @@ Revision History:
 		step    = 0,
 		default = 0,
 	endnumeric;
+		endif;
+
      endif;  
     
     
@@ -1076,7 +1178,7 @@ Revision History:
       endoneof;        
  
       suppressif NOT ideqval SETUP_DATA.VDD_OFF_EN==1;  
-      numeric varid=SETUP_DATA.VDD_OFF_Module_Sel,
+     /* numeric varid=SETUP_DATA.VDD_OFF_Module_Sel,
         prompt   = STRING_TOKEN(STR_VDD_OFF_MODULE_SEL),
         help   = STRING_TOKEN(STR_EMPTY),
         flags = DISPLAY_UINT_HEX,
@@ -1084,7 +1186,34 @@ Revision History:
         maximum=0xff,
         step=0,
         default=0,
-       endnumeric; 
+       endnumeric; */
+      oneof varid = SETUP_DATA.VDD_OFF_Module_Sel,
+        prompt      = STRING_TOKEN(STR_VDD_OFF_MODULE_SEL),
+        help        = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_VDD_SMBUS_15_0), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_VDD_SMBUS_31_16),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_VDD_ESPI_15_0), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_ESPI_31_16), value = 3, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_VDD_SPI_15_0), value = 4, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_SPI_31_16),  value = 5, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_VDD_PMU_15_0), value = 6, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_PMU_31_16), value = 7, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_VDD_XHCI_SUS), value = 8, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_SUS_DBG_PMU3), value = 9, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_VDD_SBPTN_15_0), value = 10, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_SBPTN_31_16), value = 11, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_VDD_KBDC_15_0), value = 12, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_KBDC_31_16), value = 13, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_VDD_RTC_G1), value = 14, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_RTC_G0), value = 15, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_VDD_D14_USBC_SUS), value = 16, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_D16_USBC_SUS), value = 17, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_VDD_ESPI_IO), value = 18, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_SUS_DBG_PMU1_15_0), value = 19, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_SUS_DBG_PMU1_31_16),  value = 20, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_VDD_SUS_DBG_PMU2_15_0), value = 21, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VDD_SUS_DBG_PMU2_31_16),  value = 22, flags = RESET_REQUIRED;          
+       endoneof;
       
       numeric varid=SETUP_DATA.VDD_OFF_Group_Sel,
         prompt   = STRING_TOKEN(STR_VDD_OFF_GROUP_SEL),
@@ -1095,7 +1224,7 @@ Revision History:
         step=0,
         default=0,
        endnumeric;     
-			endif;
+	endif;
     endform; //end DEBUGSIGNAL_FORM_ID       
     
   form formid = AUTO_ID(ERROR_REPORTING_FORM_ID),

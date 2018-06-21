@@ -346,10 +346,20 @@ typedef struct {
 	UINT32	SBGroup1ModuleSubSelect;
 	
 	 UINT8	 TOPGroup0TopSelcet;
-	 UINT8	 TOPGroup0XhciModuleSelcet;
+	 //UINT8	 TOPGroup0XhciModuleSelcet;
+	 UINT8  TOPGroup0XhciModule0Selcet;
+	 UINT8  TOPGroup0XhciModule1Selcet;
+	 UINT16 TOPGroup0XhciGroup0Selcet;
+	 UINT16 TOPGroup0XhciGroup1Selcet;
+	 UINT8	TOPGroup0XhciMCUSelcet;
 	 UINT32	TOPGroup0ModuleSubSelcet;
 	 UINT8	 TOPGroup1TopSelcet;
-	 UINT8	 TOPGroup1XhciModuleSelcet;
+	 UINT8  TOPGroup1XhciModule2Selcet;
+	 UINT8  TOPGroup1XhciModule3Selcet;
+	 UINT16 TOPGroup1XhciGroup2Selcet;
+	 UINT16 TOPGroup1XhciGroup3Selcet;
+	 UINT8	TOPGroup1XhciMCUSelcet;
+	 //UINT8	 TOPGroup1XhciModuleSelcet;
 	 UINT32	TOPGroup1ModuleSubSelcet;
  	 UINT8	 FSBCGroup0TopSelcet;
 	 UINT8	 FSBCGroup1TopSelcet;  
