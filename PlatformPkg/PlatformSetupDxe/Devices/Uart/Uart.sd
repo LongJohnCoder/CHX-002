@@ -50,8 +50,8 @@ $END--------------------------------------------------------------------
        endoneof;       
      
     subtitle text = STRING_TOKEN(STR_EMPTY);
-   grayoutif
-    ideqval SETUP_DATA.UartModuleSelection == 1;   
+   //grayoutif
+   // ideqval SETUP_DATA.UartModuleSelection == 1;   
        oneof varid   = SETUP_DATA.Uart0Enable,
         prompt   = STRING_TOKEN(STR_UART0_EN),
         help   = STRING_TOKEN(STR_UART0_EN),
@@ -76,7 +76,7 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_7), value = 7, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_11), value = 11, flags = RESET_REQUIRED;
        endoneof; 
- endif;   //end gray out  
+ //endif;   //end gray out  
       
     subtitle text = STRING_TOKEN(STR_EMPTY);
     

@@ -184,14 +184,38 @@ EFI_STATUS PciUart_Init()
   
  //CND001-R01-MTN-01-ADD-20141118-1100, PCI UART Chipset Initialize
  //UINT8 Buffer8;
+ //UINT16 Buffer16;
  UINT32 Buffer32;
- 
- //Enable 4Pin UART1
+
+ //Enable 8Pin UART0
+ //Buffer16=IoRead16(0x800+PMIO_PAD_CTL_REG_Z1);
+ //Buffer16&=~(0x07);
+ //Buffer16|=0x04;
+ //IoWrite16(0x800+PMIO_PAD_CTL_REG_Z1,Buffer16);
  //Buffer32=IoRead32(0x800 + PMIO_CR_GPIO_PAD_CTL);
  //Buffer32&=~(0x3F000000);
  //Buffer32|=0x13000000;
  //IoWrite32(0x800 + PMIO_CR_GPIO_PAD_CTL,  Buffer32);
-
+ //Buffer32=IoRead32(0x800 + PMIO_GPIO_PAD_CTL);
+ //Buffer32&=~(0x3F3F0007);
+ //Buffer32|=0x09090002;
+ //IoWrite32(0x800 + PMIO_GPIO_PAD_CTL,  Buffer32);
+ 
+ //Enable 4Pin UART0
+ //Buffer16=IoRead16(0x800+PMIO_PAD_CTL_REG_Z1);
+ //Buffer16&=~(0x07);
+ //Buffer16|=0x04;
+ //IoWrite16(0x800+PMIO_PAD_CTL_REG_Z1,Buffer16);
+ //Buffer32=IoRead32(0x800 + PMIO_CR_GPIO_PAD_CTL);
+ //Buffer32&=~(0x3F000000);
+ //Buffer32|=0x13000000;
+ //IoWrite32(0x800 + PMIO_CR_GPIO_PAD_CTL,  Buffer32);
+ //Buffer32=IoRead32(0x800 + PMIO_GPIO_PAD_CTL);
+ //Buffer32&=~(0x00000007);
+ //Buffer32|=0x00000002;
+ //IoWrite32(0x800 + PMIO_GPIO_PAD_CTL,  Buffer32);
+ 
+ //Enable 4Pin UART1
  Buffer32=IoRead32(0x800 + PMIO_GPIO_PAD_CTL);
  Buffer32&=~(0x3F3F0000);
  Buffer32|=0x242D0000;
