@@ -413,19 +413,19 @@ typedef struct {
    UINT8     GBFlushendEn;
    //USB
    UINT8   UsbModeSelect;
-   UINT8   XhciMcuDmaPath;
-   UINT8   TRBCacheBypass;
-   UINT8   XhciOutBurstEn;
-   UINT8   XhciU1U2En;
-   UINT8   XhciMsiFlushEn;
-   UINT8   XhciUartEn;
-   UINT8   USBCFLRControl;
-   UINT8   XHCIFLRControl;
-   UINT8   RTD3Control;
-   UINT8   UsbS4Wakeup;
-   UINT8   UsbC4Block;
-   UINT8   UsbOCEn;
-   UINT8   UsbEITRN;
+   UINT8   UsbS4WakeupCtrl;
+   UINT8   UsbOCCtrl;
+   UINT8   USBCFLRCtrl;
+   UINT8   XhcMcuDmaPathCtrl;
+   UINT8   XhcTRBCacheBypassCtrl;
+   UINT8   XhcBurstCtrl;
+   UINT8   XhcU1U2Ctrl;
+   UINT8   XhcMsiFlushCtrl;
+   UINT8   XhcUartCtrl;
+   UINT8   XhcFLRCtrl;
+   UINT8   XhcRTD3Ctrl;
+   UINT8   XhcC4BlockCtrl;
+   UINT8   XhcEITRNCtrl;
    	//IOE_USB
 	//UINT8   IOEUsbModeSelectMode;
 	UINT8	IOEUsbModeSelect;

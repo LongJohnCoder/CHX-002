@@ -248,7 +248,7 @@ VOID VPei_DumpAsiaSbCfg(
 	DEBUG((DEBUG_ERROR,"ACAdapterControl = %x \n",SbCfg->ACAdapterControl));	
 	DEBUG((DEBUG_ERROR,"PLLOKSelectionControl = %x \n",SbCfg->PLLOKSelectionControl));
 
-	//DEBUG((DEBUG_ERROR,"UsbS4Wakeup = %x \n",SbCfg->UsbS4Wakeup));
+	//DEBUG((DEBUG_ERROR,"UsbS4WakeupCtrl = %x \n",SbCfg->UsbS4WakeupCtrl));
 	DEBUG((DEBUG_ERROR,"MsiSupport = %x \n",SbCfg->MsiSupport));	
 	DEBUG((DEBUG_ERROR,"FixedFreeCxLatency = %x \n",SbCfg->FixedFreeCxLatency));	
 	DEBUG((DEBUG_ERROR,"DynamicT05 = %x \n",SbCfg->DynamicT05));
