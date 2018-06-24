@@ -294,13 +294,14 @@ GotSetupVariable:
   SbCfg->FuncLevelResetEn     = SetupData->FuncLevelResetEn;
   SbCfg->GBFlushendEn         = SetupData->GBFlushendEn;
   //USB
-  SbCfg->UsbModeSelect          = SetupData->UsbModeSelect;
-  SbCfg->UsbS4WakeupCtrl        = SetupData->UsbS4WakeupCtrl;
-  SbCfg->UsbOCCtrl              = SetupData->UsbOCCtrl;
-  SbCfg->USBCFLRCtrl            = SetupData->USBCFLRCtrl;
+  SbCfg->UsbModeSelect         = SetupData->UsbModeSelect;
+  SbCfg->UsbS4WakeupCtrl       = SetupData->UsbS4WakeupCtrl;
+  SbCfg->UsbOCCtrl             = SetupData->UsbOCCtrl;
+  SbCfg->USBCFLRCtrl           = SetupData->USBCFLRCtrl;
   SbCfg->XhcMcuDmaPathCtrl     = SetupData->XhcMcuDmaPathCtrl;
   SbCfg->XhcTRBCacheBypassCtrl = SetupData->XhcTRBCacheBypassCtrl;
-  SbCfg->XhcBurstCtrl       = SetupData->XhcBurstCtrl;
+  SbCfg->XhcBurstCtrl          = SetupData->XhcBurstCtrl;
+  SbCfg->XhcPerfModeCtrl       = SetupData->XhcPerfModeCtrl;
   SbCfg->XhcU1U2Ctrl           = SetupData->XhcU1U2Ctrl;
   SbCfg->XhcMsiFlushCtrl       = SetupData->XhcMsiFlushCtrl;
   SbCfg->XhcUartCtrl           = SetupData->XhcUartCtrl;

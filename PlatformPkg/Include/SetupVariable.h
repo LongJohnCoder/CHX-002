@@ -419,6 +419,7 @@ typedef struct {
    UINT8   XhcMcuDmaPathCtrl;
    UINT8   XhcTRBCacheBypassCtrl;
    UINT8   XhcBurstCtrl;
+   UINT8   XhcPerfModeCtrl;
    UINT8   XhcU1U2Ctrl;
    UINT8   XhcMsiFlushCtrl;
    UINT8   XhcUartCtrl;
