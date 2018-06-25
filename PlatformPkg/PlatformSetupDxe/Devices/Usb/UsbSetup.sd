@@ -54,11 +54,11 @@ $END--------------------------------------------------------------------
         oneof varid     = SETUP_DATA.UsbModeSelect,
             prompt      = STRING_TOKEN(STR_USB_MODE),
             help        = STRING_TOKEN(STR_USB_MODE_HELP),
-            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
-            option text = STRING_TOKEN(STR_MODE1),   value = 1, flags = RESET_REQUIRED;
-            option text = STRING_TOKEN(STR_MODE2),   value = 2, flags = RESET_REQUIRED;
-            option text = STRING_TOKEN(STR_MODE3),   value = 3, flags = RESET_REQUIRED;
-            option text = STRING_TOKEN(STR_MODE4),   value = 4, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE1),    value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE2),    value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE3),    value = 3, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE4),    value = 4, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
         endoneof;
 
         oneof varid     = SETUP_DATA.UsbS4WakeupCtrl,
