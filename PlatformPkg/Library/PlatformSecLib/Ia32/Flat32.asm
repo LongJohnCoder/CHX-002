@@ -239,6 +239,7 @@ pstDone:
   mov  edi, PcdGet32(PcdMSRSEC0Base)
   mov  ebx, PcdGet32(PcdMSRSEC0Size)
   CALL_MMX  SecMsrConfig
+  CALL_MMX  CHX002A0PatchVID
   #endif
   STATUS_CODE (03h)
   CALL_MMX  VeryEarlyMicrocodeUpdate  
@@ -344,6 +345,28 @@ NextItem:
 FillExit:
   RET_MMX
 SecMsrConfig ENDP
+
+CHX002A0PatchVID    PROC    NEAR    PRIVATE
+  mov edi,0E0088000h + 0BCh
+  mov eax,0FEB320h
+  mov [edi],eax
+  ;Set VID
+  mov ecx, 1440h
+  rdmsr
+  mov edi,0FEB3210Fh
+  mov [edi],al
+
+  mov edi,0FEB3210Bh
+  mov al,01h
+  mov [edi],al
+CheckComplete:
+  xor   eax,eax
+  mov edi,0FEB32101h
+  mov al ,[edi]
+  cmp   al, 05h
+  jnz   CheckComplete
+  RET_MMX
+CHX002A0PatchVID ENDP
 #endif
 
 ForceCpuMAXRatio    PROC    NEAR    PRIVATE
