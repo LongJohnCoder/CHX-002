@@ -161,7 +161,12 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_11), value = 11, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
        endoneof; 
 	*/
-      
+       oneof varid = SETUP_DATA.UartFLREn,
+        prompt = STRING_TOKEN(STR_UART_FLR_EN),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
+       endoneof; 
 		endif;//end suppressif
      endform;//end CHIPSET_SB_UART_FORM_ID
 
