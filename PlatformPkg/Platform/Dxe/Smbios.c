@@ -4,7 +4,7 @@
 #include <SetupVariable.h>
 #include <AutoBuildTime.h>
 #include <BiosVersion.h>
-
+#include "JEP106.h"
 
 
 typedef struct {
@@ -952,6 +952,10 @@ HandleType17_20 (
   CHAR8                  *Str;
   UINTN                  StrLen;
   UINT32                 StartingAddress;	
+  UINT8                  ManuIDBank;  // Manufacturer ID code bank
+  UINT8                  ManuID;      // Manufacturer ID code value
+  CHAR8                  *pManuIDStr = NULL;
+  UINTN                  MinStrLen;
 
 
 //DEBUG((EFI_D_INFO, "%a()\n", __FUNCTION__));
@@ -959,10 +963,10 @@ HandleType17_20 (
   Size   = sizeof(SMBIOS_TABLE_TYPE17) +
            sizeof(gStrDevLocator) +
            sizeof(gStrBankLocator) +
-           sizeof(gStrManufacturer) +
            sizeof(gStrSerialNumber) +
            sizeof(gStrAssetTag) +
            sizeof(gPartNumber) +
+           (JEP106_MAX_STRING_LEN + 1) + // +1 for strcat a index after manufacturer string.
            1;
   Type17Record = AllocateZeroPool(Size);
   if(Type17Record == NULL){
@@ -979,6 +983,7 @@ HandleType17_20 (
   StartingAddress = 0;
   for(Index=0;Index<DimmInfo->DimmCount;Index++){
     MemorySize = DimmInfo->SpdInfo[Index].DimmSize;
+    if(!MemorySize) continue;             //do not build type17 table for blank slot.
     ZeroMem(Type17Record, Size);
     Type17Record->Hdr.Type   = EFI_SMBIOS_TYPE_MEMORY_DEVICE;
     Type17Record->Hdr.Length = sizeof(SMBIOS_TABLE_TYPE17);
@@ -1008,6 +1013,14 @@ HandleType17_20 (
       Type17Record->ExtendedSize = MemorySize;
     }
 
+	// Get manufacturer ID code string.
+	ManuIDBank = DimmInfo->SpdInfo[Index].Spd320 & 0x7F; // Bit 7 is odd parity bit.
+	ManuID     = DimmInfo->SpdInfo[Index].Spd321 & 0x7F; // Bit 7 is odd parity bit.
+	pManuIDStr = Jep106GetManufacturerString(
+		ManuIDBank,
+		ManuID
+	);
+
     Str = (CHAR8*)Type17Record + sizeof(SMBIOS_TABLE_TYPE17);
     StrLen = AsciiStrLen(gStrDevLocator);
     AsciiStrCpy(Str, gStrDevLocator);
@@ -1026,10 +1039,12 @@ HandleType17_20 (
       Type17Record->PartNumber    = 0;
       
     } else {  
-      StrLen = AsciiStrLen(gStrManufacturer);
-      AsciiStrCpy(Str, gStrManufacturer);
-      Str[StrLen-1] = '0' + (UINT8)Index;
-      Str += StrLen+1;
+      StrLen = AsciiStrLen(pManuIDStr);
+      AsciiStrnCpy(Str, pManuIDStr, JEP106_MAX_STRING_LEN);
+	  AsciiStrCat(Str, "0");
+	  MinStrLen = MIN(StrLen+1, JEP106_MAX_STRING_LEN+1);
+      Str[MinStrLen-1] = '0' + (UINT8)Index;
+      Str += MinStrLen+1;
 
       AsciiSPrint(gStrSerialNumber, sizeof(gStrSerialNumber), "%08X", DimmInfo->SpdInfo[Index].Sn);
       StrLen = AsciiStrLen(gStrSerialNumber);

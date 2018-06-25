@@ -43,6 +43,8 @@ typedef struct {
    UINT16  DimmSize;      // in MB, for SMBIOS
    UINT16  DimmSpeed;
    UINT32  Sn;
+   UINT8   Spd320;        // Module manufacturer ID code, LSB
+   UINT8   Spd321;        // Module manufacturer ID code, MSB
    CHAR8   PartNo[18+1];  // Bytes 128 ~ 145: Module Part Number
 } DIMM_SPD_INFO;
 

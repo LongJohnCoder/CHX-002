@@ -211,6 +211,9 @@ ReportResourceForDxe (
 	  }
       CopyMem(DimmInfo->SpdInfo[Index].PartNo, &Spd[128], 18);
 
+	  // Fill the module manufacturer ID code.
+      DimmInfo->SpdInfo[Index].Spd320 = DramInfo.Spd[Index].Buffer[320];
+      DimmInfo->SpdInfo[Index].Spd321 = DramInfo.Spd[Index].Buffer[321];
   		
       DEBUG((DEBUG_ERROR, "Dimm%d Speed :%d\n", Index, DimmInfo->SpdInfo[Index].DimmSpeed));	
     }			

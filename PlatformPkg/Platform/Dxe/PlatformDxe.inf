@@ -24,6 +24,7 @@
   SataController.c
   PlatformMisc.c  
   IncompatiblePciDeviceSupport.c
+  JEP106.c
   Smbios.c
   PciHotPlug.c
   Dmar.c
