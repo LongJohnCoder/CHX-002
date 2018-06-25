@@ -501,6 +501,8 @@ VOID ConfigFsbc(
 				MsrValue |=(UINT64)FsbcTrigger->TriggerType<<49;
 				MsrValue |=(UINT64)FsbcTrigger->IsWriteTriggerTransaction<<60;
 				MsrValue |=(UINT64)FsbcTrigger->TriggerTransaction<<61;
+			}else if(FsbcTrigger->IsDumpToPCIE){
+				MsrValue |= 0x1004C00000000000;    //wrap around, 50% , trigger mode, pcie dump
 			}else{
 				MsrValue |= 0x1004400000000000;		// wrap around, 50% trigger
 			}
