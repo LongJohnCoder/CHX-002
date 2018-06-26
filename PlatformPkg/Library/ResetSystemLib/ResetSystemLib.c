@@ -56,7 +56,7 @@ ResetCold (
   VOID
   )
 {
-  IoWrite8 (0xCF9, BIT2 | BIT1); // 1st choice: PIIX3 RCR, RCPU|SRST
+  IoWrite8 (0xCF9, BIT3 | BIT2 | BIT1); // 1st choice: PIIX3 RCR, RCPU|SRST
   MicroSecondDelay (50000);
 
   IoWrite8 (0x64, 0xfe);         // 2nd choice: keyboard controller
