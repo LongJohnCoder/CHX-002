@@ -145,7 +145,7 @@ typedef struct {
    UINT8 MemoryChipODTWRDebug;
    UINT8 MemoryChipODTParkDebug;
    UINT8 VRInlv;
-   UINT8 ChannelIntlv;
+  // UINT8 ChannelIntlv;
    UINT8 CHdecode;
    UINT8 BankGroupBit0Decode;
    //UINT8 RA0Select;

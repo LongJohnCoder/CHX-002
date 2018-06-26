@@ -560,7 +560,7 @@ GotSetupVariable:
      DramCfg->MemoryChipODTWRDebug= SetupData->MemoryChipODTWRDebug;
 	 DramCfg->MemoryChipODTParkDebug = SetupData->MemoryChipODTParkDebug;
      DramCfg->VRIntlv= SetupData->VRInlv;    
-     DramCfg->ChannelIntlv= SetupData->ChannelIntlv;	
+     //DramCfg->ChannelIntlv= SetupData->ChannelIntlv;	
 	 DramCfg->DRAMECC= SetupData->DramECC;
 	 DramCfg->DataScmb= SetupData->DataScmb;	
      DramCfg->BurstLength= SetupData->BL;
