@@ -52,6 +52,8 @@ extern EFI_GUID gPlatformSetupVariableGuid;
 #define RTC_WAKE_VAL_DAILY_EVENT     2
 #define RTC_WAKE_VAL_WEEKLY_EVENT    3
 #define RTC_WAKE_VAL_USER_DEFINED    4
+#define RTC_WAKE_VAL_PERIOD_MINUTES    5
+#define RTC_WAKE_VAL_PERIOD_SECONDS    6
 #define RTC_WAKE_VAL_DISABLE         0
 
 #define SMRR_TYPE_DISABLE            0
@@ -525,7 +527,8 @@ typedef struct {
   UINT8  UserDefSat;
   UINT8  UserDefSun;
   UINT8  AlarmWeekDay;
-
+  UINT8	 RTCWakeupTimeMinuteIncrease;
+  UINT8	 RTCWakeupTimeSecondIncrease;
   UINT8  OnboardLan;
   UINT8  LegacyPxeBoot;
   UINT8  UefiPxeIPV4;

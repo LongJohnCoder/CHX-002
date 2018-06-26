@@ -119,12 +119,14 @@ formset guid = POWER_FORM_SET_GUID,
       option text = STRING_TOKEN(STR_DAILY_EVENT),  value = RTC_WAKE_VAL_DAILY_EVENT,  flags = RESET_REQUIRED;
       option text = STRING_TOKEN(STR_WEEKLY_EVENT), value = RTC_WAKE_VAL_WEEKLY_EVENT, flags = RESET_REQUIRED;
       option text = STRING_TOKEN(STR_USER_DEFINED), value = RTC_WAKE_VAL_USER_DEFINED, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_PERIOD_MINUTES), value = RTC_WAKE_VAL_PERIOD_MINUTES, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_PERIOD_SECONDS), value = RTC_WAKE_VAL_PERIOD_SECONDS, flags = RESET_REQUIRED;
       option text = STRING_TOKEN(STR_DISABLE),      value = RTC_WAKE_VAL_DISABLE,      flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
      endoneof;
 
      grayoutif ideqval SETUP_DATA.WakeOnRTC == RTC_WAKE_VAL_DISABLE;
 
-      grayoutif ideqval SETUP_DATA.WakeOnRTC == RTC_WAKE_VAL_USER_DEFINED;
+      grayoutif ideqval SETUP_DATA.WakeOnRTC == RTC_WAKE_VAL_USER_DEFINED  OR  ideqval SETUP_DATA.WakeOnRTC == RTC_WAKE_VAL_PERIOD_MINUTES OR  ideqval SETUP_DATA.WakeOnRTC == RTC_WAKE_VAL_PERIOD_SECONDS;
        time
         varid   = SETUP_DATA.RTCWakeupTime,
         prompt  = STRING_TOKEN(STR_ALARM_TIME),
@@ -162,6 +164,30 @@ formset guid = POWER_FORM_SET_GUID,
         goto POWER_USER_DEF_ALARM_FORM_ID,
         prompt = STRING_TOKEN(STR_USER_DEF_ALARM),
         help = STRING_TOKEN(STR_COM_EMPTY);
+      endif;
+      suppressif NOT ideqval SETUP_DATA.WakeOnRTC == RTC_WAKE_VAL_PERIOD_MINUTES;
+        numeric 
+        			varid  = SETUP_DATA.RTCWakeupTimeMinuteIncrease,
+              prompt      = STRING_TOKEN(STR_RTC_WAKEUP_MINUTE_INCREASE_PROMPT),
+              help        = STRING_TOKEN(STR_TIME_MINUTE_INCREASE_HELP),
+              flags       = RESET_REQUIRED,
+              minimum       = 1,
+              maximum       = 5,
+              step          = 1,
+              default       = 1,
+        endnumeric;
+			endif;
+     suppressif NOT ideqval SETUP_DATA.WakeOnRTC == RTC_WAKE_VAL_PERIOD_SECONDS;
+        numeric 
+        			varid  = SETUP_DATA.RTCWakeupTimeSecondIncrease,
+              prompt      = STRING_TOKEN(STR_RTC_WAKEUP_SECOND_INCREASE_PROMPT),
+              help        = STRING_TOKEN(STR_TIME_SECOND_INCREASE_HELP),
+              flags       = RESET_REQUIRED,
+              minimum       = 1,
+              maximum       = 59,
+              step          = 1,
+              default       = 1,
+        endnumeric;
       endif;
 
     endif;

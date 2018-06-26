@@ -157,7 +157,54 @@ EFI_STATUS EnableS5RtcWake()
     CmosWrite(RTC_ADDRESS_DATE_ALARM,    DecimalToBcd8(Day));
     CmosWrite(RTC_ADDRESS_MONTH_ALARM,   DecimalToBcd8(Month));
     
-  } else if(WakeType == RTC_WAKE_VAL_DAILY_EVENT){
+  } else if(WakeType == RTC_WAKE_VAL_PERIOD_MINUTES){
+  {
+	  Hour =CurHour;
+	  Minute = CurMinute;
+	  Second =CurSecond;
+    Minute += gSetupData.RTCWakeupTimeMinuteIncrease;
+      if  (Minute >= 60)
+        {
+        Minute = 0;
+        ++Hour;
+        if (Hour == 24)
+            Hour = 0;
+        }
+    }
+    DEBUG((EFI_D_ERROR, "[MINUTE]%02d:%02d:%02d\n", Hour, Minute, Second));  
+    CmosWrite(RTC_ADDRESS_SECONDS_ALARM, DecimalToBcd8(Second));
+    CmosWrite(RTC_ADDRESS_MINUTES_ALARM, DecimalToBcd8(Minute));
+    CmosWrite(RTC_ADDRESS_HOURS_ALARM,   DecimalToBcd8(Hour)); 
+    CmosWrite(RTC_ADDRESS_DATE_ALARM,    0);
+    CmosWrite(RTC_ADDRESS_MONTH_ALARM,   0);    
+  } 
+  else if(WakeType == RTC_WAKE_VAL_PERIOD_SECONDS){
+  {
+	  Hour =CurHour;
+	  Minute = CurMinute;
+	  Second =CurSecond;
+    Second += gSetupData.RTCWakeupTimeSecondIncrease;
+      if  (Second >= 60)
+        {
+        Second = 0;
+        ++Minute;
+		if  (Minute >= 60)
+        {
+        Minute = 0;
+        ++Hour;
+		if (Hour == 24)
+            Hour = 0;
+        }
+      	}
+    }
+    DEBUG((EFI_D_ERROR, "[SECONDS]%02d:%02d:%02d\n", Hour, Minute, Second));  
+    CmosWrite(RTC_ADDRESS_SECONDS_ALARM, DecimalToBcd8(Second));
+    CmosWrite(RTC_ADDRESS_MINUTES_ALARM, DecimalToBcd8(Minute));
+    CmosWrite(RTC_ADDRESS_HOURS_ALARM,   DecimalToBcd8(Hour)); 
+    CmosWrite(RTC_ADDRESS_DATE_ALARM,    0);
+    CmosWrite(RTC_ADDRESS_MONTH_ALARM,   0);    
+  } 
+  else if(WakeType == RTC_WAKE_VAL_DAILY_EVENT){
     DEBUG((EFI_D_ERROR, "[Daily]%02d:%02d:%02d\n", Hour, Minute, Second));  
     CmosWrite(RTC_ADDRESS_SECONDS_ALARM, DecimalToBcd8(Second));
     CmosWrite(RTC_ADDRESS_MINUTES_ALARM, DecimalToBcd8(Minute));
