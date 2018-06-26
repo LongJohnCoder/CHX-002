@@ -235,28 +235,7 @@ PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformOnboardNicDevice = {
 };
 
 
-PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie2Device = {
-  gPciRootBridge,
-  {
-    HARDWARE_DEVICE_PATH,
-    HW_PCI_DP,
-    (UINT8) (sizeof (PCI_DEVICE_PATH)),
-    (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
-    0x0,
-    2
-  },
-  {
-    HARDWARE_DEVICE_PATH,
-    HW_PCI_DP,
-    (UINT8) (sizeof (PCI_DEVICE_PATH)),
-    (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
-    0x0,
-    0x0
-  },  
-  gEndEntire
-};
-
-PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie3Device = {
+PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie0Device = {
   gPciRootBridge,
   {
     HARDWARE_DEVICE_PATH,
@@ -277,15 +256,15 @@ PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie3Device = {
   gEndEntire
 };
 
-PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie5Device = {
+PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie1Device = {
   gPciRootBridge,
   {
     HARDWARE_DEVICE_PATH,
     HW_PCI_DP,
     (UINT8) (sizeof (PCI_DEVICE_PATH)),
     (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
-    0x0,
-    5
+    0x1,
+    3
   },
   {
     HARDWARE_DEVICE_PATH,
@@ -298,15 +277,15 @@ PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie5Device = {
   gEndEntire
 };
 
-PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie6Device = {
+PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie2Device = {
   gPciRootBridge,
   {
     HARDWARE_DEVICE_PATH,
     HW_PCI_DP,
     (UINT8) (sizeof (PCI_DEVICE_PATH)),
     (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
-    0x0,
-    6
+    0x2,
+    3
   },
   {
     HARDWARE_DEVICE_PATH,
@@ -318,6 +297,70 @@ PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie6Device = {
   },  
   gEndEntire
 };
+
+PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie3Device = {
+  gPciRootBridge,
+  {
+    HARDWARE_DEVICE_PATH,
+    HW_PCI_DP,
+    (UINT8) (sizeof (PCI_DEVICE_PATH)),
+    (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
+    0x3,
+    3
+  },
+  {
+    HARDWARE_DEVICE_PATH,
+    HW_PCI_DP,
+    (UINT8) (sizeof (PCI_DEVICE_PATH)),
+    (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
+    0x0,
+    0x0
+  },  
+  gEndEntire
+};
+
+PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie4Device = {
+  gPciRootBridge,
+  {
+    HARDWARE_DEVICE_PATH,
+    HW_PCI_DP,
+    (UINT8) (sizeof (PCI_DEVICE_PATH)),
+    (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
+    0x0,
+    4
+  },
+  {
+    HARDWARE_DEVICE_PATH,
+    HW_PCI_DP,
+    (UINT8) (sizeof (PCI_DEVICE_PATH)),
+    (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
+    0x0,
+    0x0
+  },  
+  gEndEntire
+};
+
+PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie5Device = {
+  gPciRootBridge,
+  {
+    HARDWARE_DEVICE_PATH,
+    HW_PCI_DP,
+    (UINT8) (sizeof (PCI_DEVICE_PATH)),
+    (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
+    0x1,
+    4
+  },
+  {
+    HARDWARE_DEVICE_PATH,
+    HW_PCI_DP,
+    (UINT8) (sizeof (PCI_DEVICE_PATH)),
+    (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
+    0x0,
+    0x0
+  },  
+  gEndEntire
+};
+
 
 PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie7Device = {
   gPciRootBridge,
@@ -326,8 +369,8 @@ PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH2  gPlatformPcie7Device = {
     HW_PCI_DP,
     (UINT8) (sizeof (PCI_DEVICE_PATH)),
     (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
-    0x0,
-    7
+    0x1,
+    5
   },
   {
     HARDWARE_DEVICE_PATH,
@@ -465,10 +508,12 @@ EFI_DEVICE_PATH_PROTOCOL  *gPlatformConnectSequence[] = {
   (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformIoeGnicDevice,
   #endif
   (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformOnboardNicDevice,
+  (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformPcie0Device,
+  (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformPcie1Device,
   (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformPcie2Device,
   (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformPcie3Device,
+  (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformPcie4Device,
   (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformPcie5Device,
-  (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformPcie6Device,
   (EFI_DEVICE_PATH_PROTOCOL *) &gPlatformPcie7Device,
   NULL
 };

@@ -265,6 +265,8 @@ BuildLegacyDevNameString (
   }
   if(CurBBSEntry->Class == 8 && CurBBSEntry->SubClass == 5){ // SD device
     Type = "SD";
+  }else if(CurBBSEntry->Class == 1 && CurBBSEntry->SubClass == 8){ // Nvme
+    Type = "NVME";
   }
 
   StringDesc = (UINT8*)(UINTN)((CurBBSEntry->DescStringSegment << 4) + CurBBSEntry->DescStringOffset);

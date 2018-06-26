@@ -78,6 +78,7 @@
   gEfiDiskInfoAhciInterfaceGuid
   gEfiDiskInfoUsbInterfaceGuid
   gEfiDiskInfoIdeInterfaceGuid
+  gEfiDiskInfoNvmeInterfaceGuid
   
   
 [Protocols]

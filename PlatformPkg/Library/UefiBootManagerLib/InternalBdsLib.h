@@ -52,6 +52,7 @@
 #include <Library/CapsuleLib.h>
 
 #include "PlatformDefinition.h"
+#include "../Bus/Pci/NvmExpressDxe/NvmExpress.h"
 
 #if !defined (EFI_REMOVABLE_MEDIA_FILE_NAME)
     #if defined (MDE_CPU_EBC)

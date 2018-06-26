@@ -372,6 +372,8 @@
   gEfiByoModulePkgTokenSpaceGuid.AcpiIoPortBaseAddress|0xFFFF|UINT16|0x00002032
   gEfiByoModulePkgTokenSpaceGuid.SlaveAcpiIoPortBaseAddress|0xFFFF|UINT16|0x00002033
 
+  gEfiByoModulePkgTokenSpaceGuid.PcdSwSmiCmdPort|0x00B2|UINT16|0x00002039
+
 [PcdsDynamic]
   gEfiByoModulePkgTokenSpaceGuid.PcdKeepTrap64hEnable|0|UINT8|0x30000002
   gEfiByoModulePkgTokenSpaceGuid.PcdUCREnable|0|UINT8|0x30000003

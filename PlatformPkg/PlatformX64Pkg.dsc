@@ -62,7 +62,7 @@ DEFINE RECOVERY_ENABLE = FALSE
 DEFINE RECOVERY_CDROM_ENABLE = FALSE
 DEFINE MTC_USE_CMOS = TRUE
 DEFINE USE_PREBUILD_NETWORK_STACK = TRUE
-DEFINE NVME_SUPPORT = FALSE
+#DEFINE NVME_SUPPORT = FALSE
 #
 DEFINE ZX_SECRET_CODE = TRUE
 DEFINE ZX_EVB27_DUALSOCKET = FALSE
@@ -504,7 +504,7 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   gEfiMdeModulePkgTokenSpaceGuid.PcdUsbSerialEhciFunc|0x07
   gEfiByoModulePkgTokenSpaceGuid.PcdRecoveryFindBiosIdFirstTryTopFv|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdSwSmiCmdPort|0x082F
-
+  gEfiByoModulePkgTokenSpaceGuid.PcdSwSmiCmdPort|0x82F
 
   gPlatformModuleTokenSpaceGuid.PcdTemporaryRamBase|0xFC000000
   gPlatformModuleTokenSpaceGuid.PcdTemporaryRamSize|0x00010000 
@@ -1058,10 +1058,11 @@ $(PLATFORM_PACKAGE)/MpTableDxe/MpTableDxe.inf
 
 #$(PLATFORM_PACKAGE)/Apei/Apei.inf
 #ServerCommonPkg\Ipmi\Generic\GenericIpmi.inf
-
-!if $(NVME_SUPPORT) == TRUE
-  MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
-!endif  
+  ByoModulePkg/Nvme/NvmeDxe/NvmExpressDxe.inf
+  ByoModulePkg/Nvme/NvmeSmm/NvmeSmm.inf
+#!if $(NVME_SUPPORT) == TRUE
+ # MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+#!endif  
 
   $(PLATFORM_PACKAGE)/Platform/BiosInfo/BiosInfo.inf
 

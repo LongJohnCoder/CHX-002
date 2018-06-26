@@ -408,7 +408,7 @@ WriteNvmeAdminCompletionQueueBaseAddress (
     return Status;
   }
 
-  DEBUG ((EFI_D_INFO, "Acq: %lxh\n", *Acq));
+  DEBUG ((EFI_D_INFO, "Acq: %lx\n", *Acq));
 
   return EFI_SUCCESS;
 }
@@ -765,6 +765,59 @@ NvmeCreateIoSubmissionQueue (
   return Status;
 }
 
+
+
+STATIC CHAR8 *TrimStr8(CHAR8 *Str)
+{
+  UINTN    StringLength;
+  CHAR8    *NewString;
+  BOOLEAN  HasLeading;
+  UINTN    SrcIndex;
+  UINTN    TarIndex;
+  
+  NewString = NULL;
+
+  StringLength = AsciiStrLen(Str);
+  if(StringLength==0){
+    return Str; 
+  }
+
+  NewString = AllocatePool(StringLength + 1);
+  if(NewString==NULL){
+    return Str; 
+  }
+
+	HasLeading = TRUE;
+	TarIndex   = 0;
+	SrcIndex   = 0;
+	for(;SrcIndex<StringLength;SrcIndex++){
+		if(HasLeading){
+			if(Str[SrcIndex] == ' '){
+				continue;
+			}else{
+				HasLeading = FALSE;
+			}
+		}
+		if(TarIndex>0){
+			if((Str[SrcIndex-1]==Str[SrcIndex]) && (Str[SrcIndex]==' ')){
+				continue;
+			}
+		}
+		NewString[TarIndex++] = Str[SrcIndex];
+	}
+
+  if(TarIndex && NewString[TarIndex-1] == L' '){
+    TarIndex--;
+  }
+  NewString[TarIndex] = 0;
+  ASSERT(TarIndex<=StringLength);
+  CopyMem(Str, NewString, (TarIndex+1)*sizeof(Str[0]));
+  FreePool(NewString);
+  return Str;
+}
+
+
+
 /**
   Initialize the Nvm Express controller.
 
@@ -785,8 +838,8 @@ NvmeControllerInit (
   NVME_AQA                        Aqa;
   NVME_ASQ                        Asq;
   NVME_ACQ                        Acq;
-  UINT8                           Sn[21];
-  UINT8                           Mn[41];
+//UINT8                           Sn[21];
+//UINT8                           Mn[41];
   //
   // Save original PCI attributes and enable this controller.
   //
@@ -968,15 +1021,18 @@ NvmeControllerInit (
   //
   // Dump NvmExpress Identify Controller Data
   //
-  CopyMem (Sn, Private->ControllerData->Sn, sizeof (Private->ControllerData->Sn));
-  Sn[20] = 0;
-  CopyMem (Mn, Private->ControllerData->Mn, sizeof (Private->ControllerData->Mn));
-  Mn[40] = 0;
+  CopyMem (Private->Sn, Private->ControllerData->Sn, sizeof (Private->ControllerData->Sn));
+  Private->Sn[20] = 0;
+  TrimStr8(Private->Sn);
+  CopyMem (Private->Mn, Private->ControllerData->Mn, sizeof (Private->ControllerData->Mn));
+  Private->Mn[40] = 0;
+  TrimStr8(Private->Mn); 
+  
   DEBUG ((EFI_D_INFO, " == NVME IDENTIFY CONTROLLER DATA ==\n"));
   DEBUG ((EFI_D_INFO, "    PCI VID   : 0x%x\n", Private->ControllerData->Vid));
   DEBUG ((EFI_D_INFO, "    PCI SSVID : 0x%x\n", Private->ControllerData->Ssvid));
-  DEBUG ((EFI_D_INFO, "    SN        : %a\n",   Sn));
-  DEBUG ((EFI_D_INFO, "    MN        : %a\n",   Mn));
+  DEBUG ((EFI_D_INFO, "    SN        : %a\n",   Private->Sn));
+  DEBUG ((EFI_D_INFO, "    MN        : %a\n",   Private->Mn));
   DEBUG ((EFI_D_INFO, "    FR        : 0x%x\n", *((UINT64*)Private->ControllerData->Fr)));
   DEBUG ((EFI_D_INFO, "    RAB       : 0x%x\n", Private->ControllerData->Rab));
   DEBUG ((EFI_D_INFO, "    IEEE      : 0x%x\n", *(UINT32*)Private->ControllerData->Ieee_oui));

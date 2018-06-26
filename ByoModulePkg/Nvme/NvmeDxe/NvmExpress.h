@@ -55,6 +55,9 @@ extern EFI_COMPONENT_NAME_PROTOCOL                gNvmExpressComponentName;
 extern EFI_COMPONENT_NAME2_PROTOCOL               gNvmExpressComponentName2;
 extern EFI_DRIVER_SUPPORTED_EFI_VERSION_PROTOCOL  gNvmExpressDriverSupportedEfiVersion;
 
+#define NVME_LEGACY_BOOT_SMI                      0x80
+#define NVME_LEGACY_INIT_SMI                      0x81
+
 #define PCI_CLASS_MASS_STORAGE_NVM                0x08  // mass storage sub-class non-volatile memory.
 #define PCI_IF_NVMHCI                             0x02  // mass storage programming interface NVMHCI.
 
@@ -77,6 +80,15 @@ extern EFI_DRIVER_SUPPORTED_EFI_VERSION_PROTOCOL  gNvmExpressDriverSupportedEfiV
 // Unique signature for private data structure.
 //
 #define NVME_CONTROLLER_PRIVATE_DATA_SIGNATURE    SIGNATURE_32 ('N','V','M','E')
+
+#define MAX_NVME_BLOCK_INFO_COUNT    4
+
+typedef struct {
+  EFI_LBA LastBlock; 
+  UINT64  TotalSize;
+  UINT32  BlockSize;
+  UINT32  NamespaceId;
+} NVME_BLOCK_INFO;
 
 //
 // Nvme private data structure.
@@ -136,6 +148,17 @@ struct _NVME_CONTROLLER_PRIVATE_DATA {
   NVME_CAP                            Cap;
 
   VOID                                *Mapping;
+  UINT32                              PciBase;
+  UINT32                              NvmeBar;
+  UINT8                               *PrpListHost;
+  UINT8                               *PrpListHost2;
+  UINT16                              MaxTransferBlocks;
+  UINT8                               Sn[21];
+  UINT8                               Mn[41];
+
+  UINT8                               BlockInfoCount;  
+  NVME_BLOCK_INFO                     BlockInfo[MAX_NVME_BLOCK_INFO_COUNT];
+
 };
 
 #define NVME_CONTROLLER_PRIVATE_DATA_FROM_PASS_THRU(a) \

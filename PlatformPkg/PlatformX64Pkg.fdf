@@ -682,9 +682,15 @@ FILE FREEFORM = PCD(gEfiSecurityPkgTokenSpaceGuid.PcdSecureKeyMSUEFFile) {
 
 
 
-!if $(NVME_SUPPORT) == TRUE
-  INF MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
-!endif
+
+INF ByoModulePkg/Nvme/NvmeDxe/NvmExpressDxe.inf
+INF ByoModulePkg/Nvme/NvmeSmm/NvmeSmm.inf
+#!if $(LEGACY_NVME_SUPPORT) == TRUE
+  FILE FREEFORM  = 5441A2A9-B4F1-49f1-884A-54F54CBB3D36 {
+    SECTION RAW = ByoModulePkg/Nvme/Legacy/LegacyNvme.bin
+    SECTION UI  = "LegacyNvme"
+  }  
+#!endif
 
 
 

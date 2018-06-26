@@ -14,7 +14,7 @@
 #define DMI_NOT_SET_STR      TBD
 
 /// Maybe should revise it with CHX001 EVB layout.
-#define ONBOARD_LAN_BRIDGE_DEV_NUM     4
+#define ONBOARD_LAN_BRIDGE_DEV_NUM     5
 
 #define THERMAL_IC_SUPPORT             1
 #define    DRAM_Vol_IC_SUPPORT          0
@@ -247,6 +247,9 @@ typedef struct {
 #define SD_OPROM_FILE_GUID \
   { 0xbc16e8bf, 0x3cfd, 0x4b0e, {0x9b, 0x13, 0x20, 0xd5, 0x1c, 0x56, 0x6a, 0xfd}}
 
+// {5441A2A9-B4F1-49f1-884A-54F54CBB3D36}
+#define Nvme_OPROM_FILE_GUID \
+ { 0x5441a2a9, 0xb4f1, 0x49f1, { 0x88, 0x4a, 0x54, 0xf5, 0x4c, 0xbb, 0x3d, 0x36 }}
 
 
 #define WAK_TYPE_NONE                0

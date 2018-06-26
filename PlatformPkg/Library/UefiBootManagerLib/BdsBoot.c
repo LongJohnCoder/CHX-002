@@ -527,6 +527,81 @@ ProcExit:
 
 
 /**
+  Try to get the controller's NVME description.
+
+  @param Handle                Controller handle.
+
+  @return  The description string.
+**/
+CHAR16 *
+GetNvmeDescription (
+  IN EFI_HANDLE                Handle
+  )
+{
+  EFI_STATUS                   Status;
+  CHAR16                       *Description = NULL;
+  EFI_DISK_INFO_PROTOCOL       *DiskInfo;
+  CHAR16                       *ModelName = NULL; 
+  NVME_DEVICE_PRIVATE_DATA     *Device;
+  UINTN                        Index1 = 0;
+  //UINTN                        Index2 = 0;
+  
+  
+  Status = gBS->HandleProtocol (
+                  Handle,
+                  &gEfiDiskInfoProtocolGuid,
+                  &DiskInfo
+                  );
+  if (EFI_ERROR (Status)) {
+    return NULL;
+  }             
+
+  if(!CompareGuid(&DiskInfo->Interface, &gEfiDiskInfoNvmeInterfaceGuid)){
+    return NULL;
+  }		
+
+  Device = NVME_DEVICE_PRIVATE_DATA_FROM_DISK_INFO (DiskInfo);
+
+  ModelName = AllocatePool((80+1)*sizeof(CHAR16));
+  if(ModelName == NULL){
+    goto ProcExit;
+  }    
+  for( ; Index1<80; Index1++){
+  	if(Device->ModelName[Index1] != L'\0'){
+  	  ModelName[Index1]=Device->ModelName[Index1];
+  	}else
+  	  break;
+  }
+  
+  /*while(Index1<80){
+  	if(Device->ModelName[Index1] != L'-'){
+		Index1++;
+		continue;
+  	}else{
+		Index1++;
+		while(Device->ModelName[Index1]!=L'-'){
+	        ModelName[Index2++] = Device->ModelName[Index1++];
+		}
+		break;
+  	}
+  }*/
+  ModelName[Index1] = L'\0';
+
+  Description = AllocateZeroPool (40*sizeof(CHAR16));
+  if (Description == NULL) {
+    goto ProcExit;
+  }
+  UnicodeSPrint(Description, 40*sizeof(CHAR16), L"NVME: %s", ModelName);
+  EliminateExtraSpaces (Description);
+
+ProcExit:
+  if(ModelName!=NULL){FreePool(ModelName);}  
+  return Description; 
+}
+
+
+
+/**
   Try to get the controller's USB description.
 
   @param Handle                Controller handle.
@@ -673,6 +748,7 @@ GetMiscDescription (
 
 GET_BOOT_DESCRIPTION mGetBootDescription[] = {
   GetUsbDescription,
+  GetNvmeDescription,
   GetAtaAtapiDescription,
   GetMiscDescription
 };

@@ -11,8 +11,32 @@ ADDITIONAL_ROM_TABLE  gRomTable[] = {
   {0, 0, LAN_IOEOPROM_FILE_GUID,	OnBoardGnicOpRomCheck},
   #endif
   {0, 0, LAN_OPROM_FILE_GUID,  OnBoardLanOpRomCheck},
-  {0, 0, AHCI_OPROM_FILE_GUID, OnBoardAhciOpRomCheck},
+  {0, 0, AHCI_OPROM_FILE_GUID, OnBoardAhciOpRomCheck}, 
+  {0, 0, Nvme_OPROM_FILE_GUID, NvmeOpRomCheck},         // legacy & uefi not conflict
 };
+
+#define PCI_CLASS_MASS_STORAGE_NVM                0x08  // mass storage sub-class non-volatile memory.
+#define PCI_IF_NVMHCI                             0x02  // mass storage programming interface NVMHCI.
+
+
+BOOLEAN 
+NvmeOpRomCheck (
+  EFI_HANDLE           Handle,
+  EFI_PCI_IO_PROTOCOL  *PciIo
+  )
+{
+  UINT8                       ClassCode[3];
+  EFI_STATUS                  Status;
+
+  Status = PciIo->Pci.Read(PciIo, EfiPciIoWidthUint8, PCI_CC_PI_REG, 3, ClassCode);
+  //
+  // Examine Nvm Express controller PCI Configuration table fields
+  //
+  if ((ClassCode[0] != PCI_IF_NVMHCI) || (ClassCode[1] != PCI_CLASS_MASS_STORAGE_NVM) || (ClassCode[2] != PCI_CLASS_MASS_STORAGE)) {
+    return FALSE;
+  }
+  return TRUE;  
+}
 
 //Add for IOE
 BOOLEAN 

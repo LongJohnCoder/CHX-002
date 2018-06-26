@@ -14,6 +14,9 @@
 **/
 
 #include "NvmExpress.h"
+#include <Library/IoLib.h>
+
+extern UINT16 gSmmPort;
 
 //
 // NVM Express Driver Binding Protocol Instance
@@ -47,6 +50,51 @@ GLOBAL_REMOVE_IF_UNREFERENCED EFI_NVM_EXPRESS_PASS_THRU_MODE gEfiNvmExpressPassT
   0x10100
 };
 
+void 
+AllocatePageForMaxTransferBlocks (
+  IN NVME_CONTROLLER_PRIVATE_DATA       *Private
+  )
+{
+  EFI_STATUS                   Status;
+  UINT32                       MaxTransferBlocks;
+  UINT32                       BlockSize;
+  UINTN                        PrpEntryNo;
+  UINTN                        PrpListNo;
+  UINT64                       Remainder;
+  UINT64                       Pages;
+  EFI_PHYSICAL_ADDRESS         PageAddr;
+
+  BlockSize = Private->BlockInfo[0].BlockSize;
+  if (Private->ControllerData->Mdts != 0) {
+    MaxTransferBlocks = (1 << (Private->ControllerData->Mdts)) * (1 << (Private->Cap.Mpsmin + 12)) / BlockSize;
+  } else {
+    MaxTransferBlocks = 1024;
+  }
+  
+  Pages      = EFI_SIZE_TO_PAGES (MaxTransferBlocks * BlockSize);
+  PrpEntryNo = EFI_PAGE_SIZE / sizeof (UINT64) - 1;
+  PrpListNo = (UINTN)DivU64x64Remainder (Pages, (UINT64)PrpEntryNo, &Remainder);
+  if (PrpListNo == 0) {
+    PrpListNo = 1;
+  } else if ((Remainder != 0) && (Remainder != 1)) {
+    PrpListNo += 1;
+  }
+  PageAddr = 0xFFFFFFFF;
+  Status = gBS->AllocatePages (
+                  AllocateMaxAddress,
+                  EfiACPIMemoryNVS,
+                  PrpListNo,
+                  &PageAddr
+                  );
+  if (EFI_ERROR(Status)) {
+    PageAddr          = 0;
+    MaxTransferBlocks = 0x10;
+  }
+  DEBUG((EFI_D_INFO, "MaxTransferBlocks:%x,PageAddr:%x,PrpListNo:%x\n", MaxTransferBlocks, PageAddr, PrpListNo));
+  Private->MaxTransferBlocks = (UINT16)MaxTransferBlocks;
+  Private->PrpListHost2      = (UINT8*)(UINTN)PageAddr;
+}
+
 /**
   Check if the specified Nvm Express device namespace is active, and create child handles
   for them with BlockIo and DiskInfo protocol instances.
@@ -77,9 +125,11 @@ EnumerateNvmeDevNamespace (
   UINT32                                Lbads;
   UINT32                                Flbas;
   UINT32                                LbaFmtIdx;
-  UINT8                                 Sn[21];
-  UINT8                                 Mn[41];
+//UINT8                                 Sn[21];
+//UINT8                                 Mn[41];
   VOID                                  *DummyInterface;
+  NVME_BLOCK_INFO                       *BlockInfo;
+  
 
   NewDevicePathNode = NULL;
   DevicePath        = NULL;
@@ -226,6 +276,17 @@ EnumerateNvmeDevNamespace (
       goto Exit;
     }
 
+    if(Private->BlockInfoCount < MAX_NVME_BLOCK_INFO_COUNT){
+      BlockInfo = &Private->BlockInfo[Private->BlockInfoCount];
+      BlockInfo->BlockSize = Device->Media.BlockSize;
+      BlockInfo->LastBlock = Device->Media.LastBlock;
+      BlockInfo->NamespaceId = NamespaceId;
+      BlockInfo->TotalSize = MultU64x32(BlockInfo->LastBlock+1, BlockInfo->BlockSize);
+      Private->BlockInfoCount++;
+    }
+    // Get MaxTransferBlocks and allocate memory for it 
+    AllocatePageForMaxTransferBlocks (Private);
+    
     //
     // Check if the NVMe controller supports the Security Send and Security Receive commands
     //
@@ -272,11 +333,11 @@ EnumerateNvmeDevNamespace (
     //
     // Build controller name for Component Name (2) protocol.
     //
-    CopyMem (Sn, Private->ControllerData->Sn, sizeof (Private->ControllerData->Sn));
-    Sn[20] = 0;
-    CopyMem (Mn, Private->ControllerData->Mn, sizeof (Private->ControllerData->Mn));
-    Mn[40] = 0;
-    UnicodeSPrintAsciiFormat (Device->ModelName, sizeof (Device->ModelName), "%a-%a-%x", Sn, Mn, NamespaceData->Eui64);
+//  CopyMem (Sn, Private->ControllerData->Sn, sizeof (Private->ControllerData->Sn));
+//  Sn[20] = 0;
+//  CopyMem (Mn, Private->ControllerData->Mn, sizeof (Private->ControllerData->Mn));
+//  Mn[40] = 0;
+    UnicodeSPrintAsciiFormat (Device->ModelName, sizeof(Device->ModelName), "%a", Private->Mn);
 
     AddUnicodeString2 (
       "eng",
@@ -331,6 +392,9 @@ DiscoverAllNamespaces (
   EFI_STATUS                            Status;
   UINT32                                NamespaceId;
   EFI_NVM_EXPRESS_PASS_THRU_PROTOCOL    *Passthru;
+
+
+  DEBUG((EFI_D_INFO, __FUNCTION__"()\n"));
 
   NamespaceId   = 0xFFFFFFFF;
   Passthru      = &Private->Passthru;
@@ -680,6 +744,23 @@ Done:
   @retval Others                   The driver failded to start the device.
 
 **/
+
+
+#define NVME_PHY_MEMORY_PAGES             6
+
+#define PCI_DEV_MMBASE(Bus, Device, Function) \
+    ( \
+      (UINTN)PcdGet64(PcdPciExpressBaseAddress) + (UINTN) (Bus << 20) + (UINTN) (Device << 15) + (UINTN) \
+        (Function << 12) \
+    )
+
+UINT32
+SMI_CALL(
+    UINT8    SmiValue,
+    UINT32   Address
+);
+
+
 EFI_STATUS
 EFIAPI
 NvmExpressDriverBindingStart (
@@ -693,11 +774,15 @@ NvmExpressDriverBindingStart (
   NVME_CONTROLLER_PRIVATE_DATA        *Private;
   EFI_DEVICE_PATH_PROTOCOL            *ParentDevicePath;
   UINT32                              NamespaceId;
-  EFI_PHYSICAL_ADDRESS                MappedAddr;
-  UINTN                               Bytes;
+  EFI_PHYSICAL_ADDRESS                PageAddr;
   EFI_NVM_EXPRESS_PASS_THRU_PROTOCOL  *Passthru;
+  UINTN                               SegmentNumber;
+  UINTN                               BusNumber;
+  UINTN                               DeviceNumber;
+  UINTN                               FunctionNumber;
 
-  DEBUG ((EFI_D_INFO, "NvmExpressDriverBindingStart: start\n"));
+
+  DEBUG ((EFI_D_INFO, "NvmExpressDriverBindingStart\n"));
 
   Private          = NULL;
   Passthru         = NULL;
@@ -723,66 +808,50 @@ NvmExpressDriverBindingStart (
                   Controller,
                   EFI_OPEN_PROTOCOL_BY_DRIVER
                   );
-
   if (EFI_ERROR (Status) && (Status != EFI_ALREADY_STARTED)) {
     return Status;
   }
 
-  //
-  // Check EFI_ALREADY_STARTED to reuse the original NVME_CONTROLLER_PRIVATE_DATA.
-  //
+  DEBUG((EFI_D_INFO, "(L%d) %r\n", __LINE__, Status));
+
+
   if (Status != EFI_ALREADY_STARTED) {
-    Private = AllocateZeroPool (sizeof (NVME_CONTROLLER_PRIVATE_DATA));
 
-    if (Private == NULL) {
-      DEBUG ((EFI_D_ERROR, "NvmExpressDriverBindingStart: allocating pool for Nvme Private Data failed!\n"));
-      Status = EFI_OUT_OF_RESOURCES;
+// 6 x 4kB aligned buffers will be carved out of this buffer.
+// [0] private data.
+// [1] 4kB boundary is the start of the admin submission queue.
+// [2] 4kB boundary is the start of the admin completion queue.
+// [3] 4kB boundary is the start of I/O submission queue #1.
+// [4] 4kB boundary is the start of I/O completion queue #1.
+// [5] PrpListHost
+    
+    PageAddr = 0xFFFFFFFF;
+    Status = gBS->AllocatePages (
+                    AllocateMaxAddress,
+                    EfiACPIMemoryNVS,
+                    NVME_PHY_MEMORY_PAGES,
+                    &PageAddr
+                    );
+    if (EFI_ERROR(Status)) {
       goto Exit;
     }
+    ZeroMem((VOID*)(UINTN)PageAddr, NVME_PHY_MEMORY_PAGES * EFI_PAGE_SIZE);
+    DEBUG((EFI_D_INFO, "Page@%lX\n", PageAddr));
+    ASSERT(sizeof(NVME_CONTROLLER_PRIVATE_DATA) < EFI_PAGE_SIZE);
+    Private = (NVME_CONTROLLER_PRIVATE_DATA*)(UINTN)PageAddr;
 
-    //
-    // 4 x 4kB aligned buffers will be carved out of this buffer.
-    // 1st 4kB boundary is the start of the admin submission queue.
-    // 2nd 4kB boundary is the start of the admin completion queue.
-    // 3rd 4kB boundary is the start of I/O submission queue #1.
-    // 4th 4kB boundary is the start of I/O completion queue #1.
-    //
-    // Allocate 4 pages of memory, then map it for bus master read and write.
-    //
-    Status = PciIo->AllocateBuffer (
-                      PciIo,
-                      AllocateAnyPages,
-                      EfiBootServicesData,
-                      4,
-                      (VOID**)&Private->Buffer,
-                      0
-                      );
-    if (EFI_ERROR (Status)) {
-      goto Exit;
-    }
-
-    Bytes = EFI_PAGES_TO_SIZE (4);
-    Status = PciIo->Map (
-                      PciIo,
-                      EfiPciIoOperationBusMasterCommonBuffer,
-                      Private->Buffer,
-                      &Bytes,
-                      &MappedAddr,
-                      &Private->Mapping
-                      );
-
-    if (EFI_ERROR (Status) || (Bytes != EFI_PAGES_TO_SIZE (4))) {
-      goto Exit;
-    }
-
-    Private->BufferPciAddr = (UINT8 *)(UINTN)MappedAddr;
-    ZeroMem (Private->Buffer, EFI_PAGES_TO_SIZE (4));
+    Private->Buffer = (UINT8*)((UINTN)PageAddr + EFI_PAGE_SIZE);
+    Private->BufferPciAddr = Private->Buffer;   // memory already below 4GB.
+    Private->PrpListHost = Private->Buffer + EFI_PAGE_SIZE * 4;
 
     Private->Signature = NVME_CONTROLLER_PRIVATE_DATA_SIGNATURE;
     Private->ControllerHandle          = Controller;
     Private->ImageHandle               = This->DriverBindingHandle;
     Private->DriverBindingHandle       = This->DriverBindingHandle;
     Private->PciIo                     = PciIo;
+    PciIo->GetLocation(PciIo, &SegmentNumber, &BusNumber, &DeviceNumber, &FunctionNumber);
+    Private->PciBase = (UINT32)PCI_DEV_MMBASE(BusNumber, DeviceNumber, FunctionNumber);
+    Private->NvmeBar = MmioRead32(Private->PciBase + 0x10) & 0xFFFFFFF0;
     Private->ParentDevicePath          = ParentDevicePath;
     Private->Passthru.Mode             = &Private->PassThruMode;
     Private->Passthru.PassThru         = NvmExpressPassThru;
@@ -791,7 +860,7 @@ NvmExpressDriverBindingStart (
     Private->Passthru.GetNamespace     = NvmExpressGetNamespace;
     CopyMem (&Private->PassThruMode, &gEfiNvmExpressPassThruMode, sizeof (EFI_NVM_EXPRESS_PASS_THRU_MODE));
 
-    Status = NvmeControllerInit (Private);
+    Status = NvmeControllerInit(Private);
     if (EFI_ERROR(Status)) {
       goto Exit;
     }
@@ -805,6 +874,10 @@ NvmExpressDriverBindingStart (
     if (EFI_ERROR (Status)) {
       goto Exit;
     }
+
+    gSmmPort = PcdGet16(PcdSwSmiCmdPort);
+    SMI_CALL(NVME_LEGACY_INIT_SMI, (UINT32)(UINTN)Private);
+    
   } else {
     Status = gBS->OpenProtocol (
                     Controller,
@@ -847,20 +920,13 @@ NvmExpressDriverBindingStart (
     }
   }
 
-  DEBUG ((EFI_D_INFO, "NvmExpressDriverBindingStart: end successfully\n"));
+  DEBUG((EFI_D_INFO, "NvmExpressDriverBindingStartExit\n"));
   return EFI_SUCCESS;
 
+
 Exit:
-  if ((Private != NULL) && (Private->Mapping != NULL)) {
-    PciIo->Unmap (PciIo, Private->Mapping);
-  }
-
-  if ((Private != NULL) && (Private->Buffer != NULL)) {
-    PciIo->FreeBuffer (PciIo, 4, Private->Buffer);
-  }
-
   if (Private != NULL) {
-    FreePool (Private);
+    FreePages(Private, NVME_PHY_MEMORY_PAGES);
   }
 
   gBS->CloseProtocol (
@@ -877,7 +943,7 @@ Exit:
          Controller
          );
 
-  DEBUG ((EFI_D_INFO, "NvmExpressDriverBindingStart: end with %r\n", Status));
+  DEBUG ((EFI_D_INFO, "NvmExpressDriverBindingStartExit:%r\n", Status));
 
   return Status;
 }
@@ -943,16 +1009,7 @@ NvmExpressDriverBindingStop (
             NULL
             );
 
-      if (Private->Mapping != NULL) {
-        Private->PciIo->Unmap (Private->PciIo, Private->Mapping);
-      }
-
-      if (Private->Buffer != NULL) {
-        Private->PciIo->FreeBuffer (Private->PciIo, 4, Private->Buffer);
-      }
-
       FreePool (Private->ControllerData);
-      FreePool (Private);
     }
 
     gBS->CloseProtocol (
