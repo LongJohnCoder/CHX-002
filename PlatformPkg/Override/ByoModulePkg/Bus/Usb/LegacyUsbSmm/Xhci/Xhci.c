@@ -2121,9 +2121,18 @@ UsbConnectXhciDriver (
   //
   XhcInitSched (Xhc);
 
-  if(!mPeriodicFlag){
-  XhcEnableLegacySupport2(Xhc);
-  	}
+  if(!mPeriodicFlag) {
+    XhcEnableLegacySupport2(Xhc);
+  } else {
+    // Bug: If PCIEUSB card plugged, warm reboot will hang B8 if booted OS before;
+    // Root Cause: BIOS issue
+    //             Boot OS once, xHCI::MMIO::USBLEGSUP[HC OS Owned Semaphore] was set. When XhcSetBiosOwnership() invoked, 
+    //             xHCI::MMIO::USBLEGSUP[HC OS Owned Semaphore] will be cleared, so xHCI::MMIO::USBLEGCTLSTS[SMI on OS Ownership Change] active;
+    //             When UsbPeriodicTimerDispatch() registered, UsbOwnershipHandoff() will be invoked.
+    // Clear xHCI::MMIO::USBLEGCTLSTS[SMI on OS Ownership Change] here.
+    XhcWriteExtCapReg (Xhc, Xhc->UsbLegSupOffset + 4, (XhcReadExtCapReg (Xhc, Xhc->UsbLegSupOffset + 4) & 0x1FFFFFFF) | USBLEGCTLSTS_OWNERSHIP);
+  }
+
   //
   // Start the Host Controller
   //
