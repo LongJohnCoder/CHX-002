@@ -16,7 +16,6 @@
 #include <Protocol/SmmControl2.h>
 #include <Protocol\BootScriptSave.h>
 
-
 #include "McaSmi.h"
 #include "..\..\Asia\Porting\Include\CHX002Reg.h"
 #include "..\..\Asia\Porting\Include\CHX002\REG_CHX002_D17F0_PMU.h" 
@@ -26,11 +25,19 @@
 #define ReadMsr(addr)  AsmReadMsr64((addr))
 #define WriteMsr(addr, val)  AsmWriteMsr64((addr), (val))
 
+CPU_MCA_INFO					*McaInfo;
+BOOLEAN							IsEnEMCA = FALSE;
+SPIN_LOCK                       mMcaSmiSpinLock;
+UINT32						    InProcessCPUNum = 0;
+
 EFI_SMM_VARIABLE_PROTOCOL       *mSmmVariable;
-
-
 EFI_SMM_BASE2_PROTOCOL  *gSmmBase2;
 EFI_SMM_SYSTEM_TABLE2   *gSmst2;
+
+void CR4_MCE(int en)
+{
+	en ? AsmWriteCr4(AsmReadCr4() | (1<<6)) : AsmWriteCr4(AsmReadCr4() & ~(1<<6));
+}
 
 
 //============================================
@@ -39,81 +46,81 @@ EFI_SMM_SYSTEM_TABLE2   *gSmst2;
 //============================================
 
 VOID PCIWrite8(
-    UINT64 Address,
-    UINT8 Data)
+	UINT64 Address,
+	UINT8 Data)
 {
-    UINT16 Stride;
-    UINT32 Cf8Val;
-    EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
+	UINT16 Stride;
+	UINT32 Cf8Val;
+	EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
 
-    PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
-    Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
+	PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
+	Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
 
-    Stride = ((UINT16)Address & 0x0003);
-    Cf8Val &= 0xFFFFFFFC;
+	Stride = ((UINT16)Address & 0x0003);
+	Cf8Val &= 0xFFFFFFFC;
 
-    IoWrite32(0xCF8, (Cf8Val|0x80000000));
-    IoWrite8(0xCFC + Stride, Data);
+	IoWrite32(0xCF8, (Cf8Val|0x80000000));
+	IoWrite8(0xCFC + Stride, Data);
 
 }
 
 VOID PCIWrite32(
-    UINT64 Address,
-    UINT32 Data)
+	UINT64 Address,
+	UINT32 Data)
 {
-    UINT16 Stride;
-    UINT32 Cf8Val;
-    EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
+	UINT16 Stride;
+	UINT32 Cf8Val;
+	EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
 
-    PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
-    Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
+	PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
+	Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
 
-    Stride = ((UINT16)Address & 0x0003);
-    Cf8Val &= 0xFFFFFFFC;
+	Stride = ((UINT16)Address & 0x0003);
+	Cf8Val &= 0xFFFFFFFC;
 
-    IoWrite32(0xCF8, (Cf8Val|0x80000000));
-    IoWrite32(0xCFC + Stride, Data);
+	IoWrite32(0xCF8, (Cf8Val|0x80000000));
+	IoWrite32(0xCFC + Stride, Data);
 
 }
 
 UINT8 PCIRead8(
-    UINT64 Address)
+	UINT64 Address)
 {
-    UINT8 Data8;
-    UINT16 Stride;
-    UINT32 Cf8Val;
-    EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
+	UINT8 Data8;
+	UINT16 Stride;
+	UINT32 Cf8Val;
+	EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
 
-    PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
-    Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
+	PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
+	Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
 
-    Stride = ((UINT16)Address & 0x0003);
-    Cf8Val &= 0xFFFFFFFC;
+	Stride = ((UINT16)Address & 0x0003);
+	Cf8Val &= 0xFFFFFFFC;
 
-    IoWrite32(0xCF8,(Cf8Val|0x80000000));
-    Data8=IoRead8(0xCFC + Stride);
+	IoWrite32(0xCF8,(Cf8Val|0x80000000));
+	Data8=IoRead8(0xCFC + Stride);
 
-    return Data8;
+	return Data8;
 }
 
 UINT32 PCIRead32(
-    UINT64 Address)
+	UINT64 Address)
 {
-    UINT32 Data32;
-    UINT16 Stride;
-    UINT32 Cf8Val;
-    EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
+	UINT32 Data32;
+	UINT16 Stride;
+	UINT32 Cf8Val;
+	EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
 
-    PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
-    Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
+	PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
+	Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
 
-    Stride = ((UINT16)Address & 0x0003);
-    Cf8Val &= 0xFFFFFFFC;
+	Stride = ((UINT16)Address & 0x0003);
+	Cf8Val &= 0xFFFFFFFC;
 
-    IoWrite32(0xCF8,(Cf8Val|0x80000000));
-    Data32=IoRead32(0xCFC + Stride);
+	IoWrite32(0xCF8,(Cf8Val|0x80000000));
+	Data32=IoRead32(0xCFC + Stride);
 
-    return Data32;
+	return Data32;
 }
 
 
@@ -123,10 +130,10 @@ UINT8 RwPci8 (
     IN UINT8    SetBit8,
     IN UINT8    ResetBit8 )
 {
-    UINT8   Buffer8;
-    Buffer8 = PCIRead8(PciBusDevFunReg) & (~ResetBit8) | SetBit8;       //Reg -> NAND(Resetbit8) -> OR(SetBit8)
-    PCIWrite8(PciBusDevFunReg, Buffer8);
-    return Buffer8;
+	UINT8	Buffer8;
+	Buffer8 = PCIRead8(PciBusDevFunReg) & (~ResetBit8) | SetBit8;		//Reg -> NAND(Resetbit8) ->	OR(SetBit8)
+	PCIWrite8(PciBusDevFunReg, Buffer8);
+	return Buffer8;
 }
 
 VOID
@@ -136,23 +143,23 @@ ModifyMsr (
   IN  UINT64      Value
   )
 {
-    WriteMsr(Input, ReadMsr(Input) & ~Mask | Value & Mask );
+	WriteMsr(Input, ReadMsr(Input) & ~Mask | Value & Mask );
 }
 
 // ===================================================================
-// Function:        ProgramCOMDBG()
+// Function:		ProgramCOMDBG()
 // 
-// Description: This function is used to program COM port for Debugger
+// Description:	This function is used to program COM port for Debugger
 // 
-// Input:       PeiServices Pointer to the PEI services table
+// Input:		PeiServices	Pointer to the PEI services table
 // 
-// Output:      None
+// Output:		None
 // ===================================================================
 
 VOID ProgramCOMDBG()
 {
-    UINT8 Buffer8;
-    UINT32 Buffer32;
+	UINT8 Buffer8;
+	UINT32 Buffer32;
 
 	 //Enable  4Pin UART1
 	 //Buffer32=IoRead32(0x800 + PMIO_CR_GPIO_PAD_CTL);
@@ -287,6 +294,7 @@ UINT8   _gMca_Csmi_En;
 
 enum BANK_ID_LIST {
   BANK_0 = 0,
+  BANK_5 = 5,
   BANK_6 = 6,
   BANK_8 = 8,
   BANK_9 = 9,
@@ -295,19 +303,260 @@ enum BANK_ID_LIST {
 };
 
 
-void BankHandler(UINT8 BankId)
-{
-        DEBUG(( EFI_D_ERROR, " ***** BankID %X ****************************\n", BankId));
-        DEBUG(( EFI_D_ERROR, " CTL    : %llX\n", ReadMsr(MSR_IA32_MCx_CTL(BankId))  ));
-        DEBUG(( EFI_D_ERROR, " Status : %llX\n", ReadMsr(MSR_IA32_MCx_STATUS(BankId))));
-        DEBUG(( EFI_D_ERROR, " Addr   : %llX\n", ReadMsr(MSR_IA32_MCx_ADDR(BankId))  ));
-        DEBUG(( EFI_D_ERROR, " Misc   : %llX\n", ReadMsr(MSR_IA32_MCx_MISC(BankId))  ));
-        DEBUG(( EFI_D_ERROR, " CTL2   : %llX\n", ReadMsr(MSR_IA32_MCx_CTL2(BankId))  ));
+UINT8 SupportMsmiBankIdList[] = {BANK_0, BANK_5, BANK_6, BANK_8, BANK_9, BANK_10, BANK_17};
+UINT8 SupportCsmiBankIdList[] = {BANK_5, BANK_9, BANK_10, BANK_17};
 
+BOOLEAN IsBankHandle(
+	UINT32			Cpuid,
+	UINT8 			BankId,
+	UINT8 			IsMsmi,
+	UINT8 			IsCsmi
+ )
+{
+	UINT8 	Index;
+	UINT8 	SocketId,ClusterId;	
+	UINT16	CurrentCeCounter;
+	UINT64	Val64;
+
+	
+	Val64 = 0;
+	SocketId  = McaInfo[Cpuid].Location.SocketId;
+	ClusterId = McaInfo[Cpuid].Location.ClusterId;	
+    
+	for(Index=0;Index<ZX_MAX_CPU_NUM;Index++){
+		
+		// skip non-exit core, and has anther to check ,if i has handler this bank error
+		if(!McaInfo[Index].McaContext.Bits.IsEnterMceHandler)
+			continue;
+		
+		if(Cpuid!=Index){
+			if(SocketId!=McaInfo[Index].Location.SocketId)
+				continue;
+
+			if(BankId==BANK_17){
+				if(ClusterId!=McaInfo[Index].Location.ClusterId)
+					continue;
+			}
+		}
+		
+		if(McaInfo[Index].BankHandleHint[BankId].Bits.IsMsmi&&IsMsmi)
+			return TRUE;
+		
+		if(McaInfo[Index].BankHandleHint[BankId].Bits.IsCsmi&&IsCsmi){
+			
+			Val64 = ReadMsr(MSR_IA32_MCx_STATUS(BankId));			
+			CurrentCeCounter = (UINT32)((Val64>>38)&0x7fff);
+			
+			if((CurrentCeCounter<=McaInfo[Index].PrevCmciCounter[BankId]))
+				return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+VOID BankHandler(
+	MCA_BANK_INFO   *ErrBuf,
+	UINT32			Cpuid,
+	UINT8 			BankId,
+	UINT8 			IsMsmi,
+	UINT8 			IsCsmi
+ )
+{		
+		
+	McaInfo[Cpuid].BankHandleHint[BankId].Bits.BankId 	= BankId;
+	McaInfo[Cpuid].BankHandleHint[BankId].Bits.IsMsmi 	= IsMsmi;
+	McaInfo[Cpuid].BankHandleHint[BankId].Bits.IsCsmi 	= IsCsmi;
+	McaInfo[Cpuid].BankHandleHint[BankId].Bits.IsValid	= TRUE;	
+	McaInfo[Cpuid].PrevCmciCounter[BankId]=(UINT16)((ReadMsr(MSR_IA32_MCx_STATUS(BankId))>>38)&0x7fff);
+	
+	ErrBuf->IsValid			=  TRUE;
+	ErrBuf->IsMsmi			=  IsMsmi;
+	ErrBuf->BankId			=  BankId;
+	ErrBuf->MCxCtrl			=  ReadMsr(MSR_IA32_MCx_CTL(BankId));
+	ErrBuf->MCxStatus		=  ReadMsr(MSR_IA32_MCx_STATUS(BankId));
+	ErrBuf->MCxAddr	 		=  ReadMsr(MSR_IA32_MCx_ADDR(BankId));
+	ErrBuf->MCxMisc   		=  ReadMsr(MSR_IA32_MCx_MISC(BankId));
+	ErrBuf->MCxCtrl2  		=  ReadMsr(MSR_IA32_MCx_CTL2(BankId));
+
+//	DEBUG(( EFI_D_ERROR, " ***** BankID %X ****************************\n", BankId));
+//	DEBUG(( EFI_D_ERROR, " Status : %llX\n", ReadMsr(MSR_IA32_MCx_STATUS(BankId))  ));
+//	DEBUG(( EFI_D_ERROR, " Addr   : %llX\n", ReadMsr(MSR_IA32_MCx_ADDR(BankId))  ));
+//	DEBUG(( EFI_D_ERROR, " Misc   : %llX\n", ReadMsr(MSR_IA32_MCx_MISC(BankId))  ));
+//	DEBUG(( EFI_D_ERROR, " CTL    : %llX\n", ReadMsr(MSR_IA32_MCx_CTL(BankId))  ));
+//	DEBUG(( EFI_D_ERROR, " CTL2   : %llX\n", ReadMsr(MSR_IA32_MCx_CTL2(BankId))  ));
+
+
+	if(!IsEnEMCA){
         WriteMsr(MSR_IA32_MCx_STATUS(BankId), 0);
         WriteMsr(MSR_IA32_MCx_ADDR(BankId), 0);
         WriteMsr(MSR_IA32_MCx_MISC(BankId), 0);
         //WriteMsr(MSR_IA32_MCx_CTL(BankId), 0);
+	}
+}
+
+VOID
+EFIAPI
+CommonHandler (
+  IN OUT VOID  *Buffer
+  )
+{
+	UINT32			Eax, Ebx,i;
+	UINT32			cpuid;
+    UINT8  			Mcip = FALSE;
+	UINT8 			McaSmiAssert = FALSE;
+	UINT64 			Val64;
+    UINT8  			BankId, Idx;
+	UINT8			ErrorBankNum;
+	MCA_BANK_INFO   *ErrorBankInfoBuf;
+	MCA_BANK_INFO   *TempBankInfoBuf;
+	
+	// LAPIC ID
+	AsmCpuid(1, &Eax, &Ebx, NULL, NULL);
+	cpuid = (Ebx >> 24) & 0xFF;
+	
+	ErrorBankNum 		 = 0;
+	ErrorBankInfoBuf = (MCA_BANK_INFO *)((EFI_PHYSICAL_ADDRESS)Buffer+sizeof(MCA_BANK_INFO)*(cpuid*17));
+	
+	McaInfo[cpuid].Location.ThreadId		= 0;
+	McaInfo[cpuid].Location.ApicId 			= (UINT8)cpuid;
+	McaInfo[cpuid].Location.ClusterId		= (ReadMsr(BJ_HDW_CONFIG_MSR)>>18)&0x03;
+	McaInfo[cpuid].Location.SocketId		= (ReadMsr(BJ_GLOBAL_STATUS_MSR)>>3)&0x01;
+	McaInfo[cpuid].McaContext.Bits.IsEnterMceHandler =  TRUE;
+	McaInfo[cpuid].McaContext.Bits.IsEnCr4 =  (AsmReadCr4()>>6)&0x01;
+	
+	//Enable CR4.MCE
+//	CR4_MCE(1); // Set CR4  has setted	
+
+    InterlockedIncrement(&InProcessCPUNum);
+	i = 50000;
+	while(InProcessCPUNum != gSmst->NumberOfCpus)
+	{
+		//Waiting until all CPUs enter MCE handler
+		i--;
+		if(i == 0) break;
+		CpuPause();
+	}
+	
+	if((i == 0) && (cpuid == 0x00))
+	{
+		//Only BSP print message is enough
+		DEBUG((EFI_D_ERROR," Timeout: Not all CPUs entered broadcast exception handler, InProcessCPUNum = %02X\n", InProcessCPUNum));
+	}
+	
+	while (!AcquireSpinLockOrFail (&mMcaSmiSpinLock)) {
+      CpuPause ();
+    }
+	
+//	DEBUG(( EFI_D_ERROR, "\n CPU LAPIC: %2X enter MCE handler! >>>>\n\n\r",cpuid));
+	
+	do{
+			McaSmiAssert = FALSE;
+			
+			//
+			// Handle MSMI
+			//
+
+			for (Idx=0; Idx < sizeof(SupportMsmiBankIdList)/sizeof(UINT8); Idx++)
+			{
+
+				if (_gMca_Msmi_En == 0)
+					break;
+				
+				BankId = SupportMsmiBankIdList[Idx];
+				
+				Val64 = ReadMsr(MSR_IA32_MCx_STATUS(BankId));
+				
+				if ( (Val64 & MCI_STS_VAL_BIT) != MCI_STS_VAL_BIT)
+					continue; // Not valid error
+				
+				if ( (Val64 & MCI_STS_UC_BIT) != MCI_STS_UC_BIT)
+					continue; // not MSMI (Uncorrected Error)
+				
+				// for MSMI,no override
+								
+				if(IsBankHandle(cpuid,BankId,TRUE,FALSE))
+					continue;
+				
+				TempBankInfoBuf = ErrorBankInfoBuf+sizeof(MCA_BANK_INFO)*ErrorBankNum;
+				
+				BankHandler(TempBankInfoBuf,cpuid,BankId,TRUE,FALSE);	
+				
+				ErrorBankNum++;
+								
+				McaSmiAssert = TRUE;
+			}
+
+			//
+			// Handle CSMI
+			//
+
+			for (Idx=0; Idx < sizeof(SupportCsmiBankIdList)/sizeof(UINT8); Idx++)
+			{
+
+				if (_gMca_Csmi_En == 0)
+					break;
+
+				BankId = SupportCsmiBankIdList[Idx];
+
+				Val64 = ReadMsr(MSR_IA32_MCx_STATUS(BankId));
+
+				if ( (Val64 & MCI_STS_VAL_BIT) != MCI_STS_VAL_BIT)
+					continue; // Not valid error
+
+				if ( (Val64 & MCI_STS_UC_BIT) != 0)
+					continue; // not CSMI (Corrected Error)
+
+				if(IsBankHandle(cpuid,BankId,FALSE,TRUE))
+					continue;
+								
+				TempBankInfoBuf 		= ErrorBankInfoBuf+sizeof(MCA_BANK_INFO)*ErrorBankNum;
+				BankHandler(TempBankInfoBuf,cpuid,BankId,FALSE,TRUE);	
+				
+				ErrorBankNum++;
+				McaSmiAssert = TRUE;
+			}
+	} while (McaSmiAssert == TRUE);
+	
+//	DEBUG(( EFI_D_ERROR, " MCG Status = %llX\n",ReadMsr(MSR_IA32_MCG_STATUS) ));
+	Mcip = (ReadMsr(MSR_IA32_MCG_STATUS) & MCG_STATUS_MCIP_BIT) ? TRUE : FALSE;
+	McaInfo[cpuid].McaContext.Bits.IsClearMcip = Mcip;
+			
+	if (Mcip == TRUE)
+	{
+		WriteMsr(MSR_IA32_MCG_STATUS,0);
+		
+		Mcip = (ReadMsr(MSR_IA32_MCG_STATUS) & MCG_STATUS_MCIP_BIT) ? TRUE : FALSE;
+		if (Mcip == TRUE)
+		{
+			WriteMsr(MSR_IA32_MCG_STATUS,0);
+			
+		}
+	}
+		
+//	DEBUG(( EFI_D_ERROR, "\n CPU LAPIC: %2X exit MCE handler! <<<<\n\n\r",cpuid));
+	
+	ReleaseSpinLock (&mMcaSmiSpinLock);
+		
+	if(IsEnEMCA){
+		if((ReadMsr(0x1217)&0x01)==0){
+			ModifyMsr(0x1217,0x01,0x01); // enable Pending MCE in SMM Mode
+		}else{
+			McaInfo[cpuid].McaContext.Bits.IsNotEqZero = TRUE; //check uCode weather or not clear msr 0x1217[0] 
+		}
+	}
+	
+	McaInfo[cpuid].McaContext.Bits.IsInjectMCE= ReadMsr(0x1217)&0x01;	
+	
+	InterlockedDecrement(&InProcessCPUNum);
+	
+	while(InProcessCPUNum != 0)
+	{
+		//Waitting all CPU handle done
+		CpuPause();
+	}
+	
+	return;
 }
 
 
@@ -320,85 +569,106 @@ McaHandler(
   IN OUT UINTN              *SourceSize              OPTIONAL
   )
 {
-    UINT8  McaSmiAssert = FALSE;
-    UINT64 Val64;
-    UINT8  BankId, Idx;
-    UINT8  SupportMsmiBankIdList[] = {BANK_0, BANK_6, BANK_8, BANK_9, BANK_10, BANK_17};
-    UINT8  SupportCsmiBankIdList[] = {BANK_9, BANK_10, BANK_17};
+	EFI_STATUS 					Status = EFI_SUCCESS;
+	UINT8		 				Index,Index2;
+	UINT8						Cpuid;
+	UINTN 						Length,Length2;
+	EFI_PHYSICAL_ADDRESS		ErrorBankInfoBuffer;
+	MCA_BANK_INFO				*TmpErrorInfo;
+	//
+	//  Enable bit & Status bit for MCA Smi should be 1
+	//
 
-   //
-   //  Enable bit & Status bit for MCA Smi should be 1
-   //
-   if ((IoRead8( PM_BASE_ADDRESS+ PMIO_GENERAL_PURPOSE_STA_Z1 ) & PMIO_CPUMCA_STS ) == 0 ||
-        (IoRead8( PM_BASE_ADDRESS+ PMIO_GENERAL_PURPOSE_SMI_ENABLE) & PMIO_CPUMCA_SM ) == 0) {//0419
-       return EFI_SUCCESS;
-   }
-
-#if ERSMI_COMPORT_DEBUG_MESSAGES
+	if (
+	     (IoRead8( PM_BASE_ADDRESS+ PMIO_GENERAL_PURPOSE_STA_Z1 ) & PMIO_CPUMCA_STS ) == 0 ||
+	     (IoRead8( PM_BASE_ADDRESS+ PMIO_GENERAL_PURPOSE_SMI_ENABLE) & PMIO_CPUMCA_SM ) == 0
+	    )  {//0419
+		return EFI_SUCCESS;
+	}
+	
+	#if ERSMI_COMPORT_DEBUG_MESSAGES
     InitUart();
-#endif
-
-    DEBUG((EFI_D_ERROR, "bf MSR_IA32_MCG_STATUS = 0x%X\n",ReadMsr(MSR_IA32_MCG_STATUS)));
-    WriteMsr(MSR_IA32_MCG_STATUS,0);
-    DEBUG((EFI_D_ERROR, "af MSR_IA32_MCG_STATUS = 0x%X\n",ReadMsr(MSR_IA32_MCG_STATUS)));
-
-    do
-    {
-        McaSmiAssert = FALSE;
-
-        //
-        // Handle MSMI
-        //
-        for (Idx=0; Idx < sizeof(SupportMsmiBankIdList)/sizeof(UINT8); Idx++)
-        {
-            if (_gMca_Msmi_En == 0)
-                break;
-
-            BankId = SupportMsmiBankIdList[Idx];
-
-            Val64 = ReadMsr(MSR_IA32_MCx_STATUS(BankId));
-
-            if ( (Val64 & MCI_STS_VAL_BIT) != MCI_STS_VAL_BIT)
-                continue; // Not valid error
-
-            if ( (Val64 & MCI_STS_UC_BIT) != MCI_STS_UC_BIT)
-                continue; // not MSMI (Uncorrected Error)
-                
-            DEBUG(( EFI_D_ERROR, " Handle MSMI \n" ));
-            
-            BankHandler(BankId);
-
-            McaSmiAssert = TRUE;
-        }
-
-        //
-        // Handle CSMI
-        //
-
-        for (Idx=0; Idx < sizeof(SupportCsmiBankIdList)/sizeof(UINT8); Idx++)
-        {
-
-            if (_gMca_Csmi_En == 0)
-                break;
-
-            BankId = SupportCsmiBankIdList[Idx];
-
-            Val64 = ReadMsr(MSR_IA32_MCx_STATUS(BankId));
-
-            if ( (Val64 & MCI_STS_VAL_BIT) != MCI_STS_VAL_BIT)
-                continue; // Not valid error
-
-            if ( (Val64 & MCI_STS_UC_BIT) != 0)
-                continue; // not CSMI (Corrected Error)
-            
-            DEBUG(( EFI_D_ERROR, " Handle CSMI \n" ));
-            
-            BankHandler(BankId);
-
-            McaSmiAssert = TRUE;
-        }
-    } while (McaSmiAssert == TRUE);
+	#endif
+	
+	//
+    // Allocate SMRAM buffer
+    //
     
+    Length2= sizeof(MCA_BANK_INFO)*ZX_MAX_MCA_BANK_NUM*ZX_MAX_CPU_NUM;
+    Length = Length2+sizeof(CPU_MCA_INFO)*ZX_MAX_CPU_NUM;
+	
+	Status = gSmst->SmmAllocatePages(
+					AllocateAnyPages,
+					EfiRuntimeServicesData,
+					EFI_SIZE_TO_PAGES (Length),
+					&ErrorBankInfoBuffer
+					);
+	
+	ASSERT_EFI_ERROR (Status);
+	
+	ZeroMem((VOID *)ErrorBankInfoBuffer,Length);
+
+	McaInfo = (CPU_MCA_INFO*)(ErrorBankInfoBuffer+Length2);
+	
+//	DEBUG((EFI_D_ERROR,"Data Info buffer Base:%x, Size:%x\n",ErrorBankInfoBuffer,Length2));
+//	DEBUG((EFI_D_ERROR,"Mca  Info buffer Base:%x, Size:%x\n",McaInfo,Length-Length2));
+	
+	InitializeSpinLock (&mMcaSmiSpinLock);
+	
+	for(Index=1;Index<gSmst->NumberOfCpus;Index++){
+		
+		Status = gSmst->SmmStartupThisAp (
+						  CommonHandler,
+						  Index,
+						  (VOID*)(MCA_BANK_INFO*)ErrorBankInfoBuffer
+						  );
+		ASSERT_EFI_ERROR (Status);
+	}
+	
+	CommonHandler((VOID*)(MCA_BANK_INFO*)ErrorBankInfoBuffer);
+	
+	for(Index=0;Index<16;Index++){
+		
+			if(!McaInfo[Index].McaContext.Bits.IsEnterMceHandler)
+				continue;
+			
+			Cpuid = McaInfo[Index].Location.ApicId;
+			if(McaInfo[Index].McaContext.Bits.IsNotEqZero){
+				DEBUG((EFI_D_ERROR,"core %d has not clear MSR 0x1217[0]\n",Cpuid));
+				continue;
+			}
+			
+			DEBUG((EFI_D_ERROR,"Socket %d, Cluster %d, core %d,CR4:%x,MSR 0x1217:%llx,Mcip:%d\n",
+											McaInfo[Index].Location.SocketId,
+											McaInfo[Index].Location.ClusterId,
+											Cpuid,
+											McaInfo[Index].McaContext.Bits.IsEnCr4,
+											McaInfo[Index].McaContext.Bits.IsInjectMCE,
+											McaInfo[Index].McaContext.Bits.IsClearMcip
+										));
+			
+			TmpErrorInfo=(MCA_BANK_INFO*)(ErrorBankInfoBuffer+sizeof(MCA_BANK_INFO)*(Cpuid*17));
+			for(Index2=0;Index2<17;Index2++){
+				 if(TmpErrorInfo[Index2].IsValid){
+					 DEBUG(( EFI_D_ERROR, "  == Core %d, Bank %d, ", Cpuid,TmpErrorInfo[Index2].BankId));
+					 
+					 if(TmpErrorInfo[Index2].IsMsmi){					 	
+						DEBUG(( EFI_D_ERROR, "Msmi==\n\n"));
+					 }else{
+						DEBUG(( EFI_D_ERROR, "Csmi==\n\n"));
+					 }
+					 
+	        		 DEBUG(( EFI_D_ERROR, " STATUS : %llX\n", TmpErrorInfo[Index2].MCxStatus));
+	       			 DEBUG(( EFI_D_ERROR, " CTL    : %llX\n", TmpErrorInfo[Index2].MCxCtrl));
+	        		 DEBUG(( EFI_D_ERROR, " ADDR   : %llX\n", TmpErrorInfo[Index2].MCxAddr));
+	        		 DEBUG(( EFI_D_ERROR, " MISC   : %llX\n", TmpErrorInfo[Index2].MCxMisc));
+	        		 DEBUG(( EFI_D_ERROR, " CTL2   : %llX\n", TmpErrorInfo[Index2].MCxCtrl2));
+				 }
+			}
+	}
+		
+	gSmst->SmmFreePages (ErrorBankInfoBuffer, EFI_SIZE_TO_PAGES (Length));
+	
     DEBUG(( EFI_D_ERROR, " Clear PMIO_GENERAL_PURPOSE_STA_Z1 \n" ));
     // Clear Mca Smi status
     IoWrite8( PM_BASE_ADDRESS+PMIO_GENERAL_PURPOSE_STA_Z1, IoRead8( PM_BASE_ADDRESS+PMIO_GENERAL_PURPOSE_STA_Z1) | (UINT8)PMIO_CPUMCA_STS );
@@ -426,7 +696,7 @@ McaSmiInit (
        DEBUG((EFI_D_INFO, "(Smm)UseEmuVarService, Not do McaSmiInit()\n"));    
        return EFI_SUCCESS;
     }
-
+	
     //
     // Enable MCE and Inject Thermal error if Thermal status in PMIO is High
     //

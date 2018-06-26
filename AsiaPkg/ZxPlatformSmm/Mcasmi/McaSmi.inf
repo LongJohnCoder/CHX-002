@@ -50,7 +50,7 @@
   DevicePathLib
   UefiRuntimeServicesTableLib
   SmmServicesTableLib
-
+SynchronizationLib
   
 [Protocols]
   //gEfiSmmGeneralDispatch2ProtocolGuid

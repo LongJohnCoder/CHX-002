@@ -23,6 +23,7 @@
 #include <Protocol/SmmCpu.h>
 #include <Library/UefiDriverEntryPoint.h>
 #include <Library/PrintLib.h>
+#include <Library/SynchronizationLib.h>
 
 
 
@@ -73,7 +74,11 @@ IoWrite8(0x80, x);\
 while(1);\
 }
 
-#define BJ_MCA_ZX_CTRL2_MSR                 0x1617
+#define	ZX_MAX_CPU_NUM		 	16
+#define	ZX_MAX_MCA_BANK_NUM	 	18
+#define	BJ_GLOBAL_STATUS_MSR    0x1610
+#define BJ_HDW_CONFIG_MSR		0x1628
+#define BJ_MCA_ZX_CTRL2_MSR     0x1617
 
 typedef struct {
   UINT8   Register;
@@ -82,5 +87,73 @@ typedef struct {
   UINT8   Bus;
   UINT32  ExtendedRegister;
 } EFI_PCI_CONFIGURATION_ADDRESS;
+
+///
+/// Structure that describes the pyhiscal location of a logical CPU.
+///
+typedef struct {
+  ///
+  /// Zero-based physical package number that identifies the cartridge of the processor.
+  ///
+  UINT8  SocketId;
+  
+  /// Zero-based Cluster package number that identifies the cartridge of the processor.
+  UINT8  ClusterId;
+  ///
+  /// Zero-based physical core number within package of the processor.
+  ///
+  UINT8  ApicId;
+  ///
+  /// Zero-based logical thread number within core of the processor.
+  ///
+  UINT8  ThreadId;
+} EFI_CPU_PHYSICAL_LOCATION2;
+
+//
+// Bank handle Format
+//
+
+typedef union {
+  struct {
+    UINT16  BankId:8;          
+    UINT16  IsValid:1;       
+    UINT16  IsMsmi:1;  
+    UINT16  IsCsmi:1;  
+    UINT16  Reserved1:5;       ///< Reserved.
+  } Bits;
+  UINT16    Uint16;
+} BANK_HANDLE_HINT;
+
+// cpu context
+
+typedef union {
+  struct {
+    UINT8  IsEnterMceHandler:1;       
+    UINT8  IsNotEqZero:1;          
+    UINT8  IsClearMcip:1;       
+    UINT8  IsEnCr4:1;  
+    UINT8  IsInjectMCE:1;  
+    UINT8  Reserved1:3;       ///< Reserved.
+  } Bits;
+  UINT8    Uint8;
+} CPU_MCA_CONTEXT;
+
+typedef struct _CPU_MCA_INFO{
+	EFI_CPU_PHYSICAL_LOCATION2		Location;
+	BANK_HANDLE_HINT  				BankHandleHint[ZX_MAX_MCA_BANK_NUM];
+	UINT16							PrevCmciCounter[ZX_MAX_MCA_BANK_NUM];
+	CPU_MCA_CONTEXT 				McaContext;
+}CPU_MCA_INFO;
+
+typedef struct _MCA_BANK_INFO{   
+	UINT8		IsValid;	
+	UINT8		IsMsmi;	
+	UINT16		BankId;	
+	UINT64		MCxStatus;
+	UINT64		MCxAddr;
+	UINT64		MCxMisc;
+	UINT64		MCxCtrl;
+	UINT64		MCxCtrl2;
+}MCA_BANK_INFO;
 
 #endif
