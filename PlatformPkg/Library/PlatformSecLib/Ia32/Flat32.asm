@@ -96,19 +96,6 @@ TightLoop:
 _ModuleEntryPoint ENDP
 _TEXT_REALMODE      ENDS
 
-#ifdef ZX_SECRET_CODE
-;Add core frequence selection macro:
-;  Freq/Vol     SVID     PVID
-; 0=3.0G/1.05V  3CA1     3C5B 
-; 1=2.7G/1.0V   3697     3657
-; 2=2.2G/1.0V   2C97     3657
-; 3=2.0G/1.0V   2897     2857
-; 4=1.6G/1.0V   2097     2057
-; 5=3.0G/1.1V  3CAB   3C5F
-; 6=800M/0.8V  106F    1047
-CORE_FREQ_SEL = 3
-#endif
-
 ; mm0 is used to save time-stamp counter value.
 ; mm1 is used to save microcode address.
 ; mm6 is used to save microcode size
@@ -190,40 +177,22 @@ IamBSP:
     jnz pstDone
 
     xor edx, edx
-#ifdef HX002EB0_00
-;For PVID Board
-IF (CORE_FREQ_SEL EQ 0)
-    mov ax, 3C5Bh
-ELSEIF (CORE_FREQ_SEL EQ 1)
-     mov ax, 3657h
-ELSEIF (CORE_FREQ_SEL EQ 2)
-    mov ax, 2C57h
-ELSEIF (CORE_FREQ_SEL EQ 3)
-    mov ax, 2857h
-ELSEIF (CORE_FREQ_SEL EQ 4)
-    mov ax, 2057h
-ELSE
-    mov ax, 1047h
-ENDIF
-#else
-;For SVID Board
-IF (CORE_FREQ_SEL EQ 0)
-    mov ax, 3CA1h
-ELSEIF (CORE_FREQ_SEL EQ 1)
-     mov ax, 3697h
-ELSEIF (CORE_FREQ_SEL EQ 2)
-    mov ax, 2C97h
-ELSEIF (CORE_FREQ_SEL EQ 3)
-    mov ax, 2897h
-ELSEIF (CORE_FREQ_SEL EQ 4)
-    mov ax, 2097h
-ELSEIF (CORE_FREQ_SEL EQ 5)
-    mov ax, 3CABh
-ELSE
-    mov ax, 106Fh
-ENDIF
-#endif
 
+;;------------------------------------------------------------------------------
+;; NOTE: To change CPU core frequency and voltage, give ax a Hex value xxyyh as such: 
+;;  mov ax, xxyyh
+; Here:
+;;  xx:  FID, the x2 ratio to base freq(100MHz),  FID=Target_Freq_in_MHz*2/100
+;;  yy:  VID, the VID value depends on target voltage and VRM Type.
+;;     For SVID Board, VID=Target_Voltage * 200 - 49; 
+;;     For PVID Board, VID=Target_Voltage * 80 + 7;
+;; For example,  on a SVID board(HX002EA0_00),
+;;  to get 3G/1.05V, set FID=3000/50=3C; VID=1.05*200-49=A1h, so xxyy=3CA1h.
+;;  to get 2.2G/1.0V, set FID=2200/50=2C; VID=1.0*200-49=97h, so xxyy=2C97h
+;;------------------------------------------------------------------------------   
+;;End-Of-Core-Freq-Vol {
+    mov ax, 2897h    ;default to 2.0G/1.0V, see guide above to select the required freq/vol   
+;;}End-Of-Core-Freq-Vol
 
     mov ecx, 1440h
     bts eax, 31
