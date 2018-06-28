@@ -1,15 +1,10 @@
-/** @file
-
-  Copyright (c) ,  Corporation. All rights reserved.<BR>
-  This program and the accompanying materials are licensed and made available 
-  under the terms and conditions of the BSD License which accompanies this 
-  distribution.  The full text of the license may be found at        
-  http://opensource.org/licenses/bsd-license.php                                            
-
-  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,                     
-  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.             
-
-**/
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**     Copyright (c) 2018 Shanghai Zhaoxin Semiconductor Co., Ltd.  **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
 
 
 #include <Protocol/SmmBase2.h>
@@ -416,7 +411,7 @@ CommonHandler (
 	cpuid = (Ebx >> 24) & 0xFF;
 	
 	ErrorBankNum 		 = 0;
-	ErrorBankInfoBuf = (MCA_BANK_INFO *)((EFI_PHYSICAL_ADDRESS)Buffer+sizeof(MCA_BANK_INFO)*(cpuid*17));
+	ErrorBankInfoBuf = (MCA_BANK_INFO *)((EFI_PHYSICAL_ADDRESS)Buffer+sizeof(MCA_BANK_INFO)*(cpuid*ZX_MAX_MCA_BANK_NUM));
 	
 	McaInfo[cpuid].Location.ThreadId		= 0;
 	McaInfo[cpuid].Location.ApicId 			= (UINT8)cpuid;
@@ -478,7 +473,7 @@ CommonHandler (
 				if(IsBankHandle(cpuid,BankId,TRUE,FALSE))
 					continue;
 				
-				TempBankInfoBuf = ErrorBankInfoBuf+sizeof(MCA_BANK_INFO)*ErrorBankNum;
+				TempBankInfoBuf = (MCA_BANK_INFO *)((EFI_PHYSICAL_ADDRESS)ErrorBankInfoBuf+sizeof(MCA_BANK_INFO)*ErrorBankNum);
 				
 				BankHandler(TempBankInfoBuf,cpuid,BankId,TRUE,FALSE);	
 				
@@ -510,7 +505,7 @@ CommonHandler (
 				if(IsBankHandle(cpuid,BankId,FALSE,TRUE))
 					continue;
 								
-				TempBankInfoBuf 		= ErrorBankInfoBuf+sizeof(MCA_BANK_INFO)*ErrorBankNum;
+				TempBankInfoBuf = (MCA_BANK_INFO *)((EFI_PHYSICAL_ADDRESS)ErrorBankInfoBuf+sizeof(MCA_BANK_INFO)*ErrorBankNum);
 				BankHandler(TempBankInfoBuf,cpuid,BankId,FALSE,TRUE);	
 				
 				ErrorBankNum++;
@@ -647,8 +642,8 @@ McaHandler(
 											McaInfo[Index].McaContext.Bits.IsClearMcip
 										));
 			
-			TmpErrorInfo=(MCA_BANK_INFO*)(ErrorBankInfoBuffer+sizeof(MCA_BANK_INFO)*(Cpuid*17));
-			for(Index2=0;Index2<17;Index2++){
+			TmpErrorInfo=(MCA_BANK_INFO*)(ErrorBankInfoBuffer+sizeof(MCA_BANK_INFO)*(Cpuid*ZX_MAX_MCA_BANK_NUM));
+			for(Index2=0;Index2<ZX_MAX_MCA_BANK_NUM;Index2++){
 				 if(TmpErrorInfo[Index2].IsValid){
 					 DEBUG(( EFI_D_ERROR, "  == Core %d, Bank %d, ", Cpuid,TmpErrorInfo[Index2].BankId));
 					 
