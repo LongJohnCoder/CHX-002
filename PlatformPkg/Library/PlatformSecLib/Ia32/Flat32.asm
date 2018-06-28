@@ -189,6 +189,24 @@ IamBSP:
 ;; For example,  on a SVID board(HX002EA0_00),
 ;;  to get 3G/1.05V, set FID=3000/50=3C; VID=1.05*200-49=A1h, so xxyy=3CA1h.
 ;;  to get 2.2G/1.0V, set FID=2200/50=2C; VID=1.0*200-49=97h, so xxyy=2C97h
+;;
+;; Sample Table
+;;
+;;  Freq/Vol     SVID     PVID
+;; 3.0G/1.0V  3C97     3C57
+;; 3.0G/1.05V  3CA1     3C5B 
+;; 3.0G/1.1V   3CAB   3C5F
+;; 2.7G/1.0V   3697     3657
+;; 2.7G/1.05V 36A1   365B     
+;; 2.7G/1.1V   36AB   365F     
+;; 2.2G/1.0V   2C97     3657
+;; 2.2G/1.05V 2CA1     365B
+;; 2.0G/0.95V 288D     
+;; 2.0G/1.0V   2897     2857 ---- BIOS default setting
+;; 2.0G/1.05V 28A1    285B
+;; 1.6G/1.0V   2097     2057
+;; 800M/0.8V  106F    1047
+;;
 ;;------------------------------------------------------------------------------   
 ;;End-Of-Core-Freq-Vol {
     mov ax, 2897h    ;default to 2.0G/1.0V, see guide above to select the required freq/vol   
