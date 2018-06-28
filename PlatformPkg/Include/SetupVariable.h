@@ -354,6 +354,7 @@ typedef struct {
 	 UINT16 TOPGroup0XhciGroup0Selcet;
 	 UINT16 TOPGroup0XhciGroup1Selcet;
 	 UINT8	TOPGroup0XhciMCUSelcet;
+	 UINT16	TOPGroup0SUSXhciSelcet;
 	 UINT32	TOPGroup0ModuleSubSelcet;
 	 UINT8	 TOPGroup1TopSelcet;
 	 UINT8  TOPGroup1XhciModule2Selcet;
@@ -361,6 +362,8 @@ typedef struct {
 	 UINT16 TOPGroup1XhciGroup2Selcet;
 	 UINT16 TOPGroup1XhciGroup3Selcet;
 	 UINT8	TOPGroup1XhciMCUSelcet;
+	 UINT16	TOPGroup1SUSXhciSelcet;
+
 	 //UINT8	 TOPGroup1XhciModuleSelcet;
 	 UINT32	TOPGroup1ModuleSubSelcet;
  	 UINT8	 FSBCGroup0TopSelcet;
