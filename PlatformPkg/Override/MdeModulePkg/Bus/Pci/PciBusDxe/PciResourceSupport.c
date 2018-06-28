@@ -1028,6 +1028,16 @@ BOOLEAN  IsDualVGAPrimaryIgd()
   return FALSE;
 }
 
+BOOLEAN IsDeviceNeedMem64(PCI_IO_DEVICE *PciIo)
+{
+    UINTN Index;
+    for(Index = 0; Index < PCI_MAX_BAR; Index++) {
+        if(PciIo->PciBar[Index].BarType == PciBarTypeMem64)
+	    return TRUE;
+    }
+    return FALSE;
+}
+
 BOOLEAN IsThisPciDeviceNeedDegrade(PCI_IO_DEVICE *PciIo)
 {
   UINT8    *ClassCode;
@@ -1036,6 +1046,11 @@ BOOLEAN IsThisPciDeviceNeedDegrade(PCI_IO_DEVICE *PciIo)
   
   ClassCode = PciIo->Pci.Hdr.ClassCode;
   IsRp = ClassCode[2] == 6 && ClassCode[1] == 4 && ClassCode[0] == 0;
+
+   if(PciIo->BusNumber !=0 && IsDeviceNeedMem64(PciIo)) {
+    	return TRUE;
+  }
+  
   if(PciIo->BusNumber == 0 && !IsRp){
     return TRUE;
   }  

@@ -603,6 +603,9 @@ DramCfg->DramRxTxTimingHardCode= SetupData->DramRxTxTimingHardCode;
      DramCfg->RRankRDelay = SetupData->RRankRDelay;
      DramCfg->RRankWDelay = SetupData->RRankWDelay;
      DramCfg->BankGroupBit0Decode = SetupData->BankGroupBit0Decode;
+    DramCfg->Above4GLocation = SetupData->Pci64Location;
+    DramCfg->Above4GEnable   = SetupData->Pci64;
+
 // do override here.
 //-----------------------------------------------------------
   //NbCfg->PciePE1 = SetupData->OnboardLan; // should check CHX001 EVB Board.

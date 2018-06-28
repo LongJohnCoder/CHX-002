@@ -1308,9 +1308,13 @@ PlatformPeiEntry (
   }
 
   DEBUG((DEBUG_ERROR,"MemInfo->PhyAddrBits = %d\n",MemInfo->PhyAddrBits));
-  MemInfo->Pci64Base = LShiftU64(1, MemInfo->PhyAddrBits) - PCI64_MMIO_SIZE;
-  MemInfo->Pci64Size = PCI64_MMIO_SIZE;
-
+  if(DramCfg->Above4GEnable) {
+    MemInfo->Pci64Base = LShiftU64(1, MemInfo->PhyAddrBits) - PCI64_MMIO_SIZE;
+    MemInfo->Pci64Size = PCI64_MMIO_SIZE;
+  } else {
+    MemInfo->Pci64Base = MemInfo->Pci64Size = 0;
+  }
+  
   DEBUG((DEBUG_INFO,  "Fake(%X,%X)\n", DramInfo->FakeBegin, DramInfo->FakeLength));	
   DEBUG((DEBUG_ERROR, "LowMemSize:%X, TSegAddr:%X\n", MemInfo->LowMemSize, MemInfo->TSegAddr));
   DEBUG((DEBUG_ERROR, "VgaBufAddr:%X,L:%X\n", MemInfo->VgaBufAddr, MemInfo->VgaBufSize));

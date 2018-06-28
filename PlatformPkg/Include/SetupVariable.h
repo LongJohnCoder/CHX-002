@@ -647,6 +647,7 @@ typedef struct {
   
   //pcie
   UINT8 Pci64;           // winddy +
+  UINT8 Pci64Location;
 	
 //NB DEBUG
 //LGE20160308-START

@@ -468,9 +468,11 @@ PlatOnReadyToBoot (
 	  //HighMemSize = MemInfo->PhyMemSize - MemInfo->Tolum;
 	  HighMemSize = MemInfo->PhyMemSize - MemInfo->Tolum - MemInfo->VgaBufSize;
 	  //ECS20161104 Update E820 table for UMA enable -E
-    if(SIZE_4GB + HighMemSize > MemInfo->Pci64Base){
-      HighMemSize = MemInfo->Pci64Base - SIZE_4GB;
-    }  
+        if(MemInfo->Pci64Base) {
+            if(SIZE_4GB + HighMemSize > MemInfo->Pci64Base){
+                HighMemSize = MemInfo->Pci64Base - SIZE_4GB;
+             }  
+         }
 	
 	//ECS20161108 Correct when high memory size = 0 -S
 	if(HighMemSize > 0) {

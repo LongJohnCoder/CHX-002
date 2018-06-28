@@ -168,15 +168,15 @@ SetCacheMtrrAtNormalPeiEnd (
 			  MemoryLength,
 			  EfiCacheTypeUncacheable
 			  );
-
-  CachePpi->SetCache (
+  if(MemInfo->Pci64Size) {
+     CachePpi->SetCache (
               PeiServices,
               CachePpi,
               MemInfo->Pci64Base,
               MemInfo->Pci64Size,
               EfiCacheTypeUncacheable
               );
-  
+  	}
   CachePpi->ActivateCache (
               PeiServices,
               CachePpi

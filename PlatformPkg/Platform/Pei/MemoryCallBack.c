@@ -350,13 +350,15 @@ ReportResourceForDxe (
       );  
   }
   
-  BuildResourceDescriptorHob (
-    EFI_RESOURCE_MEMORY_MAPPED_IO,
-    Attributes,
-    MemInfo->Pci64Base,
-    MemInfo->Pci64Size
-    );
-    
+  if(MemInfo->Pci64Size) {
+      BuildResourceDescriptorHob (
+        EFI_RESOURCE_MEMORY_MAPPED_IO,
+        Attributes,
+        MemInfo->Pci64Base,
+        MemInfo->Pci64Size
+        );
+  }
+  
   DataSize = sizeof (MemoryData);
   Status = Var2Ppi->GetVariable (
                       Var2Ppi,
