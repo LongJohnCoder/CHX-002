@@ -223,6 +223,11 @@ GotSetupVariable:
   
   SbCfg->ESPI = SetupData->ESPI;
   SbCfg->SPIBus0ClockSelect= SetupData->SPIBus0ClockSelect;
+//HYL-2018062901-start
+#ifdef ZX_SECRET_CODE
+  SbCfg->WDTClear= SetupData->WDTClear;  
+#endif
+//HYL-2018062901-end  
   SbCfg->PmioBar = PcdGet16(AcpiIoPortBaseAddress);
   SbCfg->MobileCenterControl= SetupData->MobileCenterControl;
   SbCfg->ACAdapterControl= SetupData->ACAdapterControl;

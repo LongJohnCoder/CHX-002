@@ -492,6 +492,11 @@ typedef struct {
 	UINT8 SMBusHostClockFrequency;
 	UINT8 SPIBus0ClockSelect;
     UINT8 ESPI;
+//HYL-2018062901-start
+#ifdef ZX_SECRET_CODE
+    UINT8 WDTClear;	
+#endif
+//HYL-2018062901-end  
 	UINT8 TXT;
 
 	//JYZ_ADD_SVID

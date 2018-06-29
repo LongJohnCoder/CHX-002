@@ -283,6 +283,19 @@ Revision History:
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;          
        endoneof;       
+
+//HYL-2018062901-start
+#ifdef ZX_SECRET_CODE
+       oneof varid = SETUP_DATA.WDTClear,
+        prompt      = STRING_TOKEN(STR_WDT_CLEAR),
+        help        = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_WDTD), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_WDT240C), value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_WDT240), value = 2, flags = RESET_REQUIRED;
+       endoneof;         
+#endif
+//HYL-2018062901-end  
+	   
     endform; //end CHIPSET_ADVANCED_CTRL_FORM_ID
     
   #endif  // FORM_SET_FORM
