@@ -21,7 +21,7 @@
 #define WriteMsr(addr, val)  AsmWriteMsr64((addr), (val))
 
 CPU_MCA_INFO					*McaInfo;
-BOOLEAN							IsEnEMCA = FALSE;
+BOOLEAN							IsInjectMCE = FALSE;
 SPIN_LOCK                       mMcaSmiSpinLock;
 UINT32						    InProcessCPUNum = 0;
 
@@ -323,15 +323,19 @@ BOOLEAN IsBankHandle(
 		// skip non-exit core, and has anther to check ,if i has handler this bank error
 		if(!McaInfo[Index].McaContext.Bits.IsEnterMceHandler)
 			continue;
-		
-		if(Cpuid!=Index){
-			if(SocketId!=McaInfo[Index].Location.SocketId)
-				continue;
+			
+		if(SocketId!=McaInfo[Index].Location.SocketId)
+			continue;
 
-			if(BankId==BANK_17){
-				if(ClusterId!=McaInfo[Index].Location.ClusterId)
-					continue;
-			}
+		if(BankId==BANK_17){
+			if(ClusterId!=McaInfo[Index].Location.ClusterId)
+				continue;
+		}
+
+		//for bank 0, core domain
+		if(BankId==BANK_0){
+			if(Cpuid!=Index)
+				continue;
 		}
 		
 		if(McaInfo[Index].BankHandleHint[BankId].Bits.IsMsmi&&IsMsmi)
@@ -381,8 +385,7 @@ VOID BankHandler(
 //	DEBUG(( EFI_D_ERROR, " CTL    : %llX\n", ReadMsr(MSR_IA32_MCx_CTL(BankId))  ));
 //	DEBUG(( EFI_D_ERROR, " CTL2   : %llX\n", ReadMsr(MSR_IA32_MCx_CTL2(BankId))  ));
 
-
-	if(!IsEnEMCA){
+	if(!IsInjectMCE){
         WriteMsr(MSR_IA32_MCx_STATUS(BankId), 0);
         WriteMsr(MSR_IA32_MCx_ADDR(BankId), 0);
         WriteMsr(MSR_IA32_MCx_MISC(BankId), 0);
@@ -444,6 +447,17 @@ CommonHandler (
     }
 	
 //	DEBUG(( EFI_D_ERROR, "\n CPU LAPIC: %2X enter MCE handler! >>>>\n\n\r",cpuid));
+
+
+	// first,check mcip and clear 
+	DEBUG(( EFI_D_ERROR, " MCG Status = %llX\n",ReadMsr(MSR_IA32_MCG_STATUS) ));
+	Mcip = (ReadMsr(MSR_IA32_MCG_STATUS) & MCG_STATUS_MCIP_BIT) ? TRUE : FALSE;
+	McaInfo[cpuid].McaContext.Bits.IsClearMcip = Mcip;
+			
+	if (Mcip == TRUE)
+	{
+		WriteMsr(MSR_IA32_MCG_STATUS,0);
+	}
 	
 	do{
 			McaSmiAssert = FALSE;
@@ -469,9 +483,11 @@ CommonHandler (
 					continue; // not MSMI (Uncorrected Error)
 				
 				// for MSMI,no override
-								
-				if(IsBankHandle(cpuid,BankId,TRUE,FALSE))
-					continue;
+				
+				if(IsInjectMCE){
+					if(IsBankHandle(cpuid,BankId,TRUE,FALSE))
+						continue;
+				}
 				
 				TempBankInfoBuf = (MCA_BANK_INFO *)((EFI_PHYSICAL_ADDRESS)ErrorBankInfoBuf+sizeof(MCA_BANK_INFO)*ErrorBankNum);
 				
@@ -502,9 +518,12 @@ CommonHandler (
 				if ( (Val64 & MCI_STS_UC_BIT) != 0)
 					continue; // not CSMI (Corrected Error)
 
-				if(IsBankHandle(cpuid,BankId,FALSE,TRUE))
-					continue;
-								
+				
+				if(IsInjectMCE){
+					if(IsBankHandle(cpuid,BankId,FALSE,TRUE))
+						continue;
+				}			
+				
 				TempBankInfoBuf = (MCA_BANK_INFO *)((EFI_PHYSICAL_ADDRESS)ErrorBankInfoBuf+sizeof(MCA_BANK_INFO)*ErrorBankNum);
 				BankHandler(TempBankInfoBuf,cpuid,BankId,FALSE,TRUE);	
 				
@@ -512,28 +531,12 @@ CommonHandler (
 				McaSmiAssert = TRUE;
 			}
 	} while (McaSmiAssert == TRUE);
-	
-//	DEBUG(( EFI_D_ERROR, " MCG Status = %llX\n",ReadMsr(MSR_IA32_MCG_STATUS) ));
-	Mcip = (ReadMsr(MSR_IA32_MCG_STATUS) & MCG_STATUS_MCIP_BIT) ? TRUE : FALSE;
-	McaInfo[cpuid].McaContext.Bits.IsClearMcip = Mcip;
-			
-	if (Mcip == TRUE)
-	{
-		WriteMsr(MSR_IA32_MCG_STATUS,0);
-		
-		Mcip = (ReadMsr(MSR_IA32_MCG_STATUS) & MCG_STATUS_MCIP_BIT) ? TRUE : FALSE;
-		if (Mcip == TRUE)
-		{
-			WriteMsr(MSR_IA32_MCG_STATUS,0);
-			
-		}
-	}
 		
 //	DEBUG(( EFI_D_ERROR, "\n CPU LAPIC: %2X exit MCE handler! <<<<\n\n\r",cpuid));
 	
 	ReleaseSpinLock (&mMcaSmiSpinLock);
 		
-	if(IsEnEMCA){
+	if(IsInjectMCE){
 		if((ReadMsr(0x1217)&0x01)==0){
 			ModifyMsr(0x1217,0x01,0x01); // enable Pending MCE in SMM Mode
 		}else{
