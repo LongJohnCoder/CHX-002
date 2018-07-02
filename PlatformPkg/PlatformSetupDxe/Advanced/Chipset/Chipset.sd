@@ -56,8 +56,8 @@ Revision History:
         help        = STRING_TOKEN(STR_EMPTY),
         flags = INTERACTIVE,
         option text = STRING_TOKEN(STR_MANUAL), value = 0, flags = INTERACTIVE;
-        option text = STRING_TOKEN(STR_S),      value = 1, flags = DEFAULT|INTERACTIVE;          
-        option text = STRING_TOKEN(STR_P_S),    value = 2, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_S),      value = 1, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_P_S),    value = 2, flags = INTERACTIVE | DEFAULT;
         option text = STRING_TOKEN(STR_E_P_S),  value = 3, flags = INTERACTIVE;
       endoneof;         
 
@@ -254,8 +254,8 @@ Revision History:
         help        = STRING_TOKEN(STR_EMPTY),
         flags = INTERACTIVE,
         option text = STRING_TOKEN(STR_MANUAL), value = 0, flags = INTERACTIVE;
-        option text = STRING_TOKEN(STR_S),      value = 1, flags = DEFAULT|INTERACTIVE;          
-        option text = STRING_TOKEN(STR_P_S),    value = 2, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_S),      value = 1, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_P_S),    value = 2, flags = INTERACTIVE | DEFAULT;
         option text = STRING_TOKEN(STR_E_P_S),  value = 3, flags = INTERACTIVE;
       endoneof;   
 

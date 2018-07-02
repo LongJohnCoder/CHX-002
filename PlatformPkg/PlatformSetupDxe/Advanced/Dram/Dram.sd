@@ -92,13 +92,13 @@ Revision History:
      oneof varid   = SETUP_DATA.DramClk,
         prompt   = STRING_TOKEN(STR_DRAMCLK),
         help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_BY_SPD), value = 0,   flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_800M),   value = 0xA, flags =DEFAULT | MANUFACTURING| RESET_REQUIRED ;
-        option text = STRING_TOKEN(STR_866M),   value = 0xB, flags = RESET_REQUIRED;        
-        option text = STRING_TOKEN(STR_933M),   value = 0xC, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_1000M),   value = 0xD, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_1066M),   value = 0xE, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_1133M),   value = 0xF, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_BY_SPD),  value = 0,    flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_800M),    value = 0xA,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_866M),    value = 0xB,  flags = RESET_REQUIRED;        
+        option text = STRING_TOKEN(STR_933M),    value = 0xC,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_1000M),   value = 0xD,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_1066M),   value = 0xE,  flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_1133M),   value = 0xF,  flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1200M),   value = 0x10, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1333M),   value = 0x11, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1400M),   value = 0x12, flags = RESET_REQUIRED;
@@ -108,21 +108,21 @@ Revision History:
 
       oneof varid   = SETUP_DATA.RxIoTimingMethod,
         prompt   = STRING_TOKEN(STR_RXIO_TIMING_METHOD),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_SI_SI), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_READLEV_SI), value = 1, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_SI_READLEV), value = 2, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_READLEV_READLEV), value = 3, flags = RESET_REQUIRED;
-       option text = STRING_TOKEN(STR_3D_SCAN), value = 4, flags =RESET_REQUIRED;
+        help     = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_SI_SI),           value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_READLEV_SI),      value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_SI_READLEV),      value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_READLEV_READLEV), value = 3, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_3D_SCAN),         value = 4, flags = RESET_REQUIRED;
       endoneof; 
           
       oneof varid   = SETUP_DATA.TxIoTimingMethod,
         prompt   = STRING_TOKEN(STR_TXIO_TIMING_METHOD),
-        help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_SI_SI), value = 0, flags =DEFAULT | MANUFACTURING |RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_WRITELEV_LCU), value = 1, flags =  RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_LCU_LCU), value = 2, flags =RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_HARDCODEWLVL_LCU), value = 3, flags =RESET_REQUIRED;
+        help     = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_SI_SI),            value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_WRITELEV_LCU),     value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_LCU_LCU),          value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_HARDCODEWLVL_LCU), value = 3, flags = RESET_REQUIRED;
       endoneof; 
 
       oneof varid=SETUP_DATA.RxVref,
