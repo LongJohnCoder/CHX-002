@@ -441,11 +441,7 @@ GotSetupVariable:
 
   NbCfg->PcieHotReset= SetupData->PcieHotReset;
   NbCfg->MaxPayloadSize= SetupData->MaxPayloadSize; // Setup UI's default value = 256 bytes
-  //MKE_20170220 MaxPayload need 128(PXP limitation)_S
-  #ifdef CHX002_PXP
-  NbCfg->MaxPayloadSize= 0;
-  #endif
-  //MKE_20170220 MaxPayload need 128(PXP limitation)_E
+
   NbCfg->PcieASPM= SetupData->PcieASPM; // default = disabled
   NbCfg->RelaxedOrder= SetupData->RelaxedOrder;
   NbCfg->ExtTag= SetupData->ExtTag;

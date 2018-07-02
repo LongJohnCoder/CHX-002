@@ -537,11 +537,11 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwarePerformanceDataTableS3Support|TRUE|BOOLEAN|0x00010064
 
   ## If TRUE, AhciBar.PxSACT will be set before AhciBar.PxCI set.
-  ## some chips such as VIA should be do it on them.
+  ## some chips such as Zhaoxin should be do it on them.
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetActiveForAhciCommand|TRUE|BOOLEAN|0x00010065
   
   ## If TRUE, Patch: when AHCI Core meets Scsi command TestUnitReady without giving sense data buffer,
-  ## give a temp buffer to force read. This may patch VIA platfrom CDROM slow issue.
+  ## give a temp buffer to force read. This may patch Zhaoxin platfrom CDROM slow issue.
   gEfiMdeModulePkgTokenSpaceGuid.PcdScsiTestUnitReadyReadBufferPatch|FALSE|BOOLEAN|0x00010066 
   
   # If TRUE, Efi Image in HW Option ROM will be ignored.
