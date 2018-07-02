@@ -176,8 +176,8 @@ $END--------------------------------------------------------------------
         questionid  = KEY_VALUE_PCIE_PE1,
         prompt   = STRING_TOKEN(STR_PCIE_PE1),
         help   = STRING_TOKEN(STR_EMPTY),
-  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =INTERACTIVE ;
+  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
        endoneof; 
 #endif
 #ifdef SETUP_VISABLE_PCIE_RP_PE2      
@@ -212,8 +212,8 @@ $END--------------------------------------------------------------------
         questionid  = KEY_VALUE_PCIE_PE5,
         prompt   = STRING_TOKEN(STR_PCIE_PE5),
         help   = STRING_TOKEN(STR_EMPTY),
- 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT|INTERACTIVE;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE ;
+ 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
        endoneof;
 #endif
 #ifdef SETUP_VISABLE_PCIE_RP_PE6	   
