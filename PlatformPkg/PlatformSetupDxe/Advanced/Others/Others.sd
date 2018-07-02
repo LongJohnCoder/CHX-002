@@ -147,14 +147,14 @@ Revision History:
        oneof varid = SETUP_DATA.SVIDMC3Control,
         prompt      = STRING_TOKEN(STR_SVIDM_C3_CTRL),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
        oneof varid = SETUP_DATA.SVIDMC4C5Control,
         prompt      = STRING_TOKEN(STR_SVIDM_C4C5_CTRL),
         help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
-        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;          
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
 	  
 	oneof varid = SETUP_DATA.VRM0VIDFSSelect,
