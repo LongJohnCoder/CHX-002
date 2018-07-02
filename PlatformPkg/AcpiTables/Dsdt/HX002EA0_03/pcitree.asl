@@ -58,9 +58,14 @@
         Package(4) {0xFFFF, 0x03, LNKH, Zero}
     })
 
+    Name(PR04, Package(1)
+    {
+        Package(4) {0xFFFF, Zero, LNKH, Zero}, 
+    })
+	
+
     Alias (PR01, PR02)
     Alias (PR01, PR03)
-    Alias (PR01, PR04)
     Alias (PR01, PR05)
     Alias (PR01, PR07)
     Alias (PR01, PR08)
@@ -85,12 +90,10 @@
     })        
 
     //PE3S APIC Routing
-    Name(AR04, Package(4)
+    Name(AR04, Package(1)
     {
         Package(4) {0xFFFF, Zero, Zero, 0x28}, 
-        Package(4) {0xFFFF, One,  Zero, 0x29}, 
-        Package(4) {0xFFFF, 0x02, Zero, 0x2A}, 
-        Package(4) {0xFFFF, 0x03, Zero, 0x2B}
+
     }) 
 
 

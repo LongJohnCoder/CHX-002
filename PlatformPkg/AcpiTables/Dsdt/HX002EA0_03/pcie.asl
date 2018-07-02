@@ -57,14 +57,19 @@
 
 			Return (PR04)
 		}
-		Device (PE3S)
-		{
-			Name (_ADR, Zero)  
-			Method (_PRW, 0, NotSerialized)  
-			{
-				Return (GPRW (0x10, 0x04))
-			}
-		}
+
+		Device(PTPB) { // ITE PCIE TO PCI Bridge
+		Name(_ADR, 0x00000000)
+		Method(_PRT,0) {
+			 If(PICM) { Return(ARXC) }// APIC mode
+			 Return (PRXC) // PIC Mode
+			 
+			 Device(ITES) { // ITE PCIE TO PCI Slot
+				 Name(_ADR, 0x00000000)
+				 Method(_PRW, 0) { Return(GPRW(0x10, 4)) } // can wakeup from S4 state
+			}// end "ITE PCIE TO PCI Slot"
+		  }// end _PRT
+		 } //end " ITE PCIE TO PCI Bridge"
 
 	}
 
