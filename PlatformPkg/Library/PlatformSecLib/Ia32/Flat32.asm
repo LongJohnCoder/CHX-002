@@ -209,7 +209,11 @@ IamBSP:
 ;;
 ;;------------------------------------------------------------------------------   
 ;;End-Of-Core-Freq-Vol {
-    mov ax, 2897h    ;default to 2.0G/1.0V, see guide above to select the required freq/vol   
+    mov ax, 2897h    ;SVID Board, default to 2.0G/1.0V, see guide above to select the required freq/vol  
+    
+#ifdef HX002EB0_00
+    mov ax, 2857h       ;PVID Board
+#endif
 ;;}End-Of-Core-Freq-Vol
 
     mov ecx, 1440h
