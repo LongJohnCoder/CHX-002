@@ -492,6 +492,78 @@ ProcExit:
 
 
 
+
+// RP(0,5,0) by (0,0,5,F4)[10] = 1
+VOID 
+DisableObLan (
+  EFI_ASIA_NB_PPI        *NbPpi,
+  UINT8                  ObLanEn
+  )
+{
+  UINT32                 Base;
+  UINT32                 SubBase;
+  ASIA_NB_CONFIGURATION  *NbCfg;
+  UINT16                 PmioBase;
+  UINT8                  Data8;
+
+  PmioBase = MmioRead16(PCI_DEV_MMBASE(0,17,0)|0x88) & 0xFF00;
+  NbCfg = (ASIA_NB_CONFIGURATION*)(NbPpi->NbCfg);
+  
+  Data8 = IoRead8(PmioBase + 0xB7);//PMIO RxB4[26:24] = 3'b000
+  Data8 &= (~(BIT0 | BIT1 | BIT2));
+  IoWrite8(PmioBase + 0xB7, Data8);
+
+  if(ObLanEn || !NbCfg->PciePE6){
+  	Data8 = IoRead8(PmioBase + 0x4E );//PMIO Rx4E[7] 
+    Data8 |= BIT7;
+    IoWrite8(PmioBase + 0x4E, Data8);//PMIO Rx4E[7] = 1
+    return;
+  }
+
+  DEBUG((EFI_D_INFO, "%a()\n", __FUNCTION__));
+
+  //NbCfg->PciePE6 = FALSE;
+
+  Base = PEG2_PCI_REG(0);
+  if(MmioRead16(Base+PCI_VID_REG) == 0xFFFF){
+    DEBUG((EFI_D_INFO, "PE6 not found!\n"));
+    return;
+  }
+  
+  MmioWrite32(Base+PCI_PBN_REG, 0x000E0E00);
+  SubBase = PCI_DEV_MMBASE(0xE, 0, 0);
+  
+  if(MmioRead32(SubBase+PCI_VID_REG) != 0x816810EC){
+    DEBUG((EFI_D_INFO, "ObLan not found!\n"));
+    return;
+  }
+
+  MmioWrite32(SubBase+PCI_BAR0_REG, 0xD000);
+  MmioWrite8(SubBase+PCI_CMD_REG, PCI_CMD_IO_EN);
+  MmioWrite16(Base+0x1C, 0xD0D0);
+  MmioWrite8(Base+PCI_CMD_REG, PCI_CMD_IO_EN);
+
+  DEBUG((EFI_D_INFO, "[44]:%X, [DA]:%X\n", IoRead8(0xD000 + 0x44), IoRead16(0xD000 + 0xDA)));
+  IoAnd8(0xD000 + 0x44, (UINT8)~BIT0);
+  IoWrite16(0xD000 + 0xDA, 0);
+  DEBUG((EFI_D_INFO, "[44]:%X, [DA]:%X\n", IoRead8(0xD000 + 0x44), IoRead16(0xD000 + 0xDA)));
+
+//ProcExit:
+  MmioWrite8(SubBase+PCI_CMD_REG, 0);
+  MmioWrite32(SubBase+PCI_BAR0_REG, 0);
+  MmioWrite8(Base+PCI_CMD_REG, 0);  
+  MmioWrite16(Base+0x1C, 0);
+  MmioWrite32(Base+PCI_PBN_REG, 0);
+  MmioAnd16(APIC_PCI_REG(0xF4), (UINT16)~BIT10); 
+
+  Data8 = IoRead8(PmioBase + 0x4E );//PMIO Rx4e[7] 
+  Data8 &= (~BIT7);
+  IoWrite8(PmioBase + 0x4E, Data8);//PMIO Rx4E[7] = 0
+  return;
+}
+
+
+
 EFI_STATUS
 EFIAPI
 MemoryDiscoveredPpiNotifyCallback (
@@ -566,7 +638,10 @@ MemoryDiscoveredPpiNotifyCallback (
   }
 
 //UpdateSsid();
-
+  #ifdef CHX002_A0
+  DisableObLan(NbPpi, SetupData->OnboardLan);
+  #endif
+  
   return Status;
 }
 
