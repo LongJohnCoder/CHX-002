@@ -198,7 +198,7 @@ ChipsetInt15SmmDispatcher (
 				//Get Frame Buffer Size
 				TempData=0;
 				TempData2=0;
-				TempData = MmioRead32(DRAM_PCI_REG(D0F3_CPU_DIRECT_ACCESS_FRAME_BUFFER_CTL));
+				TempData = MmioRead32(DRAM_PCI_REG(D0F3_CPU_DIRECT_ACCESS_FRAME_BUFFER_CTL_Z1));
 
 				if ((TempData & D0F3_RGFXEN) != D0F3_RGFXEN)
 			    {
@@ -206,7 +206,7 @@ ChipsetInt15SmmDispatcher (
 			    }
 			    else
 			    {
-			    	TempData2 = (TempData & D0F3_RFBSZ_2_0)>>20;
+			    	TempData2 = (TempData & D0F3_RFBSZ_2_0)>>4;
 					if (TempData2 > 0x4)
 						TempData2 = ((TempData2&0x3) + 2); //UMAsize = 2^FBSizeTmp (MB)
 					else
