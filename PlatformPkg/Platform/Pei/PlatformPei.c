@@ -895,7 +895,7 @@ CpuMpPeiCallback (
  //YKN-20160803 +s
  //NOTE: VRM type and phases are MB dependent. 
  //Save the VrmSupport into ASIA_CPU_CFG_HOB for setup CPU sheet display.
-#ifdef HX002EB0_00
+#if defined(HX002EB0_00)|| defined(HX002EB0_11)
    CpuFeature->VrmSupport         = 0x3;     // PVID 3-Phase 
 #else
   CpuFeature->VrmSupport         = 0x13;     // SVID 3-Phase
