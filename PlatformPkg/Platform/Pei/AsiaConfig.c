@@ -528,7 +528,9 @@ GotSetupVariable:
   NbCfg->HIFErrControl=SetupData->HIFErrControl; 
 
 
-  NbCfg->UMAEn                 = SetupData->UMAEn;
+  NbCfg->UMAEn        = SetupData->UMAEn;
+  NbCfg->DisableHDAC1 = SetupData->DisableHDAC1;
+  NbCfg->DisableHDAC2 = SetupData->DisableHDAC2;
   NbCfg->SelectDisplayDevice   = SetupData->SelectDisplayDevice;
   NbCfg->DP1        = SetupData->DP1;
   NbCfg->DP2        = SetupData->DP2;

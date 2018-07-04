@@ -202,6 +202,8 @@ typedef struct {
    ////
    // Graphic
    UINT8 UMAEn;
+   UINT8 DisableHDAC1;
+   UINT8 DisableHDAC2;
    UINT8 SelectDisplayDevice;
    UINT8 DP1;
    UINT8 DP2;

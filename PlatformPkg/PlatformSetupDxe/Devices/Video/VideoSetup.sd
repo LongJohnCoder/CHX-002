@@ -63,10 +63,24 @@ $END--------------------------------------------------------------------
        oneof varid   = SETUP_DATA.UMAEn,
         prompt   = STRING_TOKEN(STR_UMAENABLE),
         help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
        endoneof; 
     endif;
+    
+    oneof varid   = SETUP_DATA.DisableHDAC1,
+      prompt      = STRING_TOKEN(STR_HDAC1),
+      help        = STRING_TOKEN(STR_EMPTY),
+      option text = STRING_TOKEN(STR_ENABLED),  value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_DISABLED), value = 1, flags = RESET_REQUIRED;
+    endoneof;
+      
+    oneof varid   = SETUP_DATA.DisableHDAC2,
+      prompt      = STRING_TOKEN(STR_HDAC2),
+      help        = STRING_TOKEN(STR_EMPTY),
+      option text = STRING_TOKEN(STR_ENABLED),  value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_DISABLED), value = 1, flags = RESET_REQUIRED;
+    endoneof;
      
      subtitle text = STRING_TOKEN(STR_EMPTY);   
        oneof varid   = SETUP_DATA.SelectDisplayDevice,
