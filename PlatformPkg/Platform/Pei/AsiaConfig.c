@@ -118,7 +118,6 @@ UpdateAsiaConfig (
   }
   IsCmosBad = (CmosRead(0x0E) & BIT7)?TRUE:FALSE;
   DEBUG((EFI_D_INFO, "IsCmosBad:%d\n", IsCmosBad));
-  IsCmosBad=0;//DLA_DBG_S Patch for a0
   if(IsCmosBad || BootMode == BOOT_IN_RECOVERY_MODE || BootMode == BOOT_ON_FLASH_UPDATE){
    goto LoadSetupDefault;
   }	 
