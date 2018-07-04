@@ -44,16 +44,14 @@ $END--------------------------------------------------------------------
       option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
     endoneof;      
     
-    suppressif TRUE;
       grayoutif  ideqval SETUP_DATA.IOVEnable==1;
       oneof varid   = SETUP_DATA.GoNonSnoopPath,
         prompt	= STRING_TOKEN(STR_GO_NOSNOOPPATH),
         help   = STRING_TOKEN(STR_GO_NOSNOOPPATH_HELP),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
-        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
       endoneof;
       endif;
-    endif;
     
     suppressif NOT  ideqval SETUP_DATA.ObAudioEn==1;
       oneof varid   = SETUP_DATA.HDACFLREn,
