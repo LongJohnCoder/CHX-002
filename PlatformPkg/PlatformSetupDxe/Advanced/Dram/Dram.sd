@@ -182,7 +182,7 @@ Revision History:
         option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_DISABLE), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
       endoneof;
-
+/*
   	//  suppressif TRUE;
         oneof varid = SETUP_DATA.TNIHighPulse,
           prompt = STRING_TOKEN(STR_DQS_TNI_SETTING),
@@ -190,7 +190,7 @@ Revision History:
           option text = STRING_TOKEN(STR_TNI_LOW_PULSE),value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
           option text = STRING_TOKEN(STR_TNI_HIGH_PULSE), value = 1, flags = RESET_REQUIRED;
       endoneof;
-      //endif;
+      //endif;*/
       
      suppressif  NOT ideqval SETUP_DATA.TxVref == 1;    
      oneof varid = SETUP_DATA.TxVrefAllByte,
@@ -441,7 +441,7 @@ Revision History:
       endoneof;
       
 
-
+/*
       oneof varid   = SETUP_DATA.WPREA,
         prompt   = STRING_TOKEN(STR_DRAM_WPREA),
         help   = STRING_TOKEN(STR_EMPTY),
@@ -454,7 +454,7 @@ Revision History:
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_RPREA1CLK), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
         option text = STRING_TOKEN(STR_RPREA2CLK), value = 1, flags =  RESET_REQUIRED;
-      endoneof;
+      endoneof;*/
  
        oneof varid   = SETUP_DATA.CALEn,
         prompt   = STRING_TOKEN(STR_DRAM_CALEN),
