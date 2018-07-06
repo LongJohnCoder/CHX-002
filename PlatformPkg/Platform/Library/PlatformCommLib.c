@@ -723,7 +723,8 @@ EFI_STATUS LoadPeMcuFw(
   UINT32         DataAddr;  
   UINT8 		TmpReg;
   UINT16		TmpReg16;
-  
+  UINT8 		CpuWrContFlag = 0;
+  UINT8         Temp8=0;
   Status  = EFI_SUCCESS;
 
   //gBS = (EFI_BOOT_SERVICES*)BootServices;
@@ -811,6 +812,17 @@ EFI_STATUS LoadPeMcuFw(
 #if 1	 ///Add for Redo-EQ in DXE stage.  	
 
   if(IsDoEQ == 0){
+
+	Temp8 = MmioRead8(PCIEPhyMMIOBase|PCIEPHYCFG_PCIE_ROMSIP_REG);	
+	if((Temp8&PCIEPHYCFG_R_PEMCU_BIOS) != PCIEPHYCFG_R_PEMCU_BIOS){
+		CpuWrContFlag = 0 ;
+		MmioWrite8(PCIEPhyMMIOBase|PCIEPHYCFG_PCIE_ROMSIP_REG,Temp8|PCIEPHYCFG_R_PEMCU_BIOS);
+		DEBUG((EFI_D_ERROR, "[JNY-DEBUG] R_PEMCU_BIOS Control Bit set 0X%02x\n", MmioRead8(PCIEPhyMMIOBase|PCIEPHYCFG_PCIE_ROMSIP_REG)));
+	}else{
+	    CpuWrContFlag = 1;
+		DEBUG((EFI_D_ERROR, "[JNY-DEBUG] R_PEMCU_BIOS Control Bit is 1!\n"));  
+	}
+		
   
 	///For Debug - Add by ChrisJWang 2015.07.31 
 	///[Possible Bug:When No UART debug message output, Pemcu AutoFill Failed]
@@ -850,7 +862,12 @@ EFI_STATUS LoadPeMcuFw(
    	}while(TmpReg == 0x01);
 
   	DEBUG((EFI_D_ERROR," TxPreset = SetupData->EQTxPreset - end \n")); 
-  
+	if(CpuWrContFlag==0){
+		MmioWrite8(PCIEPhyMMIOBase|PCIEPHYCFG_PCIE_ROMSIP_REG,Temp8);
+		DEBUG((EFI_D_ERROR, "[JNY-DEBUG] R_PEMCU_BIOS Control clear to 0X%02x\n",MmioRead8(PCIEPhyMMIOBase|PCIEPHYCFG_PCIE_ROMSIP_REG)));
+	}else{
+		DEBUG((EFI_D_ERROR, "[JNY-DEBUG] R_PEMCU_BIOS Control Keep 1!\n"));
+	}
 }
 
 #endif
