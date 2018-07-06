@@ -224,6 +224,10 @@ IamBSP:
     bts eax, 27
     wrmsr
 pstDone:    
+    mov ecx, 1407h
+    rdmsr
+    bts eax, 18 
+    wrmsr
 #endif
 
   #ifdef ZX_SECRET_CODE
