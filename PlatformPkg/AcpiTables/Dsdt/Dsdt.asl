@@ -578,7 +578,7 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
                                     0x00,               
                                     _Y0D)
                                     
-                                IO (Decode16, SMBUS_BASE_ADDRESS, SMBUS_BASE_ADDRESS, 0x01, SMBUS_IO_LENGTH, ) 
+                                IO(Decode16, 0x00, 0x00, 0x00, 0x00, _Y0E)
 
                                 Memory32Fixed (ReadWrite,         // SbIoApic
                                     0xFEC00000,
@@ -598,6 +598,18 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
                                 Store (PMBS, PBB)
                                 Store (PMBS, PBH)
                                 Store (PMLN, PML)
+
+                                If(LNotEqual(^^SBRG.SCIS, One))
+                                {
+                                
+                                  CreateWordField (VSBR, \_SB.PCI0.VTSB._Y0E._MIN, SMB) 
+                                  CreateWordField (VSBR, \_SB.PCI0.VTSB._Y0E._MAX, SMH) 
+                                  CreateByteField (VSBR, \_SB.PCI0.VTSB._Y0E._LEN, SML) 
+                                  Store (SMBUS_BASE_ADDRESS, SMB)
+                                  Store (SMBUS_BASE_ADDRESS, SMH)
+                                  Store (SMBUS_IO_LENGTH, SML) 
+                                }
+
 
                                 CreateDWordField (VSBR, \_SB.PCI0.VTSB._Y10._BAS, FWB)  
                                 CreateDWordField (VSBR, \_SB.PCI0.VTSB._Y10._LEN, FWL)  
