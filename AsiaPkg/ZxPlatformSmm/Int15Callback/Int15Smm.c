@@ -172,22 +172,29 @@ ChipsetInt15SmmDispatcher (
 				//Query memory data rate and get frame buffer size from CMOS setting
 				TempData=0;					 
 				//TODO RKD remove for pxp code parpare
-				//TempData = MmioRead16(DRAM_PCI_REG(D0F3_DRAM_CLK_OPERATION_MODE_AND_FREQ));
-				//TempData = TempData & D0F3_RPLLM_DIVM_7_0;
+				TempData = MmioRead16(DRAM_PCI_REG(D0F3_PLLINDDR_CTL_Z1));
+				TempData = TempData & D0F3_RDIV_M_PLLINDDR_7_0;
+				TempData >>= 8;
 				
-				if (TempData < 30)//800
+				if (TempData < 6)//800
 					TempData = 0x09;
-				else if (TempData < 38 )//1066
+				else if (TempData < 8 )//1066
 					TempData = 0x0A;
-				else if (TempData < 46 )//1333
+				else if (TempData < 10 )//1333
 					TempData = 0x0B;
-				else if (TempData < 54 )//1600
+				else if (TempData < 12 )//1600
 					TempData = 0x0C;
-				else if (TempData < 62 )//1866
+				else if (TempData < 14 )//1866
 					TempData = 0x0D;
-				else if (TempData < 70 )//2133
+				else if (TempData < 16 )//2133
 					TempData = 0x0E;
-				else					 //2400
+				// else if (TempData < 18)//2400
+				// 	TempData =     ;
+				// else if (TempData < 20)//2666
+				// 	TempData =     ;
+				// else if (TempData < 22)//2933
+				// 	TempData =     ;
+				else					 //2400   //3200
 					TempData = 0x0F;
 
 				TempData <<= 4;	
