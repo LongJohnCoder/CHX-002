@@ -224,6 +224,10 @@ VOID DisablePCIEOBFF(UINT8 Bus, UINT8 Dev, UINT8 Func)
 VOID SleepCommonHandler(UINT8 SleepType)
 {
   BOOLEAN  BiosUpdate = FALSE;
+
+
+  //Link Layer TD7.40 XHCIOPTRx55[0]=1b
+  PciAndThenOr8 (PCI_LIB_ADDRESS(0, 0x12, 0, 0x55), (UINT8)~0x1, 0x1);
 //  UINT16 Data;		//LNA-2016122701
 
 /*  CJW-20170926 CHX001 BFT item, no need for CHX002 
