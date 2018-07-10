@@ -682,11 +682,11 @@ STATIC EFI_STATUS AddSmbiosType1(EFI_SMBIOS_PROTOCOL *Smbios)
   SmbiosRecord->SKUNumber    = 5;
   SmbiosRecord->Family       = 6;
 
-#ifndef MDEPKG_NDEBUG
+//#ifndef MDEPKG_NDEBUG
   CopyMem(&SmbiosRecord->Uuid, &gMyTestSmbiosType1Guid, sizeof(SmbiosRecord->Uuid));
-#else
-  SetMem(&SmbiosRecord->Uuid, sizeof(SmbiosRecord->Uuid), 0xFF);
-#endif
+//#else
+//  SetMem(&SmbiosRecord->Uuid, sizeof(SmbiosRecord->Uuid), 0xFF);
+//#endif
 
   SmbiosRecord->WakeUpType = SystemWakeupTypePowerSwitch;
 
