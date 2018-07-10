@@ -1001,7 +1001,7 @@ HandleType17_20 (
     Type17Record->SerialNumber  = 4;
     Type17Record->AssetTag      = 5;
     Type17Record->PartNumber    = 6;
-    Type17Record->MemoryType = MemoryTypeDdr3;
+    Type17Record->MemoryType = MemoryTypeDdr4;
     if(MemorySize){
       Type17Record->ConfiguredMemoryClockSpeed = DimmInfo->DimmFreq;
       Type17Record->Speed = DimmInfo->SpdInfo[Index].DimmSpeed;

@@ -1450,7 +1450,12 @@ typedef enum {
   MemoryTypeDdr2                           = 0x13,
   MemoryTypeDdr2FbDimm                     = 0x14,
   MemoryTypeDdr3                           = 0x18,
-  MemoryTypeFbd2                           = 0x19
+  MemoryTypeFbd2                           = 0x19,
+  MemoryTypeDdr4                           = 0x1A,
+  MemoryTypeLpddr                          = 0x1B,
+  MemoryTypeLpddr2                         = 0x1C,
+  MemoryTypeLpddr3                         = 0x1D,
+  MemoryTypeLpddr4                         = 0x1E
 } MEMORY_DEVICE_TYPE;
 
 typedef struct {
