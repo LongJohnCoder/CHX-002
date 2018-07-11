@@ -266,12 +266,18 @@ formset guid = POWER_FORM_SET_GUID,
      oneof varid = SETUP_DATA.FixedFreeCxLatency,
       prompt   = STRING_TOKEN(STR_FIXEDDREE_CX_LATENCY),
       help     = STRING_TOKEN(STR_FIXEDDREE_CX_LATENCY_HELP),
-      option text = STRING_TOKEN(STR_FIXED),  value = 0, flags = RESET_REQUIRED;
+      
+      ///MTN-2018071101-S According Designer Comment CHX002 Only Support ENQC3=1 Case,We Should Hid This Select Item
+      ///option text = STRING_TOKEN(STR_FIXED),  value = 0, flags = RESET_REQUIRED;
+     ///MTN-2018071101-E
       option text = STRING_TOKEN(STR_FREE), value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING ;
       option text = STRING_TOKEN(STR_FIXED_FREE),  value = 2, flags = RESET_REQUIRED;
      endoneof;
   //  endif;
-     
+
+
+  ///MTN-2018071102-S According Designer Comment CHX002 Only Support ENQC3=1 Case
+suppressif TRUE; 
    suppressif  NOT ideqval SETUP_DATA.FixedFreeCxLatency==0;
       suppressif   ideqval SETUP_DATA.CpuCState==0  OR ideqval  SETUP_DATA.CpuCState==1;      
  
@@ -302,6 +308,12 @@ formset guid = POWER_FORM_SET_GUID,
        option text = STRING_TOKEN(STR_11),  value = 3, flags = RESET_REQUIRED;
       endoneof;
    endif;
+endif;
+   ///MTN-2018071102-E
+
+
+
+   
  
     suppressif   ideqval SETUP_DATA.FixedFreeCxLatency==0;
       oneof varid = SETUP_DATA.DynamicT05,
