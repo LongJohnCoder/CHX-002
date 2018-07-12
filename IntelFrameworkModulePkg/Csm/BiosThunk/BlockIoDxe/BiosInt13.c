@@ -54,6 +54,9 @@ BiosInitBlockIo (
   EFI_BLOCK_IO_MEDIA    *BlockMedia;
   BIOS_LEGACY_DRIVE     *Bios;
 
+  //20180712-Patch for Raid card boot UEFI OS fail
+  UINT32                 PciId;
+
   BlockIo         = &Dev->BlockIo;
   BlockIo->Media  = &Dev->BlockMedia;
   BlockMedia      = BlockIo->Media;
@@ -101,8 +104,21 @@ BiosInitBlockIo (
       //
       // EDD 3.0 Required for Device path, but extended reads are not required.
       //
-      BlockIo->ReadBlocks   = Edd30BiosReadBlocks;
-      BlockIo->WriteBlocks  = Edd30BiosWriteBlocks;
+      //20180712-Patch for Raid card boot UEFI OS fail
+       Dev->PciIo->Pci.Read(
+                  Dev->PciIo,
+                  EfiPciIoWidthUint32,
+                  0x00,
+                  1,
+                  &PciId
+                  );
+	  if((PciId == 0x00971000)|| (PciId == 0x00721000)){
+	  	BlockIo->ReadBlocks   = Edd11BiosReadBlocks;
+        BlockIo->WriteBlocks  = Edd11BiosWriteBlocks;
+	  }else{
+        BlockIo->ReadBlocks   = Edd30BiosReadBlocks;
+        BlockIo->WriteBlocks  = Edd30BiosWriteBlocks;
+	  }
     } else {
       //
       // Assume EDD 1.1 - Read and Write functions.
