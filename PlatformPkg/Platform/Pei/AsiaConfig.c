@@ -230,6 +230,7 @@ GotSetupVariable:
   SbCfg->PmioBar = PcdGet16(AcpiIoPortBaseAddress);
   SbCfg->MobileCenterControl= SetupData->MobileCenterControl;
   SbCfg->ACAdapterControl= SetupData->ACAdapterControl;
+  SbCfg->CpuFanStartTemperature = SetupData->CpuFanStartTemperature;
   SbCfg->MsiSupport= SetupData->MsiSupport;
   ///
   SbCfg->SBDynamicClkControl  = SetupData->SBDynamicClkControl;  

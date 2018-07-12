@@ -472,6 +472,7 @@ typedef struct {
    UINT8 TMRCDynamicClkControl;
    UINT8 MobileCenterControl;
    UINT8 ACAdapterControl;
+   UINT8 CpuFanStartTemperature;
    UINT8 MsiSupport;
    
    UINT8 eBMCSettleTime;

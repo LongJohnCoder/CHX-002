@@ -1111,7 +1111,47 @@ STATIC VOID ClearAcpiStatus()
 	IoWrite32(PMIO_REG(PMIO_PAD_STS_REG), IoRead32(PMIO_REG(PMIO_PAD_STS_REG)));///PMIO Rx30[31:0] Primary Activity Detect Status
 }
 
+#if THERMAL_IC_SUPPORT
+STATIC UINT8 gTemp[] = {10,30,45,60,80}; 
+EFI_STATUS
+CpuFanSetting (
+  IN CONST EFI_PEI_SERVICES  **PeiServices,
+  IN ASIA_SB_CONFIGURATION   *mSbCfg
+  )
+{
+	EFI_STATUS    Status;
+	EFI_PEI_SMBUS_PPI   *pSMBusPPI;
+	EFI_SMBUS_DEVICE_ADDRESS    Address;
+	UINTN      Length;
+	UINT8      Data8;
+	UINT8      Temp;
 
+	Temp = gTemp[mSbCfg->CpuFanStartTemperature];
+	//DEBUG((EFI_D_ERROR,"[IVES] SbCfg->CpuFanStartTemperature = %d\n",mSbCfg->CpuFanStartTemperature));
+	//DEBUG((EFI_D_ERROR,"[IVES] temperature = %d\n",Temp));
+	Status = (*PeiServices)->LocatePpi(PeiServices,&gEfiPeiSmbusPpiGuid,0,NULL,&pSMBusPPI);
+	if(EFI_ERROR(Status))
+	{
+		DEBUG((EFI_D_ERROR,"Locate SMBus ppi Fail.\n"));
+		return Status;
+	}
+
+	Address.SmbusDeviceAddress = ADM1032_SMB_SLAVE_ADDR;
+	Length = 1;
+	Data8 = Temp;
+	pSMBusPPI->Execute(
+		(EFI_PEI_SERVICES**)PeiServices,
+		pSMBusPPI,
+		Address,
+		0x19,
+		EfiSmbusWriteByte,
+		0,
+		&Length,
+		&Data8
+	  );
+	return EFI_SUCCESS;
+}
+#endif
 
 ////
 #include "vdump_asiacfg.c"
@@ -1167,12 +1207,7 @@ PlatformPeiEntry (
   PlatformPeiEntryDebug(CpuPpi);
 #endif
 
-#if DRAM_Vol_IC_SUPPORT
-  InitDramVoltageChip(PeiServices,DramCfg->DramVoltageControl);
-#endif
-
-
-//--------------------------------- Before RC ----------------------------------
+  //--------------------------------- Before RC ----------------------------------
   IoAnd8(PMIO_REG(PMIO_EXTSMI_EN_REG), (UINT8)~GP3_2ND_TIMEOUT_REBOOT);
 
   Status = PeiServicesLocatePpi (
@@ -1190,6 +1225,14 @@ PlatformPeiEntry (
   Status = UpdateAsiaConfig(BootMode, SbCfg, NbCfg, DramCfg, Var2Ppi);
   PERF_END   (NULL,"ASIACFG", NULL, 0);	
   ASSERT_EFI_ERROR(Status);    
+
+  #if THERMAL_IC_SUPPORT
+  CpuFanSetting(PeiServices,SbCfg);
+  #endif
+  
+  #if DRAM_Vol_IC_SUPPORT
+	InitDramVoltageChip(PeiServices,DramCfg->DramVoltageControl);
+  #endif
 
   REPORT_STATUS_CODE(EFI_PROGRESS_CODE, PEI_CAR_CPU_INIT);
   

@@ -123,6 +123,17 @@ Revision History:
         text   = STRING_TOKEN(STR_VRM_VALUE),
         flags  = 0, 
         key    = 0;  
+
+
+	  oneof varid = SETUP_DATA.CpuFanStartTemperature,
+        prompt      = STRING_TOKEN(STR_CPU_CPU_FAN_START_TEMP),
+        help        = STRING_TOKEN(STR_CPU_CPU_FAN_START_TEMP_HELP),
+        option text = STRING_TOKEN(STR_10_DEGREE),  value = 0, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_30_DEGREE),  value = 1, flags = RESET_REQUIRED ;    
+		option text = STRING_TOKEN(STR_45_DEGREE),  value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+		option text = STRING_TOKEN(STR_60_DEGREE),  value = 3, flags = RESET_REQUIRED ;          
+		option text = STRING_TOKEN(STR_80_DEGREE),  value = 4, flags = RESET_REQUIRED ;                  
+      endoneof;  
         
      // oneof varid = SETUP_DATA.Pmon,
      //   prompt      = STRING_TOKEN(STR_CPU_PMON),
