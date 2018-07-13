@@ -7,7 +7,7 @@ SB_SMM_SOURCE_DESC mUSB_WAKE = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GP_SMI_EN
+        PMIO_GENERAL_PURPOSE_SMI_RESUME_ENABLE
       },
       2,
       14
@@ -18,7 +18,7 @@ SB_SMM_SOURCE_DESC mUSB_WAKE = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GP_STS
+        PMIO_GENERAL_PURPOSE_STA
       },
       2,
       14
@@ -32,7 +32,7 @@ SB_SMM_SOURCE_DESC mUSB_LEGACY = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GBLEN_REG
+        PMIO_GLOBAL_ENABLE
       },
       2,
       4
@@ -43,7 +43,7 @@ SB_SMM_SOURCE_DESC mUSB_LEGACY = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GBLSTS_REG
+        PMIO_GLOBAL_STA
       },
       2,
       4

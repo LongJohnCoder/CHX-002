@@ -13,9 +13,9 @@ VOID ZXChipsetCommonFunc(VOID)
 	//UINT8 Buffer8;
 	UINT32 PmTimer32, Buffer32;
 
-	PmTimer32 = (IoRead32(PMIO_REG(PMIO_TIMER_REG)) + 0x280000) & 0xF00000;	//Rx08
+	PmTimer32 = (IoRead32(PMIO_REG(PMIO_ACPI_TIMER)) + 0x280000) & 0xF00000;	//Rx08
 	do {
-		Buffer32 = IoRead32(PMIO_REG(PMIO_TIMER_REG)) & 0xF00000;	//Rx08
+		Buffer32 = IoRead32(PMIO_REG(PMIO_ACPI_TIMER)) & 0xF00000;	//Rx08
 	} while (PmTimer32 != Buffer32);
 
 	// Clear GP3 2nd Timout Status

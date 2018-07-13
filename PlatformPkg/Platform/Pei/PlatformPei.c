@@ -541,16 +541,16 @@ VOID PlatformSettingForS3Resume()
 // After CpuS3Init, Smi could be triggered(RestoreLockBox uses it). 
 // So we formal enable SMI here.
 
-  IoAnd16(PMIO_REG(PMIO_GBLCTRL_REG), (UINT16)~PMIO_GC_SMIEN); ///PMIO_Rx2C[0] SMI Disable
+  IoAnd16(PMIO_REG(PMIO_GLOBAL_CTL), (UINT16)~PMIO_SMIEN); ///PMIO_Rx2C[0] SMI Disable
 
-  IoWrite16(PMIO_REG(PMIO_STS_REG), PMIO_STS_PWBTNOR|PMIO_STS_GBL|PMIO_STS_BM|PMIO_STS_TMROF); ///PMIO_Rx00[11][5][4][0]
-  IoWrite16(PMIO_REG(PMIO_PM_EN), PMIO_PM_EN_PWRBTN);	///PMIO_Rx00[8] Power Button Enable
-  IoWrite16(PMIO_REG(PMIO_GBLSTS_REG), 0xFFFF);		///PMIO_Rx28[15:0] Global Status
-  IoOr16(PMIO_REG(PMIO_GBLEN_REG), PMIO_GBLEN_TPAPO|PMIO_GBLEN_SWSMI|PMIO_GBLEN_SLPSMI); ///PMIO_Rx2A[10][9][6] SMI SLP_EN Write/THRMTRIP Power Off/SW SMI
-  IoOr16(PMIO_REG(PMIO_PM1_CNT_REG), PMIO_PM1_CNT_SCI_EN); ///PMIO_Rx04[0] SCI/SMI Select
+  IoWrite16(PMIO_REG(PMIO_PM_STA), PMIO_PWF_STS|PMIO_GBL_STS|PMIO_BM_STS|PMIO_TMR_STS); ///PMIO_Rx00[11][5][4][0]
+  IoWrite16(PMIO_REG(PMIO_PM_ENABLE), PMIO_PBTN_EN);	///PMIO_Rx00[8] Power Button Enable
+  IoWrite16(PMIO_REG(PMIO_GLOBAL_STA), 0xFFFF);		///PMIO_Rx28[15:0] Global Status
+  IoOr16(PMIO_REG(PMIO_GLOBAL_ENABLE), PMIO_THRMTRIP_EN|PMIO_SWSMIEN|PMIO_ENSXSMI); ///PMIO_Rx2A[10][9][6] SMI SLP_EN Write/THRMTRIP Power Off/SW SMI
+  IoOr16(PMIO_REG(PMIO_PM_CTL), PMIO_SCI_EN); ///PMIO_Rx04[0] SCI/SMI Select
 
-  IoOr16(PMIO_REG(PMIO_GBLCTRL_REG), PMIO_GC_SMIACTIVE); ///PMIO_Rx2C[8] SMI Active Status
-  IoOr16(PMIO_REG(PMIO_GBLCTRL_REG), PMIO_GC_SMIEN);///PMIO_Rx2C[0] SMI Enable
+  IoOr16(PMIO_REG(PMIO_GLOBAL_CTL), PMIO_INSMI); ///PMIO_Rx2C[8] SMI Active Status
+  IoOr16(PMIO_REG(PMIO_GLOBAL_CTL), PMIO_SMIEN);///PMIO_Rx2C[0] SMI Enable
 }
 
 
@@ -902,7 +902,7 @@ CpuMpPeiCallback (
 #endif
  //YKN-20160803 +e
 
-  CpuFeature->PLVL2IoBase        = PMIO_REG(PMIO_PLVL2_REG);
+  CpuFeature->PLVL2IoBase        = PMIO_REG(PMIO_PROCESSOR_LEVEL_2);
  
   //YKN-20160627 +s
   //Tmp disable PMON to avoid mistakenly programming MSRs. CHX001 may need no PMON.
@@ -1100,15 +1100,15 @@ GetTolum (
 STATIC VOID ClearAcpiStatus()
 {
   /// register synch with CHX001 old code base
-	IoWrite16(PMIO_REG(PMIO_PM_EN), 0);///PMIO Rx02[15:0] Power Management Enable
-	IoWrite16(PMIO_REG(PMIO_GP_SCI_EN), 0);///PMIO Rx22[15:0] General Purpose SCI / RESUME Enable	  
-	IoWrite16(PMIO_REG(PMIO_GP_SMI_EN), 0);///PMIO Rx24[15:0] General Purpose SMI / Resume Enable
+	IoWrite16(PMIO_REG(PMIO_PM_ENABLE), 0);///PMIO Rx02[15:0] Power Management Enable
+	IoWrite16(PMIO_REG(PMIO_GENERAL_PURPOSE_SCI_RESUME_ENABLE), 0);///PMIO Rx22[15:0] General Purpose SCI / RESUME Enable	  
+	IoWrite16(PMIO_REG(PMIO_GENERAL_PURPOSE_SMI_RESUME_ENABLE), 0);///PMIO Rx24[15:0] General Purpose SMI / Resume Enable
 	///Try to Disable GPE2 Block SCI Enable Bit
-	IoWrite16(PMIO_REG(PMIO_GPI_SCIEN_REG), 0);///PMIO Rx56[15:0] GPI SCI/RESUME Enable
-	IoWrite16(PMIO_REG(PMIO_GPI_SCIEN1_REG), 0);///PMIO Rx58[15:0] General Purpose IO SCI/Resume Enable 1
-	IoWrite16(PMIO_REG(PMIO_GPI_SCIEN3_REG), 0);///PMIO Rx5A[15:0] General Purpose IO SCI/Resume Enable 3
-	IoWrite32(PMIO_REG(PMIO_PAD_EN_REG), 0);///PMIO Rx34[31:0] Primary Activity Detect Enable
-	IoWrite32(PMIO_REG(PMIO_PAD_STS_REG), IoRead32(PMIO_REG(PMIO_PAD_STS_REG)));///PMIO Rx30[31:0] Primary Activity Detect Status
+	IoWrite16(PMIO_REG(PMIO_GPI_SCI_RESUME_ENABLE), 0);///PMIO Rx56[15:0] GPI SCI/RESUME Enable
+	IoWrite16(PMIO_REG(PMIO_GENERAL_PURPOSE_IO_SCI_RESUME_ENABLE_1), 0);///PMIO Rx58[15:0] General Purpose IO SCI/Resume Enable 1
+	IoWrite16(PMIO_REG(PMIO_GENERAL_PURPOSE_IO_SCI_RESUME_ENABLE_3), 0);///PMIO Rx5A[15:0] General Purpose IO SCI/Resume Enable 3
+	IoWrite32(PMIO_REG(PMIO_PRIMARY_ACTIVITY_DETECT_ENABLE), 0);///PMIO Rx34[31:0] Primary Activity Detect Enable
+	IoWrite32(PMIO_REG(PMIO_PRIMARY_ACTIVITY_DETECT_STA), IoRead32(PMIO_REG(PMIO_PRIMARY_ACTIVITY_DETECT_STA)));///PMIO Rx30[31:0] Primary Activity Detect Status
 }
 
 #if THERMAL_IC_SUPPORT
@@ -1208,7 +1208,7 @@ PlatformPeiEntry (
 #endif
 
   //--------------------------------- Before RC ----------------------------------
-  IoAnd8(PMIO_REG(PMIO_EXTSMI_EN_REG), (UINT8)~GP3_2ND_TIMEOUT_REBOOT);
+  IoAnd8(PMIO_REG(PMIO_EXTEND_SMI_IO_TRAP_ENABLE), (UINT8)~PMIO_GP3TO2EN);
 
   Status = PeiServicesLocatePpi (
              &gEfiPeiReadOnlyVariable2PpiGuid,
@@ -1299,7 +1299,7 @@ PlatformPeiEntry (
 //-------------------------------- AFTER RC ------------------------------------
   ClearAcpiStatus();   // some status cannot be cleared before, clear it again.
 
-  MmioAnd8(LPC_PCI_REG(LPC_ROM_RANGE_REG), (UINT8)~0x0F);   // LPC FF000000h ~ FF7FFFFFh not selected, same SOC IRS.
+  MmioAnd8(LPC_PCI_REG(D17F0_LPC_ROM_MEM_ADR_RANGE), (UINT8)~0x0F);   // LPC FF000000h ~ FF7FFFFFh not selected, same SOC IRS.
 
   DramInfo = &AsiaDramInfo;
   Status = DramPpi->DramGetInfo(PeiSrv, DramPpi, DramInfo);

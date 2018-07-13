@@ -451,9 +451,9 @@ HandleCapsuleAfterMemInstall (
 
 
 // disable power button SMI with flash update mode
-  PmEnable  = IoRead16 (PMIO_REG (PMIO_PM_EN));///PMIO_Rx02[15:0] Power Management Enable
-  PmEnable &= (~PMIO_PM_EN_PWRBTN);
-  IoWrite16 (PMIO_REG (PMIO_PM_EN), PmEnable);///PMIO_Rx02[15:0] Power Management Enable
+  PmEnable  = IoRead16 (PMIO_REG (PMIO_PM_ENABLE));///PMIO_Rx02[15:0] Power Management Enable
+  PmEnable &= (~PMIO_PBTN_EN);
+  IoWrite16 (PMIO_REG (PMIO_PM_ENABLE), PmEnable);///PMIO_Rx02[15:0] Power Management Enable
 
   Status = (*PeiServices)->LocatePpi(PeiServices, &gPeiCapsulePpiGuid, 0, NULL, &Capsule);
   if(EFI_ERROR(Status)){

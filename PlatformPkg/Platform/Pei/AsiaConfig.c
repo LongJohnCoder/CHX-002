@@ -37,7 +37,7 @@ HandleRtcWake(
   if(BootMode == BOOT_ON_S3_RESUME || BootMode == BOOT_ON_S4_RESUME){		                    // Ignore Sleep Wake.
     goto ProcExit;
   }
-  if(!(IoRead16(PMIO_REG(PMIO_STS_REG)) & IoRead16(PMIO_REG(PMIO_PM_EN)) & PMIO_STS_RTC)){  // Only Handle RTC wake.
+  if(!(IoRead16(PMIO_REG(PMIO_PM_STA)) & IoRead16(PMIO_REG(PMIO_PM_ENABLE)) & PMIO_RTC_STS)){  // Only Handle RTC wake.
     goto ProcExit;
   }
   if(SetupData->WakeOnRTC != RTC_WAKE_VAL_SINGLE_EVENT){                                    // Only Handle Single Event.
@@ -71,8 +71,8 @@ HandleRtcWake(
     RegisterB.Bits.Set = 0;
     CmosWrite(RTC_ADDRESS_REGISTER_B, RegisterB.Data);
     
-    IoWrite16(PMIO_REG(PMIO_STS_REG), PMIO_STS_RTC);///PMIO_Rx00[10] RTC Alarm Status
-    IoOr16(PMIO_REG(PMIO_PM_EN), PMIO_PM_EN_RTC);   ///PMIO_Rx02[10] RTC Alarm Enable
+    IoWrite16(PMIO_REG(PMIO_PM_STA), PMIO_RTC_STS);///PMIO_Rx00[10] RTC Alarm Status
+    IoOr16(PMIO_REG(PMIO_PM_ENABLE), PMIO_RTC_EN);   ///PMIO_Rx02[10] RTC Alarm Enable
     
     DEBUG((EFI_D_ERROR, "\n"));    
     SystemSoftOff();   

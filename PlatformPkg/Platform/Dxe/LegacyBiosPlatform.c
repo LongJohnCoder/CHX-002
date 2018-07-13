@@ -474,7 +474,7 @@ SmmInit (
     SmmEntry->SmmAttributes.Type = SwSmiPolicy->SwSmiEntry[Index].Type;
     SmmEntry->SmmAttributes.PortGranularity = PORT_SIZE_16;
     SmmEntry->SmmAttributes.DataGranularity = DATA_SIZE_8;
-    SmmEntry->SmmPort = SB_SWSMI_PORT_REG;
+    SmmEntry->SmmPort = (UINT16)(PMIO_REG(PMIO_SW_SMI_CMD));
     SmmEntry->SmmData = SwSmiPolicy->SwSmiEntry[Index].Value;
     SmmEntry++;
   }
@@ -483,7 +483,7 @@ SmmInit (
   SmmEntry->SmmAttributes.PortGranularity = PORT_SIZE_16;
   SmmEntry->SmmAttributes.DataGranularity = DATA_SIZE_8;
   SmmEntry->SmmFunction.Function          = DMI_PNP_50_57;
-  SmmEntry->SmmPort                       = SB_SWSMI_PORT_REG;
+  SmmEntry->SmmPort                       = (UINT16)(PMIO_REG(PMIO_SW_SMI_CMD));
   SmmEntry->SmmData                       = SMM_PnP_BIOS_CALL;
   SmmEntry ++;
   SoftIntData->NumSmmEntries ++;
@@ -1510,7 +1510,7 @@ SetSmmPort (
 
   EBdaSeg = *(UINT16 *)(UINTN)0x40E;
   SmmPortPtr = (UINT16 *)(UINTN)(((UINT32)EBdaSeg << 4) + 0x1D0); // Offset 0x1D0
-  *SmmPortPtr = SB_SWSMI_PORT_REG;
+  *SmmPortPtr = (UINT16)(PMIO_REG(PMIO_SW_SMI_CMD));
 }
 
 

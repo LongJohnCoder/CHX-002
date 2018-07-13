@@ -1072,7 +1072,7 @@ LockNonUpdatableFlash (
   UINT32      SpiBar;
   UINT32      Value;
   
-  LpcMmioBar = (MmioRead32(LPC_PCI_REG(LPC_MMIO_BAR_REG)) >> 4) << 12;
+  LpcMmioBar = (MmioRead32(LPC_PCI_REG(D17F0_MMIO_SPACE_BASE_ADR)) >> 4) << 12;
   SpiBar     = MmioRead32(LpcMmioBar) & ~0xFF;
   if ((MmioRead16(SpiBar + SPI0_SPIS_REG) & SPI0_SPIS_LOCKDOWN) != 0) {
     return;

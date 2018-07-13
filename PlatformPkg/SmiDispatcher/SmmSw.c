@@ -10,7 +10,7 @@ const SB_SMM_SOURCE_DESC SW_SOURCE_DESC = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GBLEN_REG
+        PMIO_GLOBAL_ENABLE
       },
       2,
       6
@@ -21,7 +21,7 @@ const SB_SMM_SOURCE_DESC SW_SOURCE_DESC = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GBLSTS_REG
+        PMIO_GLOBAL_STA
       },
       2,
       6
@@ -52,7 +52,7 @@ Returns:
 --*/
 {
   UINT8 ApmCnt;
-  ApmCnt = IoRead8(PMIO_REG(PMIO_SWSMI_CMD_REG)); ///PMIO_Rx2F[7:0] Software SMI Command
+  ApmCnt = IoRead8(PMIO_REG(PMIO_SW_SMI_CMD)); ///PMIO_Rx2F[7:0] Software SMI Command
   Context->Sw.SwSmiInputValue = ApmCnt;
 }
 
@@ -113,15 +113,15 @@ SwGetBuffer (
                         Index,
                         &IoState
                         );
-    if (!EFI_ERROR (Status) && (IoState.IoPort == SB_SWSMI_PORT_REG)) {
+    if (!EFI_ERROR (Status) && (IoState.IoPort == ((UINT16)(PMIO_REG(PMIO_SW_SMI_CMD))))) {
       CpuIndex = Index;
       break;
     }
   }
 
   Record->CommBuffer.Sw.SwSmiCpuIndex = CpuIndex;
-  Record->CommBuffer.Sw.CommandPort   = IoRead8(SB_SWSMI_PORT_REG);
-  Record->CommBuffer.Sw.DataPort      = IoRead8(SB_SWSMI_DATA_REG);
+  Record->CommBuffer.Sw.CommandPort   = IoRead8(PMIO_REG(PMIO_SW_SMI_CMD));
+  Record->CommBuffer.Sw.DataPort      = IoRead8(PMIO_REG(PMIO_SW_SMI_DATA));
 	
 }
 

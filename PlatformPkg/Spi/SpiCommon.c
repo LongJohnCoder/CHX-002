@@ -33,14 +33,14 @@ Returns:
 {
   UINT8                                 Buffer8;
 
-  Buffer8 =MmioRead8(LPC_PCI_REG(LPC_ISA_BUS_CTRL_REG));
+  Buffer8 =MmioRead8(LPC_PCI_REG(D17F0_ISA_BUS_CTL));
   
   if (EnableWrites) {
-    Buffer8 = (UINT8) (Buffer8 | ROM_WRITE_EN);
+    Buffer8 = (UINT8) (Buffer8 | D17F0_RROMW);
   } else {
-    Buffer8 = (UINT8) (Buffer8 & (~ROM_WRITE_EN));
+    Buffer8 = (UINT8) (Buffer8 & (~D17F0_RROMW));
   }
-  MmioWrite8(LPC_PCI_REG(LPC_ISA_BUS_CTRL_REG),Buffer8);              
+  MmioWrite8(LPC_PCI_REG(D17F0_ISA_BUS_CTL),Buffer8);              
   return EFI_SUCCESS;
 }
 

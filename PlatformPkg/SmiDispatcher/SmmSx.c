@@ -8,7 +8,7 @@ const SB_SMM_SOURCE_DESC SX_SOURCE_DESC = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GBLEN_REG
+        PMIO_GLOBAL_ENABLE
       },
       2,
       10
@@ -19,7 +19,7 @@ const SB_SMM_SOURCE_DESC SX_SOURCE_DESC = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GBLSTS_REG
+        PMIO_GLOBAL_STA
       },
       2,
       10
@@ -51,10 +51,10 @@ Returns:
 {
   UINT16  Pm1Cnt;
 
-  Pm1Cnt = IoRead16(mAcpiBaseAddr + PMIO_PM1_CNT_REG); ///PMIO_Rx04[15:0] Power Management Control
+  Pm1Cnt = IoRead16(mAcpiBaseAddr + PMIO_PM_CTL); ///PMIO_Rx04[15:0] Power Management Control
   Context->Sx.Phase = SxEntry;
 
-  switch (Pm1Cnt & PMIO_PM1_CNT_SLP_TYP) {
+  switch (Pm1Cnt & PMIO_SLP_TYP) {
     case PMIO_PM1_CNT_S0:
       Context->Sx.Type = SxS0;
       break;
@@ -147,19 +147,19 @@ Returns:
   //
   // Get Power Management 1 Control Register Value
   //
-  Pm1Cnt = IoRead16 (mAcpiBaseAddr + PMIO_PM1_CNT_REG);
+  Pm1Cnt = IoRead16 (mAcpiBaseAddr + PMIO_PM_CTL);
   
 // Now that SMIs are disabled, write to the SLP_EN bit again to trigger the sleep
-  Pm1Cnt |= PMIO_PM1_CNT_SLP_EN;
+  Pm1Cnt |= PMIO_SLP_EN;
 
-  IoWrite16(mAcpiBaseAddr + PMIO_PM1_CNT_REG, Pm1Cnt);  ///PMIO_Rx04[15:0] Power Management Control
+  IoWrite16(mAcpiBaseAddr + PMIO_PM_CTL, Pm1Cnt);  ///PMIO_Rx04[15:0] Power Management Control
 
 
   //
   // Should only proceed if wake event is generated.
   //
-  if ((Pm1Cnt & PMIO_PM1_CNT_SLP_TYP) == PMIO_PM1_CNT_S1) {
-    while (((IoRead16 ((UINTN) (mAcpiBaseAddr + PMIO_STS_REG))) & PMIO_STS_WAK) == 0x0){};///PMIO_Rx00[15] Wakeup Status
+  if ((Pm1Cnt & PMIO_SLP_TYP) == PMIO_PM1_CNT_S1) {
+    while (((IoRead16 ((UINTN) (mAcpiBaseAddr + PMIO_PM_STA))) & PMIO_WAKA_STS) == 0x0){};///PMIO_Rx00[15] Wakeup Status
   } else {
     CpuDeadLoop();
   }
@@ -168,16 +168,16 @@ Returns:
   // The system just went to sleep. If the sleep state was S1, then code execution will resume
   // here when the system wakes up.
   //
-  Pm1Cnt = IoRead16 (mAcpiBaseAddr + PMIO_PM1_CNT_REG);  ///PMIO_Rx04[15:0] Power Management Control
+  Pm1Cnt = IoRead16 (mAcpiBaseAddr + PMIO_PM_CTL);  ///PMIO_Rx04[15:0] Power Management Control
 
-  if ((Pm1Cnt & PMIO_PM1_CNT_SCI_EN) == 0) {
+  if ((Pm1Cnt & PMIO_SCI_EN) == 0) {
     //
     // An ACPI OS isn't present, clear the sleep information
     //
-    Pm1Cnt &= ~PMIO_PM1_CNT_SLP_TYP;
+    Pm1Cnt &= ~PMIO_SLP_TYP;
     Pm1Cnt |= PMIO_PM1_CNT_S0;
 
-    IoWrite16(mAcpiBaseAddr + PMIO_PM1_CNT_REG, Pm1Cnt);  ///PMIO_Rx04[15:0] Power Management Control
+    IoWrite16(mAcpiBaseAddr + PMIO_PM_CTL, Pm1Cnt);  ///PMIO_Rx04[15:0] Power Management Control
   }
 
   SbSmmClearSource (&SX_SOURCE_DESC);

@@ -514,8 +514,8 @@ PlatOnReadyToBoot (
   Status = AzaliaLoadVerbTable(gOemVerbTable, gOemVerbTableSize);
   ASSERT_EFI_ERROR(Status);
   
-  IoWrite16(PMIO_REG(PMIO_STS_REG), PMIO_STS_TMROF|PMIO_STS_BM);///PMIO_Rx00[4][0] Bus Master Status/ACPI Timer Carry Status
-  IoWrite16(PMIO_REG(PMIO_GBLSTS_REG), PMIO_GBLSTS_PIRQ);  ///PMIO_Rx28[7] Primary IRQ/INIT/NMI/SMI Resume Status
+  IoWrite16(PMIO_REG(PMIO_PM_STA), PMIO_TMR_STS|PMIO_BM_STS);///PMIO_Rx00[4][0] Bus Master Status/ACPI Timer Carry Status
+  IoWrite16(PMIO_REG(PMIO_GLOBAL_STA), PMIO_PINT1_STS);  ///PMIO_Rx28[7] Primary IRQ/INIT/NMI/SMI Resume Status
 
   S3Record = (PLATFORM_S3_RECORD*)GetS3RecordTable();
 	S3Record->ScatAddr = GetAcpiTableSmmCommAddr();

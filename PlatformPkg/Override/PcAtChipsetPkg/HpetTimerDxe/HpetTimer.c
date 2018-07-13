@@ -772,7 +772,7 @@ TimerDriverInitialize (
   //enable sb apic
   /// AsiaSbDxeInit.c will init it
   ///MTN-2016110201-Start
-  MmioWrite8(LPC_PCI_REG(LPC_SMMC1_REG),MmioRead8(LPC_PCI_REG(LPC_SMMC1_REG))|BIT6);
+  MmioWrite8(LPC_PCI_REG(D17F0_SOUTH_MODULE_MISC_CTL_1),MmioRead8(LPC_PCI_REG(D17F0_SOUTH_MODULE_MISC_CTL_1))|BIT6);
   //set SB APIC ID ;
   MmioWrite8(0xFEC00000, 0x00);
   MmioWrite32(0xFEC00000 + 0x10,9<<24);

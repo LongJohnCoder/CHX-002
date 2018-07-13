@@ -116,7 +116,7 @@ Returns:
 
 --*/
 {
-  IoOr16 (mAcpiBaseAddr + PMIO_GBLCTRL_REG, PMIO_GC_SMIEN); ///PMIO_Rx2C[0] SMI Enable
+  IoOr16 (mAcpiBaseAddr + PMIO_GLOBAL_CTL, PMIO_SMIEN); ///PMIO_Rx2C[0] SMI Enable
   return EFI_SUCCESS;
 }
 
@@ -152,12 +152,12 @@ Returns:
   //
   // Determine whether an ACPI OS is present (via the SCI_EN bit)
   //
-  Pm1Cnt  = IoRead32 (mAcpiBaseAddr + PMIO_PM1_CNT_REG); ///PMIO_Rx04[15:0] Power Management Control
-  SciEn   = (BOOLEAN) ((Pm1Cnt & PMIO_PM1_CNT_SCI_EN) == PMIO_PM1_CNT_SCI_EN);
+  Pm1Cnt  = IoRead32 (mAcpiBaseAddr + PMIO_PM_CTL); ///PMIO_Rx04[15:0] Power Management Control
+  SciEn   = (BOOLEAN) ((Pm1Cnt & PMIO_SCI_EN) == PMIO_SCI_EN);
   if (!SciEn) {
-    IoWrite16 (mAcpiBaseAddr + PMIO_STS_REG, IoRead16(mAcpiBaseAddr + PMIO_STS_REG)); ///PMIO_Rx00[15:0] Power Management Status
-    IoWrite16 (mAcpiBaseAddr + PMIO_GP_STS,  IoRead16(mAcpiBaseAddr + PMIO_GP_STS));    ///PMIO_Rx20[15:0] General Purpose Status
-    IoWrite16(PMIO_REG(PMIO_GBLSTS_REG),  PMIO_GBLSTS_SWSMI); ///PMIO_Rx28[15:0] Global Status
+    IoWrite16 (mAcpiBaseAddr + PMIO_PM_STA, IoRead16(mAcpiBaseAddr + PMIO_PM_STA)); ///PMIO_Rx00[15:0] Power Management Status
+    IoWrite16 (mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_STA,  IoRead16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_STA));    ///PMIO_Rx20[15:0] General Purpose Status
+    IoWrite16(PMIO_REG(PMIO_GLOBAL_STA),  PMIO_SWSMIS); ///PMIO_Rx28[15:0] Global Status
   }
 
   //
@@ -174,8 +174,8 @@ SbSmiSetInActive (
   VOID
   )
 {
-  IoOr16(mAcpiBaseAddr + PMIO_GBLCTRL_REG, PMIO_GC_SMIACTIVE);
-	return (IoRead16(mAcpiBaseAddr + PMIO_GBLCTRL_REG) & PMIO_GC_SMIACTIVE)?FALSE:TRUE;
+  IoOr16(mAcpiBaseAddr + PMIO_GLOBAL_CTL, PMIO_INSMI);
+	return (IoRead16(mAcpiBaseAddr + PMIO_GLOBAL_CTL) & PMIO_INSMI)?FALSE:TRUE;
 }
 
 BOOLEAN
@@ -205,8 +205,8 @@ Returns:
   //
   // Determine whether an ACPI OS is present (via the SCI_EN bit)
   //
-  Pm1Cnt  = IoRead16(mAcpiBaseAddr + PMIO_PM1_CNT_REG); ///PMIO_Rx04[15:0] Power Management Control
-  SciEn   = (BOOLEAN)((Pm1Cnt & PMIO_PM1_CNT_SCI_EN) == PMIO_PM1_CNT_SCI_EN);///PMIO_Rx04[0] SCI / SMI Select
+  Pm1Cnt  = IoRead16(mAcpiBaseAddr + PMIO_PM_CTL); ///PMIO_Rx04[15:0] Power Management Control
+  SciEn   = (BOOLEAN)((Pm1Cnt & PMIO_SCI_EN) == PMIO_SCI_EN);///PMIO_Rx04[0] SCI / SMI Select
 
   return SciEn;
 }

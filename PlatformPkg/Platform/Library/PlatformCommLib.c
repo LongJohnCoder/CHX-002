@@ -191,17 +191,17 @@ VOID SetCmosVRT(BOOLEAN OnOff)
   UINT32          Data32;
   RTC_REGISTER_D  RegD;
   
-  Data32 = MmioRead32(LPC_PCI_REG(LPC_SMMC1_REG));
-  if(Data32 & LPC_SMMC1_RTC_D_WP){
-    MmioAnd32(LPC_PCI_REG(LPC_SMMC1_REG), (UINT32)~LPC_SMMC1_RTC_D_WP);
+  Data32 = MmioRead32(LPC_PCI_REG(D17F0_SOUTH_MODULE_MISC_CTL_1));
+  if(Data32 & D17F0_ENRX0DWP){
+    MmioAnd32(LPC_PCI_REG(D17F0_SOUTH_MODULE_MISC_CTL_1), (UINT32)~D17F0_ENRX0DWP);
   }
   
   RegD.Data = CmosRead(RTC_ADDRESS_REGISTER_D);
   RegD.Bits.Vrt = OnOff?1:0;
   CmosWrite(RTC_ADDRESS_REGISTER_D, RegD.Data);
   
-  if(Data32 & LPC_SMMC1_RTC_D_WP){
-    MmioOr32(LPC_PCI_REG(LPC_SMMC1_REG), LPC_SMMC1_RTC_D_WP);
+  if(Data32 & D17F0_ENRX0DWP){
+    MmioOr32(LPC_PCI_REG(D17F0_SOUTH_MODULE_MISC_CTL_1), D17F0_ENRX0DWP);
   }  
 }
 
@@ -210,12 +210,12 @@ VOID SystemSoftOff()
 {
   UINT16   Data16;
   
-  Data16  = IoRead16(PMIO_REG(PMIO_PM1_CNT_REG));///PMIO_Rx04[15:0] Power Management Control
-  Data16 &= ~(PMIO_PM1_CNT_SLP_EN | PMIO_PM1_CNT_SLP_TYP);
+  Data16  = IoRead16(PMIO_REG(PMIO_PM_CTL));///PMIO_Rx04[15:0] Power Management Control
+  Data16 &= ~(PMIO_SLP_EN | PMIO_SLP_TYP);
   Data16 |= PMIO_PM1_CNT_S5;
-  IoWrite16(PMIO_REG(PMIO_PM1_CNT_REG), Data16);///PMIO_Rx04[15:0] Power Management Control
-  Data16 |= PMIO_PM1_CNT_SLP_EN;
-  IoWrite16(PMIO_REG(PMIO_PM1_CNT_REG), Data16); ///PMIO_Rx04[15:0] Power Management Control
+  IoWrite16(PMIO_REG(PMIO_PM_CTL), Data16);///PMIO_Rx04[15:0] Power Management Control
+  Data16 |= PMIO_SLP_EN;
+  IoWrite16(PMIO_REG(PMIO_PM_CTL), Data16); ///PMIO_Rx04[15:0] Power Management Control
   
   CpuDeadLoop(); 
 }

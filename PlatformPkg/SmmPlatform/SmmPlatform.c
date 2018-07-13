@@ -56,31 +56,31 @@ EnableAcpiCallback (
   ClearDateAlarm(); 
   
   // Disable PM sources except power button
-  IoWrite16(mAcpiBaseAddr + PMIO_PM_EN, PMIO_PM_EN_PWRBTN); ///PMIO_Rx02[8] Power Button Enable
-  IoWrite16(mAcpiBaseAddr + PMIO_STS_REG, 0xFFFF);        ///PMIO_Rx00[15:0] Power Management Status
+  IoWrite16(mAcpiBaseAddr + PMIO_PM_ENABLE, PMIO_PBTN_EN); ///PMIO_Rx02[8] Power Button Enable
+  IoWrite16(mAcpiBaseAddr + PMIO_PM_STA, 0xFFFF);        ///PMIO_Rx00[15:0] Power Management Status
 
   ///MTN-2018051401 -S For Clear GPE0 Status and Enble Bit
-  IoWrite16(mAcpiBaseAddr + PMIO_GP_SCI_EN, 0);          ///PMIO Rx20[15:0] General Purpose Status
-  IoWrite16(mAcpiBaseAddr + PMIO_GP_STS, 0xFFFF);      ///PMIO Rx22[15:0] General Purpose SCI / RESUME Enable
+  IoWrite16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_SCI_RESUME_ENABLE, 0);          ///PMIO Rx20[15:0] General Purpose Status
+  IoWrite16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_STA, 0xFFFF);      ///PMIO Rx22[15:0] General Purpose SCI / RESUME Enable
   ///MTN-2018051401 -E
 
-  IoWrite16(mAcpiBaseAddr + PMIO_GPI_SCIEN_REG, 0);      ///PMIO Rx56[15:0] GPI SCI/RESUME Enable
-  IoWrite16(mAcpiBaseAddr + PMIO_GPI_SCIEN1_REG, 0);    ///PMIO Rx58[15:0] General Purpose IO SCI/Resume Enable 1
-  IoWrite16(mAcpiBaseAddr + PMIO_GPI_SCIEN3_REG, 0);    ///PMIO Rx5A[15:0] General Purpose IO SCI/Resume Enable 3
+  IoWrite16(mAcpiBaseAddr + PMIO_GPI_SCI_RESUME_ENABLE, 0);      ///PMIO Rx56[15:0] GPI SCI/RESUME Enable
+  IoWrite16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_IO_SCI_RESUME_ENABLE_1, 0);    ///PMIO Rx58[15:0] General Purpose IO SCI/Resume Enable 1
+  IoWrite16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_IO_SCI_RESUME_ENABLE_3, 0);    ///PMIO Rx5A[15:0] General Purpose IO SCI/Resume Enable 3
 
-  IoWrite16(mAcpiBaseAddr + PMIO_GPI_STS_REG, 0xFFFF);  ///PMIO Rx50[15:0] GPI Change Status
-  IoWrite16(mAcpiBaseAddr + PMIO_GPI_STS_REG1, 0xFFFF);///PMIO Rx52[15:0] General Purpose IO Status 1  
-  IoWrite16(mAcpiBaseAddr + PMIO_GPI_STS_REG3, 0xFFFF);///PMIO Rx54[15:0] General Purpose IO Status 3 
+  IoWrite16(mAcpiBaseAddr + PMIO_GPI_CHANGE_STA, 0xFFFF);  ///PMIO Rx50[15:0] GPI Change Status
+  IoWrite16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_IO_STA_1, 0xFFFF);///PMIO Rx52[15:0] General Purpose IO Status 1  
+  IoWrite16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_IO_STA_3, 0xFFFF);///PMIO Rx54[15:0] General Purpose IO Status 3 
 
   // Disable GP2 & GP3 SMI, Disable GP2 & GP3 timer tick
-  IoAnd16(mAcpiBaseAddr + PMIO_GBLEN_REG, (UINT16)~(PMIO_GBLEN_GP2SMI | PMIO_GBLEN_GP3SMI)); ///PMIO_Rx2A[13][12] GP3/2 Timer Timeout SMI Enable
-  IoWrite16(mAcpiBaseAddr + PMIO_GBLSTS_REG, PMIO_GBLSTS_GP2SMI|PMIO_GBLSTS_GP3SMI);               ///PMIO_Rx28[13][12]  GP3/2 Timer Timeout Status
-  MmioWrite8(LPC_PCI_REG(LPC_GP23TIMER_CTRL_REG), LPC_GP23TIMER_CTRL_REG_DEF_VALUE);             ///LPC_Rx98[7:0] GP2 / GP3 Timer Control
+  IoAnd16(mAcpiBaseAddr + PMIO_GLOBAL_ENABLE, (UINT16)~(PMIO_GP2TMEN | PMIO_GP3TMEN)); ///PMIO_Rx2A[13][12] GP3/2 Timer Timeout SMI Enable
+  IoWrite16(mAcpiBaseAddr + PMIO_GLOBAL_STA, PMIO_PGP2TM|PMIO_PGP3TM);               ///PMIO_Rx28[13][12]  GP3/2 Timer Timeout Status
+  MmioWrite8(LPC_PCI_REG(D17F0_PMU_GP2_GP3_TIMER_CTL), LPC_GP23TIMER_CTRL_REG_DEF_VALUE);             ///LPC_Rx98[7:0] GP2 / GP3 Timer Control
   //Disable Legacy USB SMI 
-  IoAnd16(mAcpiBaseAddr + PMIO_GBLEN_REG, (UINT16)~(PMIO_GBLEN_LEGUSB));
+  IoAnd16(mAcpiBaseAddr + PMIO_GLOBAL_ENABLE, (UINT16)~(PMIO_LUSBEN));
 
   // Enable SCI
-  IoOr16(mAcpiBaseAddr + PMIO_PM1_CNT_REG, PMIO_PM1_CNT_SCI_EN);  ///PMIO_Rx04[0] SCI / SMI Select
+  IoOr16(mAcpiBaseAddr + PMIO_PM_CTL, PMIO_SCI_EN);  ///PMIO_Rx04[0] SCI / SMI Select
 
   // USB hand off
   if (mSmmCallTablePtr) {
@@ -100,7 +100,7 @@ DisableAcpiCallback (
 )
 {
   DEBUG((EFI_D_ERROR, "AcpiOff\n"));
-  IoAnd16(mAcpiBaseAddr + PMIO_PM1_CNT_REG, (UINT16)~PMIO_PM1_CNT_SCI_EN);   // Disable SCI ///PMIO_Rx04[0] SCI / SMI Select
+  IoAnd16(mAcpiBaseAddr + PMIO_PM_CTL, (UINT16)~PMIO_SCI_EN);   // Disable SCI ///PMIO_Rx04[0] SCI / SMI Select
   return EFI_SUCCESS;
 }
 
@@ -232,7 +232,7 @@ VOID SleepCommonHandler(UINT8 SleepType)
 
 /*  CJW-20170926 CHX001 BFT item, no need for CHX002 
   //LNA-2016122701-S
-   Data = IoRead16(mAcpiBaseAddr + PMIO_STS_REG); ///PMIO_Rx00[15:0] Power Management Status
+   Data = IoRead16(mAcpiBaseAddr + PMIO_PM_STA); ///PMIO_Rx00[15:0] Power Management Status
    DEBUG((EFI_D_ERROR, "[LNA_OBFF] PMIO Rx00:%04x\n", Data));
    //IoWrite16(mAcpiBaseAddr + 0xE4,0);
 
@@ -247,7 +247,7 @@ VOID SleepCommonHandler(UINT8 SleepType)
    Data = IoRead16(mAcpiBaseAddr + 0xE4);
    DEBUG((EFI_D_ERROR, "[LNA_OBFF] PMIO RxE4:%04x\n", Data));
    IoWrite16(mAcpiBaseAddr + 0x00,0x4000);
-   Data = IoRead16(mAcpiBaseAddr + PMIO_STS_REG); ///PMIO_Rx00[15:0] Power Management Status
+   Data = IoRead16(mAcpiBaseAddr + PMIO_PM_STA); ///PMIO_Rx00[15:0] Power Management Status
    DEBUG((EFI_D_ERROR, "[LNA_OBFF] PMIO Rx00:%04x\n", Data));
   //LNA-2016122701-E
 */
@@ -255,7 +255,7 @@ VOID SleepCommonHandler(UINT8 SleepType)
 
   ///if(SleepType == 3 || SleepType == 4 || SleepType == 5){
   ///  WaitxHCIPDU2U3(); // empty function for CHX001
-  ///  IoAnd8(mAcpiBaseAddr + PMIO_SUS_PWR_DOMAIN_REG, (UINT8)~BIT7); //PMIO_Rx86
+  ///  IoAnd8(mAcpiBaseAddr + PMIO_SUSPEND_PWR_DOMAIN_Z2, (UINT8)~BIT7); //PMIO_Rx86
   ///}  
   
   SetAfterPowerLoss();
@@ -267,9 +267,9 @@ VOID SleepCommonHandler(UINT8 SleepType)
   	if(SleepType == 3 || SleepType == 4 || SleepType == 5){
   		if(SleepType == 5){
        		// Disable GP2 & GP3 SMI, Disable GP2 & GP3 timer tick
-       		IoAnd16(mAcpiBaseAddr + PMIO_GBLEN_REG, (UINT16)~(PMIO_GBLEN_GP2SMI | PMIO_GBLEN_GP3SMI)); ///PMIO_Rx2A[13][12] GP3/2 Timer Timeout SMI Enable
-       		IoWrite16(mAcpiBaseAddr + PMIO_GBLSTS_REG, PMIO_GBLSTS_GP2SMI|PMIO_GBLSTS_GP3SMI);    ///PMIO_Rx28[13][12]  GP3/2 Timer Timeout Status
-       		MmioWrite8(LPC_PCI_REG(LPC_GP23TIMER_CTRL_REG), LPC_GP23TIMER_CTRL_REG_DEF_VALUE);  ///LPC_Rx98[7:0] GP2 / GP3 Timer Control
+       		IoAnd16(mAcpiBaseAddr + PMIO_GLOBAL_ENABLE, (UINT16)~(PMIO_GP2TMEN | PMIO_GP3TMEN)); ///PMIO_Rx2A[13][12] GP3/2 Timer Timeout SMI Enable
+       		IoWrite16(mAcpiBaseAddr + PMIO_GLOBAL_STA, PMIO_PGP2TM|PMIO_PGP3TM);    ///PMIO_Rx28[13][12]  GP3/2 Timer Timeout Status
+       		MmioWrite8(LPC_PCI_REG(D17F0_PMU_GP2_GP3_TIMER_CTL), LPC_GP23TIMER_CTRL_REG_DEF_VALUE);  ///LPC_Rx98[7:0] GP2 / GP3 Timer Control
 		}
   		WaitL2L3Ready(0);
 	}
@@ -287,7 +287,7 @@ VOID SleepCommonHandler(UINT8 SleepType)
   //LNA-2016111501-E 
 
   if(SleepType == 5){
-    IoWrite16(mAcpiBaseAddr + PMIO_GP_STS, PMIO_GP_STS_PME);  ///PMIO_Rx20[5] PME# Status
+    IoWrite16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_STA, PMIO_PME_STS);  ///PMIO_Rx20[5] PME# Status
     BiosUpdate = IsBiosWantUpdate();
   }
 
@@ -347,7 +347,7 @@ S3SleepEntryCallBack (
     DEBUG((EFI_D_INFO, "IGD PG\n"));
     // Disable BMU/VPP/S0EUX/S0TUF before go to STR
     // Disable S0EUX
-    IoAnd8(mAcpiBaseAddr + PMIO_GFX_SOEUX_POWER_GATING_REG, (UINT8)~BIT4);
+    IoAnd8(mAcpiBaseAddr + PMIO_PAD_CTL_REG_WRITE_DATA, (UINT8)~BIT4);
     // Disable  S0TUF
     IoAnd8(mAcpiBaseAddr + PMIO_GFX_SOTUF_POWER_GATING_REG, (UINT8)~BIT4);
     // Keep BMU always being powered on after R25 for S3/S4 burn-in hang issue
@@ -425,10 +425,10 @@ PowerButtonCallback (
   SleepCommonHandler(0xFF);
 
 // Clear Sleep Type Enable
-  IoAnd16(mAcpiBaseAddr + PMIO_GBLEN_REG,  (UINT16)~PMIO_GBLEN_SLPSMI); ///PMIO_Rx2A[10] SMI SLP_EN Write
+  IoAnd16(mAcpiBaseAddr + PMIO_GLOBAL_ENABLE,  (UINT16)~PMIO_ENSXSMI); ///PMIO_Rx2A[10] SMI SLP_EN Write
 
 // Clear Power Button Status
-  IoWrite16(mAcpiBaseAddr + PMIO_STS_REG, PMIO_STS_PWRBTN); // PMIO_Rx00[8] Power Button Status
+  IoWrite16(mAcpiBaseAddr + PMIO_PM_STA, PMIO_PBTN_STS); // PMIO_Rx00[8] Power Button Status
 
 // Stop all UHCI controllers before trying to shut down
   //for (Index = 0; Index < 3; Index++) {
@@ -438,11 +438,11 @@ PowerButtonCallback (
   //}
 
 // Shut it off now
-  Buffer = IoRead16 (mAcpiBaseAddr + PMIO_PM1_CNT_REG) & (~(PMIO_PM1_CNT_SLP_EN | PMIO_PM1_CNT_SLP_TYP)); /// PMIO_Rx04[13:10} Sleep Enable and Type
+  Buffer = IoRead16 (mAcpiBaseAddr + PMIO_PM_CTL) & (~(PMIO_SLP_EN | PMIO_SLP_TYP)); /// PMIO_Rx04[13:10} Sleep Enable and Type
   Buffer |= PMIO_PM1_CNT_S5;
-  IoWrite16 (mAcpiBaseAddr + PMIO_PM1_CNT_REG, Buffer); ///PMIO_Rx04[15:0] Power Management Control
-  Buffer |= PMIO_PM1_CNT_SLP_EN;
-  IoWrite16 (mAcpiBaseAddr + PMIO_PM1_CNT_REG, Buffer); ///PMIO_Rx04[15:0] Power Management Control
+  IoWrite16 (mAcpiBaseAddr + PMIO_PM_CTL, Buffer); ///PMIO_Rx04[15:0] Power Management Control
+  Buffer |= PMIO_SLP_EN;
+  IoWrite16 (mAcpiBaseAddr + PMIO_PM_CTL, Buffer); ///PMIO_Rx04[15:0] Power Management Control
 
   return EFI_SUCCESS;
 }

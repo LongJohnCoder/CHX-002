@@ -58,24 +58,24 @@ VOID SetAcpiWakeUpSrcPcd()
 
   WakeUpSrc = WAK_TYPE_NONE;
 
-  Sts = IoRead16(PMIO_REG(PMIO_STS_REG));///PMIO_Rx00[15:0] Power Management Status
-  En  = IoRead16(PMIO_REG(PMIO_PM_EN));    ///PMIO_Rx02[15:0] Power Management Enable
-  if(!(Sts & PMIO_STS_WAK)){
+  Sts = IoRead16(PMIO_REG(PMIO_PM_STA));///PMIO_Rx00[15:0] Power Management Status
+  En  = IoRead16(PMIO_REG(PMIO_PM_ENABLE));    ///PMIO_Rx02[15:0] Power Management Enable
+  if(!(Sts & PMIO_WAKA_STS)){
     goto ProcExit;		
   }		
-  if(Sts & PMIO_STS_PWBTNOR){
+  if(Sts & PMIO_PWF_STS){
     WakeUpSrc = WAK_TYPE_PBOR;
     goto ProcExit;
   }
-  if(Sts & En & PMIO_STS_PWRBTN){
+  if(Sts & En & PMIO_PBTN_STS){
     WakeUpSrc = WAK_TYPE_POWERBUTTON;
     goto ProcExit;
   }
-  if(Sts & En & PMIO_STS_RTC){
+  if(Sts & En & PMIO_RTC_STS){
     WakeUpSrc = WAK_TYPE_RTC;
     goto ProcExit;
   }
-  if((Sts & PMIO_STS_PCIEW) && !(En & PMIO_PM_DIS_PCIEW)){
+  if((Sts & PMIO_PCIEWK_STS) && !(En & PMIO_PCIEWK_DIS)){
     WakeUpSrc = WAK_TYPE_PCIE;
 /*		
     PciBase = PCI_DEV_MMBASE(0, 3, 0);
@@ -90,21 +90,21 @@ VOID SetAcpiWakeUpSrcPcd()
 */    
   }	
 
-  Sts = IoRead16(PMIO_REG(PMIO_GP_STS));       ///PMIO_Rx20[15:0] General Purpose Status
-  En  = IoRead16(PMIO_REG(PMIO_GP_SCI_EN)); ///PMIO_Rx22[15:0] General Purpose SCI / RESUME Enable
-  if(Sts & En & PMIO_GP_STS_IKBC){
+  Sts = IoRead16(PMIO_REG(PMIO_GENERAL_PURPOSE_STA));       ///PMIO_Rx20[15:0] General Purpose Status
+  En  = IoRead16(PMIO_REG(PMIO_GENERAL_PURPOSE_SCI_RESUME_ENABLE)); ///PMIO_Rx22[15:0] General Purpose SCI / RESUME Enable
+  if(Sts & En & PMIO_KBPME_STS){
     WakeUpSrc = WAK_TYPE_PS2_KB;
     goto ProcExit;		
   }	
-  if(Sts & En & PMIO_GP_STS_IMS){
+  if(Sts & En & PMIO_MSPME_STS){
     WakeUpSrc = WAK_TYPE_PS2_MS;
     goto ProcExit;		
   }
-  if(Sts & En & PMIO_GP_STS_USBWAK){
+  if(Sts & En & PMIO_WUSB_STS){
     WakeUpSrc = WAK_TYPE_USB;
     goto ProcExit;		
   }
-  if(Sts & En & PMIO_GP_STS_RI){
+  if(Sts & En & PMIO_RI_STS){
     WakeUpSrc = WAK_TYPE_RING;
     goto ProcExit;		
   }		
@@ -118,8 +118,8 @@ ProcExit:
 // Miscellaneous Configuration 2 (Power Well) (95h) default: 40
 // Miscellaneous Configuration 1 (Power Well) (94h) default: 88
   if((WakeUpSrc == WAK_TYPE_NONE) &&
-     (!(MmioRead8(LPC_PCI_REG(LPC_ACPI_INTSEL_REG)) & SUSC_AC_POWER_DEF_OFF)) &&
-     ((MmioRead32(LPC_PCI_REG(LPC_MISC_CFG1_REG)) & 0xFF00FFFF) == 0x00004088)){
+     (!(MmioRead8(LPC_PCI_REG(D17F0_PMU_ACPI_INTR_SEL)) & D17F0_PMU_PSONVAL)) &&
+     ((MmioRead32(LPC_PCI_REG(D17F0_PMU_MISC_CFG_1_PWR_WELL)) & 0xFF00FFFF) == 0x00004088)){
     WakeUpSrc = WAK_TYPE_POWER_LOSS;
   }
 */
@@ -143,7 +143,7 @@ CalculateTscFrequency (
   UINT64      TscFrequency;
 
 
-  TimerAddr = PMIO_REG(PMIO_TIMER_REG);  ///PMIO_Rx08[31:0] ACPI Timer
+  TimerAddr = PMIO_REG(PMIO_ACPI_TIMER);  ///PMIO_Rx08[31:0] ACPI Timer
   Ticks     = IoRead32 (TimerAddr) + (3579);   // Set Ticks to 1ms in the future
   StartTSC  = AsmReadTsc();                    // Get base value for the TSC
   //

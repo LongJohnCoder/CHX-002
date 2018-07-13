@@ -36,12 +36,12 @@ GetSleepTypeAfterWakeup (
   UINT16  PmSts;
   UINT16  PmCtrl;
 
-  PmSts  = IoRead16(PMIO_REG(PMIO_STS_REG));///PMIO_Rx00[15:0] Power Management Status
-  PmCtrl = IoRead16(PMIO_REG(PMIO_PM1_CNT_REG));///PMIO_Rx04[15:0] Power Management Control
+  PmSts  = IoRead16(PMIO_REG(PMIO_PM_STA));///PMIO_Rx00[15:0] Power Management Status
+  PmCtrl = IoRead16(PMIO_REG(PMIO_PM_CTL));///PMIO_Rx04[15:0] Power Management Control
 
-  if(PmSts & PMIO_STS_WAK){
-    *SleepType = (PmCtrl & PMIO_PM1_CNT_SLP_TYP);
-    if ((*SleepType == PMIO_PM1_CNT_S3) && ((PmSts & PMIO_STS_PWBTNOR) !=0 )){
+  if(PmSts & PMIO_WAKA_STS){
+    *SleepType = (PmCtrl & PMIO_SLP_TYP);
+    if ((*SleepType == PMIO_PM1_CNT_S3) && ((PmSts & PMIO_PWF_STS) !=0 )){
       return FALSE;
     }
     return TRUE;

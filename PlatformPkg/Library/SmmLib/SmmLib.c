@@ -96,14 +96,14 @@ ClearSmi (
   )
 {
 
-  IoWrite16(PMIO_REG(PMIO_GBLSTS_REG), PMIO_GBLSTS_SWSMI);  ///PMIO_Rx28[6] Software SMI Status => Clear the APM SMI Status Bit
-  IoOr16(PMIO_REG(PMIO_GBLCTRL_REG), PMIO_GC_SMIACTIVE);      ///PMIO_Rx2C[8] SMI Active Status => Set the EOS Bit
+  IoWrite16(PMIO_REG(PMIO_GLOBAL_STA), PMIO_SWSMIS);  ///PMIO_Rx28[6] Software SMI Status => Clear the APM SMI Status Bit
+  IoOr16(PMIO_REG(PMIO_GLOBAL_CTL), PMIO_INSMI);      ///PMIO_Rx2C[8] SMI Active Status => Set the EOS Bit
 }
 
 BOOLEAN IsSmiSourceActive()
 {
   BOOLEAN  rc;
-  rc = (IoRead16(PMIO_REG(PMIO_GBLCTRL_REG)) & PMIO_GC_SMIACTIVE)?TRUE:FALSE; ///PMIO_Rx2C[8] SMI Active Status 
+  rc = (IoRead16(PMIO_REG(PMIO_GLOBAL_CTL)) & PMIO_INSMI)?TRUE:FALSE; ///PMIO_Rx2C[8] SMI Active Status 
 	return rc;
 }
 

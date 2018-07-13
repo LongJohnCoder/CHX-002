@@ -261,8 +261,8 @@ EFI_STATUS EnableS5RtcWake()
   RegisterB.Bits.Aie = 1;
   RegisterB.Bits.Set = 0;
   CmosWrite(RTC_ADDRESS_REGISTER_B, RegisterB.Data);
-  IoWrite16(mAcpiBaseAddr + PMIO_STS_REG, PMIO_STS_RTC);///PMIO_Rx00[10] RTC Alarm Status
-  IoOr16(mAcpiBaseAddr + PMIO_PM_EN, PMIO_PM_EN_RTC);    ///PMIO_Rx02[10] RTC Alarm Enable
+  IoWrite16(mAcpiBaseAddr + PMIO_PM_STA, PMIO_RTC_STS);///PMIO_Rx00[10] RTC Alarm Status
+  IoOr16(mAcpiBaseAddr + PMIO_PM_ENABLE, PMIO_RTC_EN);    ///PMIO_Rx02[10] RTC Alarm Enable
   goto ProcExit;
   
 ErrorExit:  
@@ -316,10 +316,10 @@ VOID SetSleepTypeS3()
 {
   UINT16  Pm1Cnt;
   
-  Pm1Cnt  = IoRead16(mAcpiBaseAddr + PMIO_PM1_CNT_REG); ///PMIO_Rx04[15:0] Power Management Control
-  Pm1Cnt &= ~PMIO_PM1_CNT_SLP_TYP;
+  Pm1Cnt  = IoRead16(mAcpiBaseAddr + PMIO_PM_CTL); ///PMIO_Rx04[15:0] Power Management Control
+  Pm1Cnt &= ~PMIO_SLP_TYP;
   Pm1Cnt |= PMIO_PM1_CNT_S3;
-  IoWrite16(mAcpiBaseAddr + PMIO_PM1_CNT_REG, Pm1Cnt);  ///PMIO_Rx04[12:10] Sleep Type
+  IoWrite16(mAcpiBaseAddr + PMIO_PM_CTL, Pm1Cnt);  ///PMIO_Rx04[12:10] Sleep Type
 }
   
 EFI_STATUS SetRtcWakeUpForCapsule(UINT8 SleepTimeSecond)
@@ -383,8 +383,8 @@ EFI_STATUS SetRtcWakeUpForCapsule(UINT8 SleepTimeSecond)
   RegisterB.Bits.Set = 0;
   CmosWrite(RTC_ADDRESS_REGISTER_B, RegisterB.Data);
   
-  IoWrite16(mAcpiBaseAddr + PMIO_STS_REG, PMIO_STS_RTC);///PMIO_Rx00[10] RTC Alarm Status
-  IoOr16(mAcpiBaseAddr + PMIO_PM_EN, PMIO_PM_EN_RTC);    ///PMIO_Rx02[10] RTC Alarm Enable
+  IoWrite16(mAcpiBaseAddr + PMIO_PM_STA, PMIO_RTC_STS);///PMIO_Rx00[10] RTC Alarm Status
+  IoOr16(mAcpiBaseAddr + PMIO_PM_ENABLE, PMIO_RTC_EN);    ///PMIO_Rx02[10] RTC Alarm Enable
 
 ProcExit:  
   return Status;

@@ -72,11 +72,11 @@ VOID EnPciLanPmeOnBridge(UINT8 BridgeBus, UINT8 BridgeDev, UINT8 BridgeFunc, BOO
     EnPciLanPmeOnBridge(0,    2, 0, WakeOnLanEn);
     EnPciLanPmeOnBridge(0,    6, 0, WakeOnLanEn);
     EnPciLanPmeOnBridge(0, 0x13, 0, WakeOnLanEn);
-    IoWrite16(PMIO_REG(PMIO_GP_STS), PMIO_GP_STS_PME);
+    IoWrite16(PMIO_REG(PMIO_GENERAL_PURPOSE_STA), PMIO_PME_STS);
     if(WakeOnLanEn){
-      IoOr16(PMIO_REG(PMIO_GP_SMI_EN), PMIO_GP_SMI_EN_PME);
+      IoOr16(PMIO_REG(PMIO_GENERAL_PURPOSE_SMI_RESUME_ENABLE), PMIO_PME_SM);
     } else {
-      IoAnd16(PMIO_REG(PMIO_GP_SMI_EN), (UINT16)~PMIO_GP_SMI_EN_PME);
+      IoAnd16(PMIO_REG(PMIO_GENERAL_PURPOSE_SMI_RESUME_ENABLE), (UINT16)~PMIO_PME_SM);
     }    
   }
 */
@@ -92,7 +92,7 @@ VOID SetWakeOnLan(UINT8 SleepType)
 // For OnBoard Lan.
   if(WakeOnLanEn){
     DEBUG((EFI_D_ERROR, "LanWake\n"));
-    IoAnd32(mAcpiBaseAddr + PMIO_GPO_REG, (UINT32)~PMIO_GPO_GPO7);		
+    IoAnd32(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_OUTPUT, (UINT32)~PMIO_GPO_GPO7);		
   } else {
     DEBUG((EFI_D_ERROR, "LanNoWake\n"));
   }

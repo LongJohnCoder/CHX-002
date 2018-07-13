@@ -8,7 +8,7 @@ SB_SMM_SOURCE_DESC mTIMER_SOURCE_DESCS = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GBLEN_REG
+        PMIO_GLOBAL_ENABLE
       },
       2,
       12
@@ -19,7 +19,7 @@ SB_SMM_SOURCE_DESC mTIMER_SOURCE_DESCS = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_GBLSTS_REG
+        PMIO_GLOBAL_STA
       },
       2,
       12
@@ -48,10 +48,10 @@ MapPeriodicTimerToSrcDesc (
   // Program the value of the interval into hardware
   //
   ///MTN-2016110201-Start
-  Data = MmioRead8(LPC_PCI_REG (LPC_GP23TIMER_CTRL_REG));
-  MmioWrite8 (LPC_PCI_REG (LPC_GP23TIMER_CTRL_REG), Data| BIT2 | BIT0); // enable GP2 timer tick to x1 ms
-  MmioWrite8 (LPC_PCI_REG (LPC_GP2_TIMER_COUNTER_REG), TimerCount);  // GP2 Timer Counter   
-  MmioOr8 (LPC_PCI_REG (LPC_GP23TIMER_CTRL_REG), BIT3);           // GP2 Timer Start
+  Data = MmioRead8(LPC_PCI_REG (D17F0_PMU_GP2_GP3_TIMER_CTL));
+  MmioWrite8 (LPC_PCI_REG (D17F0_PMU_GP2_GP3_TIMER_CTL), Data| BIT2 | BIT0); // enable GP2 timer tick to x1 ms
+  MmioWrite8 (LPC_PCI_REG (D17F0_PMU_GP2_TIMER_CNTER), TimerCount);  // GP2 Timer Counter   
+  MmioOr8 (LPC_PCI_REG (D17F0_PMU_GP2_GP3_TIMER_CTL), BIT3);           // GP2 Timer Start
   ///MTN-2016110201-End
 }
 

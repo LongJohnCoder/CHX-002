@@ -7,7 +7,7 @@ const SB_SMM_SOURCE_DESC POWER_BUTTON_SOURCE_DESC = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_PM_EN
+        PMIO_PM_ENABLE
       },
       2,
       8
@@ -18,7 +18,7 @@ const SB_SMM_SOURCE_DESC POWER_BUTTON_SOURCE_DESC = {
     {
       {
         ACPI_ADDR_TYPE,
-        PMIO_STS_REG
+        PMIO_PM_STA
       },
       2,
       8
