@@ -119,23 +119,23 @@ out dx, eax
 
 ; D17F0MMIO_SPI_BUS_0_CTL
 mov edi, 0FEB32000h
-mov eax, 0FEDB3000h + 1h
+mov eax, 0FEB30000h + 1h
 mov [edi], eax
 
 
 ;Program SPI Clock to 27Mhz start
-mov edi, 0FEDB3000h + 063h
+mov edi, 0FEB30000h + 063h
 mov al, [edi]
 and al, 0FEh
 mov [edi], al
 
 ; SPI0MMIO_SPI_BUS_0_MISC_CTL_1
-mov edi, 0FEDB3000h + 06Dh
+mov edi, 0FEB30000h + 06Dh
 mov al, 00h
 mov [edi], al
 
 
-mov edi, 0FEDB3000h + 06Ch
+mov edi, 0FEB30000h + 06Ch
 #ifdef ZX_SPICLK_SLOWDOWN
 ;27/4Mhz
 mov al, 02h
