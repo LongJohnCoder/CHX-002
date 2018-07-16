@@ -41,7 +41,7 @@ NumBlocks     = 0x80
 
 ################################################################################
 #eBMC
-#0x00000000|0x00400000
+#0x00000000|0x00020000
 #FILE = $(ASIA_SOURCE)/../ZxPlatformBin/Sme/CHX002_SME_Simple.bin
 !if $(ZX_SECRET_CODE) == TRUE
 0x00100000|0x00001000
