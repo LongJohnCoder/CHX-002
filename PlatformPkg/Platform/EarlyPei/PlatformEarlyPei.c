@@ -86,8 +86,8 @@ VOID SetAcpiWakeUpSrcPcd()
     }	
     PciBase = PCI_DEV_MMBASE(0, 3, 0);	
     MmioAnd32(PciBase+PCI_PBN_REG, 0xFF000000);		
-    goto ProcExit;
 */    
+	goto ProcExit;
   }	
 
   Sts = IoRead16(PMIO_REG(PMIO_GENERAL_PURPOSE_STA));       ///PMIO_Rx20[15:0] General Purpose Status
