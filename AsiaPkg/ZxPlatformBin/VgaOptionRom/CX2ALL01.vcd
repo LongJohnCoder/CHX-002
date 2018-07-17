@@ -1,0 +1,965 @@
+;****************************************************************************
+;
+;       Copyright 2011 S3 Incorporated.
+;       All rights reserved.
+;
+;       $Workfile:   TWBIOS.VCD  $
+;
+;       Contents:
+;         Video Configuration Data (VCD) template file
+;
+;       Modification History:
+;
+;****************************************************************************
+
+;============================================================================
+;
+;		Video Configuration Data (VCD) for COLUMBIA bios
+;
+;============================================================================
+
+;============================================================================
+;		Format of entries:
+
+
+;"<Description of data entry>" <CONST> <BOOL/BYTE/WORD/DWORD/STRING> 
+;                       <Number of Data Entries>
+;CONST : tells BIOSEDIT that the data is read only and should not be 
+;                       modified.
+;BOOL : this is a BOOLEAN data and the user will be able to toggle between 
+;                       "YES" and "NO" in BIOSEDIT
+;BYTE : this is BYTE data.
+;WORD : this is WORD data.
+;DWORD : this is DOUBLE WORD data.
+;STRING : this is STRING data and the string length is defined by 
+;                       <Number of Data Entries>.
+;<Number of Data Entries> : Number of data entires used to store the data.
+;
+;
+;
+;SKIP <Number of byte entries to skip before reading the next set of data>
+
+
+;Format of Validate_Bin:
+;Validate_Bin <Hex Offset> <Hex byte data expected at that offset>
+;This is the header for the VCP structure
+
+
+Validate_Bin    30      bb
+Validate_Bin	31      66
+
+;
+;Also validate against the BIOS Major, Minor, and Sub version
+;
+;Validate_Bin  a5	   3
+;Validate_Bin	a6      0
+;Validate_Bin	a7      2
+						
+;
+;Checksum for VCP structure in ROM Binary
+;Checksum       <start offset>  <end offset>  <checksum location>
+;
+;Checksum        38      35C     3c
+						   
+;
+;Checksum for ROM Binary.  
+;This must be the last "Checksum" entry or checksum will FAIL!!!
+;
+Checksum        0      FFFF
+
+
+;============================================================================
+;		These are the pages and descriptions
+PageStruct
+     "BIOS Version"                         BIOSVersion
+     "Sign On Messages"                     SignOnMsg
+     "Supported Display Devices"            Support_Device
+     "Supported_DVO_Device"                 Supported_DVO_Device
+     "POST Display Device"                  BootDev_Opt
+     "Features Switch"                      FEA_SWITCH
+     "Port characteristics Config"          PORT_CHAR_CONFIG
+     "PCI DEVICE ID"                        PCI_DEVICE_ID
+     "PCI SubSystem ID"                     PCI_Sub_System_ID
+     "Chip Clock"                           ChipClock 
+     "PCI Configuration"                    PCIConfigTab
+     "Boot CRTC Registers"                  Boot_CR
+     "Boot Sequencer Registers"             Boot_SR
+     "SYSTEM CALLBACKS"                     SYS_CB_OPT
+     "VGA Mode Parameters"                  VGA_PARAM
+     ;"Filter Mode Tables"                   TODO
+     "eDP Power Sequence Config"            eDP_PS_Config
+     "Config DP5 SSC"                       CONFIG_DP5_SSC
+     "Config DP6 SSC"                       CONFIG_DP6_SSC
+     "DVO_Delta_Delay"                      DVO_Delta_Delay
+EndPage                         
+
+;============================================================================
+;		BIOS Version (BiosVersionLabel)
+;
+BeginStruct BIOSVersion 0034
+     "BIOS Version"                   DWORD  
+EndStruct
+
+
+;============================================================================
+;		Sign On Messages (MsgCtl)
+;
+BeginStruct SignOnMsg 00A8
+     "Enable Signon Message"          BOOL  
+     "Enable Evaluation Message"      BOOL  
+     "Signon Message Text"            STRING 46
+     "Date Created"                   CONST STRING E
+     "Date Modified"                  STRING 10
+EndStruct
+
+;============================================================================
+;		Supported Display Devices (Support_Device)
+;
+BeginStruct Support_Device 004E
+     "CRT"            BOOL
+     "Reserved"       BOOL
+     "Reserved"      CONST BOOL
+     "Reserved"      CONST BOOL
+     "Reserved"      CONST BOOL
+     "DVO"            BOOL
+     "Reserved"      CONST BOOL
+     "Reserved"      CONST BOOL
+     "Reserved"      CONST BOOL
+     "DP6"            BOOL
+     "Reserved"      CONST BOOL
+     "Reserved"      CONST BOOL
+     "Reserved"      CONST BOOL
+     "Reserved"      CONST BOOL
+     "Reserved"      CONST BOOL
+     "DP5"            BOOL
+EndStruct
+;============================================================================
+;		Supported DVO Devices (Supported_DVO_Device)
+;
+BeginStruct Supported_DVO_Device 007C
+     "VT1636"          CONST BOOL
+     "CH7301C"         CONST BOOL
+     "VT1632A"         CONST BOOL
+     "AD9389B"         CONST BOOL
+     "CH7305"          CONST BOOL
+EndStruct
+
+;============================================================================
+;		POST Display Device (BootDevPriority)
+;
+BeginStruct BootDev_Opt 0130
+     "Priority 1 ActDisp"             WORD
+     "Priority 2 ActDisp"             WORD
+     "Priority 3 ActDisp"             WORD
+     "Priority 4 ActDisp"             WORD
+     "Priority 5 ActDisp"             WORD
+     ;"Priority 6 ActDisp"             WORD
+     ;"Priority 7 ActDisp"             WORD
+     ;"Priority 8 ActDisp"             WORD
+     ;"Priority 9 ActDisp"             WORD
+     ;"Priority 10 ActDisp"            WORD
+EndStruct
+
+;============================================================================
+;		Features Switch (Feat_SWITCH)
+;
+BeginStruct FEA_SWITCH 0050
+     "Reserved"                                 BOOL
+     "Reserved"                                 BOOL
+     "Reserved"                                 BOOL
+     "Reserved"                                 BOOL
+     "Configure_eDP1_SUPPORT"                   BOOL
+     "Configure_eDP2_SUPPORT"                   BOOL
+     "Disable_Codec1"                           BOOL
+     "Disable_Codec2"                           BOOL
+     "Eclk Configure Enable"                    BOOL 
+     "Reserved"                                 BOOL 
+     "Reserved"                                 BOOL
+     "Reserved"                                 BOOL
+     "Reserved"                                 BOOL
+     "Reserved"                                 BOOL
+     "EDP_PowerSeq_Enable"                      BOOL
+EndStruct
+
+;============================================================================
+;	LCD Panel Configuraton (ROM_Panel_Type)
+;
+; BeginStruct PType_ROM
+;      "LCD Panel Type in ROM"          BYTE
+;      "Expansion On"                   BOOL
+;      "Centering On"                   BOOL
+;      "Aspect Ratio Lock"              BOOL
+;      "Reserved"                       BOOL
+;      "Reserved"                       BOOL
+;      "Reserved"                       BOOL
+;      "Reserved"                       BOOL
+;      "Reserved"                       BOOL
+; EndStruct
+
+;============================================================================
+;               Port characteristics Config(DAC_Char_Byte)
+;
+BeginStruct PORT_CHAR_CONFIG 0054
+        " Bit[3:0]: I2C port#(0xF means invalid), Bit[7:4]: reserved" BYTE 0
+        " DAC_Char_Byte "            BYTE   1
+        " DVO_Char_Byte "            BYTE   1
+        " DP1_Char_Byte "            BYTE   1
+        " DP2_Char_Byte "            BYTE   1
+        "SKIP"                       2
+        " Bit[3:0]: GPIO pin#(0xF means invalid), Bit[7:4]: reserved" BYTE 0
+        " DAC_GPIO_BYTE "            BYTE   1
+        " DVO_GPIO_BYTE "            BYTE   1
+        " DP1_GPIO_BYTE "            BYTE   1
+        " DP2_GPIO_BYTE "            BYTE   1
+EndStruct
+
+;============================================================================
+;              GPIO Controler for LVDS(Internal_LVDS_POWER_SEQ_GPIO)
+;
+; BeginStruct LVDS_GPIO_CTRL
+;      "[0:3]:For power control, [4:7]:For backlight control" BYTE   0
+;      "Internal_LVDS_POWER_SEQ_GPIO"                         BYTE   1
+;      "External_LVDS_POWER_SEQ_GPIO"                         BYTE   1
+;      "eDP1_POWER_SEQ_GPIO"                                  BYTE   1
+;      "eDP2_POWER_SEQ_GPIO"                                  BYTE   1
+; EndStruct
+
+;============================================================================
+;		PCI DEVICE ID (PciData)
+;
+BeginStruct PCI_DEVICE_ID 0162
+     "SKIP"                           6        
+     "PCI DEVICE ID"                  WORD
+     ""                               BYTE 0	
+     "only change the ID in the PCI Data Structure"       BYTE 0			
+EndStruct
+
+;============================================================================
+;		PCI SubSystem ID (PciSubSystemVendorId)
+;
+BeginStruct PCI_Sub_System_ID 0040
+     "PCI Sub-System Vendor ID"       WORD
+     "PCI Sub-System ID"              WORD
+EndStruct
+
+;============================================================================
+;		Video Chip Clocks (VideoChipClocks)
+;
+BeginStruct ChipClock 0060
+     "ECLK (engine clock)"            DEC    DWORD
+     "ICLK (for 3D engine)"           DEC    DWORD
+     "ECLK_VCO"                       DEC    DWORD
+     "ICLK_VCO"                       DEC    DWORD
+     "DCLK_VCO"                       DEC    DWORD
+     "VCLK (Video clock)"             DEC    DWORD
+EndStruct
+
+;============================================================================
+;              Simultaneous Device Combination (SIMULT_TABLE)
+;
+; BeginStruct SimultTable
+; EndStruct
+
+;============================================================================
+;		PCI Configuration Registers (PCI_DEFAULT_TABLE)
+;
+BeginStruct PCIConfigTab 03CD
+		"SKIP"                  2
+		"  1. CR Index,Mask,Data" BYTE   3
+		"SKIP"                  2
+		"  1. CR_C Index,Mask,Data" BYTE   3
+		"  2. CR_C Index,Mask,Data" BYTE   3
+EndStruct
+
+;============================================================================
+;		Boot CRTC Registers (CR_DEFAULT_TABLE)
+;
+BeginStruct Boot_CR 0220
+		"SKIP"                  2
+		"  1. CR Index,Mask,Data" BYTE   3
+		"  2. CR Index,Mask,Data" BYTE   3
+		"  3. CR Index,Mask,Data" BYTE   3
+		"  4. CR Index,Mask,Data" BYTE   3
+		"  5. CR Index,Mask,Data" BYTE   3
+		"  6. CR Index,Mask,Data" BYTE   3
+		"  7. CR Index,Mask,Data" BYTE   3
+		"  8. CR Index,Mask,Data" BYTE   3
+		"  9. CR Index,Mask,Data" BYTE   3
+		" 10. CR Index,Mask,Data" BYTE   3
+		" 11. CR Index,Mask,Data" BYTE   3
+		" 12. CR Index,Mask,Data" BYTE   3
+		" 13. CR Index,Mask,Data" BYTE   3
+		" 14. CR Index,Mask,Data" BYTE   3
+		" 15. CR Index,Mask,Data" BYTE   3
+		" 16. CR Index,Mask,Data" BYTE   3
+		" 17. CR Index,Mask,Data" BYTE   3
+		" 18. CR Index,Mask,Data" BYTE   3
+		" 19. CR Index,Mask,Data" BYTE   3
+		" 20. CR Index,Mask,Data" BYTE   3
+		" 21. CR Index,Mask,Data" BYTE   3
+		" 22. CR Index,Mask,Data" BYTE   3
+		" 23. CR Index,Mask,Data" BYTE   3
+		" 24. CR Index,Mask,Data" BYTE   3
+		" 25. CR Index,Mask,Data" BYTE   3
+		" 26. CR Index,Mask,Data" BYTE   3
+		" 27. CR Index,Mask,Data" BYTE   3
+		" 28. CR Index,Mask,Data" BYTE   3
+		" 29. CR Index,Mask,Data" BYTE   3
+		" 30. CR Index,Mask,Data" BYTE   3
+		" 31. CR Index,Mask,Data" BYTE   3
+		" 32. CR Index,Mask,Data" BYTE   3
+		" 33. CR Index,Mask,Data" BYTE   3
+		" 34. CR Index,Mask,Data" BYTE   3
+		" 35. CR Index,Mask,Data" BYTE   3
+		" 36. CR Index,Mask,Data" BYTE   3
+		" 37. CR Index,Mask,Data" BYTE   3
+		" 38. CR Index,Mask,Data" BYTE   3
+		" 39. CR Index,Mask,Data" BYTE   3
+		" 40. CR Index,Mask,Data" BYTE   3
+		" 41. CR Index,Mask,Data" BYTE   3
+		" 42. CR Index,Mask,Data" BYTE   3
+		" 43. CR Index,Mask,Data" BYTE   3
+		" 44. CR Index,Mask,Data" BYTE   3
+		" 45. CR Index,Mask,Data" BYTE   3
+		" 46. CR Index,Mask,Data" BYTE   3
+		"SKIP"                  2
+		"  1. CR_P Index,Mask,Data" BYTE   3
+		"SKIP"                  2
+		"  1. CR_B Index,Mask,Data" BYTE   3
+		"  2. CR_B Index,Mask,Data" BYTE   3
+		"  3. CR_B Index,Mask,Data" BYTE   3
+		"  4. CR_B Index,Mask,Data" BYTE   3
+		"  5. CR_B Index,Mask,Data" BYTE   3
+		"  6. CR_B Index,Mask,Data" BYTE   3
+		"  7. CR_B Index,Mask,Data" BYTE   3
+		"  8. CR_B Index,Mask,Data" BYTE   3
+		"  9. CR_B Index,Mask,Data" BYTE   3
+		" 10. CR_B Index,Mask,Data" BYTE   3
+		" 11. CR_B Index,Mask,Data" BYTE   3
+		" 12. CR_B Index,Mask,Data" BYTE   3
+		" 13. CR_B Index,Mask,Data" BYTE   3
+		"SKIP"                  2
+		"  1. CR_C Index,Mask,Data" BYTE   3
+		"  2. CR_C Index,Mask,Data" BYTE   3
+		"  3. CR_C Index,Mask,Data" BYTE   3
+		"  4. CR_C Index,Mask,Data" BYTE   3
+		"  5. CR_C Index,Mask,Data" BYTE   3
+		"  6. CR_C Index,Mask,Data" BYTE   3
+		"  7. CR_C Index,Mask,Data" BYTE   3
+		"  8. CR_C Index,Mask,Data" BYTE   3
+		"  9. CR_C Index,Mask,Data" BYTE   3
+		" 10. CR_C Index,Mask,Data" BYTE   3
+		" 11. CR_C Index,Mask,Data" BYTE   3
+		"SKIP"                  2
+		"  1. CR_D Index,Mask,Data" BYTE   3
+		"  2. CR_D Index,Mask,Data" BYTE   3
+		"  3. CR_D Index,Mask,Data" BYTE   3
+EndStruct
+
+
+;============================================================================
+;		Boot Sequencer Registers (SR_DEFAULT_TABLE)
+;
+BeginStruct Boot_SR 018C
+		"SKIP"                  2
+		"  1. SR Index,Mask,Data" BYTE   3
+		"  2. SR Index,Mask,Data" BYTE   3
+		"  3. SR Index,Mask,Data" BYTE   3
+		"  4. SR Index,Mask,Data" BYTE   3
+		"  5. SR Index,Mask,Data" BYTE   3
+		"  6. SR Index,Mask,Data" BYTE   3
+		"  7. SR Index,Mask,Data" BYTE   3
+		"  8. SR Index,Mask,Data" BYTE   3
+		"  9. SR Index,Mask,Data" BYTE   3
+		" 10. SR Index,Mask,Data" BYTE   3
+		" 11. SR Index,Mask,Data" BYTE   3
+		" 12. SR Index,Mask,Data" BYTE   3
+		" 13. SR Index,Mask,Data" BYTE   3
+		" 14. SR Index,Mask,Data" BYTE   3
+		" 15. SR Index,Mask,Data" BYTE   3
+		" 16. SR Index,Mask,Data" BYTE   3
+		" 17. SR Index,Mask,Data" BYTE   3
+		" 18. SR Index,Mask,Data" BYTE   3
+		" 19. SR Index,Mask,Data" BYTE   3
+		" 20. SR Index,Mask,Data" BYTE   3
+		" 21. SR Index,Mask,Data" BYTE   3
+		" 22. SR Index,Mask,Data" BYTE   3
+		" 23. SR Index,Mask,Data" BYTE   3
+		" 24. SR Index,Mask,Data" BYTE   3
+		" 25. SR Index,Mask,Data" BYTE   3
+		" 26. SR Index,Mask,Data" BYTE   3
+		" 27. SR Index,Mask,Data" BYTE   3
+		" 28. SR Index,Mask,Data" BYTE   3
+		" 29. SR Index,Mask,Data" BYTE   3
+		" 30. SR Index,Mask,Data" BYTE   3
+		" 31. SR Index,Mask,Data" BYTE   3
+		" 32. SR Index,Mask,Data" BYTE   3
+		" 33. SR Index,Mask,Data" BYTE   3
+		" 34. SR Index,Mask,Data" BYTE   3
+		" 35. SR Index,Mask,Data" BYTE   3
+		" 36. SR Index,Mask,Data" BYTE   3
+		" 37. SR Index,Mask,Data" BYTE   3
+		" 38. SR Index,Mask,Data" BYTE   3
+		" 39. SR Index,Mask,Data" BYTE   3
+		" 40. SR Index,Mask,Data" BYTE   3
+		" 41. SR Index,Mask,Data" BYTE   3
+		" 42. SR Index,Mask,Data" BYTE   3
+		" 43. SR Index,Mask,Data" BYTE   3
+		" 44. SR Index,Mask,Data" BYTE   3
+		" 45. SR Index,Mask,Data" BYTE   3
+		" 46. SR Index,Mask,Data" BYTE   3
+		" 47. SR Index,Mask,Data" BYTE   3
+		"SKIP"                  2
+		"  1. SR_P Index,Mask,Data" BYTE   3
+EndStruct                             
+
+;============================================================================
+;		SYSTEM CALLBACKS	(SYS_CALL_OPTION)
+;
+BeginStruct SYS_CB_OPT 0144
+     "System Callback Functions Option"
+     "Reserved"                         BOOL  ;000000000000000000000001b
+     "SYS_CALL_PANEL_DETECT"            BOOL  ;000000000000000000000010b
+     "SYS_CALL_BOOT_DEVICE"             BOOL  ;000000000000000000000100b
+     "Reserved"                         BOOL  ;000000000000000000001000b
+     "Reserved"                         BOOL  ;000000000000000000010000b
+     "Reserved"                         BOOL  ;000000000000000000100000b
+     "Reserved"                         BOOL  ;000000000000000001000000b
+     "Reserved"        	                BOOL  ;000000000000000010000000b
+     "SYS_CALL_DISPLAY_DEVICE_END"      BOOL  ;000000000000000100000000b
+     "Reserved"                         BOOL  ;000000000000001000000000b
+     "Reserved"                         BOOL  ;000000000000010000000000b
+     "Reserved"                         BOOL  ;000000000000100000000000b
+     "Reserved"                         BOOL  ;000000000001000000000000b
+     "Reserved"                         BOOL  ;000000000010000000000000b
+     "SYS_CALL_FB_SIZE"                 BOOL  ;000000000100000000000000b
+     "Reserved"                         BOOL  ;000000001000000000000000b
+     "Reserved"                         BOOL  ;000000010000000000000000b
+     "Reserved"                         BOOL  ;000000100000000000000000b
+     "Reserved"                         BOOL  ;000001000000000000000000b
+     "Reserved"                         BOOL  ;000010000000000000000000b
+     "SYS_CALL_LVDS_DutyCycle"          BOOL  ;000100000000000000000000b
+     "SYS_CALL_PANEL2_DETECT"           BOOL  ;001000000000000000000000b
+     "SYS_CALL_GET_ECLK_SET"            BOOL  ;010000000000000000000000b
+     "SYS_GET_SSC_CTRL"                 BOOL  ;100000000000000000000000b
+     "SKIP"                             1
+     "System Callback Functions List"
+     ;-"SYS_CALL_POST_INIT"             WORD  ;000000000000000000000001b
+     "SYS_CALL_PANEL_DETECT"            WORD  ;000000000000000000000010b
+     "SYS_CALL_BOOT_DEVICE"             WORD  ;000000000000000000000100b
+     ;-"SYS_CALL_SET_MODE_START"        WORD  ;000000000000000000001000b
+     ;-"SYS_CALL_SET_MODE_END"          WORD  ;000000000000000000010000b
+     ;-"SYS_CALL_VGA_SIGNAL"            WORD  ;000000000000000000100000b
+     ;-"SYS_CALL_DISPLAY_DEVICE_START"  WORD  ;000000000000000001000000b
+     ;-"SYS_CALL_TV_CONFIGURATION"      WORD  ;000000000000000010000000b
+     "SYS_CALL_DISPLAY_DEVICE_END"      WORD  ;000000000000000100000000b
+     ;-"SYS_CALL_PANEL_EXPCEN_CHANGE"   WORD  ;000000000000001000000000b
+     ;-"SYS_CALL_BACKLIGHT"             WORD  ;000000000000010000000000b
+     ;-"SYS_CALL_GET_EXPCENTER_SETTING" WORD  ;000000000000100000000000b
+     ;-"SYS_CALL_POST_COMPLETE"         WORD  ;000000000001000000000000b
+     ;-"SYS_CALL_VESA_DPMS"             WORD  ;000000000010000000000000b
+     "SYS_CALL_FB_SIZE"                 WORD  ;000000000100000000000000b
+     ;-"SYS_CALL_CONFIG_INQ_START"      WORD  ;000000001000000000000000b
+     ;-"SYS_CALL_CONFIG_INQ_END"        WORD  ;000000010000000000000000b
+     ;-"SYS_CALL_QUERY_MEM_CLK"         WORD  ;000000100000000000000000b
+     ;-"SYS_CALL_QUERY_CURRENT_DEVICES" WORD  ;000001000000000000000000b
+     ;-"SYS_CALL_GET_FP_REFRESH_RATE"   WORD  ;000010000000000000000000b
+     "SYS_CALL_LVDS_DutyCycle"          WORD  ;000100000000000000000000b
+     "SYS_CALL_PANEL2_DETECT"           WORD  ;001000000000000000000000b
+     "SYS_CALL_GET_ECLK_SET"            WORD  ;010000000000000000000000b
+     "SYS_GET_SSC_CTRL"                 WORD  ;100000000000000000000000b
+EndStruct	
+
+;============================================================================
+;		TVConfig (TvConfigBYTE)
+;
+; BeginStruct TV_Config_Opt
+; 	"TV Configuration"               BYTE       1
+;      ""                               BYTE       0	
+;      " bits[7:4]"                     BYTE       0			
+;      "     0 :  Reserved"             BYTE       0			
+;      "     1 :  HDTV 1080I"           BYTE       0			
+;      "     2 :  HDTV 720P"            BYTE       0			
+;      "     3 :  HDTV 480P"            BYTE       0			
+;      ""                               BYTE       0	
+;      " bits[3:2]"                     BYTE       0			
+;      "     0 :  Japanese NTSC TV"     BYTE       0			
+;      "     1 :  US NTSC TV"           BYTE       0			
+;      "     2 :  PAL TV"               BYTE       0			
+;      ""                               BYTE       0	
+;      " bits[1:0] : Reserved"          BYTE       0			
+; EndStruct
+
+;============================================================================
+;		Panel Tables (FPBaseTbl)
+;
+; BeginStruct Panel_TABLES
+; 
+; EndStruct 
+
+;============================================================================
+;			Panel Table
+;============================================================================
+BeginTable      Panel_Table
+     "HortSize"                       DEC WORD   1
+     "VertSize"                       DEC WORD   1
+     "PanelChar"                      BYTE       0
+     "Dual Channel"                   BOOL       1
+     "24 Bit Pannel"                  BOOL       1
+     "Enable Dither"                  BOOL       1
+     "MSB Color Mapping"              BOOL       1
+     "SKIP"                                      1
+     "Min Off to On Wait time (ms)"   DEC WORD   1
+     "SKIP"                                      10
+     "Panel EDID detailed timing"     BYTE       0
+     "Pixel clock / 10,000"           DEC WORD   1
+     "Default SSC range"              WORD       1
+     "Horizontal Active"              BYTE       1
+     "Horizontal Blanking"            BYTE       1
+     "Horizontal Active/Blanking"     BYTE       1
+     "Vertical Active"                BYTE       1
+     "Vertical Blanking"              BYTE       1
+     "Vertical Active/Blanking"       BYTE       1
+     "Horizontal Sync Offset"         BYTE       1
+     "Horizontal Sync Pulse Width"    BYTE       1
+     "Vertical Sync Offset/Width"     BYTE       1
+     "H/V Sync Offset/width"          BYTE       1
+     "Horizontal Image Size"          BYTE       1
+     "Vertical Image Size"            BYTE       1
+     "H/V Image Size"                 BYTE       1
+     "Horizontal Border"              BYTE       1
+     "Vertical Border"                BYTE       1
+     "Flags"                          BYTE       1
+     "Panel Power Sequence (ms)"      BYTE       0
+     "VDD High To Data Active"        DEC WORD   1
+     "Data Active To VEE High"        DEC WORD   1
+     "VEE Low To Data Inactive"       DEC WORD   1
+     "Data Inactive To VDD Low"       DEC WORD   1
+EndTable
+
+;============================================================================
+;			Config Tables (Panel_With_EDID_Config)
+;
+; BeginStruct Panal_With_EDID_Config_TABLES
+;      "Internal_Lcd_With_EDID_Config"  TABLE   Panel_With_EDID_Config_Table
+; 	 "External_Lcd_With_EDID_Config"  TABLE   Panel_With_EDID_Config_Table
+; EndStruct 
+
+;============================================================================
+;			Panel With EDID Config Table
+;============================================================================
+BeginTable      Panel_With_EDID_Config_Table
+     "PanelChar"                      BYTE       0
+     "Dual Channel"                   BOOL       1
+     "24 Bit Pannel"                  BOOL       1
+     "Enable Dither"                  BOOL       1
+     "MSB Color Mapping"              BOOL       1
+	 "Min Off to On Wait time (ms)"   DEC WORD   1
+     "SKIP"                                      C
+     "Panel Power Sequence (ms)"      BYTE       0
+     "VDD High To Data Active"        DEC WORD   1
+     "Data Active To VEE High"        DEC WORD   1
+     "VEE Low To Data Inactive"       DEC WORD   1
+     "Data Inactive To VDD Low"       DEC WORD   1  
+EndTable
+
+;============================================================================
+;		VGA Mode Parameters (ModeParameters)	
+;
+BeginStruct VGA_PARAM 9924
+	"Mode  0 - 40x25 B/W (8x8)"
+	"Mode  1 - 40x25 16 color (8x8)"
+	"Mode  2 - 80x25 B/W (8x8)"
+	"Mode  3 - 80x25 16 color (8x8)"
+	"Mode  4 - 320x200 4 color"
+	"Mode  5 - 320x200 B/W"
+	"Mode  6 - 640x200 B/W"
+	"Mode  7 - 80x25 Mono (9x14)"
+	"Mode  8 - Reserved"
+	"Mode  9 - Reserved"
+	"Mode  A - Reserved"
+	"Mode  B - Character Table (3Dx)"
+	"Mode  C - Character Table (3Bx)"
+	"Mode  D - 320x200 16 color"
+	"Mode  E - 640x200 16 color"
+	"Mode  F - 640x350 Mono (=64K)"
+	"Mode 10 - 640x350 4 color (=64K)"
+	"Mode  F - 640x350 Mono (>64K)"
+	"Mode 10 - 640x350 16 color (>64K)"
+	"Mode  0 - 40x25 B/W (8x14)"
+	"Mode  1 - 40x25 16 color (8x14)"
+	"Mode  2 - 80x25 B/W (8x14)"
+	"Mode  3 - 80x25 16 color (8x14)"
+	"Mode 0,1- 40x25 16 color (9x16)"
+	"Mode 2,3- 80x25 16 color (9x16)"
+	"Mode  7 - 80x25 Mono (9x16)"
+	"Mode 11 - 640x480 2 color"
+	"Mode 12 - 640x480 16 color"
+	"Mode 13 - 320x200 256 color"
+EndStruct
+
+;============================================================================
+;		Structure for VGA Mode Parameter table
+;
+VGA_PARAM_Struct
+	"BIOS Data Area:Col/Row/Height" BYTE    3
+	"Buffer Size"                   WORD
+	"SR 01h-04h"                    BYTE    4
+	"3c2h"                          BYTE
+	"CR 00h-09h"                    BYTE    A
+	"CR 0ah-13h"                    BYTE    A
+	"CR 14h-18h"                    BYTE    5
+	"AR 00h-09h"                    BYTE    A
+	"AR 0ah-13h"                    BYTE    A
+	"GR 00h-08h"                    BYTE    9
+End_VGA_PARAM_Struct
+
+
+
+;============================================================================
+;		Font Table (FontPtr) 
+;
+; Begin_Font_Table &
+; 	"FONT8X8"       2048
+; 	"FONT8X14"      3584	
+; 	"FONT9X14"      300
+; 	"FONT8X16"      4096
+; 	"FONT9X16"      323
+; End_Font_Table
+; 
+; ;============================================================================
+; ;	Base_320x200 (Base320x200)
+; ;
+; BeginStruct BASE_320x200 
+;      "SKIP"                                      1
+;      "BIOS Data Area:Col/Row/Height" BYTE        3
+;      "Buffer Size"                   WORD        1
+;      "SR 01h-04h"                    BYTE        4
+;      "3c2h"                          BYTE        1
+;      "CR 00h-09h"                    BYTE        A	
+;      "CR 0ah-13h"                    BYTE        A
+;      "CR 14h-18h"                    BYTE        5
+;      "AR 00h-09h"                    BYTE        A
+;      "AR 0ah-13h"                    BYTE        A
+;      "GR 00h-08h"                    BYTE        9
+;      "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+; EndStruct
+
+;============================================================================
+;	Base_320x240 (Base320x240)
+;
+; BeginStruct BASE_320x240
+;      "SKIP"                                      1
+;      "BIOS Data Area:Col/Row/Height" BYTE        3
+;      "Buffer Size"                   WORD        1
+;      "SR 01h-04h"                    BYTE        4
+;      "3c2h"                          BYTE        1
+;      "CR 00h-09h"                    BYTE        A
+;      "CR 0ah-13h"                    BYTE        A
+;      "CR 14h-18h"                    BYTE        5
+;      "AR 00h-09h"                    BYTE        A
+;      "AR 0ah-13h"                    BYTE        A
+;      "GR 00h-08h"                    BYTE        9
+;      "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+; EndStruct
+
+;============================================================================
+;	Base_400x300 (Base400x300)
+;
+; BeginStruct BASE_400x300
+;      "SKIP"                                      1
+;      "BIOS Data Area:Col/Row/Height" BYTE        3
+;      "Buffer Size"                   WORD        1
+;      "SR 01h-04h"                    BYTE        4
+;      "3c2h"                          BYTE        1
+;      "CR 00h-09h"                    BYTE        A
+;      "CR 0ah-13h"                    BYTE        A
+;      "CR 14h-18h"                    BYTE        5
+;      "AR 00h-09h"                    BYTE        A
+;      "AR 0ah-13h"                    BYTE        A
+;      "GR 00h-08h"                    BYTE        9
+;      "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+; EndStruct
+
+;============================================================================
+;	Base_512x384 (Base512x384)
+;
+; BeginStruct BASE_512x384
+;      "SKIP"                                      1
+;      "BIOS Data Area:Col/Row/Height" BYTE        3
+;      "Buffer Size"                   WORD        1
+;      "SR 01h-04h"                    BYTE        4
+;      "3c2h"                          BYTE        1
+;      "CR 00h-09h"                    BYTE        A
+;      "CR 0ah-13h"                    BYTE        A
+;      "CR 14h-18h"                    BYTE        5
+;      "AR 00h-09h"                    BYTE        A
+;      "AR 0ah-13h"                    BYTE        A
+;      "GR 00h-08h"                    BYTE        9
+;      "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+; EndStruct
+
+;============================================================================
+;	Base_640x400 (Base640x400)
+;
+BeginStruct BASE_640x400 85D8
+     "SKIP"                                      1
+     "BIOS Data Area:Col/Row/Height" BYTE        3
+     "Buffer Size"                   WORD        1
+     "SR 01h-04h"                    BYTE        4
+     "3c2h"                          BYTE        1
+     "CR 00h-09h"                    BYTE        A
+     "CR 0ah-13h"                    BYTE        A
+     "CR 14h-18h"                    BYTE        5
+     "AR 00h-09h"                    BYTE        A
+     "AR 0ah-13h"                    BYTE        A
+     "GR 00h-08h"                    BYTE        9
+     "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+EndStruct
+
+;============================================================================
+;	Base_640x480 (Base640x480)
+;
+BeginStruct BASE_640x480 85F3
+     "SKIP"                                      1
+     "BIOS Data Area:Col/Row/Height" BYTE        3
+     "Buffer Size"                   WORD        1
+     "SR 01h-04h"                    BYTE        4
+     "3c2h"                          BYTE        1
+     "CR 00h-09h"                    BYTE        A
+     "CR 0ah-13h"                    BYTE        A
+     "CR 14h-18h"                    BYTE        5
+     "AR 00h-09h"                    BYTE        A
+     "AR 0ah-13h"                    BYTE        A
+     "GR 00h-08h"                    BYTE        9
+     "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+EndStruct
+
+;============================================================================
+;	Base_720x480 (Base720x480)
+;
+; BeginStruct BASE_720x480
+;      "SKIP"                                      1
+;      "BIOS Data Area:Col/Row/Height" BYTE        3
+;      "Buffer Size"                   WORD        1
+;      "SR 01h-04h"                    BYTE        4
+;      "3c2h"                          BYTE        1
+;      "CR 00h-09h"                    BYTE        A
+;      "CR 0ah-13h"                    BYTE        A
+;      "CR 14h-18h"                    BYTE        5
+;      "AR 00h-09h"                    BYTE        A
+;      "AR 0ah-13h"                    BYTE        A
+;      "GR 00h-08h"                    BYTE        9
+;      "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+; EndStruct
+
+;============================================================================
+;	Base_720x576 (Base720x576)
+;
+; BeginStruct BASE_720x576
+;      "SKIP"                                      1
+;      "BIOS Data Area:Col/Row/Height" BYTE        3
+;      "Buffer Size"                   WORD        1
+;      "SR 01h-04h"                    BYTE        4
+;      "3c2h"                          BYTE        1
+;      "CR 00h-09h"                    BYTE        A
+;      "CR 0ah-13h"                    BYTE        A
+;      "CR 14h-18h"                    BYTE        5
+;      "AR 00h-09h"                    BYTE        A
+;      "AR 0ah-13h"                    BYTE        A
+;      "GR 00h-08h"                    BYTE        9
+;      "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+; EndStruct
+
+;============================================================================
+;	Base_800x600 (Base800x600)
+;
+BeginStruct BASE_800x600 8629
+     "SKIP"                                      1
+     "BIOS Data Area:Col/Row/Height" BYTE        3
+     "Buffer Size"                   WORD        1
+     "SR 01h-04h"                    BYTE        4
+     "3c2h"                          BYTE        1
+     "CR 00h-09h"                    BYTE        A
+     "CR 0ah-13h"                    BYTE        A
+     "CR 14h-18h"                    BYTE        5
+     "AR 00h-09h"                    BYTE        A
+     "AR 0ah-13h"                    BYTE        A
+     "GR 00h-08h"                    BYTE        9
+     "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+EndStruct
+
+;============================================================================
+;	Base_1024x768 (Base1024x768)
+;
+BeginStruct BASE_1024x768 8644
+     "SKIP"                                      1
+     "BIOS Data Area:Col/Row/Height" BYTE        3
+     "Buffer Size"                   WORD        1
+     "SR 01h-04h"                    BYTE        4
+     "3c2h"                          BYTE        1
+     "CR 00h-09h"                    BYTE        A
+     "CR 0ah-13h"                    BYTE        A
+     "CR 14h-18h"                    BYTE        5
+     "AR 00h-09h"                    BYTE        A
+     "AR 0ah-13h"                    BYTE        A
+     "GR 00h-08h"                    BYTE        9
+     "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+EndStruct
+
+;============================================================================
+;	Base_1280x1024 (Base1280x1024)
+;
+BeginStruct BASE_1280x1024 867A
+     "SKIP"                                      1
+     "BIOS Data Area:Col/Row/Height" BYTE        3
+     "Buffer Size"                   WORD        1
+     "SR 01h-04h"                    BYTE        4
+     "3c2h"                          BYTE        1
+     "CR 00h-09h"                    BYTE        A
+     "CR 0ah-13h"                    BYTE        A
+     "CR 14h-18h"                    BYTE        5
+     "AR 00h-09h"                    BYTE        A
+     "AR 0ah-13h"                    BYTE        A
+     "GR 00h-08h"                    BYTE        9
+     "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+EndStruct
+
+;============================================================================
+;	Base_1600x1200 (Base1600x1200)
+;
+BeginStruct BASE_1600x1200 8695
+     "SKIP"                                      1
+     "BIOS Data Area:Col/Row/Height" BYTE        3
+     "Buffer Size"                   WORD        1
+     "SR 01h-04h"                    BYTE        4
+     "3c2h"                          BYTE        1
+     "CR 00h-09h"                    BYTE        A
+     "CR 0ah-13h"                    BYTE        A
+     "CR 14h-18h"                    BYTE        5
+     "AR 00h-09h"                    BYTE        A
+     "AR 0ah-13h"                    BYTE        A
+     "GR 00h-08h"                    BYTE        9
+     "CR 33,3B,3C,42,5B,5D,5E,5F,69" BYTE        9
+EndStruct
+
+;============================================================================
+;		VideoKeyValue (Video_Key_Value)
+;
+; BeginStruct VideoKeyValue
+;      "VideoKeyValue"                 BYTE        1
+; EndStruct
+
+;============================================================================
+;		LVDS Backlight Control Parameters (LVDS_BACKLIGHT_PWM_PARA)
+;
+; BeginStruct LVDS_BackLight
+; 	"BIT[2-0]:Internal LVDS BackLight PWM Index	    "		BYTE		0
+; 	"BIT[3]  :Internal LVDS BackLight Pulse Value	"		BYTE		0
+; 	"BIT[4]  :Internal LVDS BackLight Support		"		BYTE		0
+; 	"BIT[7-5]:External LVDS BackLight PWM Index		"		BYTE		0
+; 	"BIT[8]  :External LVDS BackLight Pulse Value	"		BYTE		0
+; 	"BIT[9]  :External LVDS BackLight Support		"		BYTE		0
+; 	"BIT[13-10]  :LVDS BackLight PWM Frequency Index"    	BYTE		0
+;             "Index  0: 96M/455    =  210KHz         "		BYTE		0
+;             "Index  1: 96M/910    =  105KHz         "		BYTE		0
+;             "Index  2: 96M/1365   =  70KHz          "		BYTE		0
+;             "Index  3: 96M/1820   =  53KHz          "		BYTE		0
+;             "Index  4: 96M/2730   =  35KHz          "		BYTE		0
+;             "Index  5: 96M/3640   =  26KHz          "		BYTE		0
+;             "Index  6: 96M/7280   =  13KHz          "		BYTE		0
+;             "Index  7: 96M/14560  =  6.5KHz         "		BYTE		0
+;             "Index  8: 96M/29120  =  3.25KHz        "		BYTE		0
+;             "Index  9: 96M/58240  =  1.65KHz        "		BYTE		0
+;             "Index 10: 96M/116480 =  824Hz          "		BYTE		0
+;             "Index 11: 96M/232960 =  412Hz          "		BYTE		0
+;             "Index 12: 96M/465920 =  206Hz          "		BYTE		0
+;             "Index 13: 96M/931840 =  103Hz          "		BYTE		0
+; 	"LVDS_BACKLIGHT_PWM_PARA						"		WORD 		1
+; 
+; EndStruct
+
+;============================================================================
+;		Clock Deskew Phase Select of Data Latch Stage (CLK_SEL_ST_CTRL_PARA)
+;
+; BeginStruct CLK_SEL_ST
+;      "CLK_SEL_ST1[4:0]"                  BYTE        1
+;      "CLK_SEL_ST2[3:0]"                  BYTE        1
+; EndStruct
+
+;============================================================================
+;		VT1636 I2C common table (VT1636_i2c_common_table)
+;
+; BeginStruct VT1636_I2c
+;      "offset 09"            BYTE
+; EndStruct
+
+;============================================================================
+;		eDP Power Sequence Config(eDP_Power_Sequence_Config)
+;
+BeginStruct eDP_PS_Config 0088
+     "GPIO [0:3]:For power, [4:7]:For backlight"       BYTE    0
+     "eDP1_POWER_SEQ_GPIO"                             BYTE    1
+     "eDP2_POWER_SEQ_GPIO"                             BYTE    1
+     "Power Sequence Delay Time"                       BYTE    0
+     "Positive Delay VDD to DPLane"                    BYTE    1
+     "Positive Delay DPLane to PWM"                    BYTE    1
+     "Positive Delay PWM to VEE"                       BYTE    1
+     "Negative Delay VEE to PWM"                       BYTE    1
+     "Negative Delay PWM to DPLane"                    BYTE    1
+     "Negative Delay DPLane to VDD"                    BYTE    1
+     "EDP PowerSeq Minimun Time between On and OFF"    BYTE    1
+     ;"EDP PowerSequence Reserve Byte "                 BYTE    1
+EndStruct
+
+;============================================================================
+;	LCD Panel Configuraton (ROM_Panel_Type)
+;
+; BeginStruct PType_ROM
+;      "LCD Panel Type in ROM"          BYTE    
+;      "Expansion On"                   BOOL
+;      "Centering On"                   BOOL
+;      "Aspect Ratio Lock"              BOOL
+;      "Reserved"                       BOOL
+;      "Reserved"                       BOOL
+;      "Reserved"                       BOOL
+;      "Reserved"                       BOOL
+;      "Reserved"                       BOOL
+; EndStruct
+
+;============================================================================
+;       CONFIG_DP5_SSC (DP5_SSC_CONFIG)
+;
+BeginStruct CONFIG_DP5_SSC 0080
+    "Reserved"                    BOOL    13
+    "DP5 SSC Enable"              BOOL    1
+    "Reserved"                    BOOL    2
+    "Asymmetric triangular"       BOOL    1
+    "BIT 23 in 8340"              BOOL    1
+    "BIT 24 in 8340"              BOOL    1
+    "BIT[24:23] = 00 -> 0.25%, 01 -> 0.5%, 10 -> 1%, 11 -> 2%"      CONST      BOOL    
+EndStruct
+
+;============================================================================
+;       CONFIG_DP6_SSC (DP6_SSC_CONFIG)
+;
+BeginStruct CONFIG_DP6_SSC 0084
+    "Reserved"                    BOOL    13
+    "DP6 SSC Enable"              BOOL    1
+    "Reserved"                    BOOL    2
+    "Asymmetric triangular"       BOOL    1
+    "BIT 23 in 33010"             BOOL    1
+    "BIT 24 in 33010"             BOOL    1
+    "BIT[24:23] = 00 -> 0.25%, 01 -> 0.5%, 10 -> 1%, 11 -> 2%"      CONST      BOOL
+EndStruct
+
+;============================================================================
+;       DVO_Delta_Delay (DVO_Delta_Delay)
+;
+BeginStruct DVO_Delta_Delay 007E
+    "BIT[6:3]:DVO Delta Delay"                    BYTE    1
+    "Support DVO Delta Delay: Y--1, N--0"         BOOL    1
+    "Reserved"                                    BOOL    7
+EndStruct
+
+
