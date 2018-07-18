@@ -40,7 +40,7 @@
 
   #ifdef HX002EA0_03
 	dd  000000000h
-	dd  00038FF98h     
+	dd  00038FF9ah     
 	dd  00003FFFCh
 	dd  000000000h  
   #endif
