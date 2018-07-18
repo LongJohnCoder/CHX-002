@@ -439,7 +439,9 @@ INF  $(ASIA_SOURCE)/Foundation/Dxe/SB/AsiaSbDxe.inf
 INF  AsiaPkg/ZxPlatformSmm/Int15Callback/Int15Smm.inf
 INF  AsiaPkg/ZxPlatformSmm/Int15Callback/Int15Installer.inf
 INF AsiaPkg/ZxPlatformSmm/ErrorReport/CRBSmi.inf
+!if $(ZX_SECRET_CODE) == TRUE
 INF AsiaPkg/ZxPlatformSmm/Mcasmi/McaSmi.inf
+!endif
 INF AsiaPkg/ZxPlatformSmm/IoTrap/IoTrap.inf
   
 INF  $(PLATFORM_PACKAGE)/Platform/Dxe/PlatformDxe.inf

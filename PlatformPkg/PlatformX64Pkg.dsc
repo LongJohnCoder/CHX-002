@@ -716,7 +716,9 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   AsiaPkg/ZxPlatformSmm/Int15Callback/Int15Smm.inf
   AsiaPkg/ZxPlatformSmm/Int15Callback/Int15Installer.inf
   AsiaPkg/ZxPlatformSmm/ErrorReport/CRBSmi.inf
+!if $(ZX_SECRET_CODE) == TRUE  
   AsiaPkg/ZxPlatformSmm/Mcasmi/McaSmi.inf
+!endif  
   AsiaPkg/ZxPlatformSmm/IoTrap/IoTrap.inf
     
   ByoModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf

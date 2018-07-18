@@ -29,14 +29,12 @@
 //
 // Advanced
 //
-
 #include <PlatformSetupDxe/Advanced/Cpu/Cpu.sd>
 #include <PlatformSetupDxe/Advanced/Dram/Dram.sd>
 #include <PlatformSetupDxe/Advanced/Chipset/Chipset.sd >
 #include <PlatformSetupDxe/Advanced/Raida/Raida.sd>
 #include <PlatformSetupDxe/Advanced/Others/Others.sd>
 #include <PlatformSetupDxe/Advanced/ConsoleRedirection/ConsoleRedirection.sd>
-#include <PlatformSetupDxe/Advanced/mca/Mca.sd>
 #include <PlatformSetupDxe/Advanced/Virtualization/Virtualization.sd>
 
 
