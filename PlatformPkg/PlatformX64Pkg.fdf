@@ -42,7 +42,7 @@ NumBlocks     = 0x80
 ################################################################################
 #SME
 0x00000000|0x00020000
-FILE = $(ASIA_SOURCE)/../ZxPlatformBin/Sme/SME180719.bin
+FILE = $(ASIA_SOURCE)/../ZxPlatformBin/Sme/SME180720.bin
 !if $(ZX_SECRET_CODE) == TRUE
 0x00100000|0x00001000
 gPlatformModuleTokenSpaceGuid.PcdMSRSEC0Base|gPlatformModuleTokenSpaceGuid.PcdMSRSEC0Size
