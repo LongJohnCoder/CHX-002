@@ -725,8 +725,8 @@ $END--------------------------------------------------------------------
        oneof varid = SETUP_DATA.MaxPayloadSize,
         prompt = STRING_TOKEN(STR_MAT_PAYLOAD_SIZE),
         help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_MAX_128M), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_MAX_256M), value = 1, flags = DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MAX_128M), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_MAX_256M), value = 1, flags = RESET_REQUIRED;
        endoneof; 
           
        oneof varid   = SETUP_DATA.PcieASPM,
