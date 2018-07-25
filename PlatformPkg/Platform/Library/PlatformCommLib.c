@@ -2375,14 +2375,10 @@ GetOnboardSataPortIndexFromDiskInfo (
   EFI_DISK_INFO_PROTOCOL        *DiskInfo;
   EFI_PCI_IO_PROTOCOL           *PciIo;  
   EFI_DEVICE_PATH_PROTOCOL      *DevicePath;
-  EFI_DEVICE_PATH_PROTOCOL      *Dp;
-  EFI_DEVICE_PATH_PROTOCOL      *TempDp;  
   EFI_HANDLE                    PciHandle;
   UINT32                        IdeChannel;	
   UINT32                        IdeDevice;
   UINT8                         SataMode;
-  UINTN                         DpSize;
-  UINTN                         Seg, Bus, Dev, Func;
   UINT16                        PortBase;
   
   Status = pBS->HandleProtocol (
@@ -2409,7 +2405,6 @@ GetOnboardSataPortIndexFromDiskInfo (
   if(EFI_ERROR(Status)){
     goto ProcExit;
   }	  
-  DEBUG((EFI_D_INFO, "IDE(%d,%d)\n", IdeChannel, IdeDevice));
 
   Status = pBS->HandleProtocol (
                   Handle,
@@ -2428,31 +2423,9 @@ GetOnboardSataPortIndexFromDiskInfo (
   if(EFI_ERROR(Status)){
     goto ProcExit;
   }  
-  PciHandle = NULL;
-  DpSize = MyGetDevicePathSize(DevicePath);
-  Status = pBS->AllocatePool(EfiBootServicesData, DpSize, &Dp);
+  Status = pBS->LocateDevicePath(&gEfiPciIoProtocolGuid, &DevicePath, &PciHandle);
   if(EFI_ERROR(Status)){
-    goto ProcExit;
-  }
-  CopyMem(Dp, DevicePath, DpSize);
-  TempDp = Dp;
-  while(!(TempDp->Type == END_DEVICE_PATH_TYPE && TempDp->SubType == END_ENTIRE_DEVICE_PATH_SUBTYPE)) {
-    if(TempDp->Type == MESSAGING_DEVICE_PATH &&
-       (TempDp->SubType == MSG_ATAPI_DP || TempDp->SubType == MSG_SATA_DP)) {
-      TempDp->Type = END_DEVICE_PATH_TYPE;
-      TempDp->SubType = END_ENTIRE_DEVICE_PATH_SUBTYPE;
-      TempDp->Length[0] = END_DEVICE_PATH_LENGTH;
-      TempDp->Length[1] = 0;  
-      TempDp = Dp;
-      pBS->LocateDevicePath(&gEfiPciIoProtocolGuid, &TempDp, &PciHandle);
-      break;
-    }
-    TempDp = (EFI_DEVICE_PATH_PROTOCOL*)((UINT8*)TempDp + (TempDp->Length[1]<<8) + TempDp->Length[0]);
-  }
-  pBS->FreePool(Dp);
-  
-  if (PciHandle == NULL) {
-    DEBUG((EFI_D_ERROR, "Can not found PciIo in DP\n"));
+    DEBUG((EFI_D_ERROR, "LocateDevicePath():%r\n", Status));
     goto ProcExit;
   }
   Status = pBS->HandleProtocol (
@@ -2462,12 +2435,7 @@ GetOnboardSataPortIndexFromDiskInfo (
                   );
 
 PciIoFound:
-  PciIo->GetLocation(PciIo, &Seg, &Bus, &Dev, &Func);
-  PortBase = GetSataPortIndexBase(Bus, Dev, Func);
-  if(PortBase == 0xFFFF){
-    goto ProcExit;
-  }
-
+  PortBase = 0;
   if(SataMode == 1){
     DevIndex = (UINT16)(PortBase + IdeChannel * 2 + IdeDevice);
   } else {             // must AHCI
