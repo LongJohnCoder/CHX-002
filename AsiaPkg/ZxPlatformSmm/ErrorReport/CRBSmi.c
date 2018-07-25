@@ -1,3 +1,11 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**     Copyright (c) 2018 Shanghai Zhaoxin Semiconductor Co., Ltd.  **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
 #include <Protocol/SmmBase2.h>
 #include <Protocol/SmmControl2.h>
 #include <Protocol\BootScriptSave.h>
@@ -17,8 +25,6 @@
 #include "CRBSmi.h"
 #include "..\..\Asia\Porting\Include\CHX002Reg.h"
 #include "..\..\Asia\Interface\CHX002Cfg.h"
-//#include "CHX001Reg.h"
-//#include "CHX002Cfg.h"
 
 
 
