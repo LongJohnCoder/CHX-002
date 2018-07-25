@@ -50,7 +50,7 @@ EFI_SMM_CPU_SAVE_STATE_PROTOCOL  mSmmCpuSaveState = {
 ///
 /// Macro used to simplfy the lookup table entries of type CPU_SMM_SAVE_STATE_LOOKUP_ENTRY
 ///
-#define SMM_CPU_OFFSET(Field) OFFSET_OF (SOCKET_LGA_775_SMM_CPU_STATE, Field)
+#define SMM_CPU_OFFSET(Field) OFFSET_OF (ZX_CPU_SMM_CPU_STATE, Field)
 
 ///
 /// Macro used to simplfy the lookup table entries of type CPU_SMM_SAVE_STATE_REGISTER_RANGE
@@ -206,9 +206,9 @@ SmmReadSaveState (
   OUT VOID                              *Buffer
   )
 {
-  SOCKET_LGA_775_SMM_CPU_STATE         *StateCopy;
+  ZX_CPU_SMM_CPU_STATE                 *StateCopy;
   UINT32                               SmmRevId;
-  SOCKET_LGA_775_SMM_CPU_STATE_IOMISC  IoMisc;
+  ZX_CPU_SMM_CPU_STATE_IOMISC          IoMisc;
   EFI_SMM_SAVE_STATE_IO_INFO           *IoInfo;
   UINTN                                RegisterIndex;
 
@@ -233,7 +233,7 @@ SmmReadSaveState (
       return EFI_INVALID_PARAMETER;          
     }
 
-    if ((SmmRevId < SOCKET_LGA_775_SMM_MIN_REV_ID_x64)) {
+    if ((SmmRevId < ZX_CPU_SMM_MIN_REV_ID_x64)) {
       *(UINT8 *)Buffer = EFI_SMM_SAVE_STATE_REGISTER_LMA_32BIT;
     } else {
       *(UINT8 *)Buffer = EFI_SMM_SAVE_STATE_REGISTER_LMA_64BIT;
@@ -249,14 +249,14 @@ SmmReadSaveState (
     //
     // See if the CPU supports the IOMisc register in the save state
     //
-    if (SmmRevId < SOCKET_LGA_775_SMM_MIN_REV_ID_IOMISC) {
+    if (SmmRevId < ZX_CPU_SMM_MIN_REV_ID_IOMISC) {
       return EFI_NOT_FOUND;          
     }
     
     //
     // Get the IOMisc register value
     //
-    if (SmmRevId < SOCKET_LGA_775_SMM_MIN_REV_ID_x64) {
+    if (SmmRevId < ZX_CPU_SMM_MIN_REV_ID_x64) {
       IoMisc.Uint32 = StateCopy->x86.IOMisc;
     } else {
       IoMisc.Uint32 = StateCopy->x64.IOMisc;
@@ -288,7 +288,7 @@ SmmReadSaveState (
     IoInfo->IoPort  = (UINT16)IoMisc.Bits.Port;
     IoInfo->IoWidth = mSmmCpuIoWidth[IoMisc.Bits.Length].IoWidth;
     IoInfo->IoType  = mSmmCpuIoType[IoMisc.Bits.Type].IoType;
-    if (SmmRevId < SOCKET_LGA_775_SMM_MIN_REV_ID_x64) {
+    if (SmmRevId < ZX_CPU_SMM_MIN_REV_ID_x64) {
       CopyMem(&IoInfo->IoData, (UINT8*)StateCopy + mSmmCpuIoType[IoMisc.Bits.Type].IoDataOffset32, mSmmCpuIoWidth[IoMisc.Bits.Length].Width);
     } else {
       CopyMem(&IoInfo->IoData, (UINT8*)StateCopy + mSmmCpuIoType[IoMisc.Bits.Type].IoDataOffset64, mSmmCpuIoWidth[IoMisc.Bits.Length].Width);
@@ -305,7 +305,7 @@ SmmReadSaveState (
     return EFI_NOT_FOUND;
   }
 
-  if (SmmRevId < SOCKET_LGA_775_SMM_MIN_REV_ID_x64) {
+  if (SmmRevId < ZX_CPU_SMM_MIN_REV_ID_x64) {
     //
     // If 32-bit mode width is zero, then the specified register can not be accessed
     //
@@ -377,7 +377,7 @@ SmmWriteSaveState (
   IN CONST VOID                         *Buffer
   )
 {
-  SOCKET_LGA_775_SMM_CPU_STATE  *StateCopy;
+  ZX_CPU_SMM_CPU_STATE          *StateCopy;
   UINTN                         RegisterIndex;
 
   //
@@ -416,7 +416,7 @@ SmmWriteSaveState (
   //
   // Check CPU mode
   //
-  if (StateCopy->x86.SMMRevId < SOCKET_LGA_775_SMM_MIN_REV_ID_x64) {
+  if (StateCopy->x86.SMMRevId < ZX_CPU_SMM_MIN_REV_ID_x64) {
     //
     // If 32-bit mode width is zero, then the specified register can not be accessed
     //
@@ -473,7 +473,7 @@ SmmInitHandler (
 {
   UINT32                            ApicId;
   UINTN                             Index;
-  SOCKET_LGA_775_SMM_CPU_STATE      *CpuState;
+  ZX_CPU_SMM_CPU_STATE              *CpuState;
   BOOLEAN                           IsBsp;
 
   ApicId = GetApicId();
@@ -481,7 +481,7 @@ SmmInitHandler (
 
   for (Index = 0; Index < gSmmCpuPrivate->SmmCoreEntryContext.NumberOfCpus; Index++) {
     if (ApicId == gSmmCpuPrivate->ApicIds[Index]) {
-      CpuState = (SOCKET_LGA_775_SMM_CPU_STATE *)(UINTN)(SMM_DEFAULT_SMBASE + SMM_CPU_STATE_OFFSET);
+      CpuState = (ZX_CPU_SMM_CPU_STATE *)(UINTN)(SMM_DEFAULT_SMBASE + SMM_CPU_STATE_OFFSET);
       CpuState->x86.SMBASE = (UINT32)gSmmCpuPrivate->SmBases[Index];
 
       SmmInitFeatures (gSmmCpuPrivate->SmrrBase, gSmmCpuPrivate->SmrrSize, Index);
@@ -508,8 +508,8 @@ SmmRelocateBases (
   )
 {
   STATIC UINT8                             BakBuf[BACK_BUF_SIZE];
-  STATIC SOCKET_LGA_775_SMM_CPU_STATE      BakBuf2;
-         SOCKET_LGA_775_SMM_CPU_STATE      *CpuStatePtr;
+  STATIC ZX_CPU_SMM_CPU_STATE              BakBuf2;
+         ZX_CPU_SMM_CPU_STATE              *CpuStatePtr;
          UINT8                             *U8Ptr;
          UINT32                            ApicId;
          UINTN                             Index;
@@ -523,7 +523,7 @@ SmmRelocateBases (
   gSmmCr4 = (UINT32)AsmReadCr4();
 
   U8Ptr = (UINT8*)(UINTN)(SMM_DEFAULT_SMBASE + SMM_HANDLER_OFFSET);
-  CpuStatePtr = (SOCKET_LGA_775_SMM_CPU_STATE*)(UINTN)(SMM_DEFAULT_SMBASE + SMM_CPU_STATE_OFFSET);
+  CpuStatePtr = (ZX_CPU_SMM_CPU_STATE*)(UINTN)(SMM_DEFAULT_SMBASE + SMM_CPU_STATE_OFFSET);
 
   //
   // Backup original contents @ 0x38000
@@ -681,7 +681,7 @@ PiCpuSmmEntry (
   // specific context, and the SMI entry point.  This size of rounded up to 
   // nearest power of 2.
   //
-  TileSize = 2 * GetPowerOfTwo32 (sizeof (SOCKET_LGA_775_SMM_CPU_STATE) + sizeof (PROCESSOR_SMM_DESCRIPTOR) + gcSmiHandlerSize - 1);
+  TileSize = 2 * GetPowerOfTwo32 (sizeof (ZX_CPU_SMM_CPU_STATE) + sizeof (PROCESSOR_SMM_DESCRIPTOR) + gcSmiHandlerSize - 1);
 
   //
   // Allocate buffer for all of the tiles. 
@@ -699,7 +699,7 @@ PiCpuSmmEntry (
     ASSERT_EFI_ERROR (Status);
     gSmmCpuPrivate->ApicIds[Index]          = (UINT32)ProcessorInformation.ProcessorId;
     gSmmCpuPrivate->SmBases[Index]          = (UINTN)Buffer + Index * TileSize - SIZE_32KB;
-    gSmmCpuPrivate->CpuSaveStateSize[Index] = sizeof(SOCKET_LGA_775_SMM_CPU_STATE);
+    gSmmCpuPrivate->CpuSaveStateSize[Index] = sizeof(ZX_CPU_SMM_CPU_STATE);
     gSmmCpuPrivate->CpuSaveState[Index]     = (VOID *)(gSmmCpuPrivate->SmBases[Index] + SIZE_64KB - gSmmCpuPrivate->CpuSaveStateSize[Index]);
 
     DEBUG ((EFI_D_ERROR, "CPU[%02d]  APIC ID=%04X  SMBASE=%08X  SaveState=%08X  Size=%08X\n",

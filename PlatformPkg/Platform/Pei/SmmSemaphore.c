@@ -6,7 +6,7 @@
 #include <Library/PcdLib.h>
 #include <Library/IoLib.h>
 #include <Library/HobLib.h>
-#include <Library/SocketLga775Lib.h>
+#include <Library/ZhaoXinCpuLib.h>
 #include <Library/LocalApicLib.h>
 #include <PlatformDefinition.h>
 #include <SmmFeatures.h>
@@ -34,7 +34,7 @@ SmmRelocationSemaphoreComplete (
 VOID
 SemaphoreHook (
   IN BOOLEAN                       *RebasedFlag,
-  IN SOCKET_LGA_775_SMM_CPU_STATE  *CpuState
+  IN ZX_CPU_SMM_CPU_STATE          *CpuState
   )
 {
   mRebasedFlag = RebasedFlag;
@@ -42,7 +42,7 @@ SemaphoreHook (
   //
   // The offset of EIP/RIP is different depending on the SMMRevId
   //
-  if (CpuState->x86.SMMRevId < SOCKET_LGA_775_SMM_MIN_REV_ID_x64) {
+  if (CpuState->x86.SMMRevId < ZX_CPU_SMM_MIN_REV_ID_x64) {
     mSmmRelocationOriginalAddress = (UINTN) CpuState->x86._EIP;
     CpuState->x86._EIP            = (UINT32) (UINTN) &SmmRelocationSemaphoreComplete;
   } else {

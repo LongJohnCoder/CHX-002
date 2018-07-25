@@ -38,8 +38,7 @@
 #include <Library/PcdLib.h>
 #include <Library/CacheMaintenanceLib.h>
 #include <Library/MtrrLib.h>
-#include <Library/SocketLga775Lib.h>
-#include <Library/SocketLga1156Lib.h>
+#include <Library/ZhaoXinCpuLib.h>
 #include <Library/SmmServicesTableLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
@@ -219,7 +218,7 @@ SmmRelocationSemaphoreComplete (
 VOID
 SemaphoreHook (
   IN BOOLEAN                       *RebasedFlag,
-  IN SOCKET_LGA_775_SMM_CPU_STATE  *CpuState
+  IN ZX_CPU_SMM_CPU_STATE          *CpuState
   );
 
 ///

@@ -54,9 +54,8 @@
 #include <Library/TimerLib.h>
 #include <Library/UefiCpuLib.h>
 #include <Library/MtrrLib.h>
-#include <Library/SocketLga775Lib.h>
+#include <Library/ZhaoXinCpuLib.h>
 #include <Library/DebugAgentLib.h>
-#include <Library/SocketLga1156Lib.h>
 #include <Library/LocalApicLib.h>
 
 typedef struct {

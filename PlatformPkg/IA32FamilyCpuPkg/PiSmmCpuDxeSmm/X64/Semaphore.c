@@ -48,7 +48,7 @@ SmmRelocationSemaphoreComplete32 (
 VOID
 SemaphoreHook (
   IN BOOLEAN                       *RebasedFlag,
-  IN SOCKET_LGA_775_SMM_CPU_STATE  *CpuState
+  IN ZX_CPU_SMM_CPU_STATE          *CpuState
   )
 {
   UINTN  TempValue;

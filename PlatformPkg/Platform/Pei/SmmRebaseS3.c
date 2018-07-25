@@ -9,7 +9,7 @@
 #include <Library/PcdLib.h>
 #include <Library/IoLib.h>
 #include <Library/HobLib.h>
-#include <Library/SocketLga775Lib.h>
+#include <Library/ZhaoXinCpuLib.h>
 #include <Library/LocalApicLib.h>
 #include <PlatformDefinition.h>
 #include <PlatS3Record.h>
@@ -35,7 +35,7 @@ extern UINTN                        gSmmInitStack;
 VOID
 SemaphoreHook (
   IN BOOLEAN                       *RebasedFlag,
-  IN SOCKET_LGA_775_SMM_CPU_STATE  *CpuState
+  IN ZX_CPU_SMM_CPU_STATE          *CpuState
   );
 
 STATIC volatile BOOLEAN gRebased[PLATFORM_MAX_CPU_PROC_COUNT];
@@ -50,8 +50,8 @@ SmmRelocateBases (
   )
 {
   UINT8                             BakBuf[BACK_BUF_SIZE];
-  SOCKET_LGA_775_SMM_CPU_STATE      BakBuf2;
-  SOCKET_LGA_775_SMM_CPU_STATE      *CpuStatePtr;
+  ZX_CPU_SMM_CPU_STATE              BakBuf2;
+  ZX_CPU_SMM_CPU_STATE              *CpuStatePtr;
   UINT8                             *U8Ptr;
   UINT32                            ApicId;
   UINT32                            Index;
@@ -73,7 +73,7 @@ SmmRelocateBases (
   gSmmInitStack = gS3Record->S3StackBase + gS3Record->S3StackSize - 8;
 
   U8Ptr = (UINT8*)(UINTN)(SMM_DEFAULT_SMBASE + SMM_HANDLER_OFFSET);
-  CpuStatePtr = (SOCKET_LGA_775_SMM_CPU_STATE*)(UINTN)(SMM_DEFAULT_SMBASE + SMM_CPU_STATE_OFFSET);
+  CpuStatePtr = (ZX_CPU_SMM_CPU_STATE*)(UINTN)(SMM_DEFAULT_SMBASE + SMM_CPU_STATE_OFFSET);
 
 // Backup original contents @ 0x38000
   CopyMem (BakBuf, U8Ptr, sizeof(BakBuf));
@@ -119,8 +119,8 @@ SmmInitHandler (
 {
   UINT32                            ApicId;
   UINTN                             Index;
-  SOCKET_LGA_775_SMM_CPU_STATE      *CpuState;
-	BOOLEAN                           IsBsp;
+  ZX_CPU_SMM_CPU_STATE              *CpuState;
+  BOOLEAN                           IsBsp;
 
 
   DEBUG((EFI_D_INFO, __FUNCTION__"\n"));
@@ -130,7 +130,7 @@ SmmInitHandler (
 
   for (Index = 0; Index < gS3Record->CpuCount; Index++) {
     if (ApicId == gS3Record->CpuApicId[Index]) {
-      CpuState = (SOCKET_LGA_775_SMM_CPU_STATE *)(UINTN)(SMM_DEFAULT_SMBASE + SMM_CPU_STATE_OFFSET);
+      CpuState = (ZX_CPU_SMM_CPU_STATE *)(UINTN)(SMM_DEFAULT_SMBASE + SMM_CPU_STATE_OFFSET);
       CpuState->x86.SMBASE = gS3Record->CpuSmBase[Index];
 
       if(gS3Record->SmrrBase && gS3Record->SmrrSize){

@@ -34,7 +34,7 @@ Revision History:
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/SmmServicesTableLib.h>
 #include <Library/S3BootScriptLib.h>
-#include <Library/SocketLga775Lib.h>
+#include <Library/ZhaoXinCpuLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/S3BootScriptLib.h>
 #include <Library/TimerLib.h>
