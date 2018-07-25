@@ -204,6 +204,8 @@ Revision History:
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
+
+    suppressif TRUE;
        oneof varid = SETUP_DATA.CPU2SVIDCmdGate,
         prompt      = STRING_TOKEN(STR_CPU_2_SVID_CMD_GATE),
         help        = STRING_TOKEN(STR_EMPTY),
@@ -222,6 +224,9 @@ Revision History:
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
+      endif; //suppressif
+
+	   
     #endif
 
  
