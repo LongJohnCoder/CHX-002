@@ -601,6 +601,7 @@ typedef struct {
 */
 STATIC TM_DATA_TABLE  gTmDataTable[] = {
   {0x09, 0x80},
+  {0x11, 0xF6}, // -10 degree for balanced temperature error
   //{0x19, 45}, //CPU >= 45 ,Fan start to work
   {0x20, 55}, //ADM1032 >= 55,Fan start to work
 };
