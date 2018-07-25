@@ -907,7 +907,13 @@ XhcControlTransfer (
   } else {
     if (*TransferResult == EFI_USB_NOERROR) {
       Status = EFI_SUCCESS;
-    } else if (*TransferResult == EFI_USB_ERR_STALL) {
+    } else if ((*TransferResult == EFI_USB_ERR_STALL) || (*TransferResult == EFI_USB_ERR_BABBLE)) {
+      // Some devices, which not conform to SPEC, will return total
+      // length of its string descriptor regardless of length field
+      // of request.
+      // For better compatiable, give them another chance by request
+      // full length.
+      // But for xHCI, we need recover halted endpoint first.
       RecoveryStatus = XhcRecoverHaltedEndpoint(Xhc, Urb);
       if (EFI_ERROR (RecoveryStatus)) {
         XHCI_DEBUG ((EFI_D_ERROR, "XhcControlTransfer: XhcRecoverHaltedEndpoint failed\n"));

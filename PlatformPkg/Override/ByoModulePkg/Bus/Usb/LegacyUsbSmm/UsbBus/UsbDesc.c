@@ -661,12 +661,17 @@ UsbGetOneString (
   // Some devices, which not conform to SPEC, will return total
   // length of its string descriptor regardless of length field
   // of request.
-  // For better compatiable, change this length field of request
-  // to maximum.
-  Status = UsbCtrlGetDesc (UsbDev, USB_DESC_TYPE_STRING, Index, LangId, &Desc, 0xFF);
+  // For better compatiable, give them another chance by request
+  // full length.
+  Status = UsbCtrlGetDesc (UsbDev, USB_DESC_TYPE_STRING, Index, LangId, &Desc, 0x02);
 
   if (EFI_ERROR (Status)) {
-    return NULL;
+    USB_DEBUG (( EFI_D_INFO, "UsbGetOneString: UsbCtrlGetDesc(0x02) failed!\n"));
+    Status = UsbCtrlGetDesc (UsbDev, USB_DESC_TYPE_STRING, Index, LangId, &Desc, 0xFF);
+    if (EFI_ERROR (Status)) {
+        USB_DEBUG (( EFI_D_INFO, "UsbGetOneString: UsbCtrlGetDesc(0xFF) failed!\n"));
+        return NULL;
+    }
   }
 
   Buf = AllocateZeroPool (Desc.Length);
