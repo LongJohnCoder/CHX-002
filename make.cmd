@@ -98,7 +98,7 @@ REM ********** EC0 **********
 
 REM ********** ED0 **********
 )else if /I "%3" == "HX002ED0_02" (
-  set BOARD_ID=HX002EC0
+  set BOARD_ID=HX002ED0
   set ZX_MBTYPE=%3
   set ZX_MBPCIECFG=02
 )else if /I "%3" == "HX002ED0_10" (
