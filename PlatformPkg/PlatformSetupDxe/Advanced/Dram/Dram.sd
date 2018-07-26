@@ -92,14 +92,14 @@ Revision History:
      oneof varid   = SETUP_DATA.DramClk,
         prompt   = STRING_TOKEN(STR_DRAMCLK),
         help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_BY_SPD),  value = 0,    flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_BY_SPD),  value = 0,    flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
         option text = STRING_TOKEN(STR_800M),    value = 0xA,  flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_866M),    value = 0xB,  flags = RESET_REQUIRED;        
         option text = STRING_TOKEN(STR_933M),    value = 0xC,  flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1000M),   value = 0xD,  flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1066M),   value = 0xE,  flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1133M),   value = 0xF,  flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_1200M),   value = 0x10, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_1200M),   value = 0x10, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1333M),   value = 0x11, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1400M),   value = 0x12, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1466M),   value = 0x13, flags = RESET_REQUIRED;
