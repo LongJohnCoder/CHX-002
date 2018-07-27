@@ -648,6 +648,9 @@ typedef struct {
 		  UINT16 PcieEqCtlOrgValL14;
 		  UINT16 PcieEqCtlOrgValL15;
 
+		  UINT8 PciePHYA_SSC_EN;
+		  UINT8 PciePHYB_SSC_EN;
+
   //Else
   UINT8 MaxPayloadSize;
   UINT8 PcieASPM;

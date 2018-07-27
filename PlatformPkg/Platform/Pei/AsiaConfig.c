@@ -434,6 +434,12 @@ GotSetupVariable:
   NbCfg->PcieEqCtlOrgValL14=SetupData->PcieEqCtlOrgValL14;
   NbCfg->PcieEqCtlOrgValL15=SetupData->PcieEqCtlOrgValL15;
 
+
+  NbCfg->PciePHYA_SSC_EN=SetupData->PciePHYA_SSC_EN;
+  NbCfg->PciePHYB_SSC_EN=SetupData->PciePHYB_SSC_EN;
+
+
+
   ////
   NbCfg->PEMCU_LoadFW_WhenBoot=SetupData->PEMCU_LoadFW_WhenBoot;
   NbCfg->SelectableDeEmphasis=SetupData->SelectableDeEmphasis;
