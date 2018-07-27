@@ -981,6 +981,216 @@ ConnectSequence (
   gDS->Dispatch();
 }
 
+#ifdef PCISIG_PLUGFEST_WORKAROUND
+/**
+  Enable ide controller.  This gets disabled when LegacyBoot.c is about
+  to run the Option ROMs.
+
+  @param  Private        Legacy BIOS Instance data
+
+
+**/
+VOID
+EnableIdeController (
+  EFI_LEGACY_BIOS_PLATFORM_PROTOCOL *LegacyBiosPlatform
+  )
+{
+  EFI_PCI_IO_PROTOCOL *PciIo;
+  EFI_STATUS          Status;
+  EFI_HANDLE          IdeController;
+  UINT8               ByteBuffer;
+  UINTN               HandleCount;
+  EFI_HANDLE          *HandleBuffer;
+
+  Status = LegacyBiosPlatform->GetPlatformHandle (
+                                          LegacyBiosPlatform,
+                                          EfiGetPlatformIdeHandle,
+                                          0,
+                                          &HandleBuffer,
+                                          &HandleCount,
+                                          NULL
+                                          );
+  if (!EFI_ERROR (Status)) {
+    IdeController = HandleBuffer[0];
+    Status = gBS->HandleProtocol (
+                    IdeController,
+                    &gEfiPciIoProtocolGuid,
+                    (VOID **) &PciIo
+                    );
+    ByteBuffer = 0x1f;
+    if (!EFI_ERROR (Status)) {
+      PciIo->Pci.Write (PciIo, EfiPciIoWidthUint8, 0x04, 1, &ByteBuffer);
+    }
+  }
+}
+
+
+/**
+  Enable ide controller.  This gets disabled when LegacyBoot.c is about
+  to run the Option ROMs.
+
+  @param  Private                 Legacy BIOS Instance data
+
+
+**/
+VOID
+EnableAllControllers (
+  EFI_LEGACY_BIOS_PLATFORM_PROTOCOL *LegacyBiosPlatform
+  )
+{
+  UINTN               HandleCount;
+  EFI_HANDLE          *HandleBuffer;
+  UINTN               Index;
+  EFI_PCI_IO_PROTOCOL *PciIo;
+  PCI_TYPE01          PciConfigHeader;
+  EFI_STATUS          Status;
+
+  //
+  //
+  //
+  EnableIdeController (LegacyBiosPlatform);
+
+  //
+  // Assumption is table is built from low bus to high bus numbers.
+  //
+  Status = gBS->LocateHandleBuffer (
+                  ByProtocol,
+                  &gEfiPciIoProtocolGuid,
+                  NULL,
+                  &HandleCount,
+                  &HandleBuffer
+                  );
+  ASSERT_EFI_ERROR (Status);
+
+  for (Index = 0; Index < HandleCount; Index++) {
+    Status = gBS->HandleProtocol (
+                    HandleBuffer[Index],
+                    &gEfiPciIoProtocolGuid,
+                    (VOID **) &PciIo
+                    );
+    ASSERT_EFI_ERROR (Status);
+
+    PciIo->Pci.Read (
+                PciIo,
+                EfiPciIoWidthUint32,
+                0,
+                sizeof (PciConfigHeader) / sizeof (UINT32),
+                &PciConfigHeader
+                );
+
+    //
+    // We do not enable PPB here. This is for HotPlug Consideration.
+    // The Platform HotPlug Driver is responsible for Padding enough hot plug
+    // resources. It is also responsible for enable this bridge. If it
+    // does not pad it. It will cause some early Windows fail to installation.
+    // If the platform driver does not pad resource for PPB, PPB should be in
+    // un-enabled state to let Windows know that this PPB is not configured by
+    // BIOS. So Windows will allocate default resource for PPB.
+    //
+    // The reason for why we enable the command register is:
+    // The CSM will use the IO bar to detect some IRQ status, if the command
+    // is disabled, the IO resource will be out of scope.
+    // For example:
+    // We installed a legacy IRQ handle for a PCI IDE controller. When IRQ
+    // comes up, the handle will check the IO space to identify is the
+    // controller generated the IRQ source.
+    // If the IO command is not enabled, the IRQ handler will has wrong
+    // information. It will cause IRQ storm when the correctly IRQ handler fails
+    // to run.
+    //
+    if (!(IS_PCI_VGA (&PciConfigHeader)     ||
+          IS_PCI_OLD_VGA (&PciConfigHeader) ||
+          IS_PCI_IDE (&PciConfigHeader)     ||
+          IS_PCI_P2P (&PciConfigHeader)     ||
+          IS_PCI_P2P_SUB (&PciConfigHeader) ||
+          IS_PCI_LPC (&PciConfigHeader)     )) {
+
+      PciConfigHeader.Hdr.Command |= 0x1f;
+
+      PciIo->Pci.Write (PciIo, EfiPciIoWidthUint32, 4, 1, &PciConfigHeader.Hdr.Command);
+    }
+  }
+}
+
+/**
+
+  This is the Workaround code for PCISIG Platform BIOS Test
+  (To Workaround "1GB MEM32 and Varioud MEM32 Request" Test Item BIOS Kernel hang Issue)
+
+**/
+VOID
+PCISIG_Workaround (
+	VOID
+  )
+{
+  UINTN               HandleCount;
+  UINT8               tmp8;
+  EFI_HANDLE          *HandleBuffer;
+  UINTN               Index;
+  EFI_PCI_IO_PROTOCOL *PciIo;
+  PCI_TYPE00          PciConfigHeader;
+  EFI_STATUS          Status;
+
+  Status = gBS->LocateHandleBuffer (
+                  ByProtocol,
+                  &gEfiPciIoProtocolGuid,
+                  NULL,
+                  &HandleCount,
+                  &HandleBuffer
+                  );
+  ASSERT_EFI_ERROR (Status);
+
+  for (Index = 0; Index < HandleCount; Index++) {
+    Status = gBS->HandleProtocol (
+                    HandleBuffer[Index],
+                    &gEfiPciIoProtocolGuid,
+                    (VOID **) &PciIo
+                    );
+    ASSERT_EFI_ERROR (Status);
+
+    PciIo->Pci.Read (
+                PciIo,
+                EfiPciIoWidthUint32,
+                0,
+                sizeof (PciConfigHeader) / sizeof (UINT32),
+                &PciConfigHeader
+                );
+
+    if (!(IS_PCI_BRIDGE (&PciConfigHeader)     ||
+          IS_CARDBUS_BRIDGE (&PciConfigHeader)
+        )) {
+
+		DEBUG ((EFI_D_ERROR, "ysw_debug_test: VID = %x, DID = %x\n ", PciConfigHeader.Hdr.VendorId, PciConfigHeader.Hdr.DeviceId));
+
+		DEBUG ((EFI_D_ERROR, "Original Command Register: %x\n ", PciConfigHeader.Hdr.Command));
+
+		PciConfigHeader.Hdr.Command &= ~EFI_PCI_COMMAND_MEMORY_SPACE;
+
+		for(tmp8 = 0; tmp8 < 6; tmp8++){
+
+			DEBUG ((EFI_D_ERROR, "BAR[%d] = %x; ", tmp8, PciConfigHeader.Device.Bar[tmp8]));	
+
+			//Not enable "Memory Decode" Bit of PCI Command Register for Non-Bridge Component with 32-Bit MEM Bar with no Resource assigned
+			if(((PciConfigHeader.Device.Bar[tmp8] & 0x01) == 0x00) && ((PciConfigHeader.Device.Bar[tmp8] & 0x06) == 0x00) && ((PciConfigHeader.Device.Bar[tmp8] & 0xFFFFFFF0) != 0x00)){
+
+				PciConfigHeader.Hdr.Command |= EFI_PCI_COMMAND_MEMORY_SPACE;
+
+			}else if(((PciConfigHeader.Device.Bar[tmp8] & 0x01) == 0x00) && ((PciConfigHeader.Device.Bar[tmp8] & 0x06) == 0x04)){
+
+				PciConfigHeader.Hdr.Command |= EFI_PCI_COMMAND_MEMORY_SPACE;
+			}
+		}
+
+		DEBUG ((EFI_D_ERROR, "Setting Command Register: %x\n ", PciConfigHeader.Hdr.Command));
+		DEBUG ((EFI_D_ERROR, "\n"));		
+
+    }
+
+    PciIo->Pci.Write (PciIo, EfiPciIoWidthUint32, 4, 1, &PciConfigHeader.Hdr.Command);
+    
+  }
+}
+#endif	//;PCISIG_PLUGFEST_WORKAROUND
 
 
 VOID
@@ -1010,6 +1220,12 @@ Returns:
   EFI_BOOT_MODE                 BootMode;
   BOOLEAN                       BootState;
 
+#ifdef PCISIG_PLUGFEST_WORKAROUND
+ EFI_STATUS  Status;
+  EFI_LEGACY_BIOS_PLATFORM_PROTOCOL   *LegacyBiosPlatform = NULL;
+ EFI_LEGACY_BIOS_PROTOCOL   *LegacyBios = NULL;
+
+#endif
 
   BootState = PcdGetBool(PcdBootState);
   if (BootState) {
@@ -1057,6 +1273,17 @@ Returns:
 	
   LockNonUpdatableFlash(TRUE);
   ExitPmAuth();
+#ifdef PCISIG_PLUGFEST_WORKAROUND
+// EFI_STATUS  Status;
+//  EFI_LEGACY_BIOS_PLATFORM_PROTOCOL   *LegacyBiosPlatform = NULL;
+//  EFI_LEGACY_BIOS_PROTOCOL   *LegacyBios = NULL;
+  Status = gBS->LocateProtocol(&gEfiLegacyBiosProtocolGuid, NULL, (VOID**)&LegacyBios);	
+  if(!EFI_ERROR(Status)){	
+    Status = gBS->LocateProtocol(&gEfiLegacyBiosPlatformProtocolGuid, NULL, (VOID **) &LegacyBiosPlatform);
+  }
+  EnableAllControllers(LegacyBiosPlatform);
+  PCISIG_Workaround();
+#endif
 
 }
 

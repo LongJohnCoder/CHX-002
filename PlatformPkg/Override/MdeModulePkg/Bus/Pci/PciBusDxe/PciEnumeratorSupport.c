@@ -383,6 +383,10 @@ GatherDeviceInfo (
   UINTN                           BarIndex;
   PCI_IO_DEVICE                   *PciIoDevice;
 
+#ifdef PCISIG_PLUGFEST_WORKAROUND
+  UINTN                           Total_MEM_BAR_Size = 0;
+#endif	//;PCISIG_PLUGFEST_WORKAROUND
+
   PciIoDevice = CreatePciIoDevice (
                   Bridge,
                   Pci,
@@ -418,6 +422,29 @@ GatherDeviceInfo (
   for (Offset = 0x10, BarIndex = 0; Offset <= 0x24 && BarIndex < PCI_MAX_BAR; BarIndex++) {
     Offset = PciParseBar (PciIoDevice, Offset, BarIndex);
   }
+
+#ifdef PCISIG_PLUGFEST_WORKAROUND
+
+//;PCI-SIG 1GB MEM32 Request Workaround - skip Resource Assignment to PCI Component with MEM BAR required more than 2GB Resource
+  for (BarIndex = 0;BarIndex < PCI_MAX_BAR; BarIndex++) {
+	if(PciIoDevice->PciBar[BarIndex].BarType == PciBarTypeMem32)
+		Total_MEM_BAR_Size += PciIoDevice->PciBar[BarIndex].Length;
+  }
+
+  DEBUG ((EFI_D_INFO, "   Total_MEM_BAR_Size = 0x%x;\n", Total_MEM_BAR_Size));
+
+  if (Total_MEM_BAR_Size >= 0x7FFFFFFF){
+  	for (BarIndex = 0;BarIndex < PCI_MAX_BAR; BarIndex++) {
+		if(PciIoDevice->PciBar[BarIndex].BarType == PciBarTypeMem32){
+			PciIoDevice->PciBar[BarIndex].BarType = PciBarTypeUnknown;
+		    PciIoDevice->PciBar[BarIndex].BaseAddress = 0;
+		    PciIoDevice->PciBar[BarIndex].Length      = 0;
+		    PciIoDevice->PciBar[BarIndex].Alignment   = 0;
+  		}
+  	}
+  }
+
+#endif	//;PCISIG_PLUGFEST_WORKAROUND
 
   //
   // Parse the SR-IOV VF bars

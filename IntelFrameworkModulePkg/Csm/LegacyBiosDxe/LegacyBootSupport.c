@@ -643,6 +643,87 @@ EnableAllControllers (
   }
 }
 
+#ifdef PCISIG_PLUGFEST_WORKAROUND
+/**
+
+  This is the Workaround code for PCISIG Platform BIOS Test
+  (To Workaround "1GB MEM32 and Varioud MEM32 Request" Test Item BIOS Kernel hang Issue)
+
+**/
+VOID
+PCISIG_Workaround (
+	VOID
+  )
+{
+  UINTN               HandleCount;
+  UINT8               tmp8;
+  EFI_HANDLE          *HandleBuffer;
+  UINTN               Index;
+  EFI_PCI_IO_PROTOCOL *PciIo;
+  PCI_TYPE00          PciConfigHeader;
+  EFI_STATUS          Status;
+
+  Status = gBS->LocateHandleBuffer (
+                  ByProtocol,
+                  &gEfiPciIoProtocolGuid,
+                  NULL,
+                  &HandleCount,
+                  &HandleBuffer
+                  );
+  ASSERT_EFI_ERROR (Status);
+
+  for (Index = 0; Index < HandleCount; Index++) {
+    Status = gBS->HandleProtocol (
+                    HandleBuffer[Index],
+                    &gEfiPciIoProtocolGuid,
+                    (VOID **) &PciIo
+                    );
+    ASSERT_EFI_ERROR (Status);
+
+    PciIo->Pci.Read (
+                PciIo,
+                EfiPciIoWidthUint32,
+                0,
+                sizeof (PciConfigHeader) / sizeof (UINT32),
+                &PciConfigHeader
+                );
+
+    if (!(IS_PCI_BRIDGE (&PciConfigHeader)     ||
+          IS_CARDBUS_BRIDGE (&PciConfigHeader)
+        )) {
+
+		DEBUG ((EFI_D_ERROR, "ysw_debug_test: VID = %x, DID = %x\n ", PciConfigHeader.Hdr.VendorId, PciConfigHeader.Hdr.DeviceId));
+
+		DEBUG ((EFI_D_ERROR, "Original Command Register: %x\n ", PciConfigHeader.Hdr.Command));
+
+		PciConfigHeader.Hdr.Command &= ~EFI_PCI_COMMAND_MEMORY_SPACE;
+
+		for(tmp8 = 0; tmp8 < 6; tmp8++){
+
+			DEBUG ((EFI_D_ERROR, "BAR[%d] = %x; ", tmp8, PciConfigHeader.Device.Bar[tmp8]));	
+
+			//Not enable "Memory Decode" Bit of PCI Command Register for Non-Bridge Component with 32-Bit MEM Bar with no Resource assigned
+			if(((PciConfigHeader.Device.Bar[tmp8] & 0x01) == 0x00) && ((PciConfigHeader.Device.Bar[tmp8] & 0x06) == 0x00) && ((PciConfigHeader.Device.Bar[tmp8] & 0xFFFFFFF0) != 0x00)){
+
+				PciConfigHeader.Hdr.Command |= EFI_PCI_COMMAND_MEMORY_SPACE;
+
+			}else if(((PciConfigHeader.Device.Bar[tmp8] & 0x01) == 0x00) && ((PciConfigHeader.Device.Bar[tmp8] & 0x06) == 0x04)){
+
+				PciConfigHeader.Hdr.Command |= EFI_PCI_COMMAND_MEMORY_SPACE;
+			}
+		}
+
+		DEBUG ((EFI_D_ERROR, "Setting Command Register: %x\n ", PciConfigHeader.Hdr.Command));
+		DEBUG ((EFI_D_ERROR, "\n"));		
+
+    }
+
+    PciIo->Pci.Write (PciIo, EfiPciIoWidthUint32, 4, 1, &PciConfigHeader.Hdr.Command);
+    
+  }
+}
+#endif	//;PCISIG_PLUGFEST_WORKAROUND
+
 /**
   The following routines are identical in operation, so combine
   for code compaction:
@@ -1224,6 +1305,11 @@ GenericLegacyBoot (
   // Call into Legacy16 code to do the INT 19h
   //
   EnableAllControllers (Private);
+
+#ifdef PCISIG_PLUGFEST_WORKAROUND
+  PCISIG_Workaround();
+#endif	//;PCISIG_PLUGFEST_WORKAROUND
+
   if ((mBootMode == BOOT_LEGACY_OS) || (mBootMode == BOOT_UNCONVENTIONAL_DEVICE)) {
     REPORT_STATUS_CODE (EFI_PROGRESS_CODE, EFI_SOFTWARE_DXE_BS_DRIVER | EFI_SW_DXE_BS_PC_LEGACY_BOOT_EVENT);
     
