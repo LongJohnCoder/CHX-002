@@ -139,7 +139,7 @@ gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvMain2Base|gEfiByoModulePkgTokenSpaceGui
 FV = NETWORK_STACK_COMPACT
 !endif
 
-0x006C0000|0x00100000
+0x006C0000|0x00110000
 gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecoveryBase|gEfiByoModulePkgTokenSpaceGuid.PcdFlashFvRecoverySize
 FV = FVRECOVERY
 
