@@ -413,6 +413,19 @@ GotSetupVariable:
   NbCfg->PcieEQ=SetupData->PcieEQ;
   NbCfg->EQTxPreset=SetupData->EQTxPreset;
 
+	NbCfg->PcieEQPE0=SetupData->PcieEQPE0;
+	NbCfg->PcieEQPE1=SetupData->PcieEQPE1;
+	NbCfg->PcieEQPE2=SetupData->PcieEQPE2;
+	NbCfg->PcieEQPE3=SetupData->PcieEQPE3;
+	NbCfg->PcieEQPE4=SetupData->PcieEQPE4;
+	NbCfg->PcieEQPE5=SetupData->PcieEQPE5;
+	NbCfg->PcieEQPE6=SetupData->PcieEQPE6;
+	NbCfg->PcieEQPE7=SetupData->PcieEQPE7;
+	NbCfg->PcieEMEQDebug=SetupData->PcieEMEQDebug;
+	NbCfg->PcieEMEQScanTime=SetupData->PcieEMEQScanTime;
+
+
+
   NbCfg->PcieEQTS2 = SetupData->PcieEQTS2;
   NbCfg->PcieCrsMech = SetupData->PcieCrsMech;
   NbCfg->PcieOptimalTLS = SetupData->PcieOptimalTLS;

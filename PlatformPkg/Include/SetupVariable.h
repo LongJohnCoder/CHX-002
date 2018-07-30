@@ -628,6 +628,16 @@ typedef struct {
   //EQ related
   UINT8 PcieEQ;
 	  	  UINT8 EQTxPreset;
+		UINT8 PcieEQPE0;
+		UINT8 PcieEQPE1;
+		UINT8 PcieEQPE2;
+		UINT8 PcieEQPE3;
+		UINT8 PcieEQPE4;
+		UINT8 PcieEQPE5;
+		UINT8 PcieEQPE6;
+		UINT8 PcieEQPE7;
+		UINT8 PcieEMEQDebug;
+		UINT8 PcieEMEQScanTime;	  
 			UINT8 PcieEQTS2;
 			UINT8 PcieCrsMech;
 			UINT8 PcieOptimalTLS;
