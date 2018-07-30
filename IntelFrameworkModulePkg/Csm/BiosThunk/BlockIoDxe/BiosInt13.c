@@ -112,7 +112,7 @@ BiosInitBlockIo (
                   1,
                   &PciId
                   );
-	  if((PciId == 0x00971000)|| (PciId == 0x00721000)){
+	  if((PciId == 0x00971000)|| (PciId == 0x00721000)||(PciId == 0x00871000)){
 	  	BlockIo->ReadBlocks   = Edd11BiosReadBlocks;
         BlockIo->WriteBlocks  = Edd11BiosWriteBlocks;
 	  }else{
