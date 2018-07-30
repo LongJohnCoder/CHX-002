@@ -107,7 +107,7 @@ ACpuInitSmrr (
   )
 {
   AsmWriteMsr64(EFI_MSR_SMRR_PHYS_BASE, SmrrBase | SmrrType);
-  AsmWriteMsr64(EFI_MSR_SMRR_PHYS_MASK, (~(SmrrSize - 1) & EFI_MSR_SMRR_MASK));
+  AsmWriteMsr64(EFI_MSR_SMRR_PHYS_MASK, (~(SmrrSize - 1) & EFI_MSR_SMRR_MASK)| EFI_MSR_SMRR_PHYS_MASK_VALID);
 }
 
 
