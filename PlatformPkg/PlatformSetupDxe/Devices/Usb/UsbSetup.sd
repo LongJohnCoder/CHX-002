@@ -106,8 +106,8 @@ $END--------------------------------------------------------------------
             oneof varid     = SETUP_DATA.XhcTRBCacheBypassCtrl,
                 prompt      = STRING_TOKEN(STR_XHC_TRB_CACHE_CTRL),
                 help        = STRING_TOKEN(STR_XHC_TRB_CACHE_CTRL_HELP),
-                option text = STRING_TOKEN(STR_XHC_TRB_CACHE_NOT_BYPASS), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
-                option text = STRING_TOKEN(STR_XHC_TRB_CACHE_BYPASS),     value = 1, flags =RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_XHC_TRB_CACHE_NOT_BYPASS), value = 0, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_XHC_TRB_CACHE_BYPASS),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
             endoneof;
 
             oneof varid     = SETUP_DATA.XhcBurstCtrl,
