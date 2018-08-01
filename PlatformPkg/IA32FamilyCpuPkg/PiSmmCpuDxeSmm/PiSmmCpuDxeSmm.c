@@ -768,7 +768,11 @@ PiCpuSmmEntry (
     S3Record->SmrrBase = gSmmCpuPrivate->SmrrBase;
     S3Record->SmrrSize = gSmmCpuPrivate->SmrrSize;
   }
-  
+  else
+  {
+	S3Record->SmrrBase = 0;
+    S3Record->SmrrSize = 0;
+  }
   return EFI_SUCCESS;
 }
 

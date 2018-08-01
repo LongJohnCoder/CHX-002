@@ -1392,8 +1392,8 @@ PlatformPeiEntry (
     for(Index=0;Index<ASIA_MAX_RANKS;Index++){
       MemSize += DramInfo->RankInfo[Index].RankSize;
     }
-    MemInfo->PhyMemSize = LShiftU64(MemSize, 20);  // MB --> B
-
+	MemInfo->PhyMemSize = LShiftU64(MemSize, 20);  // MB --> B
+	ZeroMem(S3Record, sizeof(PLATFORM_S3_RECORD));
     S3Record->Signature = PLAT_S3_RECORD_SIGNATURE;
     ZeroMem(&S3Record->AcpiRam, sizeof(S3Record->AcpiRam));
     S3Record->AcpiRam.Signature = ACPI_RAM_DATA_SIGNATURE;
