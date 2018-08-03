@@ -408,8 +408,9 @@ Revision History:
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_64M), value = 1, flags =RESET_REQUIRED;
         option text = STRING_TOKEN(STR_128M), value = 2, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_256M), value = 3, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_256M), value = 3, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_512M), value = 4, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_AUTO), value = 5, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
       endoneof;
       
       oneof varid   = SETUP_DATA.DramInitMethod ,
