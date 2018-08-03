@@ -576,8 +576,9 @@ INF $(PLATFORM_PACKAGE)/MpTableDxe/MpTableDxe.inf
 
 # 1547b4f3-3e8a-4fef-81c8-328ed647ab1a
 FILE FREEFORM  = PCD(gPlatformModuleTokenSpaceGuid.PcdCsm16File) {
-   SECTION RAW = PlatformPkg/Override/ByoModulePkg/Csm/Legacy16/Legacy16-0802.bin
-   SECTION UI  = "Csm16"
+ #  SECTION RAW = PlatformPkg/Override/ByoModulePkg/Csm/Legacy16/Legacy16-0802.bin
+   SECTION RAW = PlatformPkg/Override/ByoModulePkg/Csm/Legacy16/Legacy16-20180803.bin
+    SECTION UI  = "Csm16"
   }
 
 
