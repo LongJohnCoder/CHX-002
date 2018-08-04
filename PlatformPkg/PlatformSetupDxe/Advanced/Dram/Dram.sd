@@ -89,7 +89,14 @@ Revision History:
    subtitle text = STRING_TOKEN(STR_EMPTY);  
    subtitle text = STRING_TOKEN(STR_DRAM_CONFIG);  
 
-     oneof varid   = SETUP_DATA.DramClk,
+#ifdef PCISIG_PLUGFEST_WORKAROUND
+   oneof varid   = SETUP_DATA.DramClk,
+        prompt   = STRING_TOKEN(STR_DRAMCLK),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_1200M),   value = 0x10, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
+      endoneof; 
+#else
+   oneof varid   = SETUP_DATA.DramClk,
         prompt   = STRING_TOKEN(STR_DRAMCLK),
         help   = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_BY_SPD),  value = 0,    flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
@@ -105,7 +112,7 @@ Revision History:
         option text = STRING_TOKEN(STR_1466M),   value = 0x13, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_1600M),   value = 0x14, flags = RESET_REQUIRED;
       endoneof;      
-
+#endif
       oneof varid   = SETUP_DATA.RxIoTimingMethod,
         prompt   = STRING_TOKEN(STR_RXIO_TIMING_METHOD),
         help     = STRING_TOKEN(STR_EMPTY),

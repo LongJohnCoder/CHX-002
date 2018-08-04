@@ -39,10 +39,17 @@
     ORG     0h            ; FFFFFFA0
 
   #ifdef HX002EA0_03
+  #ifdef PCISIG_PLUGFEST_WORKAROUND
+    dd  000000000h
+    dd  00038FF9ah	 
+    dd  00006ABA8h
+    dd  000000000h
+  #else
 	dd  000000000h
 	dd  00038FF9ah     
 	dd  00003FFFCh
-	dd  000000000h  
+	dd  000000000h
+  #endif
   #endif
 
   #ifdef HX002EB0_00
