@@ -604,9 +604,10 @@ $END--------------------------------------------------------------------
 
 		oneof varid 	= SETUP_DATA.PcieEMEQDebug,
 		 prompt 	= STRING_TOKEN(STR_DO_EQ_EMEQ_DBG),
-		 help	= STRING_TOKEN(STR_COM_EMPTY),
+		 help	= STRING_TOKEN(STR_DO_EQ_EMEQ_DBG_HELF),
 			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
 			option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE_CLR_AER), value = 2, flags =	RESET_REQUIRED;
 		endoneof;			
 
 		numeric varid=SETUP_DATA.PcieEMEQScanTime,
