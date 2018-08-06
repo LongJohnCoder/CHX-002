@@ -766,9 +766,9 @@ FirmwareLoadCallBack (
 
 	if(BootMode == BOOT_ON_S3_RESUME){
 
-      DEBUG((EFI_D_INFO, __FUNCTION__"Load PEMCU FW in S3 Resume \n"));
-      HandlePemcuFwPei(S3Record);
-      DEBUG((EFI_D_INFO, __FUNCTION__"[JNY-PEI] Load PEMCU FW in S3 Resume \n"));
+     // DEBUG((EFI_D_INFO, __FUNCTION__"Load PEMCU FW in S3 Resume \n"));
+     // HandlePemcuFwPei(S3Record);
+     // DEBUG((EFI_D_INFO, __FUNCTION__"[JNY-PEI] Load PEMCU FW in S3 Resume \n"));
 
      DEBUG((EFI_D_INFO, __FUNCTION__"(): Load xHCI FW in S3 Resume...\n"));
      Status = HandleXhciFwPei(S3Record, SetupHob);
