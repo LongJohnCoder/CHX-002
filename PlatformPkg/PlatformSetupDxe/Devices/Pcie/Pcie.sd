@@ -520,8 +520,8 @@ $END--------------------------------------------------------------------
    oneof varid = SETUP_DATA.PcieEQ,
 	   prompt = STRING_TOKEN(STR_PCIE_EQ),
 	   help   = STRING_TOKEN(STR_EMPTY),
-	   option text = STRING_TOKEN(STR_DO_EQ),			 value = 0, flags = RESET_REQUIRED;
-	   option text = STRING_TOKEN(STR_SKIP_WITH_TABLE),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+	   option text = STRING_TOKEN(STR_DO_EQ),			 value = 0, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
+	   option text = STRING_TOKEN(STR_SKIP_WITH_TABLE),  value = 1, flags = RESET_REQUIRED ;
 	   option text = STRING_TOKEN(STR_SKIP_WITH_MANUAL), value = 2, flags = RESET_REQUIRED;
 	 endoneof;
    
@@ -780,8 +780,8 @@ $END--------------------------------------------------------------------
    oneof varid	 = SETUP_DATA.PEMCU_LoadFW_WhenBoot,
 	   prompt	= STRING_TOKEN(STR_PEMCU_LOADFW_WHENBOOT),
 	   help   = STRING_TOKEN(STR_EMPTY),
-	   option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
-	   option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =	RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
 	  endoneof; 
 	  
    suppressif NOT ideqval SETUP_DATA.PEMCU_LoadFW_WhenBoot == 1;  

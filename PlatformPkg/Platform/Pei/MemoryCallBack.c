@@ -608,6 +608,9 @@ MemoryDiscoveredPpiNotifyCallback (
   PERF_END  (NULL, "CACHE", NULL, 0);		
   
   if(BootMode == BOOT_ON_S3_RESUME){
+	S3Record = (PLATFORM_S3_RECORD*)GetS3RecordTable();
+	HandlePemcuFwPei(S3Record);
+	
     Status = SbPpi->PostMemoryInitS3(PeiServices, SbPpi);
     ASSERT_EFI_ERROR(Status); 
     Status = NbPpi->PostMemoryInitS3(PeiServices, NbPpi);
@@ -617,13 +620,13 @@ MemoryDiscoveredPpiNotifyCallback (
     Status = SmmControlPpiInstall(PeiServices);
     ASSERT_EFI_ERROR(Status);
 
-	S3Record = (PLATFORM_S3_RECORD*)GetS3RecordTable();
+	
 	//JNY Porting for IOE MCU -S   
 #ifdef IOE_EXIST    
 	Status = HandleIoeMcuXhciFwPei(S3Record, SetupData);
 	ASSERT_EFI_ERROR(Status);   
 #endif
-	HandlePemcuFwPei(S3Record);
+	
   } else {
     Status = SbPpi->PostMemoryInit(PeiServices, SbPpi);
     ASSERT_EFI_ERROR(Status); 
