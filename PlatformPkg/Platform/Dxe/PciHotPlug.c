@@ -34,8 +34,8 @@ InitializeRootHpc (
   *PhpcState = EFI_HPC_STATE_INITIALIZED;
   return EFI_SUCCESS;
 }
-
-
+#if defined(PCAL6416A_PCIE_HOTPLUG_SUPPORT_CHX002)
+//JNY-20180808 for CHX002 D5F1
 STATIC PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH  gPlatformRootPortDp = {
   gPciRootBridge,
   {
@@ -43,8 +43,8 @@ STATIC PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH  gPlatformRootPortDp = {
     HW_PCI_DP,
     (UINT8) (sizeof (PCI_DEVICE_PATH)),
     (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
-    0x0,
-    0x2
+    0x1,
+    0x5
   },
   gEndEntire
 };
@@ -55,6 +55,30 @@ STATIC EFI_HPC_LOCATION gPciSlotList[] = {
     (EFI_DEVICE_PATH_PROTOCOL*)&gPlatformRootPortDp
   },
 };
+
+#else
+
+STATIC PLATFORM_ONBOARD_CONTROLLER_DEVICE_PATH  gPlatformRootPortDp = {
+  gPciRootBridge,
+  {
+    HARDWARE_DEVICE_PATH,
+    HW_PCI_DP,
+    (UINT8) (sizeof (PCI_DEVICE_PATH)),
+    (UINT8) ((sizeof (PCI_DEVICE_PATH)) >> 8),
+    0x0,
+    0x3
+  },
+  gEndEntire
+};
+
+STATIC EFI_HPC_LOCATION gPciSlotList[] = {
+  {
+    (EFI_DEVICE_PATH_PROTOCOL*)&gPlatformRootPortDp,
+    (EFI_DEVICE_PATH_PROTOCOL*)&gPlatformRootPortDp
+  },
+};
+
+#endif
 
 
 EFI_STATUS

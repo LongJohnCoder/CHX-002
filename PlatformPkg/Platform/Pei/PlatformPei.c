@@ -59,11 +59,6 @@ MemoryDiscoveredPpiNotifyCallback (
   IN VOID                       *Ppi
   );  
   
-EFI_STATUS 
-PcieHotPlugInit (
-  IN EFI_PEI_SERVICES  **PeiServices
-	);
-
   
 STATIC EFI_GUID gEfiDebugMaskPpiGuid     = EFI_DEBUG_MASK_PPI_GUID;
 

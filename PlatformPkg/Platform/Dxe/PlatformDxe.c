@@ -958,7 +958,7 @@ PlatformDxeEntry (
   Status = IsaAcpiDevListDxe();
   ASSERT_EFI_ERROR(Status);  
   
-#if PCAL6416A_PCIE_HOTPLUG_SUPPORT
+#if defined(PCAL6416A_PCIE_HOTPLUG_SUPPORT_CHX002) || defined(PCAL6416A_PCIE_HOTPLUG_SUPPORT_IOE)
   Status = PciHotPlugEntryPoint(ImageHandle, SystemTable);
   ASSERT_EFI_ERROR(Status);  
 #endif

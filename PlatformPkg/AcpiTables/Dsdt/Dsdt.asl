@@ -665,7 +665,58 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
                                 })
                                 Return (SMBC)
                             }
+#if defined(PCAL6416A_PCIE_HOTPLUG_SUPPORT_CHX002) || defined(PCAL6416A_PCIE_HOTPLUG_SUPPORT_IOE)
+                            Method(SMRB, 2, NotSerialized)
+                            {
+                              Or(Arg0, One, Arg0)
+                              Store(Arg0, SADD)
+                              Store(Arg1, HCMD)
+                              Store(0xDF, HSTS)
+                              Store(0x48, HCTL)
+                              Store(0x10, Local0)
+                              While(LGreater(Local0, Zero))
+                              {
+                                And(HSTS, 0x02, Local1)
+                                If(LEqual(Local1, 0x02))
+                                {
+                                  Break
+                                }
+                                Decrement(Local0)
+                                Sleep(0x01F4)
+                              }
+                              If(LEqual(Local1, Zero))
+                              {
+                                Return(0x01FF)
+                              }
+                              Return(HDA0)
+                            }
                             
+                            Method(SMWB, 3, NotSerialized)
+                            {
+                              Store(Arg0, SADD)
+                              Store(Arg1, HCMD)
+                              Store(Arg2, HDA0)
+                              Store(0xDF, HSTS)
+                              Store(0x48, HCTL)
+                              Store(0x10, Local0)
+                              While(LGreater(Local0, Zero))
+                              {
+                                And(HSTS, 0x02, Local1)
+                                If(LEqual(Local1, 0x02))
+                                {
+                                  Break
+                                }
+                                Decrement(Local0)
+                                Sleep(0x01F4)
+                              }
+                              If(LEqual(Local1, Zero))
+                              {
+                                Return(One)
+                              }
+                              Return(Zero)
+                            }
+
+#endif   
                         }
                     }
                 }
