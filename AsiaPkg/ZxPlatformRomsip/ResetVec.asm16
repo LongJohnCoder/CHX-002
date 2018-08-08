@@ -116,6 +116,12 @@
 	dd  000000000h
   #endif
 
+#ifdef ZX_TXT_SUPPORT
+  ORG     20h           ; 0FFFFFFC0
+	dd  0FFAFF000h        ; FIT pointer
+  dd  080000000h
+#endif
+
 	ORG     30h           ; 0FFFFFFD0
 	dd  0FFFFFFA0h        ; CID pointer
 	ORG     40h           ; 0xFFFFFFE0

@@ -59,6 +59,13 @@ gPlatformModuleTokenSpaceGuid.PcdMSRRDBBase|gPlatformModuleTokenSpaceGuid.PcdMSR
 0x00106000|0x00001000
 gPlatformModuleTokenSpaceGuid.PcdBootConfigBase|gPlatformModuleTokenSpaceGuid.PcdBootConfigSize
 !endif  
+
+
+!if $(ZX_TXT_SUPPORT) == TRUE
+0x002FF000|0x00050000
+FILE = $(ASIA_SOURCE)/../ZxPlatformBin/Txt/ZX_TXT_FW.bin
+!endif 
+
 #NV_VARIABLE_STORE
 0x00410000|0x00020000
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize

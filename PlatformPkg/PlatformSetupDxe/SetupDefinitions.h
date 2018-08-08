@@ -7,6 +7,14 @@
     name      = Setup, 
     guid      = PLATFORM_SETUP_VARIABLE_GUID; 
   
+  #ifdef ZX_TXT_SUPPORT
+  efivarstore ASIA_VARIABLE,
+    varid     = ASIA_VARIABLE_ID,
+    attribute = 0x7,
+    name      = AsiaVariable,
+    guid      = ASIA_VARIABLE_GUID;
+  #endif
+
   varstore SETUP_VOLATILE_DATA,
     varid = SETUP_VOLATILE_DATA_ID,
     name  = SetupVolatileData,

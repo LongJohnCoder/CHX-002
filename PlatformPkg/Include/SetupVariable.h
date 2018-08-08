@@ -499,8 +499,7 @@ typedef struct {
 #ifdef ZX_SECRET_CODE
     UINT8 WDTClear;	
 #endif
-//HYL-2018062901-end  
-	UINT8 TXT;
+//HYL-2018062901-end 
 
 	//JYZ_ADD_SVID
 	UINT8 SVIDMVCLKControl;

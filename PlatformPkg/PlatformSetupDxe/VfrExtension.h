@@ -23,6 +23,9 @@ Abstract:
 #include "SetupVariable.h"
 #include <Guid/SetupPassword.h>
 
+#ifdef ZX_TXT_SUPPORT
+#include <AsiaVariable.h>
+#endif
 
 
 //
@@ -97,6 +100,9 @@ Abstract:
 #define TSESETUP_DATA_ID                0x2
 #define SETUP_VOLATILE_DATA_ID          0x3
 
+#ifdef ZX_TXT_SUPPORT
+#define ASIA_VARIABLE_ID                0x4
+#endif
 
 #pragma pack()
 

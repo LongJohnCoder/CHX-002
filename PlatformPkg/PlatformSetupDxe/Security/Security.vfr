@@ -192,6 +192,23 @@ formset guid  = SECURITY_FORM_SET_GUID,
         help     = STRING_TOKEN(STR_SECUREBOOT_HELP);
     endif;    
 
+    subtitle text = STRING_TOKEN(STR_EMPTY);
+    text
+        help   = STRING_TOKEN(STR_EMPTY),
+        text   = STRING_TOKEN(STR_TXT_CONFIG),
+        flags  = 0,
+        key    = 0;           
+        #ifdef ZX_TXT_SUPPORT
+            grayoutif ideqval SETUP_VOLATILE_DATA.Tpm2FormsetPresent == 0;
+            oneof varid = ASIA_VARIABLE.TXT,
+              prompt      = STRING_TOKEN(STR_TXT),
+              help        = STRING_TOKEN(STR_TXT_HELP),
+              option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+              option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;          
+            endoneof;      
+            endif;
+        #endif 
+
   endform;
   #define FORM_SET_FORM
      #include <SetupDefinitions.h>
