@@ -209,8 +209,11 @@ IamBSP:
 ;;
 ;;------------------------------------------------------------------------------   
 ;;End-Of-Core-Freq-Vol {
+#ifdef PCISIG_PLUGFEST_WORKAROUND
+	mov ax, 36A1h    ;SVID Board, default to 2.7G/1.05V, see guide above to select the required freq/vol - for PCI_SIG compliance BIOS test  
+#else
     mov ax, 2897h    ;SVID Board, default to 2.0G/1.0V, see guide above to select the required freq/vol  
-    
+#endif    
 #if defined(HX002EB0_00)|| defined(HX002EB0_11)
     mov ax, 2857h       ;PVID Board
 #endif
