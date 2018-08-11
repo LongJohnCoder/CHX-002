@@ -23,6 +23,7 @@
 #include <RtcDef.h>
 #include <PlatformDefinition.h>
 #include <PlatS3Record.h>
+#include <SetupVariable.h>
 
 
 extern EFI_GUID gPlatformSetupVariableGuid;
@@ -725,7 +726,12 @@ EFI_STATUS LoadPeMcuFw(
   UINT16		TmpReg16;
   UINT8 		CpuWrContFlag = 0;
   UINT8         Temp8=0;
+  SETUP_DATA *gSetupHob;
+  
   Status  = EFI_SUCCESS;
+
+
+  gSetupHob = GetSetupDataHobData();
 
   //gBS = (EFI_BOOT_SERVICES*)BootServices;
 
@@ -766,6 +772,7 @@ EFI_STATUS LoadPeMcuFw(
   //Reformat MemoryAddressBase of PEMCU XDATA 
   //
   DataAddr= (UINT32)((UINT64)((UINT32*)PeMcuData));
+  MmioWrite8(DataAddr+0x1000,gSetupHob->PcieEMEQScanTime);
   DEBUG((EFI_D_ERROR, "[Line:%d] DataAddr = %x\n",__LINE__,DataAddr));
   PcdSet64(PcdPEMCUDATAAddr, (UINT64)DataAddr);			//For TA RMRR tbl - jerry add
   PcdSet32(PcdPEMCUDATASize,(UINT32)(0 + SIZE_64KB));	//For TA RMRR tbl - jerry add
