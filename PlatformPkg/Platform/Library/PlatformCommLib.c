@@ -578,9 +578,12 @@ LoadIoeXhciFw(
 
 //ALJ-CHX002- FWLOAD 
 EFI_STATUS LoadXhciFw(
+    UINT8   BusNum,
+    UINT8   DevNum,
+    UINT8   FunNum,
     UINT32  FwAddr_Lo,
     UINT32  FwAddr_Hi
-)
+    )
 {
     UINT16      AutoFillAddr    = 0x500;
     UINT16      AutoFillLen     = 0x1800;   // 6KB
@@ -602,99 +605,99 @@ EFI_STATUS LoadXhciFw(
         return EFI_ACCESS_DENIED;
     }
 
-    DEBUG((EFI_D_INFO, "                  Firmware Address Low = 0x%08X  Firmware Address High = 0x%08X\n", FwAddr_Lo, FwAddr_Hi));
+    DEBUG((EFI_D_INFO, "[CHX002_XHCI_FW]: Firmware Address Low = 0x%08X  Firmware Address High = 0x%08X\n", FwAddr_Lo, FwAddr_Hi));
 
     //
     // 1. Enable bus master and OPTCFG access
     //
-    MmioOr8(XHCI_PCI_REG(PCI_COMMAND_OFFSET), EFI_PCI_COMMAND_BUS_MASTER);
-    Data    = MmioRead8(XHCI_PCI_REG(PCI_COMMAND_OFFSET));
+    MmioOr8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + PCI_COMMAND_OFFSET, EFI_PCI_COMMAND_BUS_MASTER);
+    Data    = MmioRead8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + PCI_COMMAND_OFFSET);
     DEBUG((EFI_D_INFO, "                  PCI Command(Rx04[2]) is %X\n", ((Data & BIT2) >> 2)));
-    MmioOr8(XHCI_PCI_REG(XHCI_OPT_RX43), XHCI_OPT_CFG_EN);
-    Data    = MmioRead8(XHCI_PCI_REG(XHCI_OPT_RX43));
+    MmioOr8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_RX43, XHCI_OPT_CFG_EN);
+    Data    = MmioRead8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_RX43);
     DEBUG((EFI_D_INFO, "                  Rx43[0] is %X\n", (Data & BIT0)));
 
     //
     // 2. Peek path for MCU DMA cycle
     //
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_ADR), 0xC0);
-    Data    = MmioRead32(XHCI_PCI_REG(XHCI_OPT_CFG_DAT));
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_ADR, 0xC0);
+    Data    = MmioRead32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT);
     DEBUG((EFI_D_INFO, "                  MCUDMASEL(RxC0[5]) is %Xb  (0b for non-snoop, 1b for snoop)\n", ((Data & BIT5) >> 5)));
 
     //
     // 3. Config Base Address of MCU Firmware in System Memory
     //
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_ADR), XHCI_OPTCFG_MCU_BASE + 0x28);
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_DAT), FwAddr_Lo);
-    Data    = MmioRead32(XHCI_PCI_REG(XHCI_OPT_CFG_DAT));
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE + 0x28);
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT, FwAddr_Lo);
+    Data    = MmioRead32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT);
     DEBUG((EFI_D_INFO, "                  Base Address of MCU Firmware in System Memory Low(Rx30028):  0x%08X \n", Data));
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_ADR), XHCI_OPTCFG_MCU_BASE + 0x2C);
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_DAT), FwAddr_Hi);
-    Data    = MmioRead32(XHCI_PCI_REG(XHCI_OPT_CFG_DAT));
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE + 0x2C);
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT, FwAddr_Hi);
+    Data    = MmioRead32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT);
     DEBUG((EFI_D_INFO, "                  Base Address of MCU Firmware in System Memory High(Rx3002C):  0x%08X \n", Data));
 
     //
     // 4. Config Start Address of Auto-fill Instruction
     //
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_ADR), XHCI_OPTCFG_MCU_BASE + 0x0C);
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_DAT), AutoFillAddr);
-    Data    = MmioRead32(XHCI_PCI_REG(XHCI_OPT_CFG_DAT));
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE + 0x0C);
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT, AutoFillAddr);
+    Data    = MmioRead32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT);
     DEBUG((EFI_D_INFO, "                  Start Address of Auto-fill Instruction(Rx3000C)  0x%08X \n", Data));
 
     //
     // 5. Config MCU Instruction Auto-fill Length
     //
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_ADR), XHCI_OPTCFG_MCU_BASE + 0x08);
-    MmioWrite16(XHCI_PCI_REG(XHCI_OPT_CFG_DAT) + 2, AutoFillLen);
-    Data    = MmioRead32(XHCI_PCI_REG(XHCI_OPT_CFG_DAT));
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE + 0x08);
+    MmioWrite16(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT + 2, AutoFillLen);
+    Data    = MmioRead32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT);
     DEBUG((EFI_D_INFO, "                  MCU Instruction Auto-fill Length(Rx3000A)  0x%04X \n", (UINT16)(Data >> 16)));
 
     //
     // 6. Start MCU Instruction Auto-fill
     //
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_ADR), XHCI_OPTCFG_MCU_BASE + 0x08);
-    MmioWrite8(XHCI_PCI_REG(XHCI_OPT_CFG_DAT), 0x1);
-    Data    = MmioRead8(XHCI_PCI_REG(XHCI_OPT_CFG_DAT));
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE + 0x08);
+    MmioWrite8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT, 0x1);
+    Data    = MmioRead8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT);
     DEBUG((EFI_D_INFO, "                  MCU Instruction Auto-fill Enable(Rx30008[0])  %X\n", (Data & BIT0)));
 
     //
     // 7. Wait for autofill done
     //
-    DEBUG((EFI_D_INFO, "                  Wait autofill done...\n", __LINE__));
+    DEBUG((EFI_D_INFO, "                  Wait autofill done...\n"));
     do {
-        MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_ADR), XHCI_OPTCFG_MCU_BASE + 0x08);
-        Data    = MmioRead8(XHCI_PCI_REG(XHCI_OPT_CFG_DAT) + 0x1);
+        MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE + 0x08);
+        Data    = MmioRead8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT + 0x1);
     } while ((Data & BIT0) == 0x00);
     DEBUG((EFI_D_INFO, "                  MCU Instruction Auto-fill Done(Rx30009[0])  %X\n", (Data & BIT0)));
 
     //
     // 8. Config MCU Software Reset
     //
-    MmioWrite32(XHCI_PCI_REG(XHCI_OPT_CFG_ADR), XHCI_OPTCFG_MCU_BASE + 0x20);
-    MmioWrite8(XHCI_PCI_REG(XHCI_OPT_CFG_DAT), 0x1);
-    // Data    = MmioRead8(XHCI_PCI_REG(XHCI_OPT_CFG_DAT));
+    MmioWrite32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_ADR, XHCI_OPTCFG_MCU_BASE + 0x20);
+    MmioWrite8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_CFG_DAT, 0x1);
+    // Data    = MmioRead8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum + XHCI_OPT_CFG_DAT);
     // DEBUG((EFI_D_INFO, "                  MCU Software Reset(Rx30020[0]) is %X\n", (Data & BIT0)));
 
     //
     // 9. Disable bus master and OPTCFG access
     //
-    MmioAnd8(XHCI_PCI_REG(XHCI_OPT_RX43), (UINT8)~XHCI_OPT_CFG_EN);
-    Data    = MmioRead8(XHCI_PCI_REG(XHCI_OPT_RX43));
+    MmioAnd8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_RX43, (UINT8)~XHCI_OPT_CFG_EN);
+    Data    = MmioRead8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_OPT_RX43);
     DEBUG((EFI_D_INFO, "                  Rx43[0] is %X\n", (Data & BIT0)));
 
     //
     // 10. Wait FW init done
     //
-    DEBUG((EFI_D_INFO, "                  Wait FW init done...\n", __LINE__));
+    DEBUG((EFI_D_INFO, "                  Wait FW init done...\n"));
     do  {
-        Data    = MmioRead32(XHCI_PCI_REG(XHCI_FWSWMSG0_REG));
+        Data    = MmioRead32(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + XHCI_FWSWMSG0_REG);
     } while ( (Data & XHCI_FWSWMSG0_INITDONE) != XHCI_FWSWMSG0_INITDONE );
     DEBUG((EFI_D_INFO, "                  MCU Init Done(RxB0[0]) is %X\n", (Data & BIT0)));
 
     // MicroSecondDelay (60*1000);
 
-    MmioAnd8(XHCI_PCI_REG(PCI_COMMAND_OFFSET), (UINT8)~EFI_PCI_COMMAND_BUS_MASTER);
-    Data    = MmioRead8(XHCI_PCI_REG(PCI_COMMAND_OFFSET));
+    MmioAnd8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + PCI_COMMAND_OFFSET, (UINT8)~EFI_PCI_COMMAND_BUS_MASTER);
+    Data    = MmioRead8(PCI_DEV_MMBASE(BusNum, DevNum, FunNum) + PCI_COMMAND_OFFSET);
     DEBUG((EFI_D_INFO, "                  PCI Command(Rx04[2]) is %X\n", ((Data & BIT2) >> 2)));
 
     return EFI_SUCCESS;

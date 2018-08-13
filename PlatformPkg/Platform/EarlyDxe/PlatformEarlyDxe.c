@@ -116,91 +116,100 @@ STATIC EFI_STATUS HandleXhciFw (
     CONST SETUP_DATA *SetupData
     )
 {
-    EFI_STATUS              Status;
+    EFI_STATUS              Status = EFI_SUCCESS;
     VOID                    *Buffer;
     UINTN                   Size;
-    EFI_PHYSICAL_ADDRESS    Address, McuFw;
+    EFI_PHYSICAL_ADDRESS    Address;
     UINTN                   Pages;
-    UINT32                  McuFw_Lo, McuFw_Hi;
     UINT16                  tVID;
     UINT16                  tDID;
+    BOOLEAN                 XhciEn   = (SetupData->UsbModeSelect != USB_MODE_SEL_DISABLE && SetupData->UsbModeSelect != USB_MODE_SEL_MODEA);
+    EFI_PHYSICAL_ADDRESS    McuFw;
+    UINT32                  McuFw_Lo, McuFw_Hi;
 
-    DEBUG((EFI_D_INFO, "[CHX002_XHCI_FW]: Firmware loading for normal boot...\n"));
-    
-    if( SetupData->UsbModeSelect != USB_MODE_SEL_MODEB &&
-        SetupData->UsbModeSelect != USB_MODE_SEL_MODEC &&
-        SetupData->UsbModeSelect != USB_MODE_SEL_MODED ) {
+
+    // Init XhciMcuFw releated variable in gS3Record for S3 resume.
+    gS3Record->XhciMcuFw_Lo  = 0;
+    gS3Record->XhciMcuFw_Hi  = 0;
+    gS3Record->XhciMcuFwSize = 0;
+
+    // if one of the master or slave xHCI is enabled, we must load fw for it.
+    if( XhciEn ) {
+        DEBUG((EFI_D_INFO, "[CHX002_XHCI_FW]: xHCI has been enabled, catching firmware binary from flash to host memory...\n"));
+        Status = ReadFileFromFv (
+                 (EFI_GUID*)PcdGetPtr(PcdXhciMcuFwFile),
+                 EFI_SECTION_RAW,
+                 0,
+                 &Buffer,
+                 &Size);
+        if(EFI_ERROR(Status)){
+            DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: Firmware binary catching failed!(%r)\n", Status));
+            return Status;
+        }
+
+        DEBUG((EFI_D_INFO, "[CHX002_XHCI_FW]: Firmware loading for normal boot...\n"));
+
+        tVID     = MmioRead16(PCI_DEV_MMBASE(0, CHX002_XHCI_DEV, 0) + PCI_VID_REG);
+        tDID     = MmioRead16(PCI_DEV_MMBASE(0, CHX002_XHCI_DEV, 0) + PCI_DID_REG);
+
+        DEBUG((EFI_D_INFO, "                  [%02X|%02X|%02X](%08X) VID = 0x%04X, DID = 0x%04X\n", 0, CHX002_XHCI_DEV, 0, PCI_DEV_MMBASE(0, CHX002_XHCI_DEV, 0) + PCI_VID_REG, tVID, tDID));
+
+        if( !( ((tVID == PCI_VID_ZX) || (tVID == PCI_VID_VIA)) && (tDID == XHCI_DEVICE_ID) ) ) {
+            Status = EFI_DEVICE_ERROR;
+            DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: [%02X|%02X|%02X](%08X) not exist!(%r)\n", 0, CHX002_XHCI_DEV, 0, PCI_DEV_MMBASE(0, CHX002_XHCI_DEV, 0) + PCI_VID_REG, Status));
+            return Status;
+        }
+
+        DEBUG((EFI_D_INFO, "                  Allocate 64K-aligned buffer for xHCI...\n"));
+        Address = 0xFFFFFFFFFFFFFFFF;
+        Pages   = Size + SIZE_64KB;             // fw data size may be enlarged if using fw for some test cases
+        Pages   = Pages + SIZE_64KB;            // need 64K align
+        Pages   = EFI_SIZE_TO_PAGES(Pages);
+        Status  = gBS->AllocatePages(
+                      AllocateMaxAddress,
+                      EfiReservedMemoryType,
+                      Pages,
+                      &Address
+                  );
+        if(EFI_ERROR(Status)){
+            DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: Allocate 64K-aligned buffer failed!(%r)\n", Status));
+            return Status;
+        }
+
+        //JRZ add for XHCI RMRR table
+        PcdSet64(PcdxhciFWAddr, (UINT64)Address);
+        PcdSet32(PcdxhciFWSize, (UINT32)EFI_PAGES_TO_SIZE(Pages));
+
+        McuFw = (EFI_PHYSICAL_ADDRESS)ALIGN_VALUE(Address, SIZE_64KB);
+
+        McuFw_Lo = (UINT32)(McuFw & 0xFFFFFFFF);
+        McuFw_Hi = (UINT32)(McuFw >> 32);
+
+        if (McuFw_Hi != 0) {
+            Status  = EFI_INVALID_PARAMETER;
+            DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: Allocated 64K-aligned buffer beyond 4G!(%r)\n", Status));
+            return Status;
+        }
+
+        gS3Record->XhciMcuFw_Lo = McuFw_Lo;
+        gS3Record->XhciMcuFw_Hi = McuFw_Hi;
+
+        DEBUG((EFI_D_INFO, "                  Firmware Address = 0x%016X  Firmware Size = %d[0x%X]Byte\n", McuFw, Size, Size));
+        CopyMem((VOID *)McuFw, Buffer, Size);                   //Copy FW from Buffer to the space we allocated in DRAM
+
+        gS3Record->XhciMcuFwSize  = (UINT32)Size;
+
+        Status = LoadXhciFw(0, CHX002_XHCI_DEV, 0, McuFw_Lo, McuFw_Hi);
+        if (EFI_ERROR(Status)) {
+            DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: xHCI firmware loading failed!(%r)\n", Status));
+            return Status;
+        }
+
+        gBS->FreePool(Buffer);                                      //free the buffer memory
+    } else {
         Status = EFI_SUCCESS;
         DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: xHCI has been disabled, skip firmware loading.\n"));
-        return Status;
     }
-
-    tVID     = MmioRead16(XHCI_PCI_REG(PCI_VID_REG));
-    tDID     = MmioRead16(XHCI_PCI_REG(PCI_DID_REG));
-
-    DEBUG((EFI_D_INFO, "                  [%02X|%02X|%02X](%08X) VID = 0x%04X, DID = 0x%04X\n", 0, CHX002_XHCI_DEV, 0, XHCI_PCI_REG(PCI_VID_REG), tVID, tDID));
-
-    if( !( ((tVID == PCI_VID_ZX) || (tVID == PCI_VID_VIA)) && (tDID == XHCI_DEVICE_ID)) ) {
-        Status = EFI_DEVICE_ERROR;
-        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: [%02X|%02X|%02X](%08X) not exist!(%r)\n", 0, CHX002_XHCI_DEV, 0, XHCI_PCI_REG(PCI_VID_REG), Status));
-        return Status;
-    }
-
-    DEBUG((EFI_D_INFO, "                  Catching firmware binary from flash to host memory...\n"));
-    Status = ReadFileFromFv (
-             (EFI_GUID*)PcdGetPtr(PcdXhciMcuFwFile),
-             EFI_SECTION_RAW,
-             0,
-             &Buffer,
-             &Size
-         );
-    if(EFI_ERROR(Status)) {
-        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: Firmware binary catching failed!(%r)\n", Status));
-        return Status;
-    }
-
-    DEBUG((EFI_D_INFO, "                  Allocate 64K-aligned buffer...\n"));
-    Address = 0xFFFFFFFFFFFFFFFF;
-    Pages   = Size + SIZE_64KB;             // fw data size may be enlarged if using fw for some test cases
-    Pages   = Pages + SIZE_64KB;            // need 64K align
-    Pages   = EFI_SIZE_TO_PAGES(Pages);
-    Status  = gBS->AllocatePages(
-                  AllocateMaxAddress,
-                  EfiReservedMemoryType,
-                  Pages,
-                  &Address
-              );
-    if(EFI_ERROR(Status)){
-        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: Allocate 64K-aligned buffer failed!(%r)\n", Status));
-        return Status;
-    }
-
-    //JRZ add for XHCI RMRR table
-    PcdSet64(PcdxhciFWAddr, (UINT64)Address);
-    PcdSet32(PcdxhciFWSize, (UINT32)EFI_PAGES_TO_SIZE(Pages));
-
-    McuFw = (EFI_PHYSICAL_ADDRESS)ALIGN_VALUE(Address, SIZE_64KB);
-
-    McuFw_Lo = (UINT32)(McuFw & 0xFFFFFFFF);
-    McuFw_Hi = (UINT32)(McuFw >> 32);
-
-    if (McuFw_Hi != 0) {
-        Status  = EFI_INVALID_PARAMETER;
-        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: Allocated 64K-aligned buffer beyond 4G!(%r)\n", Status));
-        return Status;
-    }
-
-    gS3Record->XhciMcuFw_Lo = McuFw_Lo;
-    gS3Record->XhciMcuFw_Hi = McuFw_Hi;
-
-    DEBUG((EFI_D_INFO, "                  Firmware Address = 0x%016X  Firmware Size = %d[0x%X]Byte\n", McuFw, Size, Size));
-
-    CopyMem((VOID *)McuFw, Buffer, Size);         //Copy FW from Buffer to the space we allocated in DRAM
-    gBS->FreePool(Buffer);                        //free the buffer memory
-
-    gS3Record->XhciMcuFwSize  = (UINT32)Size;
-
-    Status = LoadXhciFw(McuFw_Lo, McuFw_Hi);
 
     return Status;
 }

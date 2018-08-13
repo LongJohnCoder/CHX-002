@@ -429,49 +429,50 @@ _FoundIoe:
 
 EFI_STATUS
 HandleXhciFwPei(
-    PLATFORM_S3_RECORD  *S3Record,
-    CONST SETUP_DATA    *SetupData
+    PLATFORM_S3_RECORD  *S3Record
     )
 {
-    EFI_STATUS              Status;
-    UINT32                  McuFw_Lo, McuFw_Hi;
-
+    EFI_STATUS              Status          = EFI_SUCCESS;
     UINT16                  tVID;
     UINT16                  tDID;
 
-    DEBUG((EFI_D_INFO, "[CHX002_XHCI_FW]: Firmware loading for S3 resume...\n"));
-    
-    if( SetupData->UsbModeSelect != USB_MODE_SEL_MODEB &&
-        SetupData->UsbModeSelect != USB_MODE_SEL_MODEC &&
-        SetupData->UsbModeSelect != USB_MODE_SEL_MODED ) {
+    // Due to only use memory blow 4G, so we don't judge XhciMcuFw_Hi.
+    BOOLEAN                 XhciMcuFwLoaded = ( S3Record->XhciMcuFw_Lo != 0 &&
+                                                S3Record->XhciMcuFwSize != 0);
+    UINT32                  McuFw_Lo, McuFw_Hi;
+
+    // Now we decide whether to load fw or not, only depends on whether it's loaded during normal boot.
+    // If loaded fw successfully during normal boot, but loading fail during S3 resume, just let it ASSERT!
+    if( XhciMcuFwLoaded ) {
+        DEBUG((EFI_D_INFO, "[CHX002_XHCI_FW]: Firmware loading for S3 resume...\n"));
+
+        tVID     = MmioRead16(PCI_DEV_MMBASE(0, CHX002_XHCI_DEV, 0) + PCI_VID_REG);
+        tDID     = MmioRead16(PCI_DEV_MMBASE(0, CHX002_XHCI_DEV, 0) + PCI_DID_REG);
+
+        DEBUG((EFI_D_INFO, "                  [%02X|%02X|%02X](%08X) VID = 0x%04X, DID = 0x%04X\n", 0, CHX002_XHCI_DEV, 0, PCI_DEV_MMBASE(0, CHX002_XHCI_DEV, 0) + PCI_VID_REG, tVID, tDID));
+
+        if( !( ((tVID == PCI_VID_ZX) || (tVID == PCI_VID_VIA)) && (tDID == XHCI_DEVICE_ID) ) ) {
+            Status = EFI_DEVICE_ERROR;
+            DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: [%02X|%02X|%02X](%08X) not exist!(%r)\n", 0, CHX002_XHCI_DEV, 0, PCI_DEV_MMBASE(0, CHX002_XHCI_DEV, 0) + PCI_VID_REG, Status));
+            return Status;
+        }
+
+        McuFw_Lo  = S3Record->XhciMcuFw_Lo;
+        McuFw_Hi  = S3Record->XhciMcuFw_Hi;
+
+        if (McuFw_Hi != 0) {
+            Status  = EFI_INVALID_PARAMETER;
+            DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: Firmware buffer beyond 4G!(%r)\n", Status));
+            return Status;
+        }
+
+        Status = LoadXhciFw(0, CHX002_XHCI_DEV, 0, McuFw_Lo, McuFw_Hi);
+        if (EFI_ERROR(Status)) {
+            DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: xHCI firmware loading failed for S3 resume!(%r)\n", Status));
+        }
+    } else {
         Status = EFI_SUCCESS;
         DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: xHCI has been disabled, skip firmware loading.\n"));
-        return Status;
-    }
-
-    tVID     = MmioRead16(XHCI_PCI_REG(PCI_VID_REG));
-    tDID     = MmioRead16(XHCI_PCI_REG(PCI_DID_REG));
-
-    DEBUG((EFI_D_INFO, "                  [%02X|%02X|%02X](%08X) VID = 0x%04X, DID = 0x%04X\n", 0, CHX002_XHCI_DEV, 0, XHCI_PCI_REG(PCI_VID_REG), tVID, tDID));
-
-    if( !( ((tVID == PCI_VID_ZX) || (tVID == PCI_VID_VIA)) && (tDID == XHCI_DEVICE_ID)) ) {
-        Status = EFI_DEVICE_ERROR;
-        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: [%02X|%02X|%02X](%08X) not exist!(%r)\n", 0, CHX002_XHCI_DEV, 0, XHCI_PCI_REG(PCI_VID_REG), Status));
-        return Status;
-    }
-
-    McuFw_Lo  = S3Record->XhciMcuFw_Lo;
-    McuFw_Hi  = S3Record->XhciMcuFw_Hi;
-
-    if (McuFw_Hi != 0) {
-        Status  = EFI_INVALID_PARAMETER;
-        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: Firmware buffer beyond 4G!(%r)\n", Status));
-        return Status;
-    }
-
-    Status = LoadXhciFw(McuFw_Lo, McuFw_Hi);
-    if (EFI_ERROR(Status)) {
-        DEBUG((EFI_D_ERROR, "[CHX002_XHCI_FW]: xHCI firmware loading failed for S3 resume!(%r)\n", Status));
     }
 
     return Status;
@@ -766,7 +767,7 @@ FirmwareLoadCallBack (
      // DEBUG((EFI_D_INFO, __FUNCTION__"[JNY-PEI] Load PEMCU FW in S3 Resume \n"));
 
      DEBUG((EFI_D_INFO, __FUNCTION__"(): Load xHCI FW in S3 Resume...\n"));
-     Status = HandleXhciFwPei(S3Record, SetupHob);
+     Status = HandleXhciFwPei(S3Record);
      ASSERT_EFI_ERROR(Status);
 
 	}

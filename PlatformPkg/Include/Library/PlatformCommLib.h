@@ -46,7 +46,7 @@ LoadIoeXhciFw(
 EFI_STATUS LoadIoeMcuFw(UINT8 BusOfEptrfc, VOID *FwAddr_alloc,UINT16 AutoFillAddr,UINT16 AutoFillLen); //CJW_IOE FWLOAD
 //JNY_IOE Porting -E
 #endif
-EFI_STATUS LoadXhciFw( UINT32  FwAddr_Lo, UINT32  FwAddr_Hi );
+EFI_STATUS LoadXhciFw(UINT8 BusNum, UINT8 DevNum, UINT8 FunNum, UINT32  FwAddr_Lo, UINT32  FwAddr_Hi);
 EFI_STATUS LoadPeMcuFw(VOID *PeMcuFw,VOID *PeMcuData, UINT8 IsDoEQ, UINT8 TP_Value,UINT8 TargetBus);
 
 VOID *GetPlatformMemInfo(VOID);
