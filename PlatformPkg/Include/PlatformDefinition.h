@@ -70,6 +70,10 @@ typedef struct {
    UINT32  VgaBufSize;
    UINT32  TSegAddr;
    UINT32  TSegSize;
+#ifdef ZX_TXT_SUPPORT
+   UINT32  DprAddr;
+   UINT32  DprSize;
+#endif
    UINT32  S3DataRecord;	 
    UINT32  S3MemoryAddr;
    UINT32  CapsuleBase;

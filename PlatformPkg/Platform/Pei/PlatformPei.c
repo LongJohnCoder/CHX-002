@@ -1317,7 +1317,13 @@ PlatformPeiEntry (
   //MemInfo->TSegAddr    = MemInfo->VgaBufAddr - MemInfo->TSegSize;
   MemInfo->TSegAddr    = MemInfo->Tolum - MemInfo->TSegSize;
   //ECS20161103 patch uma enable issue   -E
+#ifdef ZX_TXT_SUPPORT
+  MemInfo->DprSize      = (UINT32)DramInfo->DPRSize<<20;
+  MemInfo->DprAddr      = MemInfo->TSegAddr - MemInfo->DprSize;
+  MemInfo->S3DataRecord = MemInfo->DprAddr - S3_DATA_RECORD_SIZE;
+#else
   MemInfo->S3DataRecord = MemInfo->TSegAddr - S3_DATA_RECORD_SIZE;
+#endif
   MemInfo->S3MemoryAddr = MemInfo->S3DataRecord - S3_PEI_MEMORY_SIZE;
   MemInfo->LowMemSize   = MemInfo->S3MemoryAddr;	
 
