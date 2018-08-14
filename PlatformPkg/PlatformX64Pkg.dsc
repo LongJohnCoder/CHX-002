@@ -219,6 +219,9 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
 
 # CPU
+ !if $(ZX_SECRET_CODE) == TRUE  
+   CpuDebugLib|$(PLATFORM_PACKAGE)/Library/CpuDebugLib/CpuDebugLib.inf
+ !endif
   MtrrLib|UefiCpuPkg/Library/MtrrLib/MtrrLib.inf
   LocalApicLib|UefiCpuPkg/Library/BaseXApicX2ApicLib/BaseXApicX2ApicLib.inf
 

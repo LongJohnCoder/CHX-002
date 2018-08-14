@@ -26,6 +26,7 @@
   EnumPci.c
   Ssid.c
   #PciHotPlug.c
+ CpuDebugPei.c
   
 
 [Packages]
@@ -54,7 +55,8 @@
   ReportStatusCodeLib
   PerformanceLib
   PlatformCommLib
-  
+  CpuDebugLib
+
 
 [Guids]
   gEfiMemoryTypeInformationGuid

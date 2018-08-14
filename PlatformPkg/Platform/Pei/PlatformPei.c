@@ -41,7 +41,14 @@ CpuMpPeiCallback (
   IN EFI_PEI_NOTIFY_DESCRIPTOR  *NotifyDescriptor,
   IN VOID                       *Ppi
   );
-
+ 
+EFI_STATUS
+EFIAPI
+CpuDebugPei(	
+	IN EFI_PEI_SERVICES 		  **PeiServices,
+	IN EFI_PEI_MP_SERVICES_PPI    *MpSvr,
+	IN SETUP_DATA				   *SetupHob
+  );
 
  EFI_STATUS
 EFIAPI
@@ -974,6 +981,24 @@ DumpCpuFeature(CpuFeature);
 		}
 	 }
 #endif
+	// hxz-20180718 -s enable tracer and fsbc in s3/s4
+#ifdef ZX_SECRET_CODE
+		{
+		  BOOLEAN IsEnFsbcAndTracerInS3;
+	
+		  IsEnFsbcAndTracerInS3 = TRUE;
+		  if((BootMode==BOOT_ON_S4_RESUME)||(BootMode==BOOT_ON_S3_RESUME)){
+			if(IsEnFsbcAndTracerInS3){
+				MpSvr->GetNumberOfProcessors(PeiServices, 
+											  MpSvr, 
+											  &NumberOfProcessors, 
+											  &NumberOfEnabledProcessors);
+				CpuDebugPei(PeiServices,MpSvr,SetupHob);
+			}
+		  }
+		}
+#endif
+    // hxz-20180718 -e enable tracer and fsbc in s3
 
   return Status;
 }
