@@ -989,11 +989,9 @@ DumpCpuFeature(CpuFeature);
 		  IsEnFsbcAndTracerInS3 = TRUE;
 		  if((BootMode==BOOT_ON_S4_RESUME)||(BootMode==BOOT_ON_S3_RESUME)){
 			if(IsEnFsbcAndTracerInS3){
-				MpSvr->GetNumberOfProcessors(PeiServices, 
-											  MpSvr, 
-											  &NumberOfProcessors, 
-											  &NumberOfEnabledProcessors);
-				CpuDebugPei(PeiServices,MpSvr,SetupHob);
+				 if(SetupHob->CPU_TRACER_EN||SetupHob->CPU_MASTER_FSBC_EN){
+						CpuDebugPei(PeiServices,MpSvr,SetupHob);
+				 }
 			}
 		  }
 		}

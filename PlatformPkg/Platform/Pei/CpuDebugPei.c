@@ -202,7 +202,7 @@ EnableMPTracer(
 	IoWrite8(0x80,(UINT8)NumberOfProcessors);
 	
 	FsbcConfig.IsMasterEn	  = SetupHob->CPU_MASTER_FSBC_EN;
-	FsbcConfig.IsMasterEn	  = TRUE;
+//	FsbcConfig.IsMasterEn	  = TRUE;
 //	FsbcConfig.IsSlaveEn	  = SetupHob->CPU_SLAVE_FSBC_EN;	
     FsbcConfig.IsSlaveEn	  = FALSE;
 	
