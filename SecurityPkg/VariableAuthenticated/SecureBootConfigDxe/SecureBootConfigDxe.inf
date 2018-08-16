@@ -75,6 +75,7 @@
   gEfiSecurityPkgTokenSpaceGuid.PcdSecureKeyMSKEKFile
   gEfiSecurityPkgTokenSpaceGuid.PcdSecureKeyMSProFile
   gEfiSecurityPkgTokenSpaceGuid.PcdSecureKeyMSUEFFile
+  gEfiSecurityPkgTokenSpaceGuid.PcdSecureKeyMSDBXFile
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupExitNeedReset  

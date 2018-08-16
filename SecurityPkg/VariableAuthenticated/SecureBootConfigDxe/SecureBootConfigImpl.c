@@ -759,7 +759,158 @@ STATIC VOID FreeLoadedKeys()
   }
 }
 
+/**
+  Function to Load Secure Keys from firmware volume 
+  given the image GUID 
 
+  @param[in]          ImageGuid                Image guid of the file.
+  @param[in,out]      DefaultsBuffer           Buffer to return file
+  @param[in,out]      DefaultsBufferSize       File size
+
+  @retval EFI_SUCCESS              Found Key.
+  @retval Others                   Key search failed.
+
+**/
+STATIC
+EFI_STATUS
+GetX509Cert (
+  IN   EFI_GUID      *ImageGuid,
+  OUT  VOID          **DefaultsBuffer,
+  OUT  UINTN         *DefaultsBufferSize
+  )
+{
+  EFI_STATUS                      Status;
+  EFI_FIRMWARE_VOLUME2_PROTOCOL   *Fv;
+  UINTN                           FvProtocolCount;
+  EFI_HANDLE                      *FvHandles;
+  UINTN                           Index1;
+  UINT32                          AuthenticationStatus;
+
+  *DefaultsBuffer      = NULL;
+  *DefaultsBufferSize = 0;
+
+  FvHandles = NULL;
+  Status = gBS->LocateHandleBuffer (
+                ByProtocol,
+                &gEfiFirmwareVolume2ProtocolGuid,
+                NULL,
+                &FvProtocolCount,
+                &FvHandles
+                );
+
+  if (!EFI_ERROR (Status)) {
+    for (Index1 = 0; Index1 < FvProtocolCount; Index1++) {
+      Status = gBS->HandleProtocol (
+                      FvHandles[Index1],
+                      &gEfiFirmwareVolume2ProtocolGuid,
+                      (VOID **) &Fv
+                      );
+      *DefaultsBufferSize= 0;
+
+      Status = Fv->ReadSection (
+                    Fv,
+                    ImageGuid,
+                    EFI_SECTION_RAW,
+                    0,
+                    DefaultsBuffer,
+                    DefaultsBufferSize,
+                    &AuthenticationStatus
+                    );
+
+      if (!EFI_ERROR (Status)) {
+        Status = EFI_SUCCESS;
+        break;
+      }
+    }
+  }
+  return Status;
+}
+
+STATIC
+EFI_STATUS
+AppendX509FromFV(
+  IN EFI_GUID                         *CertificateGuid,
+  IN  CHAR16                          *VariableName,
+  IN EFI_GUID                         *VendorGuid,
+  IN EFI_GUID                         *SignatureOwner
+  )
+{
+  EFI_STATUS                        Status;
+  VOID                              *Data;
+  UINTN                             DataSize;
+  UINTN                             SigDBSize;
+  UINT32                            Attr;
+  UINTN                             X509DataSize;
+  VOID                              *X509Data;
+
+  X509DataSize  = 0;
+  X509Data      = NULL;
+  SigDBSize     = 0;
+  DataSize      = 0;
+  Data          = NULL;
+
+  Status = GetX509Cert( CertificateGuid, &X509Data,&X509DataSize);
+  if (EFI_ERROR (Status)) {
+    goto ON_EXIT;
+  }
+
+  SigDBSize = X509DataSize;
+
+  Data = AllocateZeroPool (SigDBSize);
+  if (Data == NULL) {
+    Status = EFI_OUT_OF_RESOURCES;
+    goto ON_EXIT;
+  }
+
+  CopyMem ((UINT8* )Data, X509Data, X509DataSize);
+
+  Attr = EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_RUNTIME_ACCESS 
+          | EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS;
+
+  //
+  // Check if signature database entry has been already existed. 
+  // If true, use EFI_VARIABLE_APPEND_WRITE attribute to append the 
+  // new signature data to original variable
+  //    
+
+  Status = gRT->GetVariable(
+                  VariableName,
+                  VendorGuid,
+                  NULL,
+                  &DataSize,
+                  NULL
+                  );
+
+  if (Status == EFI_BUFFER_TOO_SMALL) {
+    Attr |= EFI_VARIABLE_APPEND_WRITE;
+  } else if (Status != EFI_NOT_FOUND) {
+    goto ON_EXIT;
+  }  
+
+  Status = gRT->SetVariable(
+                  VariableName,
+                  VendorGuid,
+                  Attr,
+                  SigDBSize,
+                  Data
+                  );
+
+  if (EFI_ERROR (Status)) {
+    goto ON_EXIT;
+  }
+
+ON_EXIT:
+  
+  if (Data != NULL) {
+    FreePool (Data);
+  }
+
+  if (X509Data != NULL) {
+    FreePool (X509Data);
+  }
+
+  return Status;
+}
 
 STATIC EFI_STATUS LoadKeysInFv()
 {
@@ -1050,6 +1201,28 @@ ProcExit:
 }
 
 
+
+STATIC 
+EFI_STATUS
+AddDbxInitKey (
+  VOID
+  )
+{
+  EFI_STATUS Status;
+
+  Status = AppendX509FromFV(
+             (EFI_GUID*)PcdGetPtr(PcdSecureKeyMSDBXFile), 
+             gSecureKeyVariableList[3].VarName, 
+             gSecureKeyVariableList[3].VarGuid, 
+             &gMicrosoftSignatureOwnerGuid
+             );
+  DEBUG((EFI_D_INFO, "%a() %r\n", __FUNCTION__, Status));
+  return Status;
+}
+
+
+
+
 // WHCK request platform ships with an initialized, possibly empty, forbidden signature database.
 // Add a SHA256 with ALL ZERO.
 STATIC 
@@ -1215,7 +1388,8 @@ STATIC EFI_STATUS AddMfgKeys()
   Status = EFI_SUCCESS;
   LibAuthVarSetPhysicalPresent(TRUE);  
   SetCustomMode(CUSTOM_SECURE_BOOT_MODE);
-  AddDummyDBxInitKey();                   // WHCK request.
+//AddDummyDBxInitKey();                   // WHCK request.
+  AddDbxInitKey();
   for(Index = 0; Index < ARRAY_ELEM_COUNT(gSecureKeyTable); Index++){
     VarName        = gSecureKeyTable[Index].KeyName->VarName;
     VarGuid        = gSecureKeyTable[Index].KeyName->VarGuid;

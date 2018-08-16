@@ -689,6 +689,10 @@ FILE FREEFORM = PCD(gEfiSecurityPkgTokenSpaceGuid.PcdSecureKeyMSUEFFile) {
     SECTION RAW = $(SECURE_KEY_PATH)/MicCorUEFCA2011_2011-06-27.crt
     SECTION UI  = "MicCorUEFCA2011_2011-06-27.crt"
   }
+FILE FREEFORM = PCD(gEfiSecurityPkgTokenSpaceGuid.PcdSecureKeyMSDBXFile) {
+    SECTION RAW = $(SECURE_KEY_PATH)/DBXUpdate.bin
+    SECTION UI  = "DBXUpdate"
+}  
 !endif
 
 
