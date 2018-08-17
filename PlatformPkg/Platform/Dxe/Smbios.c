@@ -88,6 +88,7 @@ SMBIOS_TYPE41_CONTENT  gSmbiosType41ContentList[] = {
 
 //0x7F~0x79
 UINT8 gChxInfoBuf[0x80-0x79 +1];// add 1 for PopBit algorithm 
+EFI_SMBIOS_HANDLE gSmbiosHandle=0;
 
 
 
@@ -172,13 +173,16 @@ AddSmbiosRecord (
   IN EFI_SMBIOS_TABLE_HEADER    *Record
   )
 {
-  *SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
-  return Smbios->Add (
+EFI_STATUS Status;
+  *SmbiosHandle = gSmbiosHandle;
+  Status= Smbios->Add (
                    Smbios,
                    NULL,
                    SmbiosHandle,
                    Record
                    );
+  gSmbiosHandle++;
+  return Status;
 }
 
 
@@ -1192,27 +1196,23 @@ CpuSmbiosDxe (
   CHAR8                 *Str8;
   ACPU_CACHE_INFO       CacheInfo[ACPU_CACHE_INFO_NUM];
   UINTN                 Index;
-  UINT16                CacheSize[3];     // unit in KB
-  UINT8                 Associativity[3];
-  EFI_SMBIOS_HANDLE     CacheHandle[3];
-  UINT8                 CacheType[3];
+  UINT16                CacheSize[2];     // unit in KB
+  UINT8                 Associativity[2];
+  UINT8                 CacheType[2];
   EFI_SMBIOS_HANDLE     SmbiosHandle;  
   CHAR8                 CpuBrandString[48+1];
   CHAR8                 *CpuBrandStr;
   UINT32                ProcessorId[2];
   ACPU_SPEED_INFO       SpeedInfo;
+  UINT8 				CacheLevel;
+  UINT8					NumCores, NumClusters;
   
   
-  CacheHandle[0] = 0xFFFF;
-  CacheHandle[1] = 0xFFFF;  
-  CacheHandle[2] = 0xFFFF;  
   CacheSize[0]   = 0;
   CacheSize[1]   = 0;
-  CacheSize[2]   = 0;
   Associativity[0] = 0;
   Associativity[1] = 0;
-  Associativity[2] = 0; 
-  
+  CacheLevel=0;
   StrCacheL1   = "L1-Cache";
   StrCpuSocket = "CPU 1";
   StrCpuMft    = "Zhaoxin";
@@ -1220,7 +1220,8 @@ CpuSmbiosDxe (
   gPtAsiaCpu->GetCpuCacheInfo(CacheInfo);
   gPtAsiaCpu->GetCpuBrandString(CpuBrandString);
   gPtAsiaCpu->GetCpuSpeedInfo(&SpeedInfo); 
-  
+  NumCores     = gPtAsiaCpu->GetCpuCores();
+  NumClusters = gPtAsiaCpu->GetCpuClusters();
   CpuBrandStr = CpuBrandString;
   Index = 0;
   while(CpuBrandStr[Index]!=0){
@@ -1232,60 +1233,18 @@ CpuSmbiosDxe (
   }
   
   for(Index=0;Index<ACPU_CACHE_INFO_NUM;Index++){
-    if(CacheInfo[Index].Level == ACPU_CACHE_LEVEL_L1 && CacheInfo[Index].Type == ACPU_CACHE_TYPE_CODE){
-      CacheSize[0]     = CacheInfo[Index].CacheSize;
+    if(CacheInfo[Index].Level == ACPU_CACHE_LEVEL_L1 ){
+      CacheSize[0]     =CacheSize[0] + CacheInfo[Index].CacheSize*NumCores;
       Associativity[0] = CacheInfo[Index].Associativity;
-      CacheType[0]     = CacheInfo[Index].Type;
-    } else if(CacheInfo[Index].Level == ACPU_CACHE_LEVEL_L2){
-      CacheSize[1]     = CacheInfo[Index].CacheSize;
+      CacheType[0]     = 0x01;//other
+    }
+	else if(CacheInfo[Index].Level == ACPU_CACHE_LEVEL_L2){
+      CacheSize[1]     = CacheInfo[Index].CacheSize * NumClusters;
       Associativity[1] = CacheInfo[Index].Associativity; 
       CacheType[1]     = CacheInfo[Index].Type;      
-    } else if(CacheInfo[Index].Level == ACPU_CACHE_LEVEL_L3){
-      CacheSize[2]     = CacheInfo[Index].CacheSize;
-      Associativity[2] = CacheInfo[Index].Associativity;  
-      CacheType[2]     = CacheInfo[Index].Type;      
-    }
+    } 
   }
   
-// Type 7  
-  Size = sizeof(*Type7) + AsciiStrSize(StrCacheL1) + 1;
-  TypeData = AllocatePool(Size);
-  ASSERT(TypeData != NULL);
-  ZeroMem(TypeData, Size);
-  Type7 = (SMBIOS_TABLE_TYPE7*)TypeData;
-  for(Index=0; Index<3; Index++){
-    if(CacheSize[Index] == 0){
-      continue;
-    }
-    Type7->Hdr.Type = EFI_SMBIOS_TYPE_CACHE_INFORMATION;
-    Type7->Hdr.Handle = 0;
-    Type7->Hdr.Length = sizeof(SMBIOS_TABLE_TYPE7);    
-    Type7->SocketDesignation = 1;                             // first string.
-    Type7->CacheConfiguration = BIT8 + BIT7 + (UINT8)Index;   // Write Back, Enabled, Internal, Not Socketed, Cache Level N
-    Type7->MaximumCacheSize = CacheSize[Index];
-    Type7->InstalledSize    = CacheSize[Index];
-    Type7->SupportedSRAMType.Asynchronous = 1;
-    Type7->SupportedSRAMType.PipelineBurst = 1;
-    Type7->SupportedSRAMType.Burst = 1;
-    Type7->SupportedSRAMType.Other = 1;
-    CopyMem(&Type7->CurrentSRAMType, &Type7->SupportedSRAMType, sizeof(Type7->SupportedSRAMType));
-    Type7->CacheSpeed = 0;      // unknown
-    Type7->ErrorCorrectionType = CacheErrorSingleBit;
-    Type7->SystemCacheType     = CacheType[Index];
-    Type7->Associativity       = GetAssociativityValue(Associativity[Index]);
-    Str8 = (CHAR8*)(Type7+1);
-    AsciiStrCpy(Str8, StrCacheL1);
-    Str8[1] = '1' + (UINT8)Index;
-    
-    SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
-    Status = Smbios->Add(Smbios, NULL, &SmbiosHandle, (EFI_SMBIOS_TABLE_HEADER*)Type7);
-    ASSERT(!EFI_ERROR(Status));
-    CacheHandle[Index] = SmbiosHandle;
-  }
-  
-  FreePool(TypeData);
-  TypeData = NULL;
-  Type7    = NULL;
 
   
   
@@ -1314,9 +1273,9 @@ CpuSmbiosDxe (
   Type4->CurrentSpeed  = Type4->MaxSpeed;
   Type4->Status        = BIT6 + BIT0;     // CPU Socket Populated, CPU Enabled
   Type4->ProcessorUpgrade = ProcessorUpgradeNone;
-  Type4->L1CacheHandle = CacheHandle[0];
-  Type4->L2CacheHandle = CacheHandle[1];
-  Type4->L3CacheHandle = CacheHandle[2];   
+  Type4->L1CacheHandle = gSmbiosHandle+1;
+  Type4->L2CacheHandle = gSmbiosHandle+2;
+  Type4->L3CacheHandle = 0xFFFF;   
   Type4->SerialNumber  = 0;
   Type4->AssetTag      = 0;
   Type4->PartNumber    = 0;
@@ -1325,10 +1284,9 @@ CpuSmbiosDxe (
   Type4->ThreadCount      = Type4->CoreCount;
 // Power/Performance Control, Enhanced Virtualization, Execute Protection, Multi-Core, 64-bit Capable
   Type4->ProcessorCharacteristics = BIT7 + BIT6 + BIT5 + BIT3 + BIT2;
-  //YKN-2016112401 -s
-  //Type4->ProcessorFamily2 = ProcessorFamilyViaNano;
+//YKN-2016112401 -s
   Type4->ProcessorFamily2 = ProcessorFamilyOther;
-  //YKN-2016112401 -e
+//YKN-2016112401 -e
 
   Str8 = (CHAR8*)(Type4+1);
   AsciiStrCpy(Str8, StrCpuSocket);
@@ -1337,13 +1295,55 @@ CpuSmbiosDxe (
   Str8 += AsciiStrLen(StrCpuMft) + 1;
   AsciiStrCpy(Str8, CpuBrandStr); 
 
-  SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
-  Status = Smbios->Add(Smbios, NULL, &SmbiosHandle, (EFI_SMBIOS_TABLE_HEADER*)Type4);
+  Status = AddSmbiosRecord (Smbios, &SmbiosHandle, (EFI_SMBIOS_TABLE_HEADER *) Type4);
   ASSERT(!EFI_ERROR(Status));  
 
   FreePool(TypeData);
   TypeData = NULL;
   Type4    = NULL;  
+
+
+  // Type 7  
+	Size = sizeof(*Type7) + AsciiStrSize(StrCacheL1) + 1;
+	TypeData = AllocatePool(Size);
+	ASSERT(TypeData != NULL);
+	ZeroMem(TypeData, Size);
+	Type7 = (SMBIOS_TABLE_TYPE7*)TypeData;
+	for(Index=0; Index<2; Index++){
+	  if(CacheSize[Index] == 0){
+		continue;
+	  }
+	  if(Index==0)
+		  CacheLevel=1;
+	  else
+		  CacheLevel=2;
+	  
+	  Type7->Hdr.Type = EFI_SMBIOS_TYPE_CACHE_INFORMATION;
+	  Type7->Hdr.Handle = 0;
+	  Type7->Hdr.Length = sizeof(SMBIOS_TABLE_TYPE7);	 
+	  Type7->SocketDesignation = 1; 							// first string.
+	  Type7->CacheConfiguration = BIT8 + BIT7 + CacheLevel;   // Write Back, Enabled, Internal, Not Socketed, Cache Level N
+	  Type7->MaximumCacheSize = CacheSize[Index];
+	  Type7->InstalledSize	  = CacheSize[Index];
+	  Type7->SupportedSRAMType.Synchronous = 1;//dla
+	  Type7->SupportedSRAMType.PipelineBurst = 1;
+	  CopyMem(&Type7->CurrentSRAMType, &Type7->SupportedSRAMType, sizeof(Type7->SupportedSRAMType));
+	  Type7->CacheSpeed = 0;	  // unknown
+	  Type7->ErrorCorrectionType = CacheErrorSingleBit;
+	  Type7->SystemCacheType	 = CacheType[Index];
+	  Type7->Associativity		 = GetAssociativityValue(Associativity[Index]);
+	  Str8 = (CHAR8*)(Type7+1);
+	  AsciiStrCpy(Str8, StrCacheL1);
+	  Str8[1] = '0' + CacheLevel;
+	  
+	  Status = AddSmbiosRecord (Smbios, &SmbiosHandle, (EFI_SMBIOS_TABLE_HEADER *) Type7);
+	  ASSERT(!EFI_ERROR(Status));
+	  
+	}
+	
+	FreePool(TypeData);
+	TypeData = NULL;
+	Type7	 = NULL;
   
   return Status;
 }
@@ -1384,6 +1384,8 @@ SmbiosCallback (
   ASSERT(!EFI_ERROR(Status));  
   Status = AddSmbiosType3(Smbios);
   ASSERT(!EFI_ERROR(Status));  
+  Status = CpuSmbiosDxe(Smbios);
+  ASSERT(!EFI_ERROR(Status));
   Status = AddSmbiosType8(Smbios);  
   ASSERT(!EFI_ERROR(Status));  
   Status = AddSmbiosType9(Smbios);  
@@ -1405,8 +1407,6 @@ SmbiosCallback (
   Status = HandleType19(Smbios, Type16Handle, &Type19Handle, DimmInfo);
   ASSERT(!EFI_ERROR(Status));
   Status = HandleType17_20(Smbios, Type16Handle, Type19Handle, DimmInfo);
-  ASSERT(!EFI_ERROR(Status));
-  Status = CpuSmbiosDxe(Smbios);
   ASSERT(!EFI_ERROR(Status));
 }
 
