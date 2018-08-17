@@ -85,7 +85,7 @@ typedef struct {
   UINT8  SerialBaudrate;
 
   UINT8  PrimaryDisplay;
-  UINT8  UmaFbSize;	
+//  UINT8  UmaFbSize;	
 
   UINT8  DisplayBootMode;
   UINT8  Csm;
