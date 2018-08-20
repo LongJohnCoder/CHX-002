@@ -12,8 +12,8 @@
 
 
 #define AHCI_MULTI_MAX_DEVICES              16
-#define AHCI_MAX_PORTS                      2
-#define IDE_MAX_CHANNELS                    1
+#define AHCI_MAX_PORTS                      4
+#define IDE_MAX_CHANNELS                    2
 #define IDE_MAX_DEVICES                     2
 
 #define SATA_CONTROLLER_SIGNATURE           SIGNATURE_32('S', 'A', 'T', 'A')
