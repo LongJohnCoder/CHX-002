@@ -59,22 +59,20 @@ STATIC SMBIOS_TYPE8_CONTENT gType8ContentList[] = {
 };
 
 //     Dev                   SlotNo
-//J22   3    PE0        1x     2
-//J27   7    PEG1       2x     6
-//J32   2    PEG0       8x     1
-//J38   5    PE2        1x     4
-//J42   6    PE3        1x     5
-//Lan   4    PE1        1x     3
+//J52   4    PE4        8x     1
+//J53   3    PE0        2x     5
+//J55   3    PE2        1x     3
+//J56   5    PE7        1x     2
+
 SMBIOS_TYPE9_CONTENT  gSmbiosType9ContentList[] = {
-  {"J22", SlotTypePciExpress, SlotDataBusWidth1X, SlotUsageAvailable, SlotLengthUnknown, 2, 0x0c, 0x01, 0, 3 << 3},
-  {"J27", SlotTypePciExpress, SlotDataBusWidth2X, SlotUsageAvailable, SlotLengthUnknown, 6, 0x0c, 0x01, 0, 7 << 3},
-  {"J32", SlotTypePciExpress, SlotDataBusWidth8X, SlotUsageAvailable, SlotLengthUnknown, 1, 0x0c, 0x01, 0, 2 << 3},
-  {"J38", SlotTypePciExpress, SlotDataBusWidth1X, SlotUsageAvailable, SlotLengthUnknown, 4, 0x0c, 0x01, 0, 5 << 3},  
-  {"J42", SlotTypePciExpress, SlotDataBusWidth1X, SlotUsageAvailable, SlotLengthUnknown, 5, 0x0c, 0x01, 0, 6 << 3},
+  	{"J52", SlotTypePciExpress, SlotDataBusWidth8X, SlotUsageAvailable, SlotLengthUnknown, 1, 0x04, 0x00, 0, 4 << 3},//D4F0
+	{"J53", SlotTypePciExpress, SlotDataBusWidth2X, SlotUsageAvailable, SlotLengthUnknown, 5, 0x04, 0x00, 0, 3 << 3},//D3F0
+	{"J55", SlotTypePciExpress, SlotDataBusWidth1X, SlotUsageAvailable, SlotLengthUnknown, 3, 0x04, 0x00, 0, 3 << 3|2},//D3F2
+	{"J56", SlotTypePciExpress, SlotDataBusWidth1X, SlotUsageAvailable, SlotLengthUnknown, 2, 0x04, 0x00, 0, 5 << 3|1},//D5F1
 };	
 
 SMBIOS_TYPE41_CONTENT  gSmbiosType41ContentList[] = {
-  //{"SATA",  OnBoardDeviceExtendedTypeSATAController, 1, 0, 0, (0xF << 3)},
+  {"SATA",  OnBoardDeviceExtendedTypeSATAController, 1, 0, 0, (0xF << 3)},
   {"Audio", OnBoardDeviceExtendedTypeSound,          1, 0, 0, (0x14 << 3)},    
 };
 
