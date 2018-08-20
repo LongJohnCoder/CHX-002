@@ -1015,7 +1015,19 @@ AcpiWakeVectorCallback (
   return EFI_SUCCESS;  
 }
 
+VOID UartLegacyRegSetting(UINT16 Base)
+{
+	IoWrite8(Base + 0x03,0x83);
+	IoWrite8(Base + 0x00,0x01);
+	IoWrite8(Base + 0x03,0x03);
+	IoWrite8(Base + 0x02,0x07);
+}
 
+VOID  InitUartReg()
+{
+	UartLegacyRegSetting(0x3F8);
+	UartLegacyRegSetting(0x2F8);
+}
 
 EFI_STATUS
 EFIAPI
@@ -1081,6 +1093,10 @@ EndOfPeiCallback (
   EndOfPeiDebug(BootMode);
 #endif
 
+#ifdef MDEPKG_NDEBUG
+  //IVS-20180820 For Relesase BIOS,OS S3 Resume Maybe Use Uart when Grub Set "no_console_suspend"
+  InitUartReg();
+#endif
   return EFI_SUCCESS;
 }
 
