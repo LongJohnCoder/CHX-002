@@ -43,19 +43,23 @@ typedef struct {
 
 //----------------------------------------------------------------
 STATIC SMBIOS_TYPE8_CONTENT gType8ContentList[] = {
-  {"J1",  PortConnectorTypeNone, "PS2 Mouse",    PortConnectorTypePS2,        PortTypeMouse},
-  {"J2",  PortConnectorTypeNone, "PS2 Keyboard", PortConnectorTypePS2,        PortTypeKeyboard},
+  {"PS2B",  PortConnectorTypeNone, "PS2 Mouse",    PortConnectorTypePS2,        PortTypeMouse},
+  {"PS2A",  PortConnectorTypeNone, "PS2 Keyboard", PortConnectorTypePS2,        PortTypeKeyboard},
 
-  {"J3",  PortConnectorTypeNone, "VGA",          PortConnectorTypeDB15Female, PortTypeVideoPort},
-  {"J4",  PortConnectorTypeNone, "HDMI",         PortConnectorTypeOther,      PortTypeVideoPort},
+  {"J41A",	PortConnectorTypeNone, "COM0",		   PortConnectorTypeOther, PortTypeSerial16550Compatible},
+  {"J41B",  PortConnectorTypeNone, "VGA",          PortConnectorTypeDB15Female, PortTypeVideoPort},
+  {"J33",  PortConnectorTypeNone, "HDMI0/DisplayPort0",         PortConnectorTypeOther,      PortTypeVideoPort},
+  {"J35",  PortConnectorTypeNone, "HDMI1/DisplayPort1",		   PortConnectorTypeOther,		PortTypeVideoPort},
 
-  {"J5",  PortConnectorTypeNone, "USB 1",        PortConnectorTypeUsb,        PortTypeUsb},
-  {"J6",  PortConnectorTypeNone, "USB 2",        PortConnectorTypeUsb,        PortTypeUsb},
-  {"J7",  PortConnectorTypeNone, "USB 3",        PortConnectorTypeUsb,        PortTypeUsb},
-  {"J8",  PortConnectorTypeNone, "USB 4",        PortConnectorTypeUsb,        PortTypeUsb},
-  {"J9",  PortConnectorTypeNone, "USB 5",        PortConnectorTypeUsb,        PortTypeUsb},
+  {"J1",  PortConnectorTypeNone, "USB 1",        PortConnectorTypeUsb,        PortTypeUsb},
+  {"J2",  PortConnectorTypeNone, "USB 2",        PortConnectorTypeUsb,        PortTypeUsb},
+  {"J3",  PortConnectorTypeNone, "USB 3",        PortConnectorTypeUsb,        PortTypeUsb},
+  {"J4",  PortConnectorTypeNone, "USB 4",        PortConnectorTypeUsb,        PortTypeUsb},
+  {"J5",  PortConnectorTypeNone, "USB 5",        PortConnectorTypeUsb,        PortTypeUsb},
+  {"J6", PortConnectorTypeNone, "USB 6",		 PortConnectorTypeUsb,		  PortTypeUsb},
 
-  {"J10", PortConnectorTypeNone, "Ethernet",     PortConnectorTypeRJ45,       PortTypeNetworkPort},
+
+  {"J44", PortConnectorTypeNone, "Ethernet",     PortConnectorTypeRJ45,       PortTypeNetworkPort},
 };
 
 //     Dev                   SlotNo
