@@ -774,6 +774,7 @@ ProcExit:
 }
 
 //ECS20161206 Add IO Trap SMI for UMA patch, Just for CHX001 A0 +S
+/*
 VOID
 EFIAPI
 IoTrapLegacyBootEventNotify (
@@ -816,6 +817,7 @@ IoTrapLegacyBootEventNotify (
 
 	return;
 }
+*/
 //ECS20161206 Add IO Trap SMI for UMA patch, Just for CHX001 A0 +E
 #ifdef ZX_SECRET_CODE   
 VOID
@@ -882,7 +884,7 @@ PlatformDxeEntry (
   EFI_EVENT               Event;  
   
   //ECS20161206 Add IO Trap SMI for UMA patch, Just for CHX001 A0 +S
-  EFI_EVENT 				  mLegacyBootEvent;
+  //EFI_EVENT 				  mLegacyBootEvent;
   //ECS20161206 Add IO Trap SMI for UMA patch, Just for CHX001 A0 +E
   
   DEBUG((DEBUG_INFO, "%a()\n", __FUNCTION__));
@@ -1008,15 +1010,15 @@ PlatformDxeEntry (
   /// 2016-06-12+E
 
   //ECS20161206 Add IO Trap SMI for UMA patch, Just for CHX001 A0 +S
-    Status = gBS->CreateEventEx (
-                  EVT_NOTIFY_SIGNAL,
-                  TPL_NOTIFY,
-                  IoTrapLegacyBootEventNotify,
-                  NULL,
-                  &gEfiEventLegacyBootGuid,
-                  &mLegacyBootEvent
-                  );
-  ASSERT_EFI_ERROR (Status);
+  //  Status = gBS->CreateEventEx (
+  //                EVT_NOTIFY_SIGNAL,
+  //                TPL_NOTIFY,
+  //                IoTrapLegacyBootEventNotify,
+  //                NULL,
+  //                &gEfiEventLegacyBootGuid,
+  //                &mLegacyBootEvent
+  //                );
+  //ASSERT_EFI_ERROR (Status);
   //ECS20161206 Add IO Trap SMI for UMA patch, Just for CHX001 A0 +E
   #ifdef ZX_SECRET_CODE
   if(PcdGet8(PcdFMS107B0)){
