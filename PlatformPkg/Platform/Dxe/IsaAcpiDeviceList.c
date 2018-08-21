@@ -138,7 +138,8 @@ EFI_STATUS IsaAcpiDevListDxe()
     List->ResourceItem[0].EndRange   = List->ResourceItem[0].StartRange + 7;
     List->ResourceItem[1].StartRange = gSetupData->Uart1IRQSelection;
     CopyMem(&TargetList[Index++], List, sizeof(*List));
-  }  
+  } 
+  /*  
   if(gSetupData->Uart2Enable){
     List = &mPcatIsaAcpiCom3Device;
     List->ResourceItem[0].StartRange = gComBaseList[gSetupData->Uart2IoBaseSelection];
@@ -153,7 +154,7 @@ EFI_STATUS IsaAcpiDevListDxe()
     List->ResourceItem[1].StartRange = gSetupData->Uart3IRQSelection;
     CopyMem(&TargetList[Index++], List, sizeof(*List));
   }   
-
+  */
   CopyMem(&TargetList[Index++], &mPcatIsaAcpiPs2KeyboardDevice, sizeof(EFI_ISA_ACPI_RESOURCE_LIST));
 
   ASSERT(Index <= MAX_ISA_ACPI_DEVICE_COUNT);
