@@ -346,8 +346,24 @@ FixedDelayMicroSecond (
     return;
 }  
 #endif
+//;modify this Routine by using IO-Cycle Delay Counting for BYO BIOS temporarily - start
+VOID 
+FixedDelayMicroSecond (
+    UINTN           Usec                           
+ )
+{
+    UINTN   Counter = 0;
 
+	while(Counter != Usec){
+		IoRead8(0x88);
+		Counter++;
+	}
 
+    return;
+} 
+//;modify this Routine by using IO-Cycle Delay Counting for BYO BIOS temporarily - end
+
+/*
 VOID 
 FixedDelayMicroSecond (
     UINTN           Usec                           
@@ -383,7 +399,7 @@ FixedDelayMicroSecond (
     }
     return;
 }  
-
+*/
 EFI_STATUS GetSetupData(VOID)
 {
     EFI_STATUS             Status;
