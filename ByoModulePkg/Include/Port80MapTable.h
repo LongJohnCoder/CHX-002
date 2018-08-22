@@ -89,10 +89,10 @@ STATUS_CODE_TO_DATA_MAP  mProgressPort80MapTable[] = {
   // reserved for NB:             0x1A - 0x1C
   //Add  by jenny for pcie
   //{ PEI_PCIE_INIT,                0x12 },           // PeiNbPreMemoryInit()  in NbInit.c 
-  //{ PEI_PCIE_BEFORE_LINKUP,       0x13 },           // PeiNbPcieInit()  in NbPcie.c 
-  //{ PEI_PCIE_SI_SETTING,          0x14 },           // PeiNbPcieInit()  in NbPcie.c    
-  //{ PEI_PCIE_IOE_INIT,            0x1A },           // PeiNbPcieInit()  in NbPcie.c  
-  //{ PEI_PCIE_AFTER_LINKUP,        0x1B },           // PeiNbPcieInit()  in NbPcie.c  
+  //{ PEI_PCIE_RELEASE_LTSSM,       0x13 },           // PeiNbPcieInit()  in NbPcie.c 
+  //{ PEI_PCIE_IOE_INIT,          0x14 },           // PeiNbPcieInit()  in NbPcie.c    
+  //{ PEI_PCIE_BEFORE_CHANGE_MAX_SPEED,            0x1A },           // PeiNbPcieInit()  in NbPcie.c  
+  //{ PEI_PCIE_END,        0x1B },           // PeiNbPcieInit()  in NbPcie.c  
   
   { PEI_MEMORY_SPD_READ,          0x1D },           // MRC_GetSpdData() in MRC_SpdDriver.c
   // { PEI_MEMORY_PRESENCE_DETECT,0x1E },           // TBD

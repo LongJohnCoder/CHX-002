@@ -434,8 +434,8 @@ $END--------------------------------------------------------------------
 		prompt	 = STRING_TOKEN(STR_PCIE_CRS_MECH),
 		help   = STRING_TOKEN(STR_PCIE_CRS_MECH_HELP),
 		 option text = STRING_TOKEN(STR_PCIE_CRS_MECH_SW_VISIABLE), value = 0, flags = RESET_REQUIRED;
-		 option text = STRING_TOKEN(STR_PCIE_CRS_MECH_HW_RETRY), value = 1, flags = RESET_REQUIRED;
-		 option text = STRING_TOKEN(STR_PCIE_CRS_MECH_ALL_FF), value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+		 option text = STRING_TOKEN(STR_PCIE_CRS_MECH_HW_RETRY), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+		 option text = STRING_TOKEN(STR_PCIE_CRS_MECH_ALL_FF), value = 2, flags = RESET_REQUIRED;
 	endoneof; 
 
 	oneof varid 	= SETUP_DATA.PcieOptimalTLS,
