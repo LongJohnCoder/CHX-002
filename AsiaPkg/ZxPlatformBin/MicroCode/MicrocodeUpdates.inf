@@ -13,12 +13,8 @@
 #  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
 #
 [Sources]
-#  307b0chx002a0_009210.mcb
-#  307b0chx002_009217.mcb
-# 307b0chx002a0_00922B.mcb
-#  307b0chx002a0_00923D.mcb 
-#  307b0chx002a0_00923F.mcb
 #  307b0chx002a0_00924C.mcb
-  307b0chx002a0_007201D.mcb
+#  307b0chx002a0_007201D.mcb
+   307b1chx002a0_007203D.mcb
 [Packages]
   MdePkg/MdePkg.dec
