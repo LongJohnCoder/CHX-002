@@ -497,32 +497,34 @@ ProcExit:
 VOID 
 DisableObLan (
   EFI_ASIA_NB_PPI        *NbPpi,
+  EFI_ASIA_SB_PPI        *SbPpi,
   UINT8                  ObLanEn
   )
 {
   UINT32                 Base;
   UINT32                 SubBase;
   ASIA_NB_CONFIGURATION  *NbCfg;
+  ASIA_SB_CONFIGURATION  *SbCfg;
   UINT16                 PmioBase;
-  UINT8                  Data8;
-
-  PmioBase = MmioRead16(PCI_DEV_MMBASE(0,17,0)|0x88) & 0xFF00;
-  NbCfg = (ASIA_NB_CONFIGURATION*)(NbPpi->NbCfg);
+  UINT32                  Data32;
   
-  Data8 = IoRead8(PmioBase + 0xB7);//PMIO RxB4[26:24] = 3'b000
-  Data8 &= (~(BIT0 | BIT1 | BIT2));
-  IoWrite8(PmioBase + 0xB7, Data8);
-
-  if(ObLanEn || !NbCfg->PciePE6){
-  	Data8 = IoRead8(PmioBase + 0x4E );//PMIO Rx4E[7] 
-    Data8 |= BIT7;
-    IoWrite8(PmioBase + 0x4E, Data8);//PMIO Rx4E[7] = 1
-    return;
-  }
 
   DEBUG((EFI_D_INFO, "%a()\n", __FUNCTION__));
-
-  //NbCfg->PciePE6 = FALSE;
+  
+  PmioBase = MmioRead16(PCI_DEV_MMBASE(0,17,0)|D17F0_PMU_PM_IO_BASE) & D17F0_PMU_PMIOBA;  
+  NbCfg = (ASIA_NB_CONFIGURATION*)(NbPpi->NbCfg);
+  SbCfg = (ASIA_SB_CONFIGURATION*)(SbPpi->SbCfg); 
+  if(ObLanEn || !NbCfg->PciePE6 || SbCfg->XhcUartCtrl){
+    Data32 = IoRead32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT );//PMIO Rx4e[7] 
+    Data32 |= BIT23;
+    IoWrite32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT, Data32);//PMIO Rx4E[7] = 1
+    return;
+  }
+  
+  
+  Data32 = IoRead32(PmioBase + PMIO_CR_GPIO_PAD_CTL);//PMIO GPIO 12 RxB4[26:24] = 3'b000
+  Data32 &= (~PMIO_PAD_GPIO12_2_1_0);
+  IoWrite32(PmioBase + PMIO_CR_GPIO_PAD_CTL, Data32);
 
   Base = PEG2_PCI_REG(0);
   if(MmioRead16(Base+PCI_VID_REG) == 0xFFFF){
@@ -554,11 +556,10 @@ DisableObLan (
   MmioWrite8(Base+PCI_CMD_REG, 0);  
   MmioWrite16(Base+0x1C, 0);
   MmioWrite32(Base+PCI_PBN_REG, 0);
-  MmioAnd16(APIC_PCI_REG(0xF4), (UINT16)~BIT10); 
 
-  Data8 = IoRead8(PmioBase + 0x4E );//PMIO Rx4e[7] 
-  Data8 &= (~BIT7);
-  IoWrite8(PmioBase + 0x4E, Data8);//PMIO Rx4E[7] = 0
+  Data32 = IoRead32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT );//PMIO Rx4e[7] 
+  Data32 &= (~BIT23);
+  IoWrite32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT, Data32);//PMIO Rx4E[7] = 0
   return;
 }
 
@@ -642,7 +643,9 @@ MemoryDiscoveredPpiNotifyCallback (
 
 //UpdateSsid();
   #ifdef CHX002_A0
-  DisableObLan(NbPpi, SetupData->OnboardLan);
+  #ifndef HX002EB0
+  DisableObLan(NbPpi,SbPpi,SetupData->OnboardLan);
+  #endif
   #endif
   
   return Status;
