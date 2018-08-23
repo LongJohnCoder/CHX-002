@@ -450,6 +450,13 @@ INF AsiaPkg/ZxPlatformSmm/ErrorReport/CRBSmi.inf
 INF AsiaPkg/ZxPlatformSmm/Mcasmi/McaSmi.inf
 !endif
 INF AsiaPkg/ZxPlatformSmm/IoTrap/IoTrap.inf
+!if $(ZX_TXT_SUPPORT) == TRUE
+FILE DRIVER = E9EEDBC2-B482-44B2-8DC7-C33524D9DDB1 {
+  SECTION PE32 = AsiaPkg/ZxPlatformBin/Txt/AsiaTxtDxe.efi
+  SECTION DXE_DEPEX = AsiaPkg/ZxPlatformBin/Txt/AsiaTxtDxe.depex
+  SECTION UI   = "AsiaTxtDxe"
+}
+!endif
   
 INF  $(PLATFORM_PACKAGE)/Platform/Dxe/PlatformDxe.inf
 INF  $(PLATFORM_PACKAGE)/SmmControl2/SmmControl2.inf
