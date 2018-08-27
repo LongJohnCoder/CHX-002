@@ -445,7 +445,7 @@ STATIC EFI_STATUS AddSmbiosType3(EFI_SMBIOS_PROTOCOL *Smbios)
   ManuStrLen = AsciiStrLen(Manufacturer);
   ASSERT(ManuStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
-  Version = "A1";
+  Version = "A0";
   VerStrLen = AsciiStrLen(Version);
   ASSERT(VerStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
