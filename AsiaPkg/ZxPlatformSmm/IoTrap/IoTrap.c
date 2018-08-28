@@ -225,12 +225,15 @@ IoTrapHandler(
 
 {
     UINT8  Idx ;
-
+	
 	if(((IoRead8( PM_BASE_ADDRESS+ 0x20 ))&0x08) == 0)
 		return EFI_SUCCESS;
 	
 	if (((IoRead8( PM_BASE_ADDRESS+ 0x24 ))&0x08) == 0)
 		return EFI_SUCCESS;
+
+	
+
 	//IoWrite8( 0x84,0xEE );
 	DEBUG(( EFI_D_ERROR, " GP SMI Enable 0x824=0x%x \n",IoRead16(0x824)));
 	DEBUG(( EFI_D_ERROR, " GP status 0x820=0x%x \n",IoRead16(0x820)));
@@ -248,7 +251,7 @@ IoTrapHandler(
 		//DEBUG(( EFI_D_ERROR, "  0x82d=0x%x \n",IoRead8( PM_BASE_ADDRESS+0x2d)));
 
 	//JNY20180115 add for CHX002 signal socket-S 
-	#if 0
+	#if 1
 	if(Idx == PCIRESET) {
 		//LNA-2017061301-S: pcie patch
 		WaitL2L3Ready();
@@ -300,8 +303,8 @@ IoTrapInit (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-	return EFI_SUCCESS;//Disable IO trap
-#if 0
+	//return EFI_SUCCESS;//Disable IO trap
+#if 1
 
     EFI_STATUS                              Status;
     EFI_HANDLE                              Handle = NULL;
@@ -331,12 +334,14 @@ IoTrapInit (
                            );    
 	ASSERT_EFI_ERROR (Status);
 	
-	BuildIOTrapSMI();
+	if(SetupData.IoTrapEn) {	
+		BuildIOTrapSMI();
 
-    Status = gSmst->SmiHandlerRegister (IoTrapHandler, NULL,  &Handle);	
-    ASSERT_EFI_ERROR (Status);
-
-  return EFI_SUCCESS;
+	    Status = gSmst->SmiHandlerRegister (IoTrapHandler, NULL,  &Handle);	
+	    ASSERT_EFI_ERROR (Status);
+	}
+	
+ 	return EFI_SUCCESS;
   
 #endif
 }

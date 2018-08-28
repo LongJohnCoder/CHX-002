@@ -851,7 +851,7 @@ typedef struct {
 	UINT8 IOEUHCISPEValue; //TTP_IOE_02
 	
 	//Add for IOE end
-  
+  UINT8 IoTrapEn; 
 }SETUP_DATA;
 
 typedef struct {

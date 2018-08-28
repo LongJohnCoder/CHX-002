@@ -362,6 +362,16 @@ Revision History:
       prompt = STRING_TOKEN(STR_CHIPSET_DEBUG_FORM),
       help   = STRING_TOKEN(STR_CHIPSET_DEBUG_FORM);
 
+
+	subtitle text = STRING_TOKEN(STR_EMPTY);	   
+	oneof varid = SETUP_DATA.IoTrapEn,
+	 prompt 	 = STRING_TOKEN(STR_IO_TRAP),
+	 help		 = STRING_TOKEN(STR_IO_TRAP_HELP),
+	 option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED|DEFAULT;
+	 option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+   endoneof;  
+
+
    endform;  //end CHIPSET_FORM  
     
     
