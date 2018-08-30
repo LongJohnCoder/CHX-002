@@ -46,13 +46,24 @@ $END--------------------------------------------------------------------
     key    = 0;
 
   subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+
+  #if (defined HX002EB0) || (defined HX002EC0) || (defined HX002EH0)
    
+  oneof varid   = SETUP_DATA.SataEn,
+    prompt      = STRING_TOKEN(STR_SATA_CONTROLLER),
+    help        = STRING_TOKEN(STR_SATA_CONTROLLER_HELP),
+    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+  endoneof;
+
+  #else
   oneof varid   = SETUP_DATA.SataEn,
     prompt      = STRING_TOKEN(STR_SATA_CONTROLLER),
     help        = STRING_TOKEN(STR_SATA_CONTROLLER_HELP),
     option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
     option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
   endoneof;
+  
+  #endif
   
   suppressif NOT ideqval SETUP_DATA.SataEn == 1;  
     oneof varid   = SETUP_DATA.SataCfg,
