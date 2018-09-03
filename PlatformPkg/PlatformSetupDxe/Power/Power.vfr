@@ -387,8 +387,8 @@ endif;
        oneof varid = SETUP_DATA.KBDCLegacySelControl,
         prompt   = STRING_TOKEN(STR_KBDC_LEGACY_SEL),
         help     = STRING_TOKEN(STR_KBDC_LEGACY_SEL_HELP),
-        option text = STRING_TOKEN(STR_HARD_MACRO),  value = 0, flags = RESET_REQUIRED ;
-        option text = STRING_TOKEN(STR_NEW_DESIGN), value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_HARD_MACRO),  value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_NEW_DESIGN), value = 1, flags = RESET_REQUIRED;
       endoneof;
       
      oneof varid = SETUP_DATA.INTCLegacySelControl,
@@ -408,8 +408,8 @@ endif;
      oneof varid = SETUP_DATA.TMRCLegacySelControl,
         prompt   = STRING_TOKEN(STR_TMRC_LEGACY_SEL),
         help     = STRING_TOKEN(STR_TMRC_LEGACY_SEL_HELP),
-        option text = STRING_TOKEN(STR_HARD_MACRO),  value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_NEW_DESIGN), value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING ;
+        option text = STRING_TOKEN(STR_HARD_MACRO),  value = 0, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_NEW_DESIGN), value = 1, flags = RESET_REQUIRED ;
       endoneof;      
 
   endform;//end POWER_GATING_CTRL_FORM_ID
