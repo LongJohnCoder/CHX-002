@@ -92,9 +92,9 @@ VOID RtcWrite(UINT8 Address, UINT8 Data)
 
 
 	
-	//RTC UIP  
-	
-	//RTC patch for 0xA-OxD  
+	if(PciRead8(PCI_LIB_ADDRESS(0, 0, 4, 0xF6))==0){	
+	//RTC patch for CHX002 A0
+	//CMOS Rx0xA-OxD  
 	if((Address>=0xA)&&(Address<=0xD)){
 	  RegisterB.Data		= RtcRead (RTC_ADDRESS_REGISTER_B);
 	  if(RegisterB.Bits.Set==0){
@@ -103,6 +103,7 @@ VOID RtcWrite(UINT8 Address, UINT8 Data)
 		while (RegisterA.Bits.Uip == 1 ) {
 		  MicroSecondDelay (10);
 		  RegisterA.Data = RtcRead (RTC_ADDRESS_REGISTER_A);
+		}	
 		}	
 		}
 		}

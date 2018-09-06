@@ -14,6 +14,7 @@
 #include <Library/PlatformCommLib.h>
 #include <Library/DevicePathLib.h>
 #include <Library/BaseMemoryLib.h>
+#include <Library/PciLib.h>
 #include <Protocol/DevicePath.h>
 #include <Protocol/GraphicsOutput.h>
 #include <Protocol/AtaPassThru.h>
@@ -80,7 +81,9 @@ VOID CmosWrite(UINT8 Address, UINT8 Data)
 	RTC_REGISTER_B	RegisterB;
 
 
-		//RTC patch for 0xA-OxD  
+		if(PciRead8(PCI_LIB_ADDRESS(0, 0, 4, 0xF6))==0){	
+		//RTC patch for CHX002 A0
+		//CMOS Rx0xA-OxD  
 		if((Address>=0xA)&&(Address<=0xD)){
 		//	DEBUG((EFI_D_ERROR, "DLA:[CmosWrite] [Address:0x%x]  = 0x%x\n",Address,Data));
 		  RegisterB.Data	  = CmosRead (RTC_ADDRESS_REGISTER_B);
@@ -94,6 +97,7 @@ VOID CmosWrite(UINT8 Address, UINT8 Data)
 				MicroSecondDelay (10);
 				RegisterA.Data = CmosRead (RTC_ADDRESS_REGISTER_A);
 		  	}   
+			}
 			}
 			}
 		CmosWrite_Original(Address,Data);		
