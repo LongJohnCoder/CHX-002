@@ -35,7 +35,7 @@ Revision History:
 #define PCI_CLASSC_PI_EHCI  0x20
 #define BIT(a)  (1 << (a))
 
-#define EHCI_ASYNCSCHED_EXT  1
+#define EHCI_ASYNCSCHED_EXT  0
 
 typedef struct _USB2_HC_DEV     USB2_HC_DEV;
 
