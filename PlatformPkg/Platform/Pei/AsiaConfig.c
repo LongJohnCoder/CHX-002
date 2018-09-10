@@ -619,6 +619,7 @@ DramCfg->DramRxTxTimingHardCode= SetupData->DramRxTxTimingHardCode;
 	 DramCfg->CPU_FSBC_ON= SetupData->CPU_FSBC_DRAM_ON; //FSBC Debug Mode
 	 DramCfg->TxVref = SetupData->TxVref;
 	 DramCfg->TxVrefAllByte = SetupData->TxVrefAllByte;
+   DramCfg->Perf_Turnaround = SetupData->Perf_Turnaround;
      DramCfg->SwapChAB = SetupData->SwapChAB;
      DramCfg->ScanIOTiming = SetupData->ScanIOTiming;
      DramCfg->RxVref = SetupData->RxVref;
