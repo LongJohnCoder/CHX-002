@@ -90,6 +90,22 @@ EnableAcpiCallback (
   return EFI_SUCCESS;
 }
 
+#ifdef ZX_SECRET_CODE
+
+EFI_STATUS
+SMITestHandle (
+  IN     EFI_HANDLE               DispatchHandle,
+  IN     CONST VOID               *Context,        OPTIONAL
+  IN OUT VOID                     *CommBuffer,     OPTIONAL
+  IN OUT UINTN                    *CommBufferSize  OPTIONAL
+)
+{
+	DEBUG((EFI_D_ERROR, "[MTN-DBG]: SMI Handler In.\n"));
+
+  return EFI_SUCCESS;
+}
+
+#endif
 
 EFI_STATUS
 DisableAcpiCallback (
@@ -561,6 +577,19 @@ InitializePlatformSmm (
                          &SwHandle
                          );
   ASSERT_EFI_ERROR (Status);
+  
+  #ifdef ZX_SECRET_CODE
+  SwContext.SwSmiInputValue = 0xF4; // 0xF4
+  Status = SwDispatch->Register (
+                         SwDispatch,
+                         SMITestHandle,
+                         &SwContext,
+                         &SwHandle
+                         );
+  ASSERT_EFI_ERROR (Status);
+
+#endif
+
   
 
   Status = gSmst->SmmLocateProtocol (
