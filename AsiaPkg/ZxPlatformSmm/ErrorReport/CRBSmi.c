@@ -216,18 +216,18 @@ VOID CRB_PCIWrite8(
         UINT64 Address,
         UINT8 Data)
 {
-        UINT16 Stride;
-        UINT32 Cf8Val;
-        EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
+	UINT16 Stride;
+	UINT32 Cf8Val;
+	EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
 
-        PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
-        Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
+	PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
+	Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
 
-        Stride = ((UINT16)Address & 0x0003); 
-        Cf8Val &= 0xFFFFFFFC;
+	Stride = ((UINT16)Address & 0x0003); 
+	Cf8Val &= 0xFFFFFFFC;
 
-        IoWrite32(0xCF8, (Cf8Val|0x80000000));
-        IoWrite8(0xCFC + Stride, Data);
+	IoWrite32(0xCF8, (Cf8Val|0x80000000));
+	IoWrite8(0xCFC + Stride, Data);
 
 }
 
@@ -235,21 +235,21 @@ VOID CRB_PCIWrite8(
 UINT8 CRB_PCIRead8(
         UINT64 Address)
 {
-        UINT8 Data8;
-        UINT16 Stride;
-        UINT32 Cf8Val;
-        EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
+	UINT8 Data8;
+	UINT16 Stride;
+	UINT32 Cf8Val;
+	EFI_PCI_CONFIGURATION_ADDRESS *PciAddr;
 
-        PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
-        Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
-        
-        Stride = ((UINT16)Address & 0x0003); 
-        Cf8Val &= 0xFFFFFFFC;
+	PciAddr = (EFI_PCI_CONFIGURATION_ADDRESS *) (&Address);
+	Cf8Val = (PciAddr->Bus << 16) | (PciAddr->Device << 11) | (PciAddr->Function << 8)| PciAddr->Register;
 
-        IoWrite32(0xCF8,(Cf8Val|0x80000000));
-        Data8=IoRead8(0xCFC + Stride);
+	Stride = ((UINT16)Address & 0x0003); 
+	Cf8Val &= 0xFFFFFFFC;
 
-        return Data8;
+	IoWrite32(0xCF8,(Cf8Val|0x80000000));
+	Data8=IoRead8(0xCFC + Stride);
+
+	return Data8;
 }
 
 
@@ -352,14 +352,14 @@ FixedDelayMicroSecond (
     UINTN           Usec                           
  )
 {
-    UINTN   Counter = 0;
+	UINTN   Counter = 0;
 
 	while(Counter != Usec){
 		IoRead8(0x88);
 		Counter++;
 	}
 
-    return;
+	return;
 } 
 //;modify this Routine by using IO-Cycle Delay Counting for BYO BIOS temporarily - end
 
@@ -402,60 +402,60 @@ FixedDelayMicroSecond (
 */
 EFI_STATUS GetSetupData(VOID)
 {
-    EFI_STATUS             Status;
-        SETUP_DATA   SetupData;
-    UINTN                  SetupDataSize;
+	EFI_STATUS             Status;
+	SETUP_DATA   SetupData;
+	UINTN                  SetupDataSize;
 
-    DEBUG((EFI_D_ERROR,"SmmGetVariable()\n")); 
+	DEBUG((EFI_D_ERROR,"SmmGetVariable()\n")); 
 	//// 2016041301-TGR patched for EMU Variable.
 	if(PcdGetBool(PcdVarServiceUseEmu)){
-	   DEBUG((EFI_D_INFO, "(Smm)UseEmuVarService, CRBSmi.c - GetSetupData return directly \n"));	   
-	   return EFI_SUCCESS;
+		DEBUG((EFI_D_INFO, "(Smm)UseEmuVarService, CRBSmi.c - GetSetupData return directly \n"));	   
+		return EFI_SUCCESS;
 	}
 	////
-	
-  //
-  // Locate SmmVariableProtocol
-  //
-    Status = gSmst->SmmLocateProtocol (
-                    &gEfiSmmVariableProtocolGuid,
-                    NULL,
-                    (VOID**)&mSmmVariable
-                    );
-    ASSERT_EFI_ERROR (Status);
+
+	//
+	// Locate SmmVariableProtocol
+	//
+	Status = gSmst->SmmLocateProtocol (
+			&gEfiSmmVariableProtocolGuid,
+			NULL,
+			(VOID**)&mSmmVariable
+			);
+	ASSERT_EFI_ERROR (Status);
 
 
-    SetupDataSize = sizeof(SETUP_DATA); 
-    Status = mSmmVariable->SmmGetVariable (
-                           PLATFORM_SETUP_VARIABLE_NAME,
-                           &gPlatformSetupVariableGuid,
-                           NULL,
-                           &SetupDataSize,
-                           &SetupData
-                           );    
-        ASSERT_EFI_ERROR (Status);
-    
-    gACLossAutoRestart = SetupData.AfterPowerLoss;
-    gChipsetSERRNBControl = SetupData.SERRNBControl;
-        //LGE-20160115
-    gChipsetLoopERSMIControl = SetupData.LoopERSMIControl;
-    gChipsetHIFErrControl = SetupData.HIFErrControl;
-    gChipsetDRAMErrControl = SetupData.DRAMErrControl;          
-//	gChipsetPEGErrControl = SetupData.PEGErrControl;
-    gChipsetPE0ErrControl = SetupData.PE0ErrControl;
-    gChipsetPE1ErrControl = SetupData.PE1ErrControl;
-    gChipsetPE2ErrControl = SetupData.PE2ErrControl;
-    gChipsetPE3ErrControl = SetupData.PE3ErrControl;
-    gChipsetPE4ErrControl = SetupData.PE4ErrControl;
+	SetupDataSize = sizeof(SETUP_DATA); 
+	Status = mSmmVariable->SmmGetVariable (
+			PLATFORM_SETUP_VARIABLE_NAME,
+			&gPlatformSetupVariableGuid,
+			NULL,
+			&SetupDataSize,
+			&SetupData
+			);    
+	ASSERT_EFI_ERROR (Status);
+
+	gACLossAutoRestart = SetupData.AfterPowerLoss;
+	gChipsetSERRNBControl = SetupData.SERRNBControl;
+	//LGE-20160115
+	gChipsetLoopERSMIControl = SetupData.LoopERSMIControl;
+	gChipsetHIFErrControl = SetupData.HIFErrControl;
+	gChipsetDRAMErrControl = SetupData.DRAMErrControl;          
+	//	gChipsetPEGErrControl = SetupData.PEGErrControl;
+	gChipsetPE0ErrControl = SetupData.PE0ErrControl;
+	gChipsetPE1ErrControl = SetupData.PE1ErrControl;
+	gChipsetPE2ErrControl = SetupData.PE2ErrControl;
+	gChipsetPE3ErrControl = SetupData.PE3ErrControl;
+	gChipsetPE4ErrControl = SetupData.PE4ErrControl;
 	gChipsetPE5ErrControl = SetupData.PE5ErrControl;
-    gChipsetPE6ErrControl = SetupData.PE6ErrControl;
+	gChipsetPE6ErrControl = SetupData.PE6ErrControl;
 	gChipsetPE7ErrControl = SetupData.PE7ErrControl;
-    ChipRevision = CrbPcieRead8(0xE0000000, CHX002_NPMC|((UINT64)(D0F4_INTERNAL_REV_ID) << 32));        //Get Chipset Revision Number   
+	ChipRevision = CrbPcieRead8(0xE0000000, CHX002_NPMC|((UINT64)(D0F4_INTERNAL_REV_ID) << 32));        //Get Chipset Revision Number   
 
-    DEBUG((EFI_D_ERROR,"BIOS SETUP gChipsetDRAMErrControl = %02x\n", gChipsetDRAMErrControl));
-    DEBUG((EFI_D_ERROR,"BIOS SETUP gChipsetHIFErrControl = %02x\n", gChipsetHIFErrControl));
-        
-        return EFI_SUCCESS;
+	DEBUG((EFI_D_ERROR,"BIOS SETUP gChipsetDRAMErrControl = %02x\n", gChipsetDRAMErrControl));
+	DEBUG((EFI_D_ERROR,"BIOS SETUP gChipsetHIFErrControl = %02x\n", gChipsetHIFErrControl));
+
+	return EFI_SUCCESS;
 }
 
 
@@ -483,28 +483,28 @@ EFI_STATUS GetSetupData(VOID)
 BOOLEAN GetCRBErrSmiContext()
 {
 
-//lna_pcie_0419-start
-        if((IoRead8(PM_BASE_ADDRESS + PMIO_EXTEND_SMI_IO_TRAP_STA) & PMIO_NB2SB_SMI_STS) && 
-                (IoRead8(PM_BASE_ADDRESS + PMIO_GENERAL_PURPOSE_SMI_ENABLE) & PMIO_NB2SB_SMI_SM)) {   //For SERR_NB SMI
-                return TRUE;
-        }
-//lna_pcie_0419 - end
-//LGE20160309 - E
+	//lna_pcie_0419-start
+	if((IoRead8(PM_BASE_ADDRESS + PMIO_EXTEND_SMI_IO_TRAP_STA) & PMIO_NB2SB_SMI_STS) && 
+			(IoRead8(PM_BASE_ADDRESS + PMIO_GENERAL_PURPOSE_SMI_ENABLE) & PMIO_NB2SB_SMI_SM)) {   //For SERR_NB SMI
+		return TRUE;
+	}
+	//lna_pcie_0419 - end
+	//LGE20160309 - E
 
-        return FALSE;
+	return FALSE;
 }
 
 
 typedef struct {
-        UINT8 ErrSrc;
-        UINT8 Correctable;
-        UINT8 ErrDetail1;
-        UINT8 ErrDetail2;
-        UINT32 ErrDetail3;      //;Additional Error Information
-        UINT32 ErrDetail4;      //;Additional Error Information
-        UINT8 ErrDetail5;       //;Additional Error Information
-        UINT8 ErrDetail6;       //;Additional Error Information
-        UINT8 NextErr;          //;Indicate whether continous Error occur
+	UINT8 ErrSrc;
+	UINT8 Correctable;
+	UINT8 ErrDetail1;
+	UINT8 ErrDetail2;
+	UINT32 ErrDetail3;      //;Additional Error Information
+	UINT32 ErrDetail4;      //;Additional Error Information
+	UINT8 ErrDetail5;       //;Additional Error Information
+	UINT8 ErrDetail6;       //;Additional Error Information
+	UINT8 NextErr;          //;Indicate whether continous Error occur
 } REPO_SERR;
 
 
@@ -526,17 +526,17 @@ VOID ChkV4IFSerr (
         IN OUT REPO_SERR* SERR
 )
 {       
-//LGE20160308 CHX001 Without V4IF
+	//LGE20160308 CHX001 Without V4IF
 #if 0
-        if(SERR->ErrSrc == 0xFF){       //;No previous Error occurred
-                if((CrbPcieRead8(pciebase, CHX002_ERRC|((UINT64)(D0F1_CPU_BUS_ERR_STA) << 32)) & D0F1_HAP_ERR) != 0){           //CPU BUS Address Parity Error detected
-                        if(gChipsetV4IFErrControl == TRUE)
-                                SERR->ErrSrc = 0x01;
+	if(SERR->ErrSrc == 0xFF){       //;No previous Error occurred
+		if((CrbPcieRead8(pciebase, CHX002_ERRC|((UINT64)(D0F1_CPU_BUS_ERR_STA) << 32)) & D0F1_HAP_ERR) != 0){           //CPU BUS Address Parity Error detected
+			if(gChipsetV4IFErrControl == TRUE)
+				SERR->ErrSrc = 0x01;
 
-                        SERR->Correctable = 0x0;
-                        CrbPcieModify8(pciebase, CHX002_ERRC|((UINT64)(D0F1_CPU_BUS_ERR_STA) << 32), D0F1_HAP_ERR, D0F1_HAP_ERR);       //Clear CPU BUS Address Parity Error Status BIT
-                }
-        }
+			SERR->Correctable = 0x0;
+			CrbPcieModify8(pciebase, CHX002_ERRC|((UINT64)(D0F1_CPU_BUS_ERR_STA) << 32), D0F1_HAP_ERR, D0F1_HAP_ERR);       //Clear CPU BUS Address Parity Error Status BIT
+		}
+	}
 #endif
 }
 
@@ -557,144 +557,119 @@ VOID ChkV4IFSerr (
 
 VOID ChkDRAMSerr (
         IN UINT64       pciebase,
-        IN OUT REPO_SERR* SERR
-)
+        IN OUT REPO_SERR* SERR)
 {       
 
-        //UINT8 EccError;
-		//UINT32 ParCRCError;
-	
+	UINT8 EccError;
+	if(SERR->ErrSrc == 0xFF){       //;No previous Error occurred
 
-        //if(SERR->ErrSrc == 0xFF){       //;No previous Error occurred
+		EccError = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32));
 
-			////TODO RKD remove for pxp code parpare
-                ////EccError = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32));
-				
-				////LGE20160505 read D0F3 Rx17C, check parity status and CRC error status
-			////TODO RKD remove for pxp code parpare
-				////ParCRCError = CrbPcieRead32(pciebase, CHX002_DRAM|((UINT64)(D0F3_CHN_B_RETRY_ERR_LOG) << 32));
-				
-        
-                //if((EccError & (D0F3_RSEFS_CHA + D0F3_RSEFS_CHB)) != 0){           //;Correctable (Single-BIT) Error
+		if((EccError & (D0F3_RSEFS_CHA + D0F3_RSEFS_CHB)) != 0){           //;Correctable (Single-BIT) Error
 
-				 //DEBUG((EFI_D_ERROR,"Ecc Single bit error\n"));
+			DEBUG((EFI_D_ERROR,"Ecc Single bit error\n"));
 
-                        //if((gChipsetDRAMErrControl == ERR_Correctable) || (gChipsetDRAMErrControl == ERR_Both)){
-                                //SERR->ErrSrc = 0x02;
-                        
-                                //SERR->Correctable = 0x01;
+			if((gChipsetDRAMErrControl == ERR_Correctable) || (gChipsetDRAMErrControl == ERR_Both)){
+				SERR->ErrSrc = 0x02;
 
-                                //if((EccError & D0F3_RSEFS_CHA) != 0){      //Correctable-Error occurred in Channel A
-                                ////LGE20160505 
-                                        //SERR->ErrDetail1 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_RANK_INF_FOR_CHA) << 32)) & D0F3_SDBKS_2_0_CHA;
-                
-                                //SERR->ErrDetail3 = CrbPcieRead32(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_ADR_CHA) << 32));  //;ECC Error Address in CHA
-                                        //SERR->ErrDetail5 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_PATTERN + 1) << 32));       //;ECC Syndrome BIT Address in CHA
-                                        //CrbPcieModify8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), D0F3_RSEFS_CHA, D0F3_RSEFS_CHA);       //Clear DRAM CHA Correctable (Single Bit) Error Status BIT
+				SERR->Correctable = 0x01;
 
-                                 
-                                 //DEBUG((EFI_D_ERROR,"Ecc CHA Single bit Error Address = %08x\n", SERR->ErrDetail3 << 3));
-								 //DEBUG((EFI_D_ERROR,"Ecc CHA Single bit Error Syndrome = %08x\n", SERR->ErrDetail5));
-								 //DEBUG((EFI_D_ERROR,"Ecc CHA Single bit Error Rank = %08x\n", SERR->ErrDetail1));
-								//}
+				if((EccError & D0F3_RSEFS_CHA) != 0){      //Correctable-Error occurred in Channel A
+					//LGE20160505 
+					SERR->ErrDetail1 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_RANK_INF_FOR_CHA_CHB) << 32)) & D0F3_SDBKS_CHA_2_0;
+					//ECC Error Address in CHA
+					SERR->ErrDetail3 = CrbPcieRead32(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_ADR_CHA) << 32));  
+					//ECC Syndrome BIT Address in CHA
+					SERR->ErrDetail5 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_PATTERN + 1) << 32));       
+					//Clear DRAM CHA Correctable (Single Bit) Error Status BIT
+					CrbPcieModify8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), D0F3_RSEFS_CHA, D0F3_RSEFS_CHA);       
 
-                                //if((EccError & D0F3_RSEFS_CHB) != 0){      //Correctable-Error occurred in Channel B
-                                ////LGE20160505 Wait for  IRS Update
-                                    //SERR->ErrDetail2 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_RANK_INF_FOR_CHB) << 32)) & D0F3_SDBKS_2_0_CHB;
-                    
-                                //SERR->ErrDetail4 = CrbPcieRead32(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_ADR_CHB) << 32));  //;ECC Error Address in CHB
-                                        //SERR->ErrDetail6 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_PATTERN) << 32));   //;ECC Syndrome BIT Address in CHB
-                                        //CrbPcieModify8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), D0F3_RSEFS_CHB, D0F3_RSEFS_CHB);       //Clear DRAM CHB Correctable (Single Bit) Error Status BIT
+					DEBUG((EFI_D_ERROR,"Ecc CHA Single bit Error Address = %08x\n", SERR->ErrDetail3 << 3));
+					DEBUG((EFI_D_ERROR,"Ecc CHA Single bit Error Syndrome = %08x\n", SERR->ErrDetail5));
+					DEBUG((EFI_D_ERROR,"Ecc CHA Single bit Error Rank = %08x\n", SERR->ErrDetail1));
+				}
 
-                                 //DEBUG((EFI_D_ERROR,"Ecc CHB Single bit Error Address = %08x\n", SERR->ErrDetail4 << 3));
-								 //DEBUG((EFI_D_ERROR,"Ecc CHB Single bit Error Syndrome = %08x\n", SERR->ErrDetail6));
-								 //DEBUG((EFI_D_ERROR,"Ecc CHB Single bit Error Rank = %08x\n", SERR->ErrDetail2));
-								//}                                               
+				if((EccError & D0F3_RSEFS_CHB) != 0){      //Correctable-Error occurred in Channel B
+					//LGE20160505 Wait for  IRS Update
+					SERR->ErrDetail2 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_RANK_INF_FOR_CHA_CHB) << 32)) & D0F3_SDBKS_CHB_2_0;
+					//ECC Error Address in CHB
+					SERR->ErrDetail4 = CrbPcieRead32(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_ADR_CHB) << 32));  
+					//ECC Syndrome BIT Address in CHB
+					SERR->ErrDetail6 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_PATTERN) << 32));   
+					//Clear DRAM CHB Correctable (Single Bit) Error Status BIT
+					CrbPcieModify8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), D0F3_RSEFS_CHB, D0F3_RSEFS_CHB);       
 
-                                ////Check whether ECC still being generated
-                                //EccError = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32));
-                                //if ((EccError & (D0F3_RSEFS_CHA + D0F3_RSEFS_CHB)))
-                                        //SERR->NextErr = 1;
+					DEBUG((EFI_D_ERROR,"Ecc CHB Single bit Error Address = %08x\n", SERR->ErrDetail4 << 3));
+					DEBUG((EFI_D_ERROR,"Ecc CHB Single bit Error Syndrome = %08x\n", SERR->ErrDetail6));
+					DEBUG((EFI_D_ERROR,"Ecc CHB Single bit Error Rank = %08x\n", SERR->ErrDetail2));
+				}                                               
 
-                        //}
-                //}
+				//Check whether ECC still being generated
+				EccError = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32));
+				if ((EccError & (D0F3_RSEFS_CHA + D0F3_RSEFS_CHB)))
+					SERR->NextErr = 1;
+			}
+		}
 
-                //if((EccError & (D0F3_RMEFS_CHA + D0F3_RMEFS_CHB)) != 0){           //;Uncorrectable (Multi-BIT) Error
+		if((EccError & (D0F3_RMEFS_CHA + D0F3_RMEFS_CHB)) != 0){   //;Uncorrectable (Multi-BIT) Error
+			DEBUG((EFI_D_ERROR,"Ecc Multi bit error\n"));
+			if((gChipsetDRAMErrControl == ERR_Uncorrectable) || (gChipsetDRAMErrControl == ERR_Both)){
 
-					   //DEBUG((EFI_D_ERROR,"Ecc Multi bit error\n"));
-                        //if((gChipsetDRAMErrControl == ERR_Uncorrectable) || (gChipsetDRAMErrControl == ERR_Both)){
+				SERR->ErrSrc = 0x02;
+				SERR->Correctable = 0x00;
 
-                                //SERR->ErrSrc = 0x02;
-                        
-                                //SERR->Correctable = 0x00;
+				if((EccError & D0F3_RMEFS_CHA) != 0){      //Uncorrectable-Error occurred in Channel A
+					////LGE20160505 
+					SERR->ErrDetail1 = (CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_RANK_INF_FOR_CHA_CHB) << 32)) & D0F3_SDBKS_CHA_2_0) >> 3;
+					//ECC Error Address in CHA
+					SERR->ErrDetail3 = CrbPcieRead32(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_Z2) << 32));      
+					//ECC Syndrome BIT Address in CHA
+					SERR->ErrDetail5 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_PATTERN + 1) << 32)); 
+					//Clear DRAM CHA Uncorrectable (Multi Bit) Error Status BIT
+					CrbPcieModify8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), D0F3_RMEFS_CHA, D0F3_RMEFS_CHA);       
+					DEBUG((EFI_D_ERROR,"Ecc CHA Multi bit Error Address = %08x\n", SERR->ErrDetail3 << 3));
+					DEBUG((EFI_D_ERROR,"Ecc CHA Multi bit Error Syndrome = %08x\n", SERR->ErrDetail5));
+					DEBUG((EFI_D_ERROR,"Ecc CHA Multi bit Error Rank = %08x\n", SERR->ErrDetail1)); 
+				}
 
-                                //if((EccError & D0F3_RMEFS_CHA) != 0){      //Uncorrectable-Error occurred in Channel A
-                                ////LGE20160505 
-                                        //SERR->ErrDetail1 = (CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_RANK_INF_FOR_CHA) << 32)) & D0F3_MCDBKS_2_0_CHA) >> 3;
-                                        //SERR->ErrDetail3 = CrbPcieRead32(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_Z2) << 32));      //;ECC Error Address in CHA
-                 
-                                //SERR->ErrDetail5 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_PATTERN + 1) << 32)); //;ECC Syndrome BIT Address in CHA
-                                        //CrbPcieModify8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), D0F3_RMEFS_CHA, D0F3_RMEFS_CHA);       //Clear DRAM CHA Uncorrectable (Multi Bit) Error Status BIT
-                                 //DEBUG((EFI_D_ERROR,"Ecc CHA Multi bit Error Address = %08x\n", SERR->ErrDetail3 << 3));
-								 //DEBUG((EFI_D_ERROR,"Ecc CHA Multi bit Error Syndrome = %08x\n", SERR->ErrDetail5));
-								 //DEBUG((EFI_D_ERROR,"Ecc CHA Multi bit Error Rank = %08x\n", SERR->ErrDetail1)); 
-								//}
+				if((EccError & D0F3_RMEFS_CHB) != 0){      //Uncorrectable-Error occurred in Channel B
 
-                                //if((EccError & D0F3_RMEFS_CHB) != 0){      //Uncorrectable-Error occurred in Channel B
-                   
-                                        //SERR->ErrDetail2 = (CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_RANK_INF_FOR_CHB) << 32)) & (D0F3_MCDBKS_2_0_CHB)) >> 3;
-                                        //SERR->ErrDetail4 = CrbPcieRead32(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_Z6) << 32));      //;ECC Error Address in CHB
-                   
-                                   //SERR->ErrDetail6 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_PATTERN) << 32));  //;ECC Syndrome BIT Address in CHB
-                                        //CrbPcieModify8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), D0F3_RMEFS_CHB, D0F3_RMEFS_CHB);       //Clear DRAM CHB Uncorrectable (Multi Bit) Error Status BIT
-                                //DEBUG((EFI_D_ERROR,"Ecc CHB Multi bit Error Address = %08x\n", SERR->ErrDetail4 << 3));
-								 //DEBUG((EFI_D_ERROR,"Ecc CHB Multi bit Error Syndrome = %08x\n", SERR->ErrDetail6));
-								 //DEBUG((EFI_D_ERROR,"Ecc CHB Multi bit Error Rank = %08x\n", SERR->ErrDetail2));
-								//}                       
+					SERR->ErrDetail2 = (CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_RANK_INF_FOR_CHA_CHB) << 32)) & (D0F3_MCDBKS_CHB_2_0)) >> 3;
+					//ECC Error Address in CHB
+					SERR->ErrDetail4 = CrbPcieRead32(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_Z4) << 32));      
+					//ECC Syndrome BIT Address in CHB
+					SERR->ErrDetail6 = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_REPORT_PATTERN) << 32));  
+					//Clear DRAM CHB Uncorrectable (Multi Bit) Error Status BIT
+					CrbPcieModify8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), D0F3_RMEFS_CHB, D0F3_RMEFS_CHB);       
+					DEBUG((EFI_D_ERROR,"Ecc CHB Multi bit Error Address = %08x\n", SERR->ErrDetail4 << 3));
+					DEBUG((EFI_D_ERROR,"Ecc CHB Multi bit Error Syndrome = %08x\n", SERR->ErrDetail6));
+					DEBUG((EFI_D_ERROR,"Ecc CHB Multi bit Error Rank = %08x\n", SERR->ErrDetail2));
+				}                       
 
-                                ////Check whether ECC still being generated
-                                //EccError = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32));
-                                //if ((EccError & (D0F3_RMEFS_CHA + D0F3_RMEFS_CHB)))
-                                        //SERR->NextErr = 1;
-
-                        //}
-                //} 
+				//Check whether ECC still being generated
+				EccError = CrbPcieRead8(pciebase, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32));
+				if ((EccError & (D0F3_RMEFS_CHA + D0F3_RMEFS_CHB)))
+					SERR->NextErr = 1;
+			}
+		} 
 
 
-				////Parity error
-                //if(ParCRCError &(D0F3_RERRSTS_PAR_CHA | D0F3_RERRSTS_PAR_CHB))
-                //{
-                  //DEBUG((EFI_D_ERROR,"Parity error\n"));
+	}
 
-				  ////LGE20160710 Clear Parity error status  D0F3_RERRCLR_PAR,  Write 0 Then Write 1
-				  //CrbPcieModify32(pciebase, CHX002_DRAM|((UINT64)(D0F3_CHN_B_RETRY_ERR_LOG) << 32), D0F3_RERRCLR_PAR, 0);
-				  //CrbPcieModify32(pciebase, CHX002_DRAM|((UINT64)(D0F3_CHN_B_RETRY_ERR_LOG) << 32), D0F3_RERRCLR_PAR, D0F3_RERRCLR_PAR);
-                //}
-				////CRC error
-                //if(ParCRCError &(D0F3_RERRSTS_CRC_CHA | D0F3_RERRSTS_CRC_CHB))
-                //{
-                  //DEBUG((EFI_D_ERROR,"CRC error\n")); 
-				  ////LGE20160710 Clear CRC error status, Write 0 Then Write 1  
-				  //CrbPcieModify32(pciebase, CHX002_DRAM|((UINT64)(D0F3_CHN_B_RETRY_ERR_LOG) << 32), D0F3_RERRCLR_CRC, 0);
-				  //CrbPcieModify32(pciebase, CHX002_DRAM|((UINT64)(D0F3_CHN_B_RETRY_ERR_LOG) << 32), D0F3_RERRCLR_CRC, D0F3_RERRCLR_CRC);
-                //}
-				
-        //}
-
-////LGE-20160505 Clear error status some more times for temp -s
-//#if 1
-    //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-        //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-        //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-        //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-        //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-        //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-        //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-        //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-        //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-        //CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_ERR_STA) << 32), 0x0F);
-////LGE-20160505 Clear error status some more times for temp -s
-//#endif  
+	//LGE-20160505 Clear error status some more times for temp -s
+#if 1
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	CrbPcieWrite8(0xE0000000, CHX002_DRAM|((UINT64)(D0F3_ECC_CTL_1_ECC_ERR_STA) << 32), 0x0F);
+	//LGE-20160505 Clear error status some more times for temp -s
+#endif  
 }
 
 //
@@ -706,27 +681,27 @@ typedef struct {
 
 AERCodeTable AERCode[] = {
 
-//      AERType,        BITLoc,         MaskBit
-        0x00,           0x00,           BIT0,
-        0x00,           0x04,           BIT4,
-        0x00,           0x05,           BIT5,
-        0x00,           0x0C,           BIT12,
-        0x00,           0x0D,           BIT13,
-        0x00,           0x0E,           BIT14,
-        0x00,           0x0F,           BIT15,
-        0x00,           0x10,           BIT16,
-        0x00,           0x11,           BIT17,
-        0x00,           0x12,           BIT18,
-        0x00,           0x13,           BIT19,
-        0x00,           0x14,           BIT20,
-        0x00,           0x15,           BIT21,
-        0x01,           0x00,           BIT0,
-        0x01,           0x06,           BIT6,
-        0x01,           0x07,           BIT7,
-        0x01,           0x08,           BIT8,
-        0x01,           0x0C,           BIT12,
-        0x01,           0x0D,           BIT13
-        
+	//      AERType,        BITLoc,         MaskBit
+	0x00,           0x00,           BIT0,
+	0x00,           0x04,           BIT4,
+	0x00,           0x05,           BIT5,
+	0x00,           0x0C,           BIT12,
+	0x00,           0x0D,           BIT13,
+	0x00,           0x0E,           BIT14,
+	0x00,           0x0F,           BIT15,
+	0x00,           0x10,           BIT16,
+	0x00,           0x11,           BIT17,
+	0x00,           0x12,           BIT18,
+	0x00,           0x13,           BIT19,
+	0x00,           0x14,           BIT20,
+	0x00,           0x15,           BIT21,
+	0x01,           0x00,           BIT0,
+	0x01,           0x06,           BIT6,
+	0x01,           0x07,           BIT7,
+	0x01,           0x08,           BIT8,
+	0x01,           0x0C,           BIT12,
+	0x01,           0x0D,           BIT13
+
 };
 //
 
@@ -746,48 +721,48 @@ UINT8 ChkPESource (
         IN UINT64       RPAddr
 )
 {
-        UINT8 ErrSrc;
+	UINT8 ErrSrc;
 
-        switch (RPAddr){
- //               case CHX002_PEG:{
-  //                      ErrSrc = 0x03;
-  //              } break;
+	switch (RPAddr){
+		//               case CHX002_PEG:{
+		//                      ErrSrc = 0x03;
+		//              } break;
 
-                case CHX002_PE0:{
-                        ErrSrc = 0x04;
-                } break;                
+		case CHX002_PE0:{
+							ErrSrc = 0x04;
+						} break;                
 
-                case CHX002_PE1:{
-                        ErrSrc = 0x05;
-                } break;
+		case CHX002_PE1:{
+							ErrSrc = 0x05;
+						} break;
 
-                case CHX002_PE2:{
-                        ErrSrc = 0x06;
-                } break;
+		case CHX002_PE2:{
+							ErrSrc = 0x06;
+						} break;
 
-                case CHX002_PE3:{
-                        ErrSrc = 0x07;
-                } break;
+		case CHX002_PE3:{
+							ErrSrc = 0x07;
+						} break;
 
-				case CHX002_PE4:{
-                        ErrSrc = 0x08;
-                } break;
+		case CHX002_PE4:{
+							ErrSrc = 0x08;
+						} break;
 
-				case CHX002_PE5:{
-						ErrSrc = 0x09;
+		case CHX002_PE5:{
+							ErrSrc = 0x09;
+						} break;
+		case CHX002_PE6:{
+							ErrSrc = 0x0A;
+						} break;
+		case CHX002_PE7:{
+							ErrSrc = 0x0B;
+						} break;
+		default:{
+					ErrSrc = 0xFF;
 				} break;
-				case CHX002_PE6:{
-						ErrSrc = 0x0A;
-				} break;
-				case CHX002_PE7:{
-						ErrSrc = 0x0B;
-				} break;
-                default:{
-                        ErrSrc = 0xFF;
-                } break;
-        }
+	}
 
-        return ErrSrc;
+	return ErrSrc;
 
 }
 
@@ -811,110 +786,110 @@ VOID ChkPESerr (
 )
 {
 
-        UINT8 i;
-        UINT32 AER;
-        UINT32 Temp32;
-		UINT64 RcrbhBaseAddr;
+	UINT8 i;
+	UINT32 AER;
+	UINT32 Temp32;
+	UINT64 RcrbhBaseAddr;
 
-		RcrbhBaseAddr = (UINT64)CrbPcieRead32(pciebase, CHX002_APIC|((UINT64)(D0F5_RCRB_H_BASE_ADR) << 32));
-		RcrbhBaseAddr = RcrbhBaseAddr&D0F5_RXRCRBHA_OUT_39_12;
-		RcrbhBaseAddr = RcrbhBaseAddr<<12;
-			
-		
-        if(SERR->ErrSrc == 0xFF){       //;No previous Error occurred
-                if(CrbPcieRead16(pciebase, RPAddr|((UINT64)(D3D5F1_VID) << 32)) != 0xFFFF){     //;only check when RP exist (VID != 0xFFFF)
-                        if((CrbPcieRead8(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32)) & D3D5F1_RESSF) != 0){ //Uncorrectable Error
+	RcrbhBaseAddr = (UINT64)CrbPcieRead32(pciebase, CHX002_APIC|((UINT64)(D0F5_RCRB_H_BASE_ADR) << 32));
+	RcrbhBaseAddr = RcrbhBaseAddr&D0F5_RXRCRBHA_OUT_39_12;
+	RcrbhBaseAddr = RcrbhBaseAddr<<12;
 
-                                if((PCIE_SETUP_DATA == ERR_Uncorrectable) || (PCIE_SETUP_DATA == ERR_Both))
-                                        SERR->ErrSrc = ChkPESource(RPAddr);
 
-                                SERR->Correctable = 0x00;
+	if(SERR->ErrSrc == 0xFF){       //;No previous Error occurred
+		if(CrbPcieRead16(pciebase, RPAddr|((UINT64)(D3D5F1_VID) << 32)) != 0xFFFF){     //;only check when RP exist (VID != 0xFFFF)
+			if((CrbPcieRead8(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32)) & D3D5F1_RESSF) != 0){ //Uncorrectable Error
 
-                                AER = CrbPcieRead32(pciebase, RPAddr|((UINT64)(D3D5F1_UNCORRECTABLE_ERR_STA) << 32));   //Get the UC AER Status Register in current RP
-                                
-                                if (AER != 0){ //the UC AER occurred within the RP
-                                
-                                    for(i=0; i<sizeof(AERCode)/sizeof(AERCodeTable); i++)       //Check the Error Table for detecting exactly Error information
-                                    {
-                                                Temp32 = AER & AERCode[i].MaskBit;      //;the UC AER BIT in current RP
-                                        
-                                        if(AERCode[i].AERType == 0x00 && Temp32 != 0){  //;UC AER detected       within the RP                                          
-                                                
-                                                        SERR->ErrDetail2 = AERCode[i].BITLoc;
+				if((PCIE_SETUP_DATA == ERR_Uncorrectable) || (PCIE_SETUP_DATA == ERR_Both))
+					SERR->ErrSrc = ChkPESource(RPAddr);
 
-                                                        CrbPcieWrite32(pciebase, RPAddr|((UINT64)(D3D5F1_UNCORRECTABLE_ERR_STA) << 32), Temp32);        //Clear detected AER Status BIT                                         
-                                                        CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), (D3D5F1_RESSF + D3D5F1_RESMF + D3D5F1_RESFFRV), (D3D5F1_RESSF + D3D5F1_RESMF + D3D5F1_RESFFRV));        //Clear detected UC AER Root Error Status BIT                                                   
+				SERR->Correctable = 0x00;
 
-                                                        //Check Severity Register to determine Non-Fatal or Fatal
-                                                        if ((CrbPcieRead32(pciebase, RPAddr|((UINT64)(D3D5F1_UNCORRECTABLE_ERR_SEVERITY) << 32)) & AERCode[i].MaskBit) == 0){   //this Error is Non-Fatal
-                                                                SERR->ErrDetail1 = 0x22;
-                                                                CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), D3D5F1_RESNFRV, D3D5F1_RESNFRV);        //Clear detected Non-Fatal AER Root Error Status BIT
-                                                                CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_DEV_STA_1) << 32), D3D5F1_DSNFED, D3D5F1_DSNFED);      //Clear detected Non-Fatal Error Device Status BIT
-                                                        }else{
-                                                                SERR->ErrDetail1 = 0x33;
-                                                                CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), D3D5F1_RESFRV, D3D5F1_RESFRV);  //Clear detected Fatal AER Root Error Status BIT
-                                                                CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_DEV_STA_1) << 32), D3D5F1_DSFED, D3D5F1_DSFED);        //Clear detected Fatal Error Device Status BIT
-                                                        }
+				AER = CrbPcieRead32(pciebase, RPAddr|((UINT64)(D3D5F1_UNCORRECTABLE_ERR_STA) << 32));   //Get the UC AER Status Register in current RP
 
-                                                        CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_PCI_STA) << 32), D3D5F1_SERRS, D3D5F1_SERRS); //Clear detected SERR PCI Status BIT
-                                                      // CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_PCIE_ROOT_PORT_ERR_STA_D4F0) << 32), D3D5F1_PE_ERR, D3D5F1_PE_ERR);    //Clear PE_ERR (PCIE SERR_NB) Status BIT
-                                              	CrbMemoryModify8(RcrbhBaseAddr + RCRBH_PCIE_ROOT_PORT_ERR_STA,RCRBH_PE_ERR,RCRBH_PE_ERR); //Clear PE_ERR (PCIE SERR_NB) Status BIT- CJW_20170612 
-                                        }
-                                    }                           
-                                }else{  //the UC AER coming from EP of the RP
+				if (AER != 0){ //the UC AER occurred within the RP
 
-                                        SERR->ErrDetail1 = 0x44;
-                                        SERR->ErrDetail2 = 0xFF;
+					for(i=0; i<sizeof(AERCode)/sizeof(AERCodeTable); i++)       //Check the Error Table for detecting exactly Error information
+					{
+						Temp32 = AER & AERCode[i].MaskBit;      //;the UC AER BIT in current RP
 
-                                        CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_SECONDARY_STA) << 32), D3D5F1_SSERRS, D3D5F1_SSERRS); //Clear detected Received Error in P2P Bridge Secondary Status
-                                        CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), (D3D5F1_RESSF + D3D5F1_RESMF + D3D5F1_RESFFRV), (D3D5F1_RESSF + D3D5F1_RESMF + D3D5F1_RESFFRV));        //Clear detected UC AER Root Error Status BIT
-                                        CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_PCI_STA) << 32), D3D5F1_SERRS, D3D5F1_SERRS); //Clear detected SERR PCI Status BIT
-                                       //CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_PCIE_ROOT_PORT_ERR_STA_D4F0) << 32), D3D5F1_PE_ERR, D3D5F1_PE_ERR);    //Clear PE_ERR (PCIE SERR_NB) Status BIT
-										CrbMemoryModify8(RcrbhBaseAddr + RCRBH_PCIE_ROOT_PORT_ERR_STA,RCRBH_PE_ERR,RCRBH_PE_ERR); //Clear PE_ERR (PCIE SERR_NB) Status BIT- CJW_20170612
-								}
-                        }
+						if(AERCode[i].AERType == 0x00 && Temp32 != 0){  //;UC AER detected       within the RP                                          
 
-                        if((CrbPcieRead8(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32)) & D3D5F1_RESSC) != 0){         //Correctable Error
+							SERR->ErrDetail2 = AERCode[i].BITLoc;
 
-                                if((PCIE_SETUP_DATA == ERR_Correctable) || (PCIE_SETUP_DATA == ERR_Both))
-                                        SERR->ErrSrc = ChkPESource(RPAddr);
-                                
-                                SERR->Correctable = 0x01;
+							CrbPcieWrite32(pciebase, RPAddr|((UINT64)(D3D5F1_UNCORRECTABLE_ERR_STA) << 32), Temp32);        //Clear detected AER Status BIT                                         
+							CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), (D3D5F1_RESSF + D3D5F1_RESMF + D3D5F1_RESFFRV), (D3D5F1_RESSF + D3D5F1_RESMF + D3D5F1_RESFFRV));        //Clear detected UC AER Root Error Status BIT                                                   
 
-                                AER = CrbPcieRead32(pciebase, RPAddr|((UINT64)(D3D5F1_CORRECTABLE_ERR_STA) << 32));     //Get the Correctable AER Status Register in current RP
+							//Check Severity Register to determine Non-Fatal or Fatal
+							if ((CrbPcieRead32(pciebase, RPAddr|((UINT64)(D3D5F1_UNCORRECTABLE_ERR_SEVERITY) << 32)) & AERCode[i].MaskBit) == 0){   //this Error is Non-Fatal
+								SERR->ErrDetail1 = 0x22;
+								CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), D3D5F1_RESNFRV, D3D5F1_RESNFRV);        //Clear detected Non-Fatal AER Root Error Status BIT
+								CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_DEV_STA_1) << 32), D3D5F1_DSNFED, D3D5F1_DSNFED);      //Clear detected Non-Fatal Error Device Status BIT
+							}else{
+								SERR->ErrDetail1 = 0x33;
+								CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), D3D5F1_RESFRV, D3D5F1_RESFRV);  //Clear detected Fatal AER Root Error Status BIT
+								CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_DEV_STA_1) << 32), D3D5F1_DSFED, D3D5F1_DSFED);        //Clear detected Fatal Error Device Status BIT
+							}
 
-                                if (AER != 0){ //the Correctable AER occurred within the RP
+							CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_PCI_STA) << 32), D3D5F1_SERRS, D3D5F1_SERRS); //Clear detected SERR PCI Status BIT
+							// CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_PCIE_ROOT_PORT_ERR_STA_D4F0) << 32), D3D5F1_PE_ERR, D3D5F1_PE_ERR);    //Clear PE_ERR (PCIE SERR_NB) Status BIT
+							CrbMemoryModify8(RcrbhBaseAddr + RCRBH_PCIE_ROOT_PORT_ERR_STA,RCRBH_PE_ERR,RCRBH_PE_ERR); //Clear PE_ERR (PCIE SERR_NB) Status BIT- CJW_20170612 
+						}
+					}                           
+				}else{  //the UC AER coming from EP of the RP
 
-                                    for(i=0; i<sizeof(AERCode)/sizeof(AERCodeTable); i++)       //Check the Error Table for detecting exactly Error information
-                                    {
-                                                Temp32 = AER & AERCode[i].MaskBit;      //;the Correctable AER BIT in current RP
-                                    
-                                        if((AERCode[i].AERType == 0x01) && (Temp32 != 0)){      //;Correctable AER detected      within the RP
-                                                        SERR->ErrDetail2 = AERCode[i].BITLoc;                                   
-                                                        SERR->ErrDetail1 = 0x11;
+					SERR->ErrDetail1 = 0x44;
+					SERR->ErrDetail2 = 0xFF;
 
-                                                        CrbPcieWrite32(pciebase, RPAddr|((UINT64)(D3D5F1_CORRECTABLE_ERR_STA) << 32), Temp32);  //Clear detected AER Status BIT                                         
-                                                        CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), (D3D5F1_RESSC + D3D5F1_RESMC), (D3D5F1_RESSC + D3D5F1_RESMC));  //Clear detected Correctable AER Root Error Status BIT                                                  
-                                                        CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_DEV_STA_1) << 32), D3D5F1_DSCED, D3D5F1_DSCED);        //Clear detected Correctable Error Device Status BIT
-                                                        CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_PCI_STA) << 32), D3D5F1_SERRS, D3D5F1_SERRS); //Clear detected SERR PCI Status BIT
-                                                       // CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_PCIE_ROOT_PORT_ERR_STA_D4F0) << 32), D3D5F1_PE_ERR, D3D5F1_PE_ERR);    //Clear PE_ERR (PCIE SERR_NB) Status BIT
-												CrbMemoryModify8(RcrbhBaseAddr + RCRBH_PCIE_ROOT_PORT_ERR_STA,RCRBH_PE_ERR,RCRBH_PE_ERR); //Clear PE_ERR (PCIE SERR_NB) Status BIT- CJW_20170612
-										}
-                                    }
-                                }else{  //the Correctable AER coming from EP of the RP
+					CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_SECONDARY_STA) << 32), D3D5F1_SSERRS, D3D5F1_SSERRS); //Clear detected Received Error in P2P Bridge Secondary Status
+					CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), (D3D5F1_RESSF + D3D5F1_RESMF + D3D5F1_RESFFRV), (D3D5F1_RESSF + D3D5F1_RESMF + D3D5F1_RESFFRV));        //Clear detected UC AER Root Error Status BIT
+					CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_PCI_STA) << 32), D3D5F1_SERRS, D3D5F1_SERRS); //Clear detected SERR PCI Status BIT
+					//CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_PCIE_ROOT_PORT_ERR_STA_D4F0) << 32), D3D5F1_PE_ERR, D3D5F1_PE_ERR);    //Clear PE_ERR (PCIE SERR_NB) Status BIT
+					CrbMemoryModify8(RcrbhBaseAddr + RCRBH_PCIE_ROOT_PORT_ERR_STA,RCRBH_PE_ERR,RCRBH_PE_ERR); //Clear PE_ERR (PCIE SERR_NB) Status BIT- CJW_20170612
+				}
+			}
 
-                                        SERR->ErrDetail1 = 0x44;
-                                        SERR->ErrDetail2 = 0xFF;
+			if((CrbPcieRead8(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32)) & D3D5F1_RESSC) != 0){         //Correctable Error
 
-                                        CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_SECONDARY_STA) << 32), D3D5F1_SSERRS, D3D5F1_SSERRS); //Clear detected Received Error in P2P Bridge Secondary Status
-                                        CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), (D3D5F1_RESSC + D3D5F1_RESMC), (D3D5F1_RESSC + D3D5F1_RESMC));  //Clear detected Correctable AER Root Error Status BIT
-                                        CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_PCI_STA) << 32), D3D5F1_SERRS, D3D5F1_SERRS); //Clear detected SERR PCI Status BIT
-                                      // CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_PCIE_ROOT_PORT_ERR_STA_D4F0) << 32), D3D5F1_PE_ERR, D3D5F1_PE_ERR);    //Clear PE_ERR (PCIE SERR_NB) Status BIT
-										CrbMemoryModify8(RcrbhBaseAddr + RCRBH_PCIE_ROOT_PORT_ERR_STA,RCRBH_PE_ERR,RCRBH_PE_ERR); //Clear PE_ERR (PCIE SERR_NB) Status BIT - CJW_20170612
-								}
-                        }                               
-                }
-        }
+				if((PCIE_SETUP_DATA == ERR_Correctable) || (PCIE_SETUP_DATA == ERR_Both))
+					SERR->ErrSrc = ChkPESource(RPAddr);
+
+				SERR->Correctable = 0x01;
+
+				AER = CrbPcieRead32(pciebase, RPAddr|((UINT64)(D3D5F1_CORRECTABLE_ERR_STA) << 32));     //Get the Correctable AER Status Register in current RP
+
+				if (AER != 0){ //the Correctable AER occurred within the RP
+
+					for(i=0; i<sizeof(AERCode)/sizeof(AERCodeTable); i++)       //Check the Error Table for detecting exactly Error information
+					{
+						Temp32 = AER & AERCode[i].MaskBit;      //;the Correctable AER BIT in current RP
+
+						if((AERCode[i].AERType == 0x01) && (Temp32 != 0)){      //;Correctable AER detected      within the RP
+							SERR->ErrDetail2 = AERCode[i].BITLoc;                                   
+							SERR->ErrDetail1 = 0x11;
+
+							CrbPcieWrite32(pciebase, RPAddr|((UINT64)(D3D5F1_CORRECTABLE_ERR_STA) << 32), Temp32);  //Clear detected AER Status BIT                                         
+							CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), (D3D5F1_RESSC + D3D5F1_RESMC), (D3D5F1_RESSC + D3D5F1_RESMC));  //Clear detected Correctable AER Root Error Status BIT                                                  
+							CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_DEV_STA_1) << 32), D3D5F1_DSCED, D3D5F1_DSCED);        //Clear detected Correctable Error Device Status BIT
+							CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_PCI_STA) << 32), D3D5F1_SERRS, D3D5F1_SERRS); //Clear detected SERR PCI Status BIT
+							// CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_PCIE_ROOT_PORT_ERR_STA_D4F0) << 32), D3D5F1_PE_ERR, D3D5F1_PE_ERR);    //Clear PE_ERR (PCIE SERR_NB) Status BIT
+							CrbMemoryModify8(RcrbhBaseAddr + RCRBH_PCIE_ROOT_PORT_ERR_STA,RCRBH_PE_ERR,RCRBH_PE_ERR); //Clear PE_ERR (PCIE SERR_NB) Status BIT- CJW_20170612
+						}
+					}
+				}else{  //the Correctable AER coming from EP of the RP
+
+					SERR->ErrDetail1 = 0x44;
+					SERR->ErrDetail2 = 0xFF;
+
+					CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_SECONDARY_STA) << 32), D3D5F1_SSERRS, D3D5F1_SSERRS); //Clear detected Received Error in P2P Bridge Secondary Status
+					CrbPcieModify32(pciebase, RPAddr|((UINT64)(D3D5F1_ROOT_ERR_STA) << 32), (D3D5F1_RESSC + D3D5F1_RESMC), (D3D5F1_RESSC + D3D5F1_RESMC));  //Clear detected Correctable AER Root Error Status BIT
+					CrbPcieModify16(pciebase, RPAddr|((UINT64)(D3D5F1_PCI_STA) << 32), D3D5F1_SERRS, D3D5F1_SERRS); //Clear detected SERR PCI Status BIT
+					// CrbPcieModify8(pciebase, RPAddr|((UINT64)(D3D5F1_PCIE_ROOT_PORT_ERR_STA_D4F0) << 32), D3D5F1_PE_ERR, D3D5F1_PE_ERR);    //Clear PE_ERR (PCIE SERR_NB) Status BIT
+					CrbMemoryModify8(RcrbhBaseAddr + RCRBH_PCIE_ROOT_PORT_ERR_STA,RCRBH_PE_ERR,RCRBH_PE_ERR); //Clear PE_ERR (PCIE SERR_NB) Status BIT - CJW_20170612
+				}
+			}                               
+		}
+	}
 }
 
 
@@ -932,150 +907,150 @@ VOID ChkPESerr (
 
 VOID CRBErrSmiHandler ()
 {
-        UINT64 pciebase = 0xE0000000;
-        UINT8 debug_port = 0x80;
-        REPO_SERR SERR_NB = {0};
+	UINT64 pciebase = 0xE0000000;
+	UINT8 debug_port = 0x80;
+	REPO_SERR SERR_NB = {0};
 
 #if ERSMI_COMPORT_DEBUG_MESSAGES
-        UINT8 Buffer8;
-        UINT16 Buffer16;
+	UINT8 Buffer8;
+	UINT16 Buffer16;
 #endif  //; ERSMI_COMPORT_DEBUG_MESSAGES        
 
 #if ERSMI_COMPORT_DEBUG_MESSAGES
 
-        //;Set Baud Rate for COM Port output
-        //;======================
-        //; set Baud rate = 115200
-        //;======================
-        //; Enable DLAB
-        Buffer8 = IoRead8(0x3FB);
-        Buffer8 = Buffer8 |0x80;                
-        IoWrite8(0x3FB,Buffer8);
-        //; Save Baud rate
-        Buffer16 = IoRead16(0x3F8);
-        //; Set Baud rate (LSB)
-        IoWrite8(0x3F8,0x01);
-        //; Set Baud rate (MSB)
-        IoWrite8(0x3F9,0x00);
-        //; Disable DLAB
-        Buffer8 = IoRead8(0x3FB);
-        Buffer8 = Buffer8 & 0x7F;               
-        IoWrite8(0x3FB,Buffer8);
+	//;Set Baud Rate for COM Port output
+	//;======================
+	//; set Baud rate = 115200
+	//;======================
+	//; Enable DLAB
+	Buffer8 = IoRead8(0x3FB);
+	Buffer8 = Buffer8 |0x80;                
+	IoWrite8(0x3FB,Buffer8);
+	//; Save Baud rate
+	Buffer16 = IoRead16(0x3F8);
+	//; Set Baud rate (LSB)
+	IoWrite8(0x3F8,0x01);
+	//; Set Baud rate (MSB)
+	IoWrite8(0x3F9,0x00);
+	//; Disable DLAB
+	Buffer8 = IoRead8(0x3FB);
+	Buffer8 = Buffer8 & 0x7F;               
+	IoWrite8(0x3FB,Buffer8);
 
-        DEBUG((EFI_D_ERROR,"\n===================== Enter Error Handling SMI ============================\n"));
+	DEBUG((EFI_D_ERROR,"\n===================== Enter Error Handling SMI ============================\n"));
 
 #endif  //; ERSMI_COMPORT_DEBUG_MESSAGES        
-     
-        do{
 
-                SERR_NB.ErrSrc = (UINT8)-1;
-                SERR_NB.Correctable = (UINT8)-1;
-                SERR_NB.ErrDetail1 = (UINT8)-1;
-                SERR_NB.ErrDetail2 = (UINT8)-1;
-                SERR_NB.ErrDetail3 = (UINT8)-1;
-                SERR_NB.ErrDetail4 = (UINT8)-1;
-                SERR_NB.ErrDetail5 = (UINT8)-1;
-                SERR_NB.ErrDetail6 = (UINT8)-1;
-                SERR_NB.NextErr = 0;
+	do{
 
-                
-                //Check Error Type
-                //ChkV4IFSerr(pciebase, &SERR_NB);
+		SERR_NB.ErrSrc = (UINT8)-1;
+		SERR_NB.Correctable = (UINT8)-1;
+		SERR_NB.ErrDetail1 = (UINT8)-1;
+		SERR_NB.ErrDetail2 = (UINT8)-1;
+		SERR_NB.ErrDetail3 = (UINT8)-1;
+		SERR_NB.ErrDetail4 = (UINT8)-1;
+		SERR_NB.ErrDetail5 = (UINT8)-1;
+		SERR_NB.ErrDetail6 = (UINT8)-1;
+		SERR_NB.NextErr = 0;
 
-                ChkDRAMSerr(pciebase, &SERR_NB);
 
-//                ChkPESerr(pciebase, CHX002_PEG, &SERR_NB, gChipsetPEGErrControl);
-                ChkPESerr(pciebase, CHX002_PE0, &SERR_NB, gChipsetPE0ErrControl);                
-                ChkPESerr(pciebase, CHX002_PE1, &SERR_NB, gChipsetPE1ErrControl);                
-                ChkPESerr(pciebase, CHX002_PE2, &SERR_NB, gChipsetPE2ErrControl);                
-                ChkPESerr(pciebase, CHX002_PE3, &SERR_NB, gChipsetPE3ErrControl);                
-                ChkPESerr(pciebase, CHX002_PE4, &SERR_NB, gChipsetPE4ErrControl);
-                ChkPESerr(pciebase, CHX002_PE5, &SERR_NB, gChipsetPE5ErrControl);
-                ChkPESerr(pciebase, CHX002_PE6, &SERR_NB, gChipsetPE6ErrControl);
-                ChkPESerr(pciebase, CHX002_PE7, &SERR_NB, gChipsetPE7ErrControl);
+		//Check Error Type
+		//ChkV4IFSerr(pciebase, &SERR_NB);
 
-                //Previous error occurred
-                if (SERR_NB.ErrSrc != 0xFF){
+		ChkDRAMSerr(pciebase, &SERR_NB);
 
-                        //Loop Error Code Report according to Setup-Item
-                        do{
+		//                ChkPESerr(pciebase, CHX002_PEG, &SERR_NB, gChipsetPEGErrControl);
+		ChkPESerr(pciebase, CHX002_PE0, &SERR_NB, gChipsetPE0ErrControl);                
+		ChkPESerr(pciebase, CHX002_PE1, &SERR_NB, gChipsetPE1ErrControl);                
+		ChkPESerr(pciebase, CHX002_PE2, &SERR_NB, gChipsetPE2ErrControl);                
+		ChkPESerr(pciebase, CHX002_PE3, &SERR_NB, gChipsetPE3ErrControl);                
+		ChkPESerr(pciebase, CHX002_PE4, &SERR_NB, gChipsetPE4ErrControl);
+		ChkPESerr(pciebase, CHX002_PE5, &SERR_NB, gChipsetPE5ErrControl);
+		ChkPESerr(pciebase, CHX002_PE6, &SERR_NB, gChipsetPE6ErrControl);
+		ChkPESerr(pciebase, CHX002_PE7, &SERR_NB, gChipsetPE7ErrControl);
 
-                                //Printing Error SMI Signature to IO Port 0x80
-                                IoWrite8(debug_port, 0xEE);             
-                                FixedDelayMicroSecond(1000000);   // 1s delay           
+		//Previous error occurred
+		if (SERR_NB.ErrSrc != 0xFF){
 
-                                IoWrite8(debug_port, 0x5A);                             
-                                FixedDelayMicroSecond(1000000);   // 1s delay
+			//Loop Error Code Report according to Setup-Item
+			do{
 
-                                //Printing Types and Details of Error Source
-                                IoWrite8(debug_port, SERR_NB.ErrSrc);           
-                                FixedDelayMicroSecond(1000000);   // 1s delay                   
-                                IoWrite8(debug_port, SERR_NB.Correctable);              
-                                FixedDelayMicroSecond(1000000);   // 1s delay           
-                                IoWrite8(debug_port, SERR_NB.ErrDetail1);               
-                                FixedDelayMicroSecond(1000000);   // 1s delay                   
-                                IoWrite8(debug_port, SERR_NB.ErrDetail2);               
-                                FixedDelayMicroSecond(1000000);   // 1s delay                   
+				//Printing Error SMI Signature to IO Port 0x80
+				IoWrite8(debug_port, 0xEE);             
+				FixedDelayMicroSecond(1000000);   // 1s delay           
 
-                                IoWrite32(debug_port, SERR_NB.ErrDetail3);              
-                                FixedDelayMicroSecond(1000);      // 1ms delay  
-                                IoWrite32(debug_port, SERR_NB.ErrDetail4);              
-                                FixedDelayMicroSecond(1000);      // 1ms delay
-                                IoWrite8(debug_port, SERR_NB.ErrDetail5);               
-                                FixedDelayMicroSecond(1000);      // 1ms delay  
-                                IoWrite8(debug_port, SERR_NB.ErrDetail6);               
-                                FixedDelayMicroSecond(1000);      // 1ms delay          
+				IoWrite8(debug_port, 0x5A);                             
+				FixedDelayMicroSecond(1000000);   // 1s delay
 
-                                //End of Error Log Message
-                                IoWrite8(debug_port, 0xA5);             
-                                FixedDelayMicroSecond(1000000);   // 1s delay   
+				//Printing Types and Details of Error Source
+				IoWrite8(debug_port, SERR_NB.ErrSrc);           
+				FixedDelayMicroSecond(1000000);   // 1s delay                   
+				IoWrite8(debug_port, SERR_NB.Correctable);              
+				FixedDelayMicroSecond(1000000);   // 1s delay           
+				IoWrite8(debug_port, SERR_NB.ErrDetail1);               
+				FixedDelayMicroSecond(1000000);   // 1s delay                   
+				IoWrite8(debug_port, SERR_NB.ErrDetail2);               
+				FixedDelayMicroSecond(1000000);   // 1s delay                   
+
+				IoWrite32(debug_port, SERR_NB.ErrDetail3);              
+				FixedDelayMicroSecond(1000);      // 1ms delay  
+				IoWrite32(debug_port, SERR_NB.ErrDetail4);              
+				FixedDelayMicroSecond(1000);      // 1ms delay
+				IoWrite8(debug_port, SERR_NB.ErrDetail5);               
+				FixedDelayMicroSecond(1000);      // 1ms delay  
+				IoWrite8(debug_port, SERR_NB.ErrDetail6);               
+				FixedDelayMicroSecond(1000);      // 1ms delay          
+
+				//End of Error Log Message
+				IoWrite8(debug_port, 0xA5);             
+				FixedDelayMicroSecond(1000000);   // 1s delay   
 
 #if ERSMI_COMPORT_DEBUG_MESSAGES
 
-                                //;Also print Error-Code through COM Port here
-                                DEBUG((EFI_D_ERROR,"\n== Error Information - Check the Error Code Document for more details ==\n"));
-                                DEBUG((EFI_D_ERROR,"Error Source: %X; Correctable: %X\n",SERR_NB.ErrSrc, SERR_NB.Correctable));
-                                DEBUG((EFI_D_ERROR,"Error Details 1: %X\n",SERR_NB.ErrDetail1));
-                                DEBUG((EFI_D_ERROR,"Error Details 2: %X\n",SERR_NB.ErrDetail2));
-                                DEBUG((EFI_D_ERROR,"Error Details 3: %X\n",SERR_NB.ErrDetail3));
-                                DEBUG((EFI_D_ERROR,"Error Details 4: %X\n",SERR_NB.ErrDetail4));
-                                DEBUG((EFI_D_ERROR,"Error Details 5: %X\n",SERR_NB.ErrDetail5));
-                                DEBUG((EFI_D_ERROR,"Error Details 6: %X\n",SERR_NB.ErrDetail6));
+				//;Also print Error-Code through COM Port here
+				DEBUG((EFI_D_ERROR,"\n== Error Information - Check the Error Code Document for more details ==\n"));
+				DEBUG((EFI_D_ERROR,"Error Source: %X; Correctable: %X\n",SERR_NB.ErrSrc, SERR_NB.Correctable));
+				DEBUG((EFI_D_ERROR,"Error Details 1: %X\n",SERR_NB.ErrDetail1));
+				DEBUG((EFI_D_ERROR,"Error Details 2: %X\n",SERR_NB.ErrDetail2));
+				DEBUG((EFI_D_ERROR,"Error Details 3: %X\n",SERR_NB.ErrDetail3));
+				DEBUG((EFI_D_ERROR,"Error Details 4: %X\n",SERR_NB.ErrDetail4));
+				DEBUG((EFI_D_ERROR,"Error Details 5: %X\n",SERR_NB.ErrDetail5));
+				DEBUG((EFI_D_ERROR,"Error Details 6: %X\n",SERR_NB.ErrDetail6));
 
 #endif  //; ERSMI_COMPORT_DEBUG_MESSAGES
 
-                        }while(gChipsetLoopERSMIControl);
+			}while(gChipsetLoopERSMIControl);
 
-                }
+		}
 
-                
-                
-                //Clear SERR_NB SMI Status (PMIO Rx40[6])again to avoid continous error occur
-                IoWrite8(PM_BASE_ADDRESS + PMIO_EXTEND_SMI_IO_TRAP_STA, PMIO_NB2SB_SMI_STS); //clear SERR_NB status (PMIO_Rx39[1])
-                CrbPcieModify8(pciebase, CHX002_SCRCH|((UINT64)(0x78)) <<32, BIT2, BIT2);       //set d0f6rx78[2] = 1 //Lana for SMI backdoor
-        }while(SERR_NB.ErrSrc == 0);
+
+
+		//Clear SERR_NB SMI Status (PMIO Rx40[6])again to avoid continous error occur
+		IoWrite8(PM_BASE_ADDRESS + PMIO_EXTEND_SMI_IO_TRAP_STA, PMIO_NB2SB_SMI_STS); //clear SERR_NB status (PMIO_Rx39[1])
+		CrbPcieModify8(pciebase, CHX002_SCRCH|((UINT64)(0x78)) <<32, BIT2, BIT2);       //set d0f6rx78[2] = 1 //Lana for SMI backdoor
+	}while(SERR_NB.ErrSrc == 0);
 
 #if ERSMI_COMPORT_DEBUG_MESSAGES
 
-        DEBUG((EFI_D_ERROR,"\n===================== Exit Error Handling SMI ============================\n"));
+	DEBUG((EFI_D_ERROR,"\n===================== Exit Error Handling SMI ============================\n"));
 
-        //;Restore Baud Rate for COM Port output        
-        //;======================
-        //; Restore Baud rate
-        //;======================
-        //; Enable DLAB
-        Buffer8 = IoRead8(0x3FB);
-        Buffer8 = Buffer8 |0x80;                
-        IoWrite8(0x3FB,Buffer8);        
-        //; Restore Baud rate (LSB)
-        IoWrite8(0x3F8,(UINT8)(Buffer16 & 0xFF));
-        //; Restore Baud rate (MSB)
-        IoWrite8(0x3F9,(UINT8)((Buffer16 & 0xFF00) >> 0x8));
-        //; Disable DLAB
-        Buffer8 = IoRead8(0x3FB);
-        Buffer8 = Buffer8 & 0x7F;               
-        IoWrite8(0x3FB,Buffer8);
-        
+	//;Restore Baud Rate for COM Port output        
+	//;======================
+	//; Restore Baud rate
+	//;======================
+	//; Enable DLAB
+	Buffer8 = IoRead8(0x3FB);
+	Buffer8 = Buffer8 |0x80;                
+	IoWrite8(0x3FB,Buffer8);        
+	//; Restore Baud rate (LSB)
+	IoWrite8(0x3F8,(UINT8)(Buffer16 & 0xFF));
+	//; Restore Baud rate (MSB)
+	IoWrite8(0x3F9,(UINT8)((Buffer16 & 0xFF00) >> 0x8));
+	//; Disable DLAB
+	Buffer8 = IoRead8(0x3FB);
+	Buffer8 = Buffer8 & 0x7F;               
+	IoWrite8(0x3FB,Buffer8);
+
 #endif  //; ERSMI_COMPORT_DEBUG_MESSAGES
 
 }
