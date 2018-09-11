@@ -92,9 +92,11 @@ formset guid = POWER_FORM_SET_GUID,
       prompt = STRING_TOKEN(STR_POWER_GATING_CTRL),
       help = STRING_TOKEN(STR_EMPTY);
    
+#ifdef ZX_SECRET_CODE
     goto POWER_LEGACY_SEL_CTRL_FORM_ID,
       prompt = STRING_TOKEN(STR_LEGACY_SEL_CTRL),
       help = STRING_TOKEN(STR_EMPTY);
+#endif
            
     goto POWER_OTHER_CTRL_FORM_ID,
       prompt = STRING_TOKEN(STR_OTHER_CTRL),
@@ -380,7 +382,7 @@ endif;
 
   endform;//end POWER_GATING_CTRL_FORM_ID
   
-  
+#ifdef ZX_SECRET_CODE
 	form formid = POWER_LEGACY_SEL_CTRL_FORM_ID,
     title = STRING_TOKEN(STR_LEGACY_SEL_CTRL);    
    
@@ -388,31 +390,32 @@ endif;
         prompt   = STRING_TOKEN(STR_KBDC_LEGACY_SEL),
         help     = STRING_TOKEN(STR_KBDC_LEGACY_SEL_HELP),
         option text = STRING_TOKEN(STR_HARD_MACRO),  value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
-        option text = STRING_TOKEN(STR_NEW_DESIGN), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_NEW_DESIGN),  value = 1, flags = RESET_REQUIRED;
       endoneof;
       
      oneof varid = SETUP_DATA.INTCLegacySelControl,
         prompt   = STRING_TOKEN(STR_INTC_LEGACY_SEL),
         help     = STRING_TOKEN(STR_INTC_LEGACY_SEL_HELP),
         option text = STRING_TOKEN(STR_HARD_MACRO),  value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_NEW_DESIGN), value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING ;
+        option text = STRING_TOKEN(STR_NEW_DESIGN),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING ;
       endoneof;
  
        oneof varid = SETUP_DATA.DMACLegacySelControl,
         prompt   = STRING_TOKEN(STR_DMAC_LEGACY_SEL),
         help     = STRING_TOKEN(STR_DMAC_LEGACY_SEL_HELP),
         option text = STRING_TOKEN(STR_HARD_MACRO),  value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_NEW_DESIGN), value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING ;
+        option text = STRING_TOKEN(STR_NEW_DESIGN),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING ;
       endoneof;
       
      oneof varid = SETUP_DATA.TMRCLegacySelControl,
         prompt   = STRING_TOKEN(STR_TMRC_LEGACY_SEL),
         help     = STRING_TOKEN(STR_TMRC_LEGACY_SEL_HELP),
-        option text = STRING_TOKEN(STR_HARD_MACRO),  value = 0, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-        option text = STRING_TOKEN(STR_NEW_DESIGN), value = 1, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_HARD_MACRO),  value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_NEW_DESIGN),  value = 1, flags = RESET_REQUIRED ;
       endoneof;      
 
   endform;//end POWER_GATING_CTRL_FORM_ID
+#endif
 
   form formid = INTERRUPT_CTRL_FORM_ID,
     title = STRING_TOKEN(STR_INTERRUPT_CTRL);    

@@ -477,10 +477,12 @@ typedef struct {
    UINT8 MsiSupport;
    
    UINT8 eBMCSettleTime;
+#ifdef ZX_SECRET_CODE
    UINT8 KBDCLegacySelControl;
    UINT8 INTCLegacySelControl;
    UINT8 DMACLegacySelControl;
    UINT8 TMRCLegacySelControl;
+#endif
    
    //OTHERS
 	UINT8 EnableMultimediaTimer;

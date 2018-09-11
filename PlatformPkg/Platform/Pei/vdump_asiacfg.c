@@ -254,10 +254,12 @@ VOID VPei_DumpAsiaSbCfg(
 	DEBUG((DEBUG_ERROR,"DynamicT05 = %x \n",SbCfg->DynamicT05));
 
 	DEBUG((DEBUG_ERROR,"eBMCSettleTime = %x \n",SbCfg->eBMCSettleTime));
+#ifdef ZX_SECRET_CODE
 	DEBUG((DEBUG_ERROR,"KBDCLegacySelControl = %x \n",SbCfg->KBDCLegacySelControl));
 	DEBUG((DEBUG_ERROR,"INTCLegacySelControl = %x \n",SbCfg->INTCLegacySelControl));
 	DEBUG((DEBUG_ERROR,"DMACLegacySelControl = %x \n",SbCfg->DMACLegacySelControl));
 	DEBUG((DEBUG_ERROR,"TMRCLegacySelControl = %x \n",SbCfg->TMRCLegacySelControl));
+#endif
 
 	DEBUG((DEBUG_ERROR,"Azalia = %x \n",SbCfg->Azalia));
 	DEBUG((DEBUG_ERROR,"GoNonSnoopPath = %x \n",SbCfg->GoNonSnoopPath));	

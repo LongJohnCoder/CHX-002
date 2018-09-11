@@ -238,10 +238,12 @@ GotSetupVariable:
   SbCfg->GoNonSnoopPath       = SetupData->GoNonSnoopPath; 
 
   SbCfg->eBMCSettleTime       = SetupData->eBMCSettleTime; 
+#ifdef ZX_SECRET_CODE
   SbCfg->KBDCLegacySelControl       = SetupData->KBDCLegacySelControl; 
   SbCfg->INTCLegacySelControl       = SetupData->INTCLegacySelControl; 
   SbCfg->DMACLegacySelControl      = SetupData->DMACLegacySelControl; 
   SbCfg->TMRCLegacySelControl       = SetupData->TMRCLegacySelControl; 
+#endif
   
   //PMU_ACPI
   SbCfg->ProcessorCState= SetupData->CpuCState;
