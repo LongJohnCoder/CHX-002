@@ -6,10 +6,6 @@
 #include <Protocol/Cpu.h>
 #include <Protocol/MpService.h>
 
-
-EFI_PHYSICAL_ADDRESS      MasterBase = 0;    //hxz add for spc flow
-EFI_PHYSICAL_ADDRESS      SlaveBase = 0;    //hxz add for spc flow
-
 EFI_MP_SERVICES_PROTOCOL  *ptMpSvr;
 UINTN					  NumberOfProcessors;
 UINTN					  NumberOfEnabledProcessors;  
@@ -139,8 +135,9 @@ EnableFsbc(
 
 VOID
 EnableMPTracer(
-    EFI_PHYSICAL_ADDRESS Address,
-	IN UINT32		     NumOfInstPer2Dump
+	IN UINT32		     NumOfInstPer2Dump,
+	IN EFI_PHYSICAL_ADDRESS        MasterBase,
+	IN EFI_PHYSICAL_ADDRESS        SlaveBase
 )
 {
   EFI_STATUS				Status;
@@ -177,9 +174,9 @@ EnableMPTracer(
   
   //Set 120f 1203 144a 144b for all core_E
   IoWrite8(0x80,0x62);
-  	context.MasterAddress = MasterBase;
-	context.SlaveAddress = SlaveBase;
-	context.NumOfInstPer2Dump = NumOfInstPer2Dump;
+  context.MasterAddress = MasterBase;
+  context.SlaveAddress = SlaveBase;
+  context.NumOfInstPer2Dump = NumOfInstPer2Dump;
   for(Index=(UINT32)(NumberOfProcessors-1);Index>0;Index--){
 	context.Processor = (UINTN)Index;
 
@@ -297,10 +294,8 @@ CpuDebug()
 	
 	//master socket
 	IoWrite8(0x80,0xab);
-	//MasterAddress = gSetupData->CPU_TRACER_DUMP_MEMORY_BASE*SIZE_256MB;
 	MasterAddress = 0x40000000;
-	MasterBase=AllocateReservedAndUcMemory(MasterAddress,UC_SIZE_512MB);	
-	FsbcConfig.MasterFsbcBase = MasterBase;
+	FsbcConfig.MasterFsbcBase=AllocateReservedAndUcMemory(MasterAddress,UC_SIZE_512MB);	
 	
 	IoWrite8(0x80,(AsmReadMsr64(0x1610)&0x03));
 	DEBUG((EFI_D_ERROR,"Dual Socket or not:%x\n",(AsmReadMsr64(0x1610)&0x03)));
@@ -310,8 +305,7 @@ CpuDebug()
 		//slave socket
 		IoWrite8(0x80,0xac);
 		SlaveAddress = (((UINT64)(MmioRead32(HIF_PCI_REG(0xA4)))>>12)<<20)- 0x40000000;
-		SlaveBase=AllocateReservedAndUcMemory(SlaveAddress,UC_SIZE_512MB);	
-		FsbcConfig.SlaveFsbcBase  = SlaveBase;
+		FsbcConfig.SlaveFsbcBase=AllocateReservedAndUcMemory(SlaveAddress,UC_SIZE_512MB);	
 	}
 	
 	if(gSetupData->CPU_TRACER_EN){
@@ -321,10 +315,10 @@ CpuDebug()
 #else
     	NumOfInstPer2Dump = (UINT32)gSetupData->CPU_TRACER_INSTRUCTION_INTERVAL;
 #endif
-		EnableMPTracer(MasterAddress,NumOfInstPer2Dump);
+		EnableMPTracer(NumOfInstPer2Dump,MasterAddress,SlaveAddress);
 		
-		FsbcConfig.MasterFsbcBase = MasterBase+SIZE_256MB;
-		FsbcConfig.SlaveFsbcBase  = SlaveBase+SIZE_256MB;
+		FsbcConfig.MasterFsbcBase +=SIZE_256MB;
+		FsbcConfig.SlaveFsbcBase  +=SIZE_256MB;
 		FsbcConfig.FsbcSize = UC_SIZE_256MB;
 	}
 	   //debug tracer
@@ -368,49 +362,6 @@ CpuDebug()
 	DumpFsbcMsr1();
 	IoWrite8(0x80,0xaa);
 	
-	return;
-}
-
-VOID
-EFIAPI
-CpuDebugForS3()
-{
-	EFI_PHYSICAL_ADDRESS    MasterAddress,SlaveAddress;
-	FSBC_CONFIG_PARA		FsbcConfig;
-	FSBC_TRIGGER_CONDITION  FsbcTrigger;
-	
-	MasterAddress = SlaveAddress = 0;
-	FsbcConfig.MasterFsbcBase = FsbcConfig.SlaveFsbcBase = 0;
-	FsbcConfig.IsMasterEn	  = FsbcConfig.IsSlaveEn     = FALSE;
-	FsbcConfig.FsbcSize = UC_SIZE_512MB;
-	
-	FsbcTrigger.FsbcTriggerPosition = EnumFsbcTriggerPositionSnapShotMode;
-	
-//	FsbcConfig.IsMasterEn	  = gSetupData->CPU_MASTER_FSBC_EN;
-	FsbcConfig.IsMasterEn	  = TRUE;
-//	FsbcConfig.IsSlaveEn	  = gSetupData->CPU_SLAVE_FSBC_EN;	
-    FsbcConfig.IsSlaveEn	  = FALSE;
-	
-	//master socket
-
-		IoWrite8(0x80,0xab);
-		//MasterAddress = gSetupData->CPU_TRACER_DUMP_MEMORY_BASE*SIZE_256MB;
-		MasterAddress = 0x40000000;
-		MasterAddress = AllocateReservedAndUcMemory(MasterAddress,UC_SIZE_512MB);	
-	
-	
-	IoWrite8(0x80,(AsmReadMsr64(0x1610)&0x03));
-	DEBUG((EFI_D_ERROR,"Dual Socket or not:%x\n",(AsmReadMsr64(0x1610)&0x03)));
-	
-	//dual socket or not: MSR 0x1610 bit1/2
-	if((AsmReadMsr64(0x1610)&0x03)==0x03){		
-		//slave socket
-
-			IoWrite8(0x80,0xac);
-			SlaveAddress = (((UINT64)(MmioRead32(HIF_PCI_REG(0xA4)))>>12)<<20)- 0x40000000;
-			SlaveAddress = AllocateReservedAndUcMemory(SlaveAddress,UC_SIZE_512MB);	
-		
-	}
 	return;
 }
 

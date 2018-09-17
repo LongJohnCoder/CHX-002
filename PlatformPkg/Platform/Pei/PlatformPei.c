@@ -680,7 +680,6 @@ IN ASIA_CPU_CONFIGURATION     *CpuFeature
   DEBUG((DEBUG_INFO,  "FixedRatio                     :%d\n", CpuFeature->FixedRatio));
   //DEBUG((DEBUG_INFO,  "PartialReset                   :%d\n",CpuFeature->PartialResetEn));
 
-  DEBUG((DEBUG_INFO,  "FSBC                           :%d\n",CpuFeature->FsbcEn)); //hxz-20171012 add for chx002 enable fsbc
 #endif
 }
 #ifdef ZX_SECRET_CODE
@@ -889,8 +888,6 @@ CpuMpPeiCallback (
   //CpuFeature->PartialResetEn = SetupHob->PartialResetEn;
 
   CpuFeature->MCASupport   = SetupHob->MCASupport;
-
-  CpuFeature->FsbcEn		 = SetupHob->CPU_MASTER_FSBC_EN;  //hxz-20171012 add for chx002 enable fsbc
   
 #endif
   //YKN-20160627 +E
@@ -981,20 +978,13 @@ DumpCpuFeature(CpuFeature);
 		}
 	 }
 #endif
-	// hxz-20180718 -s enable tracer and fsbc in s3/s4
+	// hxz-20180718 -s enable tracer and fsbc in s3
 #ifdef ZX_SECRET_CODE
-		{
-		  BOOLEAN IsEnFsbcAndTracerInS3;
-	
-		  IsEnFsbcAndTracerInS3 = TRUE;
-		  if((BootMode==BOOT_ON_S4_RESUME)||(BootMode==BOOT_ON_S3_RESUME)){
-			if(IsEnFsbcAndTracerInS3){
-				 if(SetupHob->CPU_TRACER_EN||SetupHob->CPU_MASTER_FSBC_EN){
-						CpuDebugPei(PeiServices,MpSvr,SetupHob);
-				 }
-			}
-		  }
-		}
+	  if(BootMode==BOOT_ON_S3_RESUME){
+		 if(SetupHob->CPU_TRACER_EN||SetupHob->CPU_MASTER_FSBC_EN){
+				CpuDebugPei(PeiServices,MpSvr,SetupHob);
+		 }
+	  }
 #endif
     // hxz-20180718 -e enable tracer and fsbc in s3
 

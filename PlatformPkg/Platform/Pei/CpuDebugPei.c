@@ -172,16 +172,13 @@ EnableMPTracer(
     UINTN					  NumberOfEnabledProcessors;  
 	UINT32					   NumOfInstPer2Dump;
 	
-	DEBUG((EFI_D_ERROR,"CpuDebugPei enter\n"));	
-	DEBUG((EFI_D_ERROR,"PeiSer:%x,%x;MpSer:%x,%x\n",PeiServices,*PeiServices,MpSvr,*MpSvr));
-	
 	MasterAddress = SlaveAddress = 0;
 	FsbcConfig.MasterFsbcBase = FsbcConfig.SlaveFsbcBase = 0;
 	FsbcConfig.IsMasterEn	  = FsbcConfig.IsSlaveEn     = FALSE;
 	FsbcConfig.FsbcSize = UC_SIZE_512MB;
 	
 	SpcStatus = MpSvr->GetNumberOfProcessors(
-				(EFI_PEI_SERVICES **) GetPeiServicesTablePointer(),
+				 PeiServices,
   				 MpSvr,
   				 &NumberOfProcessors, 
   				 &NumberOfEnabledProcessors
@@ -202,13 +199,11 @@ EnableMPTracer(
 	IoWrite8(0x80,(UINT8)NumberOfProcessors);
 	
 	FsbcConfig.IsMasterEn	  = SetupHob->CPU_MASTER_FSBC_EN;
-//	FsbcConfig.IsMasterEn	  = TRUE;
 //	FsbcConfig.IsSlaveEn	  = SetupHob->CPU_SLAVE_FSBC_EN;	
     FsbcConfig.IsSlaveEn	  = FALSE;
 	
 	//master socket
 	IoWrite8(0x80,0xab);
-	//MasterAddress = SetupHob->CPU_TRACER_DUMP_MEMORY_BASE*SIZE_256MB;
 	MasterAddress = 0x40000000;
 	
 //		MasterBase=AllocateReservedAndUcMemory(MasterAddress,UC_SIZE_512MB);	
@@ -224,7 +219,6 @@ EnableMPTracer(
 		SlaveAddress = (((UINT64)(MmioRead32(HIF_PCI_REG(0xA4)))>>12)<<20);
 		SlaveAddress-=0x40000000;
 //			SlaveBase=AllocateReservedAndUcMemory(SlaveAddress,UC_SIZE_512MB);
- //       SlaveAddress = 0x400000000;	
 		FsbcConfig.SlaveFsbcBase  = SlaveAddress;
 	}
 	
@@ -237,8 +231,8 @@ EnableMPTracer(
 #endif
 		EnableMPTracer(MpSvr,NumberOfProcessors,MasterAddress,SlaveAddress,NumOfInstPer2Dump);
 		
-		FsbcConfig.MasterFsbcBase = (UINTN)(MasterAddress+SIZE_256MB);
-		FsbcConfig.SlaveFsbcBase  = (UINTN)(SlaveAddress+SIZE_256MB);
+		FsbcConfig.MasterFsbcBase += SIZE_256MB;
+		FsbcConfig.SlaveFsbcBase  += SIZE_256MB;
 		FsbcConfig.FsbcSize = UC_SIZE_256MB;
 	}
 	
@@ -275,12 +269,12 @@ EnableMPTracer(
 	//DumpTracerMsr1();
 	//DumpFsbcMsr1();
 
-		   //debug tracer
+    //debug tracer
 	{
 		UINT32 Index;
 
 		for(Index=0;Index<100;Index++){
-		DEBUG((EFI_D_ERROR,"%d Read MSR 0x1307:%llx\n",Index,AsmReadMsr64(0x1307)));
+			DEBUG((EFI_D_ERROR,"%d Read MSR 0x1307:%llx\n",Index,AsmReadMsr64(0x1307)));
 		}
 	}
 		   

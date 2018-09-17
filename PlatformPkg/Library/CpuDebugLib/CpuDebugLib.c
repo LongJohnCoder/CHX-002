@@ -1,4 +1,12 @@
 #ifdef ZX_SECRET_CODE   
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**     Copyright (c) 2015 Shanghai Zhaoxin Semiconductor Co., Ltd.  **
+//**                                                                  **
+//**********************************************************************
+//********************************************************************** 
+
 #include <PlatformDefinition.h>
 #include <Library/CpuDebugLib.h>
 
@@ -14,7 +22,7 @@ STATIC UINT32	TracerMsrGroup[]= {
 	0x1204,0x1621,0x1504,0x1506,0x120e,0x1259,0x1255,
 	0x1301,0x1302,0x1303,0x1304,0x1305,0x1306,0x1307};
 
-STATIC MSR_CONFIG_INFO_DUMP TracerConfigInfo[0x20*4]={0};
+STATIC MSR_CONFIG_INFO_DUMP TracerConfigInfo[0x20*16]={0};
 
 VOID DumpTracerMsr(){
 	UINT8 i = 0;
@@ -398,11 +406,11 @@ VOID StartFsbc(BOOLEAN IsStartDump)
    DumpFsbcMsr();
    //for debug
    MsrValue = AsmReadMsr64(0x160B);
-   DEBUG((EFI_D_ERROR,"FSBC_MSR[%x]:%llx\n",0x160B,MsrValue));
+//   DEBUG((EFI_D_ERROR,"FSBC_MSR[%x]:%llx\n",0x160B,MsrValue));
    MsrValue = AsmReadMsr64(0x1609);
-   DEBUG((EFI_D_ERROR,"FSBC_MSR[%x]:%llx\n",0x1609,MsrValue));
+//   DEBUG((EFI_D_ERROR,"FSBC_MSR[%x]:%llx\n",0x1609,MsrValue));
    MsrValue = AsmReadMsr64(0x160C);
-   DEBUG((EFI_D_ERROR,"FSBC_MSR[%x]:%llx\n",0x160C,MsrValue));
+//   DEBUG((EFI_D_ERROR,"FSBC_MSR[%x]:%llx\n",0x160C,MsrValue));
 }
 
 
