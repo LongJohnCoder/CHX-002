@@ -533,8 +533,8 @@ $END--------------------------------------------------------------------
    oneof varid = SETUP_DATA.PcieEQ,
 	   prompt = STRING_TOKEN(STR_PCIE_EQ),
 	   help   = STRING_TOKEN(STR_EMPTY),
-	   option text = STRING_TOKEN(STR_DO_EQ),			 value = 0, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-	   option text = STRING_TOKEN(STR_SKIP_WITH_TABLE),  value = 1, flags = RESET_REQUIRED ;
+	   option text = STRING_TOKEN(STR_DO_EQ),			 value = 0, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_SKIP_WITH_TABLE),  value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING ;
 	   option text = STRING_TOKEN(STR_SKIP_WITH_MANUAL), value = 2, flags = RESET_REQUIRED;
 	 endoneof;
    
