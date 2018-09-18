@@ -418,21 +418,21 @@ Revision History:
 	suppressif ideqval SETUP_DATA.CPU_MASTER_FSBC_EN==0;
 	   oneof varid = SETUP_DATA.CPU_FSBC_PCIE_ON,
 			prompt      = STRING_TOKEN(STR_DUMP_TARGET),
-			help        = STRING_TOKEN(STR_EMPTY),
+			help        = STRING_TOKEN(STR_DUMP_TARGET_HELP),
 			option text = STRING_TOKEN(STR_DRAM), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
 			option text = STRING_TOKEN(STR_PCIE),  value = 1, flags = RESET_REQUIRED;          
        endoneof;
            
        oneof varid = SETUP_DATA.CPU_FSBC_TOPCIE,
-			prompt      = STRING_TOKEN(STR_CPU_FSB_TOPPCIE),
-			help        = STRING_TOKEN(STR_EMPTY),
+			prompt      = STRING_TOKEN(STR_CPU_FSBC_TOPPCIE),
+			help        = STRING_TOKEN(STR_CPU_FSBC_TOPPCIE_HELP),
 			option text = STRING_TOKEN(STR_PE0), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
 			option text = STRING_TOKEN(STR_PE4),  value = 1, flags = RESET_REQUIRED;          
        endoneof;
 	   
        oneof varid = SETUP_DATA.CPU_FSBC_SOCCAP_ON,//GRW-add-20180115
         prompt = STRING_TOKEN(STR_CPU_FSBC_SOCCAP_ON),
-        help = STRING_TOKEN(STR_EMPTY),
+        help = STRING_TOKEN(STR_CPU_FSBC_SOCCAP_ON_HELP),
         option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
         option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;          
        endoneof;
@@ -449,35 +449,35 @@ Revision History:
        */
        oneof varid = SETUP_DATA.CPU_FSBC_STREAM_EN,
         prompt      = STRING_TOKEN(STR_CPU_FSBC_STREAM_EN),
-        help        = STRING_TOKEN(STR_EMPTY),
+        help        = STRING_TOKEN(STR_CPU_FSBC_STREAM_EN_HELP),
         option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
         option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;          
        endoneof;
 	   
 	   oneof varid = SETUP_DATA.CPU_FSBC_P2CC2PONLY,
         prompt      = STRING_TOKEN(STR_CPU_FSBC_P2CC2PONLY),
-        help        = STRING_TOKEN(STR_EMPTY),
+        help        = STRING_TOKEN(STR_CPU_FSBC_P2CC2PONLY_HELP),
         option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
         option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;          
        endoneof;
 	   
       oneof varid = SETUP_DATA.CPU_FSBC_MISSPACKE_EN,
         prompt = STRING_TOKEN(STR_CPU_FSBC_MISSPACKE_EN),
-        help = STRING_TOKEN(STR_EMPTY),
+        help = STRING_TOKEN(STR_CPU_FSBC_MISSPACKE_EN_HELP),
         option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
         option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;          
       endoneof; 
 
       oneof varid = SETUP_DATA.CPU_FSBC_TIGPULSE_EN,
         prompt = STRING_TOKEN(STR_CPU_FSBC_TIGPULSE_EN),
-        help = STRING_TOKEN(STR_EMPTY),
+        help = STRING_TOKEN(STR_CPU_FSBC_TIGPULSE_EN_HELP),
         option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
         option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;          
      endoneof;
    
      oneof varid = SETUP_DATA.CPU_FSBC_IFSBCSTP_EN,
         prompt = STRING_TOKEN(STR_CPU_FSBC_IFSBCSTP_EN),
-        help = STRING_TOKEN(STR_EMPTY),
+        help = STRING_TOKEN(STR_CPU_FSBC_IFSBCSTP_EN_HELP),
         option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
         option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;          
       endoneof;
@@ -487,7 +487,7 @@ Revision History:
 
    oneof varid = SETUP_DATA.CPU_TRACER_EN,
         prompt = STRING_TOKEN(STR_CPU_TRACER_EN),
-        help = STRING_TOKEN(STR_EMPTY),
+        help = STRING_TOKEN(STR_CPU_TRACER_EN_HELP),
         option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
         option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;          
      endoneof;
@@ -495,7 +495,7 @@ Revision History:
    suppressif NOT ideqval SETUP_DATA.CPU_TRACER_EN == 1;
 	   numeric varid=SETUP_DATA.CPU_TRACER_INSTRUCTION_INTERVAL,
         prompt   = STRING_TOKEN(STR_CPU_TRACER_INSTRUCTION_INTERVAL),
-        help   = STRING_TOKEN(STR_EMPTY),
+        help   = STRING_TOKEN(STR_CPU_TRACER_INSTRUCTION_INTERVAL_HLPE),
         flags = DISPLAY_UINT_HEX,
         minimum=0,
         maximum=0xFFFFFFFF,
