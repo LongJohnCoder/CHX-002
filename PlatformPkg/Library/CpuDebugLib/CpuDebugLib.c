@@ -1,4 +1,3 @@
-#ifdef ZX_SECRET_CODE   
 //**********************************************************************
 //**********************************************************************
 //**                                                                  **
@@ -6,6 +5,8 @@
 //**                                                                  **
 //**********************************************************************
 //********************************************************************** 
+
+#ifdef ZX_SECRET_CODE   
 
 #include <PlatformDefinition.h>
 #include <Library/CpuDebugLib.h>
@@ -101,6 +102,7 @@ VOID DumpFsbcMsr()
 	SocketId = (AsmReadMsr64(0x1610)>>3)&0x01;
 	IoWrite8(0x80,(UINT8)SocketId);
 	
+	////
 	for(i=0;i<9;i++){
 		MsrValue = AsmReadMsr64(0x1604+i);
 		FsbcConfigInfo[SocketId*9+i].SocketId= SocketId;
@@ -109,6 +111,7 @@ VOID DumpFsbcMsr()
 		FsbcConfigInfo[SocketId*9+i].MsrValue   = MsrValue;	
 
 		if(((0x1604+i)==0x1609)||((0x1604+i)==0x160B)){
+			/// Debug purpose, Meaningless for A0 Chip, only for PXP debug purpose.
 			IoWrite8(0x80,(UINT8)(4+i));
 			IoWrite8(0x80,(UINT8)(MsrValue));
 			IoWrite8(0x80,(UINT8)(MsrValue>>8));
@@ -230,9 +233,10 @@ VOID ConfigFsbc(
    IsStreamModeEn  = FsbcTrigger->IsStreamModeEn;
    IsSoccapEn	 = FsbcTrigger->IsSoccapEn;
    
-    if((AsmReadMsr64(0x16a7)&0x01)==0){
+   MsrValue = AsmReadMsr64(0x16a7);
+    if((MsrValue&0x01)==0){
 //	    DEBUG((EFI_D_ERROR,"FSBC_MSR[%x]:%llx\n",0x16a7, AsmReadMsr64(0x16a7)));
-  		AsmWriteMsr64(0x16a7, (AsmReadMsr64(0x16a7)|0x01));
+  		AsmWriteMsr64(0x16a7, (MsrValue|0x01));
     }
 	
 	//Dump to PCIE
@@ -414,7 +418,8 @@ VOID StartFsbc(BOOLEAN IsStartDump)
 }
 
 
-
+//// For FSBC init, every socket only need init one core, not need init all APs.
+//// So, this function will do FSBC init based on cpuid.
 VOID 
 EFIAPI
 fsbc_init (
@@ -535,6 +540,8 @@ SetAllMSRFunc_Before(IN OUT VOID  *Buffer)
   	 Address64 = PCI_DEV_MMBASE(RootBusNum, 0, 4)+D0F4_VDD_OFF_DEBUG_CTL;
 	// IoWrite8(0x80,0xAD);
 	 //IoWrite8(0x80,0xAD);
+	 ///
+	 /// Debug purpose, Meaningless for A0 Chip, only for PXP debug purpose.
 	 IoWrite8(0x80,(UINT8)(Address64));
 	 IoWrite8(0x80,(UINT8)(Address64>>8));
 	 IoWrite8(0x80,(UINT8)(Address64>>16));
@@ -694,6 +701,7 @@ SetMSR (
 		Address =(EFI_PHYSICAL_ADDRESS)(context->MasterAddress+cpuid*0x1000000);
 	}
 	
+	/// for PXP debug purpose, because it's easy to watch waveform on PXP platform.
 	IoWrite8(0x80,(UINT8)(Address>>24));
 	IoWrite8(0x80,(UINT8)(Address>>32));
 	
