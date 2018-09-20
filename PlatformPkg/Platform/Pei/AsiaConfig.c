@@ -923,7 +923,14 @@ DramCfg->DramRxTxTimingHardCode= SetupData->DramRxTxTimingHardCode;
   DEBUG((EFI_D_ERROR, "DLA_HandleRtcWake() pass\n"));
   
 #ifdef ZX_SECRET_CODE
-  PcdSet8(PcdCpuCoreEnabled, SetupData->KillAp);
+  //MKE-20180920 When RomSip Limit Core Number, KillAp will do nothing _S
+  if(PciRead8(PCI_LIB_ADDRESS(0, 0, 0, 0x82))&0xF){
+  	PcdSet8(PcdCpuCoreEnabled, 0x0);
+  }
+  else{
+  	 PcdSet8(PcdCpuCoreEnabled, SetupData->KillAp);
+  }
+  //MKE-20180920 When RomSip Limit Core Number, KillAp will do nothing _E
   NbCfg->C2P2FlushC2M = SetupData->C2P2FlushC2M;
 //YKN-2016112201 -s
 //YKN-2016112402 -s
