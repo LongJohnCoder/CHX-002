@@ -247,7 +247,7 @@ IoTrapHandler(
 		//Clear Io trap status
 		IoWrite8( PM_BASE_ADDRESS+0x20, (IoRead8( PM_BASE_ADDRESS+0x20)) | 0x08 );
 		//DEBUG(( EFI_D_ERROR, "  0x820=0x%x \n",IoRead8( PM_BASE_ADDRESS+0x20)));
-		//IoWrite8( PM_BASE_ADDRESS+ 0x2d ,(IoRead8( PM_BASE_ADDRESS+ 0x2d ))|0x01);
+		IoWrite8( PM_BASE_ADDRESS+ 0x2d ,(IoRead8( PM_BASE_ADDRESS+ 0x2d ))|0x01);
 		//DEBUG(( EFI_D_ERROR, "  0x82d=0x%x \n",IoRead8( PM_BASE_ADDRESS+0x2d)));
 
 	//JNY20180115 add for CHX002 signal socket-S 
@@ -276,7 +276,7 @@ IoTrapHandler(
 			UINT8 data8;
 			UINT32 mmiobase;
 			mmiobase = (PCIRead32(CHX002_BUSC|0xBC))<<8;
-			if((Idx==4)||(Idx==6)||(Idx==0xF))
+			if((Idx==4)||(Idx==6)||(Idx==0xF)||(Idx==0xE))
 				*(volatile UINT32 *)(UINTN)(mmiobase+0x54)=0;
 			
 			data = *(volatile UINT32 *)(UINTN)(0xE0003124);
@@ -288,7 +288,7 @@ IoTrapHandler(
 				DEBUG(( EFI_D_ERROR, "	IO 0x3C2=0x%x \n",IoRead8(0x3C2)));
 			}
 		}
-		if((Idx==4)||(Idx==6)||(Idx==0xF))
+		if((Idx==4)||(Idx==6)||(Idx==0xF)||(Idx==0x0E))
 			IoWrite8( 0xCF9, Idx );
 	
 		return EFI_SUCCESS;
