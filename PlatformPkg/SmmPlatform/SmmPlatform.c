@@ -277,6 +277,50 @@ VOID SleepCommonHandler(UINT8 SleepType)
   SetAfterPowerLoss();
   TurnOffKbLed();
 
+  //clear SuperIO Kb/Ms event detected status.
+  //20170717-IVES:if not clear the status of SIO,PS2 KB/MS can not Enter Sx state.
+  #ifdef HX002EH0_01
+  if(SleepType == 3 || SleepType == 1 || SleepType == 4)
+  {
+  	//;EnterCfg Mode
+	IoWrite8(0x2E,0x87);
+	IoWrite8(0x2E,0x01);
+	IoWrite8(0x2E,0x55);
+	IoWrite8(0x2E,0x55);
+	// LDN = 05
+	IoWrite8(0x2E,0x07);
+	IoWrite8(0x2F,0x05);
+
+	IoWrite8(0x2E,0x30);
+	IoWrite8(0x2F,0x00);
+	// LDN = 06
+	IoWrite8(0x2E,0x07);
+	IoWrite8(0x2F,0x06);
+
+	IoWrite8(0x2E,0x30);
+	IoWrite8(0x2F,0x00);
+	// LDN = 04
+	IoWrite8(0x2E,0x07);
+	IoWrite8(0x2F,0x04);
+	// 0xF0[4:3] enable kb/ms event.
+	IoWrite8(0x2E,0xF0);
+	IoWrite8(0x2F,0x18);
+	// 0xF1[4:3] clear status
+	IoWrite8(0x2E,0xF1);
+	IoWrite8(0x2F,0xFF);
+	// 0xF2[6] = 0,enable PME# output control.
+	IoWrite8(0x2E,0xF2);
+	IoWrite8(0x2F,0x04);
+
+	//ExitCfg Mode
+	IoWrite8(0x2E,0x02);
+	IoWrite8(0x2F,0x02);
+
+	//clear PMIO Rx20 status.
+	IoWrite16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_STA,IoRead16(mAcpiBaseAddr + PMIO_GENERAL_PURPOSE_STA));
+  	}
+	#endif
+	
  //LNA-2016111501-S 
   //PCIE S3 PME_Turn_Off Message
   //[Note] Those code executed in S3/S4/S5

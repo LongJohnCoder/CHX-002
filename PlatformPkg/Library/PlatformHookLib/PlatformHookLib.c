@@ -8,6 +8,8 @@
 
 #define SIO_Index_Port 0x4E
 #define SIO_Data_Port SIO_Index_Port + 1
+#define SIO_Index_Port1 0x2E
+#define SIO_Data_Port1 SIO_Index_Port1 + 1
 
 #define VART_BRL_REG		0x00	// baud rate low byte register
 #define VART_BRH_REG		0x01	// baud rate high byte register
@@ -56,6 +58,52 @@ EFI_STATUS  SetUartHostCtrlLegacyReg(IN UINT16 BaseAddr)
      return EFI_SUCCESS;
 }
 
+EFI_STATUS SuperIOUart_Init()
+{
+	UINT16 BaseAddr;
+
+	// EnterCfg Mode
+	IoWrite8(SIO_Index_Port1, 0x87);
+	IoWrite8(SIO_Index_Port1, 0x01);
+	IoWrite8(SIO_Index_Port1, 0x55);
+	IoWrite8(SIO_Index_Port1, 0x55);
+
+	IoWrite8(SIO_Index_Port1, 0x60);
+	IoWrite8(SIO_Data_Port1, 0x03);
+
+	//;Select LDN3
+	IoWrite8 (SIO_Index_Port1, 0x07);
+	IoWrite8 (SIO_Data_Port1, 0x01); 
+
+	//;Set base address to 3F8h
+	IoWrite8 (SIO_Index_Port1, 0x60);
+	IoWrite8 (SIO_Data_Port1, 0x03);
+	IoWrite8 (SIO_Index_Port1, 0x61);
+	IoWrite8 (SIO_Data_Port1, 0xF8);
+
+	//;Set IRQ=04h
+	IoWrite8 (SIO_Index_Port1, 0x70);
+	IoWrite8 (SIO_Data_Port1, 0x04);
+
+	IoWrite8 (SIO_Index_Port1, 0xF0);
+	IoWrite8 (SIO_Data_Port1, 0x01);   // IVS-20170410 Level Trigger-shared
+
+	IoWrite8 (SIO_Index_Port1, 0xF1);
+	IoWrite8 (SIO_Data_Port1, 0x55);	
+
+	//;Enable UART
+	IoWrite8 (SIO_Index_Port1, 0x30);
+	IoWrite8 (SIO_Data_Port1, 0x01);
+
+	//ExitCfg Mode
+	IoWrite8(SIO_Index_Port1,0x02);
+	IoWrite8(SIO_Data_Port1,0x02);
+
+	BaseAddr = 0x3F8;		
+	SetUartHostCtrlLegacyReg(BaseAddr);
+		
+    return EFI_SUCCESS;
+  }
 
 EFI_STATUS LpcUart_Init()
 {
@@ -244,6 +292,10 @@ PlatformHookSerialPortInitialize (
   VOID
   )
 {
+
+#if defined(HX002EH0_01)
+	  SuperIOUart_Init();
+#else
 	// For CHX002 EVBs, UART0's pin mux with PCIE-RST, so default use onboard UART1 as DEBUG BIOS's log output port.
 	// UART0 not initialize anymore, keep related registers' default setting. 
 	// IOBASE setting ---- UART0 : 3F8h ; UART1 : 2F8h ; UART2 : 3E8h ; UART3:2E8h 
@@ -259,6 +311,7 @@ PlatformHookSerialPortInitialize (
 		//LpcUart_Init();
 		VT6576B_SIOUart_Init();
 	}
+#endif
   return EFI_SUCCESS;
 }
 

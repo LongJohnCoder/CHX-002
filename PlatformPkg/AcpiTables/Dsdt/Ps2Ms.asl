@@ -45,11 +45,17 @@ Device (PS2M)
     {
         Store (Arg0, MSFG)
     }
-
+#ifdef HX002EH0_01
+    Method (_PRW, 0, NotSerialized)  
+    {
+        Return (GPRW(0x05, \MXDW))
+    }
+#else
     Method (_PRW, 0, NotSerialized)  
     {
         Return (GPRW(0x09, \MXDW))
     }
+#endif
 }
 
 Scope (\)

@@ -16,7 +16,12 @@
 /// Maybe should revise it with CHX001 EVB layout.
 #define ONBOARD_LAN_BRIDGE_DEV_NUM     5
 
-#define THERMAL_IC_SUPPORT             1
+//ives_20170628
+#if defined(HX002EH0_01)
+	#define THERMAL_IC_SUPPORT             0
+#else
+	#define THERMAL_IC_SUPPORT             1
+#endif
 #define    DRAM_Vol_IC_SUPPORT          0
 #define   ADM1032_SMB_SLAVE_ADDR       0x4C
 #define   TPS53819A_SMB_SLAVE_ADDR     0x10

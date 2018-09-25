@@ -56,10 +56,24 @@ SerialPortReadRegister (
   UINTN  Offset
   )
 {
+	UINTN SerialRegisterBase;
+
+	if(PcdGetBool(PcdBiosDebugUsePciUart) == TRUE) {
+		SerialRegisterBase = (UINTN)PcdGet64 (PcdSerialRegisterBase);
+	} else {
+		SerialRegisterBase = 0x3F8;
+	}
+
+#ifdef HX002EH0_01
+	SerialRegisterBase = 0x3F8;
+#endif
+
+	
+
   if (PcdGetBool (PcdSerialUseMmio)) {
-    return MmioRead8 ((UINTN)PcdGet64 (PcdSerialRegisterBase) + Offset);
+    return MmioRead8 ((UINTN) SerialRegisterBase+ Offset);
   } else {
-    return IoRead8 ((UINT16)PcdGet64 (PcdSerialRegisterBase) + Offset);
+    return IoRead8 ((UINT16)SerialRegisterBase+ Offset);
   }
 }
 
@@ -81,10 +95,25 @@ SerialPortWriteRegister (
   UINT8  Value
   )
 {
-  if (PcdGetBool (PcdSerialUseMmio)) {
-    return MmioWrite8 ((UINTN)PcdGet64 (PcdSerialRegisterBase) + Offset, Value);
+
+  UINTN SerialRegisterBase;
+  
+  if(PcdGetBool(PcdBiosDebugUsePciUart) == TRUE) {
+	  SerialRegisterBase = (UINTN)PcdGet64 (PcdSerialRegisterBase);
   } else {
-    return IoWrite8 ((UINT16)PcdGet64 (PcdSerialRegisterBase) + Offset, Value);
+	  SerialRegisterBase = 0x3F8;
+  }
+
+#ifdef HX002EH0_01
+	SerialRegisterBase = 0x3F8;
+#endif
+
+
+
+  if (PcdGetBool (PcdSerialUseMmio)) {
+    return MmioWrite8 ((UINTN)SerialRegisterBase + Offset, Value);
+  } else {
+    return IoWrite8 ((UINT16)SerialRegisterBase+ Offset, Value);
   }
 }
 

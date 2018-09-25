@@ -21,9 +21,15 @@ $END--------------------------------------------------------------------
 **/
 #ifdef DEVICES_FORM_SET
   #ifdef FORM_SET_GOTO
-      goto CHIPSET_SB_UART_FORM_ID,
+     #ifdef HX002EH0_01
+       suppressif TRUE;
+     #endif
+        goto CHIPSET_SB_UART_FORM_ID,
         prompt = STRING_TOKEN(STR_UART_FORM),
         help = STRING_TOKEN(STR_EMPTY);
+     #ifdef HX002EH0_01
+       endif;
+     #endif
   #endif
 
   #ifdef FORM_SET_FORM
@@ -33,12 +39,21 @@ $END--------------------------------------------------------------------
 
       subtitle text = STRING_TOKEN(STR_COM_EMPTY);
       
+#ifdef HX002EH0_01
+        oneof varid   = SETUP_DATA.OnChipUartMode,
+        prompt   = STRING_TOKEN(STR_UART_MODE),
+        help   = STRING_TOKEN(STR_UART_MODE_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PCI_UART), value = 1, flags = RESET_REQUIRED;
+       endoneof; 
+#else      
         oneof varid   = SETUP_DATA.OnChipUartMode,
         prompt   = STRING_TOKEN(STR_UART_MODE),
         help   = STRING_TOKEN(STR_UART_MODE_HELP),
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
         option text = STRING_TOKEN(STR_PCI_UART), value = 1, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
        endoneof; 
+#endif
   suppressif
     ideqval SETUP_DATA.OnChipUartMode == 0;
       

@@ -25,6 +25,8 @@ InitSmbus (
   IN CONST EFI_PEI_SERVICES  **PeiServices
 );
 
+VOID SioInit();
+
 VOID InitSVADDefTable
 (  IN CONST EFI_PEI_SERVICES      **PeiServices
 );
@@ -315,6 +317,8 @@ EarlyPeiEntry (
 
   Status = PeiServicesInstallPpi(gPpiList);
   ASSERT_EFI_ERROR(Status);
+  
+  SioInit();
 
   return Status;  
 }  

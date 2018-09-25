@@ -40,3 +40,4 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialBaudRate
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialLineControl
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialFifoControl
+  gEfiMdeModulePkgTokenSpaceGuid.PcdBiosDebugUsePciUart

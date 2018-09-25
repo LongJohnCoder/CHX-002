@@ -17,6 +17,7 @@
   PlatformEarlyPei.c
   Smbus.c
   Vad.c
+  Sio.c
 
 [Packages]
   MdePkg/MdePkg.dec

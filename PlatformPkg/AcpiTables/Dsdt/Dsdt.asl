@@ -913,65 +913,105 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
                             )
                     })
                 }
-
-                include("Ps2Kb.asl")
-                include("Ps2Ms.asl")
                 
-//HYL-2016101802 #ifdef MDEPKG_NDEBUG                        // release mode.  
-/* //HYL-2016101802
-                Scope (^^PCI0)
-                {
-                    OperationRegion (SBRG.UAIR, PCI_Config, 0xB1, 0x02)
-                    Field (SBRG.UAIR, ByteAcc, NoLock, Preserve)
-                    {
-                        UAI3,   4,
-                        UAI4,   4,
-                        UAI1,   4,      // PCI UART 0 IRQ Routing 
-                        UAI2,   4
-                    }
 
-                    OperationRegion (SBRG.UA1B, PCI_Config, 0xB3, One)
-                    Field (SBRG.UA1B, ByteAcc, NoLock, Preserve)
-                    {
-                        UAB1,   7,      // PCI UART 0 & USIO I/O Base Address [9:3]
-                        UAE1,   1       // PCI UART 0 Legacy Mode Enable 
-                    }
+#ifdef HX002EH0_01   
 
-                    Device (UAR1)
-                    {
-                        Name (_HID, EisaId ("PNP0501"))  
-                        Name (_UID, One)  
-                        Name (_DDN, "COM1")  
-                        Method (_STA, 0, NotSerialized)  
-                        {
-                            If (UAE1){
-                                Return (0x0F)
-                            } Else {
-                                Return (Zero)
-                            }
-                        }
+	#include "Ite.asl"
 
-                        Method (_CRS, 0, Serialized)  
-                        {
-                            Name (BFU1, ResourceTemplate() {
-                                IO (Decode16, 0x03F8, 0x03F8, 0x08, 0x08, _Y12)
-                                IRQ (Level, ActiveLow, Shared, _Y13){4}
-                            })
-                            CreateWordField(BFU1, \_SB.PCI0.UAR1._CRS._Y12._MIN, U1BL)  
-                            CreateWordField(BFU1, \_SB.PCI0.UAR1._CRS._Y12._MAX, U1BH)  
-                            CreateWordField(BFU1, \_SB.PCI0.UAR1._CRS._Y13._INT, U1IN)  
-                            ShiftLeft(UAB1, 3, Local0)
-                            Store(Local0, U1BL)
-                            Store(Local0, U1BH)
-                            ShiftLeft(1, UAI1, U1IN)
-                            Return (BFU1)
-                        }
-                    }
-                }
-*/ //HYL-2016101802 
+    Device (UAR1)
+    {
+        Name (_HID, EisaId ("PNP0501"))  // _HID: Hardware ID
+        Name (_UID, One)  // _UID: Unique ID
+        Name (_DDN, "COM1")  // _DDN: DOS Device Name
+        Method (_STA, 0, NotSerialized)  // _STA: Status
+        {
+          Return (0x0F)
+        }
+
+        Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+        {
+            Name (BFU1, ResourceTemplate ()
+            {
+                IO (Decode16,
+                    0x03F8,             // Range Minimum
+                    0x03F8,             // Range Maximum
+                    0x08,               // Alignment
+                    0x08,               // Length
+                    CB1)
+                //IRQ (Level, ActiveLow, Shared,) {4}
+               IRQNoFlags(){4}
+            })
+            Return (BFU1)
+        }
+    }
+
+    Device (UAR2)
+    {
+        Name (_HID, EisaId ("PNP0501"))  // _HID: Hardware ID
+        Name (_UID, 0x02)  // _UID: Unique ID
+        Name (_DDN, "COM2")  // _DDN: DOS Device Name
+        Method (_STA, 0, NotSerialized)  // _STA: Status
+        {
+          Return (0x0F)
+        }
+
+        Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+        {
+            Name (BFU2, ResourceTemplate ()
+            {
+                IO (Decode16,
+                    0x02F8,             // Range Minimum
+                    0x02F8,             // Range Maximum
+                    0x08,               // Alignment
+                    0x08,               // Length
+                    CB2)
+                    //IRQ (Level, ActiveLow, Shared,) {3}
+                    IRQNoFlags(){3}
+            })
+            Return (BFU2)
+        }
+    }
+
+    Device (LPT)
+    {
+        Name (_HID, EisaId ("PNP0400"))  // _HID: Hardware ID
+        Name (_UID, 0x01)  // _UID: Unique ID
+        Name (_DDN, "LPT1")  // _DDN: DOS Device Name
+        Method (_STA, 0, NotSerialized)  // _STA: Status
+        {
+          ENFG()
+          Store(0x03,LDN)
+          if(ACTR){
+           EXFG()
+           Return (0x0F)
+           }else{
+           EXFG()
+           return (0x00)
+           }
+        }
+
+        Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+        {
+            Name (BFU3, ResourceTemplate ()
+            {
+                IO (Decode16,
+                    0x0378,             // Range Minimum
+                    0x0378,             // Range Maximum
+                    0x08,               // Alignment
+                    0x08,               // Length
+                    CB3)
+               IRQNoFlags(){7}
+            })
+            Return (BFU3)
+        } 
+    }
+#else
 		include("Uart.asl")	//HYL-2016101802
-//HYL-2016101802 #endif
-
+#endif
+		    include("Ps2Kb.asl")
+		    include("Ps2Ms.asl")
+		    
                 Device (HPET)
                 {
                     Name (_HID, EisaId ("PNP0103"))  
@@ -1539,7 +1579,33 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
       Store (Zero, Index (WAKP, One))
       ASL_COM((1, "PTSE", 0))    
     }
+#ifdef HX002EH0_01
+    Method (_WAK, 1, NotSerialized)
+    {
+    	\_SB.PCI0.SBRG.ENFG()
+		Store(0x04,\_SB.PCI0.SBRG.LDN)
+		Store(0x44,\_SB.PCI0.SBRG.OPT2)
+		Store(0x00,\_SB.PCI0.SBRG.OPT0)
+		
+		Store(0x05,\_SB.PCI0.SBRG.LDN)
+		Store(0x01,\_SB.PCI0.SBRG.ACTR)
+		
+		Store(0x06,\_SB.PCI0.SBRG.LDN)
+		Store(0x01,\_SB.PCI0.SBRG.ACTR)
+		\_SB.PCI0.SBRG.EXFG()
+		
+      ASL_COM((1, "_WAK", 0))
+      ShiftLeft (Arg0, 0x04, DBG8)
+      \_SB.PCI0.SBRG.SWAK(Arg0)
 
+      If (DerefOf(Index (WAKP, Zero))) {
+        Store(Zero, Index (WAKP, One))
+      } Else {
+        Store(Arg0, Index (WAKP, One))
+      }
+      ASL_COM((1, "WAKE", 0))
+    }
+#else
     Method (_WAK, 1, NotSerialized)
     {
       ASL_COM((1, "_WAK", 0))
@@ -1554,6 +1620,8 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
       ASL_COM((1, "WAKE", 0))
       Return (WAKP)
     }
+#endif
+
 
  
     Method (_SB._OSC, 4, NotSerialized){

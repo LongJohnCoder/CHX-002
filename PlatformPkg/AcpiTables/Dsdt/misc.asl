@@ -55,6 +55,30 @@
 #ifndef MDEPKG_NDEBUG                                   // debug mode  
 
 
+#if defined(HX002EH0_01)
+    Method(TCOM, 1, Serialized)
+    {
+      OperationRegion(COM3, SystemIO, 0x3F8, 0x08)
+      Field(COM3, ByteAcc, NoLock, Preserve)
+      {
+        DAT8, 8,
+        Offset(5),
+            , 5,
+        TRDY, 1,
+      }
+   
+      Add(SizeOf(Arg0), One, Local0)
+      Name(BUF0, Buffer(Local0){})
+      Store(Arg0, BUF0)
+      store(0, Local1)
+      Decrement(Local0)
+      While(LNotEqual(Local1, Local0)){
+        while(LEqual(TRDY, Zero)){}
+        Store(DerefOf(Index(BUF0, Local1)), DAT8)
+        Increment(Local1)
+      }
+    }
+#else
     Method(TCOM, 1, Serialized)
     {
       OperationRegion(COM2, SystemIO, 0x2F8, 0x08)
@@ -77,6 +101,8 @@
         Increment(Local1)
       }
     }
+
+#endif
  
     Method(DBGC, 3, Serialized)      // DBGC(count, string, int)
     {

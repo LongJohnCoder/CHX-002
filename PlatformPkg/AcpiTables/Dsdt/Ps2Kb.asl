@@ -35,11 +35,17 @@ Device (PS2K)
   {
     Store (Arg0, KBFG)
   }
-
+#ifdef HX002EH0_01
+  Method (_PRW, 0, NotSerialized)  
+  {
+    Return (GPRW (0x05, \MXDW))
+  }
+#else
   Method (_PRW, 0, NotSerialized)  
   {
     Return (GPRW (0x02, \MXDW))
   }
+#endif
 }
 
 Scope (\)
