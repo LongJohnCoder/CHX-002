@@ -400,10 +400,10 @@ Revision History:
  goto CPU_DEBUG_FORM_ID, //GRW-add-1127
       prompt = STRING_TOKEN(STR_CPU_DEBUG_FORM),
       help   = STRING_TOKEN(STR_CPU_DEBUG_FORM);
-	  
+#endif
   endform;  //end CHIPSET DEBUG FORM
   
-  
+#ifdef ZX_SECRET_CODE
   form formid = AUTO_ID(CPU_DEBUG_FORM_ID),//GRW-add-1127
 
      title = STRING_TOKEN(STR_CPU_DEBUG_FORM);

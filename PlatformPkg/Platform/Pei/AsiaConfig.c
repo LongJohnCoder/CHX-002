@@ -618,7 +618,9 @@ DramCfg->DramRxTxTimingHardCode= SetupData->DramRxTxTimingHardCode;
 	 DramCfg->BASelect= SetupData->BASelect;
 	 DramCfg->EccPatrolScrub= SetupData->EccPatrolScrub;
 	 DramCfg->DRAMErrControl= SetupData->DRAMErrControl;
+	 #ifdef ZX_SECRET_CODE
 	 DramCfg->CPU_FSBC_ON= SetupData->CPU_FSBC_DRAM_ON; //FSBC Debug Mode
+	 #endif
 	 DramCfg->TxVref = SetupData->TxVref;
 	 DramCfg->TxVrefAllByte = SetupData->TxVrefAllByte;
    DramCfg->Perf_Turnaround = SetupData->Perf_Turnaround;

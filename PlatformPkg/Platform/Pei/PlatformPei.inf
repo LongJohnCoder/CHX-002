@@ -55,8 +55,9 @@
   ReportStatusCodeLib
   PerformanceLib
   PlatformCommLib
+  #ifdef ZX_SECRET_CODE
   CpuDebugLib
-
+  #endif
 
 [Guids]
   gEfiMemoryTypeInformationGuid
