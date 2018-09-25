@@ -271,8 +271,8 @@ EFI_STATUS InstallAcpiTableDmar()
 	RmrrTableHeaderPointer->Length 					= 0;//this field will be updated later
 	//Skip initialization of Reserved field
 	RmrrTableHeaderPointer->SegmentNo 				= PLATFORM_SEGMENT_NUM;
-	RmrrTableHeaderPointer->Reserved_mem_base_addr 	= PcdGet64(PcdxhciFWAddr);
-	RmrrTableHeaderPointer->Reserved_mem_limit_addr = RmrrTableHeaderPointer->Reserved_mem_base_addr + PcdGet32(PcdxhciFWSize);
+	RmrrTableHeaderPointer->Reserved_mem_base_addr 	= PcdGet64(PcdXhciFWAddr);
+	RmrrTableHeaderPointer->Reserved_mem_limit_addr = RmrrTableHeaderPointer->Reserved_mem_base_addr + PcdGet32(PcdXhciFWSize);
 	if(RmrrTableHeaderPointer->Reserved_mem_limit_addr % 0x1000 == 0)//This range must be 4K aligned according to VT-d Spec, and limit must be the last address in a 4K range.
 	  RmrrTableHeaderPointer->Reserved_mem_limit_addr--;
 	else

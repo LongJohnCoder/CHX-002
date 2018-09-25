@@ -135,8 +135,10 @@ CpuDebugLib
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultCreatorId        ## SOMETIMES_CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultCreatorRevision  ## SOMETIMES_CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor
-  gEfiMdeModulePkgTokenSpaceGuid.PcdxhciFWAddr
-  gEfiMdeModulePkgTokenSpaceGuid.PcdxhciFWSize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdXhciFWAddr
+  gEfiMdeModulePkgTokenSpaceGuid.PcdXhciFWSize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWAddr
+  gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWSize
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWAddr
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWSize
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATAAddr

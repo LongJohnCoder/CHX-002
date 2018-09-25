@@ -97,8 +97,10 @@
   gPlatformModuleTokenSpaceGuid.PcdIoeXhciFwFile
   ##endif
   gPlatformModuleTokenSpaceGuid.PcdInternalShellEnable
-  gEfiMdeModulePkgTokenSpaceGuid.PcdxhciFWAddr
-  gEfiMdeModulePkgTokenSpaceGuid.PcdxhciFWSize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdXhciFWAddr
+  gEfiMdeModulePkgTokenSpaceGuid.PcdXhciFWSize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWAddr
+  gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWSize
 
 [Depex]
   TRUE

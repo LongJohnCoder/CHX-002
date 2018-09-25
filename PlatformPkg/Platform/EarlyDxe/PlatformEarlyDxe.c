@@ -177,8 +177,8 @@ STATIC EFI_STATUS HandleXhciFw (
         }
 
         //JRZ add for XHCI RMRR table
-        PcdSet64(PcdxhciFWAddr, (UINT64)Address);
-        PcdSet32(PcdxhciFWSize, (UINT32)EFI_PAGES_TO_SIZE(Pages));
+        PcdSet64(PcdXhciFWAddr, (UINT64)Address);
+        PcdSet32(PcdXhciFWSize, (UINT32)EFI_PAGES_TO_SIZE(Pages));
 
         McuFw = (EFI_PHYSICAL_ADDRESS)ALIGN_VALUE(Address, SIZE_64KB);
 
@@ -642,8 +642,8 @@ HandleIoeXhciFwImp(
                 );
   ASSERT_EFI_ERROR(Status);
 
-//  PcdSet64(PcdxhciFWAddr, (UINT64)Address);
-//  PcdSet32(PcdxhciFWSize, (UINT32)EFI_PAGES_TO_SIZE(Pages));
+  PcdSet64(PcdIoeXhciFWAddr, (UINT64)Address);
+  PcdSet32(PcdIoeXhciFWSize, (UINT32)EFI_PAGES_TO_SIZE(Pages));
 
   IoeXhciFw = (VOID*)(UINTN)ALIGN_VALUE(Address, SIZE_64KB);
 
@@ -1428,6 +1428,11 @@ PlatformEarlyDxeEntry (
 		  DEBUG((DEBUG_ERROR,"[CJW_IOE_FW] Setup: Skip CND003 Autofill\n")); 
 	  }
 	  //;cjw-A0-debug END
+
+    if (BootMode != BOOT_IN_RECOVERY_MODE) {
+        Status= HandleIoeXhciFw();
+        ASSERT_EFI_ERROR(Status);
+    }
 ////JNY-CND003 FW autofill -E	  
 #endif
 

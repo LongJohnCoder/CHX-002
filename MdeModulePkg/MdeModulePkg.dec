@@ -992,9 +992,11 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupExitNeedReset|FALSE|BOOLEAN|0x000300003
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialTerminalSupport|TRUE|BOOLEAN|0x000300004
   
-  gEfiMdeModulePkgTokenSpaceGuid.PcdxhciFWAddr|0|UINT64|0x000300005
-  gEfiMdeModulePkgTokenSpaceGuid.PcdxhciFWSize|0|UINT32|0x000300006
+  gEfiMdeModulePkgTokenSpaceGuid.PcdXhciFWAddr|0|UINT64|0x000300005
+  gEfiMdeModulePkgTokenSpaceGuid.PcdXhciFWSize|0|UINT32|0x000300006
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWAddr|0|UINT64|0x000300007
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWSize|0|UINT32|0x000300008
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATAAddr|0|UINT64|0x000300009
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATASize|0|UINT32|0x00030000A
+  gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWAddr|0|UINT64|0x00030000B
+  gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWSize|0|UINT32|0x00030000C

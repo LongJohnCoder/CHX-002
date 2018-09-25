@@ -548,8 +548,10 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow|0
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|0
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|0
-  gEfiMdeModulePkgTokenSpaceGuid.PcdxhciFWAddr|0x0
-  gEfiMdeModulePkgTokenSpaceGuid.PcdxhciFWSize|0x0
+  gEfiMdeModulePkgTokenSpaceGuid.PcdXhciFWAddr|0x0
+  gEfiMdeModulePkgTokenSpaceGuid.PcdXhciFWSize|0x0
+  gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWAddr|0x0
+  gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWSize|0x0
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWAddr|0x0
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWSize|0x0
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATAAddr|0x0
