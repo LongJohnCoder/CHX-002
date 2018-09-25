@@ -232,6 +232,7 @@ GotSetupVariable:
   SbCfg->ACAdapterControl= SetupData->ACAdapterControl;
   SbCfg->CpuFanStartTemperature = SetupData->CpuFanStartTemperature;
   SbCfg->MsiSupport= SetupData->MsiSupport;
+  SbCfg->LPTControl = SetupData->LPTControl;
   ///
   SbCfg->SBDynamicClkControl  = SetupData->SBDynamicClkControl;  
   SbCfg->TMRCDynamicClkControl  = SetupData->TMRCDynamicClkControl;

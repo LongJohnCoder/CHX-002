@@ -299,7 +299,18 @@ Revision History:
         option text = STRING_TOKEN(STR_WDT240), value = 2, flags = RESET_REQUIRED;
        endoneof;         
 #endif
-//HYL-2018062901-end  
+//HYL-2018062901-end 
+
+	#ifdef HX002EH0_01
+	subtitle text = STRING_TOKEN(STR_EMPTY);
+     oneof varid = SETUP_DATA.LPTControl,
+      prompt   = STRING_TOKEN(STR_LPT_CTRL),
+      help     = STRING_TOKEN(STR_LPT_CTRL_HELP),
+      option text = STRING_TOKEN(STR_LPT),  value = 1, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_PORT80), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+     endoneof;
+    #endif
+
 	   
     endform; //end CHIPSET_ADVANCED_CTRL_FORM_ID
     

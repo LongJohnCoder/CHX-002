@@ -82,7 +82,7 @@ VOID InitSioUart1Uart2()
 
 
 //Ives_20161207
-VOID InitSioParallel()   // IVS-20170410 Enable parallel ,disable 80port
+VOID InitSioParallel()   // IVS-20170410 Enable 80Port ,disable LPT
 {
 	// EnterCfg Mode
 	IoWrite8(0x2E,0x87);
@@ -110,7 +110,14 @@ VOID InitSioParallel()   // IVS-20170410 Enable parallel ,disable 80port
 
 	IoWrite8(0x2E,0x74);
 	IoWrite8(0x2F,0x03);
+	
+	IoWrite8(0x2E,0xF0); //Enable Port 80
+	IoWrite8(0x2F,0x00);
+	
+	IoWrite8(0x2E,0x30);//Disable LPT
+	IoWrite8(0x2F,0x00);
 
+	
 	//ExitCfg Mode
 	IoWrite8(0x2E,0x02);
 	IoWrite8(0x2F,0x02);

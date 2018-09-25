@@ -475,7 +475,7 @@ typedef struct {
    UINT8 ACAdapterControl;
    UINT8 CpuFanStartTemperature;
    UINT8 MsiSupport;
-   
+   UINT8 LPTControl;
    UINT8 eBMCSettleTime;
 #ifdef ZX_SECRET_CODE
    UINT8 KBDCLegacySelControl;
