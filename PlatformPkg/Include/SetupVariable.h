@@ -196,6 +196,8 @@ typedef struct {
    UINT8 RxVref;
    UINT16 TxVref;
    UINT8 TxVrefAllByte;
+   UINT8 DDRComp;
+   UINT8 Dram_Console;
    UINT8 Perf_Turnaround;
    UINT8 RRankRDelay;
    UINT8 RRankWDelay;

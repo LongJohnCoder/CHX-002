@@ -624,6 +624,8 @@ DramCfg->DramRxTxTimingHardCode= SetupData->DramRxTxTimingHardCode;
 	 #endif
 	 DramCfg->TxVref = SetupData->TxVref;
 	 DramCfg->TxVrefAllByte = SetupData->TxVrefAllByte;
+   DramCfg->DDRComp = SetupData->DDRComp;
+   DramCfg->Dram_Console = SetupData->Dram_Console;
    DramCfg->Perf_Turnaround = SetupData->Perf_Turnaround;
      DramCfg->SwapChAB = SetupData->SwapChAB;
      DramCfg->ScanIOTiming = SetupData->ScanIOTiming;
