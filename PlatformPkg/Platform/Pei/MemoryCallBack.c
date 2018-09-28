@@ -311,7 +311,11 @@ ReportResourceForDxe (
     EFI_RESOURCE_MEMORY_RESERVED,
     Attributes,
     MemInfo->LowMemSize,
+#ifdef ZX_TXT_SUPPORT
+    S3_PEI_MEMORY_SIZE + S3_DATA_RECORD_SIZE + MemInfo->DprSize + MemInfo->TSegSize
+#else
     S3_PEI_MEMORY_SIZE + S3_DATA_RECORD_SIZE + MemInfo->TSegSize
+#endif
     );  
 
 //Eric debug for dual socket
