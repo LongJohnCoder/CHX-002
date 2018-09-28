@@ -69,7 +69,10 @@
   MtrrLib
   PlatformCommLib
   TimerLib
-CpuDebugLib
+#ifdef ZX_SECRET_CODE
+  CpuDebugLib
+#endif
+
 [Guids]
   gEfiPlatformMemInfoGuid
   gPlatformSetupVariableGuid

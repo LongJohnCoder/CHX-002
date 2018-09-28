@@ -735,13 +735,6 @@ SetMSR (
 
 	//MSR 0x1307,BSP or AP??? dual socket???
 	if(cpuid==0x0){
-		/*
-#ifdef CHX002_PXP
-	AsmWriteMsr64(0x1307,0x00000000004000);//Tr70
-#else
-	AsmWriteMsr64(0x1307,0x00000000100000);//Tr70
-#endif
-*/
 		AsmWriteMsr64(0x1307,context->NumOfInstPer2Dump);//Tr70
 	}
 	else{

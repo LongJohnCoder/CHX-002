@@ -310,11 +310,7 @@ CpuDebug()
 	
 	if(gSetupData->CPU_TRACER_EN){
 		IoWrite8(0x80,0xae);
-#ifdef CHX002_PXP
-    	NumOfInstPer2Dump = 0x00000000004000;
-#else
-    	NumOfInstPer2Dump = (UINT32)gSetupData->CPU_TRACER_INSTRUCTION_INTERVAL;
-#endif
+		NumOfInstPer2Dump = (UINT32)gSetupData->CPU_TRACER_INSTRUCTION_INTERVAL;
 		EnableMPTracer(NumOfInstPer2Dump,MasterAddress,SlaveAddress);
 		
 		FsbcConfig.MasterFsbcBase +=SIZE_256MB;

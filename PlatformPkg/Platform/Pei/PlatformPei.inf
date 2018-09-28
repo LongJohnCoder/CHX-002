@@ -26,7 +26,9 @@
   EnumPci.c
   Ssid.c
   #PciHotPlug.c
- CpuDebugPei.c
+#ifdef ZX_SECRET_CODE
+  CpuDebugPei.c
+#endif
   
 
 [Packages]
@@ -55,9 +57,9 @@
   ReportStatusCodeLib
   PerformanceLib
   PlatformCommLib
-  #ifdef ZX_SECRET_CODE
+#ifdef ZX_SECRET_CODE
   CpuDebugLib
-  #endif
+#endif
 
 [Guids]
   gEfiMemoryTypeInformationGuid
