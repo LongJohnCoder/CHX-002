@@ -124,7 +124,7 @@ Revision History:
         flags  = 0, 
         key    = 0;  
 
-
+#ifndef HX002EH0_01
 	  oneof varid = SETUP_DATA.CpuFanStartTemperature,
         prompt      = STRING_TOKEN(STR_CPU_CPU_FAN_START_TEMP),
         help        = STRING_TOKEN(STR_CPU_CPU_FAN_START_TEMP_HELP),
@@ -134,7 +134,7 @@ Revision History:
 		option text = STRING_TOKEN(STR_60_DEGREE),  value = 3, flags = RESET_REQUIRED ;          
 		option text = STRING_TOKEN(STR_80_DEGREE),  value = 4, flags = RESET_REQUIRED ;                  
       endoneof;  
-        
+#endif        
      // oneof varid = SETUP_DATA.Pmon,
      //   prompt      = STRING_TOKEN(STR_CPU_PMON),
     //    help        = STRING_TOKEN(STR_CPU_PMON_HELP),
