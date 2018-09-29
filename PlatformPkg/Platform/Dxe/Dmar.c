@@ -58,6 +58,19 @@ typedef struct {
 } DMAR_DEVICE_SCOPE;
 
 typedef struct {
+  UINT8     Type;
+  UINT8     Length;
+  UINT16    Reserved;
+  UINT8     EnumID;
+  UINT8     StartBusNo;
+  UINT8     Path_RP[2];//RP{3,0} -> PEEP{0,0} -> PESB{8,0} -> PCIEIF{0,0} -> xhci{18,0}
+  UINT8     Path_PEEP[2];
+  UINT8     Path_PESB[2];
+  UINT8     Path_PCIEIF[2];
+  UINT8     Path_xhci[2];
+} DMAR_DEVICE_SCOPE_IOE_XHCI;
+
+typedef struct {
   UINT16			  Type;
   UINT16			  Length;
   UINT8 			  Flags;
@@ -117,9 +130,21 @@ EFI_STATUS InstallAcpiTableDmar()
   UINT8 XHCI_RMRR_flag = 0;
   UINT8 SPIC_flag = 1;
 
-  if(gAsiaSbCfg->UsbModeSelect == USB_MODE_SEL_MODEB || 
-  	 gAsiaSbCfg->UsbModeSelect == USB_MODE_SEL_MODEC || 
-  	 gAsiaSbCfg->UsbModeSelect == USB_MODE_SEL_MODED )
+#ifdef IOE_EXIST
+  UINT8 IOE_XHCI_RMRR_flag = 0;
+  DMAR_DEVICE_SCOPE_IOE_XHCI	*DeviceScopeIoeXhciPointer = NULL;
+
+  if(gAsiaSbCfg->IOEUsbModeSelect == IOEUSB_MODE_SEL_MODEB || 
+  	 gAsiaSbCfg->IOEUsbModeSelect == IOEUSB_MODE_SEL_MODEC || 
+  	 gAsiaSbCfg->IOEUsbModeSelect == IOEUSB_MODE_SEL_MODED )
+  	IOE_XHCI_RMRR_flag = 1;
+  else
+  	IOE_XHCI_RMRR_flag = 0;
+#endif
+
+	if(gAsiaSbCfg->UsbModeSelect == USB_MODE_SEL_MODEB || 
+	   gAsiaSbCfg->UsbModeSelect == USB_MODE_SEL_MODEC || 
+	   gAsiaSbCfg->UsbModeSelect == USB_MODE_SEL_MODED )
   	XHCI_RMRR_flag = 1;
   else
   	XHCI_RMRR_flag = 0;
@@ -156,6 +181,13 @@ EFI_STATUS InstallAcpiTableDmar()
   	DmarTableSize += sizeof(DMAR_RMRR_TABLE_HEADER);
 	DmarTableSize += sizeof(DMAR_DEVICE_SCOPE);
   }
+#ifdef IOE_EXIST
+	if(IOE_XHCI_RMRR_flag)
+	{
+	  DmarTableSize += sizeof(DMAR_RMRR_TABLE_HEADER);
+	  DmarTableSize += sizeof(DMAR_DEVICE_SCOPE_IOE_XHCI);
+	}
+#endif
 
   if(PEMCU_RMRR_flag)//if PEMCU will be used, a RMRR table and a andd table for PEMCU must be reported.
   {
@@ -294,6 +326,49 @@ EFI_STATUS InstallAcpiTableDmar()
 
 	RmrrTableHeaderPointer->Length = (UINT16)(TablePointer - (UINT8 *)RmrrTableHeaderPointer);
   }
+
+  
+#ifdef IOE_EXIST
+  //fill the memory buffer with RMRR table for ioe xhci if it is necessary.
+  if(IOE_XHCI_RMRR_flag)
+  {
+    RmrrTableHeaderPointer = (DMAR_RMRR_TABLE_HEADER *)TablePointer;
+	RmrrTableHeaderPointer->Type 					= REMAPPING_TYPE_RMRR;
+	RmrrTableHeaderPointer->Length 					= 0;//this field will be updated later
+	//Skip initialization of Reserved field
+	RmrrTableHeaderPointer->SegmentNo 				= PLATFORM_SEGMENT_NUM;
+	RmrrTableHeaderPointer->Reserved_mem_base_addr 	= PcdGet64(PcdIoeXhciFWAddr);
+	RmrrTableHeaderPointer->Reserved_mem_limit_addr = RmrrTableHeaderPointer->Reserved_mem_base_addr + PcdGet32(PcdIoeXhciFWSize);
+	if(RmrrTableHeaderPointer->Reserved_mem_limit_addr % 0x1000 == 0)//This range must be 4K aligned according to VT-d Spec, and limit must be the last address in a 4K range.
+	  RmrrTableHeaderPointer->Reserved_mem_limit_addr--;
+	else
+	  RmrrTableHeaderPointer->Reserved_mem_limit_addr = ((RmrrTableHeaderPointer->Reserved_mem_limit_addr + 0x1000) & 0xFFFFFFFFFFFFF000) - 1;
+	TablePointer += sizeof(DMAR_RMRR_TABLE_HEADER);
+	
+	DEBUG((EFI_D_ERROR,"[JRZ]Ioe xchi RmrrTableBase = 0x%016X\n", RmrrTableHeaderPointer->Reserved_mem_base_addr));
+	DEBUG((EFI_D_ERROR,"[JRZ]Ioe xchi RmrrTableLimit = 0x%016X\n", RmrrTableHeaderPointer->Reserved_mem_limit_addr));
+
+	DeviceScopeIoeXhciPointer = (DMAR_DEVICE_SCOPE_IOE_XHCI *)TablePointer;
+	DeviceScopeIoeXhciPointer->Type 			= DMAR_DEV_SCOPE_TYPE_PCI_EP;
+	DeviceScopeIoeXhciPointer->Length 			= sizeof(DMAR_DEVICE_SCOPE_IOE_XHCI);
+	//Skip initialization of Reserved field
+	DeviceScopeIoeXhciPointer->EnumID 			= 0;
+	DeviceScopeIoeXhciPointer->StartBusNo 		= PLATFORM_START_BUS;
+	DeviceScopeIoeXhciPointer->Path_RP[0] 		= 3;//{2,0},{0,0},{8,0},{0,0},{18,0}
+	DeviceScopeIoeXhciPointer->Path_RP[1] 		= 0;
+	DeviceScopeIoeXhciPointer->Path_PEEP[0] 	= 0;
+	DeviceScopeIoeXhciPointer->Path_PEEP[1] 	= 0;
+	DeviceScopeIoeXhciPointer->Path_PESB[0] 	= 8;
+	DeviceScopeIoeXhciPointer->Path_PESB[1] 	= 0;
+	DeviceScopeIoeXhciPointer->Path_PCIEIF[0] 	= 0;
+	DeviceScopeIoeXhciPointer->Path_PCIEIF[1] 	= 0;
+	DeviceScopeIoeXhciPointer->Path_xhci[0] 	= 18;
+	DeviceScopeIoeXhciPointer->Path_xhci[1] 	= 0;
+	TablePointer += sizeof(DMAR_DEVICE_SCOPE_IOE_XHCI);
+
+	RmrrTableHeaderPointer->Length = (UINT16)(TablePointer - (UINT8 *)RmrrTableHeaderPointer);
+  }
+#endif
 
   //fill the memory buffer with RMRR table for PEMCU if it is necessary.
   if(PEMCU_RMRR_flag)
