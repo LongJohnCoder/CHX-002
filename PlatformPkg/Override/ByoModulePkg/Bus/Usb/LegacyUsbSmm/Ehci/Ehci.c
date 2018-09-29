@@ -1000,6 +1000,8 @@ EhcBulkTransfer (
         EHCI_DEBUG ((EFI_D_ERROR, "EhcBulkTransfer: failed to disable async schedule\n"));
         return EFI_SUCCESS;
     }
+	//[ALJ20180929]need NULL this,or cause debug version hang b8;
+	Ehc->ReclaimHead =NULL;
 #endif
 
     *TransferResult = Urb->Result;
