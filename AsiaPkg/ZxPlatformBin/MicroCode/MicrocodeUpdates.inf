@@ -16,7 +16,7 @@
 #  307b0chx002a0_00924C.mcb
 #  307b0chx002a0_007201D.mcb
 #   307b0chx002a0_0092B3.mcb
-   307b0chx002a0_0092C6.mcb
-   307b1chx002a0_007203D.mcb
+   307b0chx002a0_0092CB.mcb
+   307b1chx002a0_007206D.mcb
 [Packages]
   MdePkg/MdePkg.dec
