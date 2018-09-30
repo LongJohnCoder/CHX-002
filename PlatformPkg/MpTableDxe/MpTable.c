@@ -34,7 +34,7 @@ UINT16               BaseTableLength          = 0;
 UINT16               BaseTableEntryCount      = 0;
 UINT16               ExtendedTableLength      = 0;
 UINT8                OemId[8] = {"OEM"};
-UINT8                ProductId[12] = {"CHX002"};
+UINT8                ProductId[12] = {"ZX-E"};
 BUS_INFO             BusEntry[MP_TABLE_MAX_BUS_ENTRIES];
 UINT8                MaxBusId        = 0;
 INT8                 CurrentBusEntry = 0;
