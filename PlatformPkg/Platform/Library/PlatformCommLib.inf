@@ -60,8 +60,6 @@
   gPlatformModuleTokenSpaceGuid.PcdS3RecordAddr
   gEfiMdeModulePkgTokenSpaceGuid.PcdRealTimeClockUpdateTimeout
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWAddr
-  gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWSize  
-  gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATAAddr
-  gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATASize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWSize 
 
 

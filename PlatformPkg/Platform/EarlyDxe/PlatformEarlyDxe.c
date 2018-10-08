@@ -1018,9 +1018,9 @@ STATIC EFI_STATUS HandlePeMcuFw(VOID)
 
   if(EFI_ERROR(Status)){goto ProcExit;}
   
-  //allocate mcu instruction space
+  //JNY-1008:allocate mcu instruction space 64KB & mcu data space 64KB
   Address = 0xFFFFFFFF;
-  Pages   = Size + SIZE_64KB;                           		// need 64K align
+  Pages   = Size + SIZE_64KB + SIZE_64KB;          // need 64K align
   Pages   = EFI_SIZE_TO_PAGES(Pages);
   Status  = gBS->AllocatePages(
                   AllocateMaxAddress,
@@ -1029,11 +1029,12 @@ STATIC EFI_STATUS HandlePeMcuFw(VOID)
                   &Address
                   );
   ASSERT_EFI_ERROR(Status);
+  gBS->SetMem((VOID *)Address, Size + SIZE_64KB + SIZE_64KB, 0);
   
   PeMcuFw = (VOID*)(UINTN)ALIGN_VALUE(Address, SIZE_64KB);		
   DEBUG((EFI_D_ERROR, " PeMcuFw = %x  FwSize = %d[0x%x]Byte\n",PeMcuFw,Size,Size));
 
-  CopyMem(PeMcuFw, Buffer, Size);								//Copy FW from Buffer to the space we allocated
+  CopyMem(PeMcuFw, Buffer, Size); //Copy FW from Buffer to the space we allocated
   gBS->FreePool(Buffer);
 
   LibCalcCrc32(PeMcuFw, Size, &Crc32);
@@ -1044,22 +1045,8 @@ STATIC EFI_STATUS HandlePeMcuFw(VOID)
 
   gS3Record->PeMcuFw = (UINT32)(UINTN)PeMcuFw;
 
-  //allocate mcu data space
-  Address = 0xFFFFFFFF;
-  Pages   = Size + SIZE_64KB;                           		// need 64K align
-  Pages   = EFI_SIZE_TO_PAGES(Pages);
-  Status  = gBS->AllocatePages(			
-                  AllocateMaxAddress,
-                  EfiReservedMemoryType,
-                  Pages,
-                  &Address
-                  );
-  ASSERT_EFI_ERROR(Status);
-  PeMcuData = (VOID*)(UINTN)ALIGN_VALUE(Address, SIZE_64KB);
+  PeMcuData = (VOID*)((UINTN)PeMcuFw + SIZE_64KB);
   DEBUG((EFI_D_ERROR, " PeMcuData = %x  DataSize = %d[0x%x]Byte\n",PeMcuData,Size,Size));
-  
-
-  gBS->SetMem(PeMcuData,SIZE_64KB,0);
 
   LibCalcCrc32(PeMcuData, Size, &Crc32);
   gS3Record->PeMcuDataCrc32 = Crc32;

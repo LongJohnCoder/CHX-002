@@ -378,22 +378,8 @@ EFI_STATUS InstallAcpiTableDmar()
 	RmrrTableHeaderPointer->Length 		= 0;//this field will be updated later
 	//Skip initialization of Reserved field
 	RmrrTableHeaderPointer->SegmentNo 	= PLATFORM_SEGMENT_NUM;
-
-	DEBUG((EFI_D_ERROR,"[JRZ]PcdPEMCUFWAddr = 0x%016X\n", PcdGet64(PcdPEMCUFWAddr)));
-	DEBUG((EFI_D_ERROR,"[JRZ]PcdPEMCUFWSize = 0x%08X\n", PcdGet32(PcdPEMCUFWSize)));
-	DEBUG((EFI_D_ERROR,"[JRZ]PcdPEMCUDATAAddr = 0x%016X\n", PcdGet64(PcdPEMCUDATAAddr)));
-	DEBUG((EFI_D_ERROR,"[JRZ]PcdPEMCUDATASize = 0x%08X\n", PcdGet32(PcdPEMCUDATASize)));
-
-	if(PcdGet64(PcdPEMCUFWAddr) < PcdGet64(PcdPEMCUDATAAddr))//this RMRR table will cover the data and instruction range of PEMCU in DRAM.
-	{
-	  RmrrTableHeaderPointer->Reserved_mem_base_addr = PcdGet64(PcdPEMCUFWAddr);
-	  RmrrTableHeaderPointer->Reserved_mem_limit_addr = PcdGet64(PcdPEMCUDATAAddr) + PcdGet32(PcdPEMCUDATASize);
-	}
-	else
-	{
-	  RmrrTableHeaderPointer->Reserved_mem_base_addr = PcdGet64(PcdPEMCUDATAAddr);
-	  RmrrTableHeaderPointer->Reserved_mem_limit_addr = PcdGet64(PcdPEMCUFWAddr) + PcdGet32(PcdPEMCUFWSize);
-	}
+	RmrrTableHeaderPointer->Reserved_mem_base_addr = PcdGet64(PcdPEMCUFWAddr);
+	RmrrTableHeaderPointer->Reserved_mem_limit_addr = RmrrTableHeaderPointer->Reserved_mem_base_addr + PcdGet32(PcdPEMCUFWSize);
 	
 	if((RmrrTableHeaderPointer->Reserved_mem_limit_addr % 0x1000) == 0)//This range must be 4K aligned according to VT-d Spec, and limit must be the last address in a 4K range.
 	  RmrrTableHeaderPointer->Reserved_mem_limit_addr--;

@@ -768,8 +768,9 @@ EFI_STATUS LoadPeMcuFw(
   //
   FwAddr= (UINT32)((UINT64)((UINT32*)PeMcuFw));
   DEBUG((EFI_D_ERROR, "[Line:%d] FwAddr = %x\n",__LINE__,FwAddr));
-  PcdSet64(PcdPEMCUFWAddr, (UINT64)FwAddr);  			//For TA RMRR tbl - jerry add
-  PcdSet32(PcdPEMCUFWSize,(UINT32)(0 + SIZE_64KB));		//For TA RMRR tbl - jerry add
+  PcdSet64(PcdPEMCUFWAddr, (UINT64)FwAddr);			//For TA RMRR tbl - jerry add
+  PcdSet32(PcdPEMCUFWSize,(UINT32)(SIZE_64KB + SIZE_64KB));	//For TA RMRR tbl - jerry add
+  
   FwAddr=FwAddr>>16;
   DEBUG((EFI_D_ERROR, "[Line:%d] FwAddr = %x\n",__LINE__,FwAddr));
   MmioWrite32((PCIEPhyMMIOBase|PCIEPHYCFG_BASE_ADR_OF_PEMCU_FW_FOR_INSTRUCTION),FwAddr); //set instruction base address
@@ -781,8 +782,6 @@ EFI_STATUS LoadPeMcuFw(
   DataAddr= (UINT32)((UINT64)((UINT32*)PeMcuData));
   MmioWrite8(DataAddr+0x1000,gSetupHob->PcieEMEQScanTime);
   DEBUG((EFI_D_ERROR, "[Line:%d] DataAddr = %x\n",__LINE__,DataAddr));
-  PcdSet64(PcdPEMCUDATAAddr, (UINT64)DataAddr);			//For TA RMRR tbl - jerry add
-  PcdSet32(PcdPEMCUDATASize,(UINT32)(0 + SIZE_64KB));	//For TA RMRR tbl - jerry add
   DataAddr=DataAddr>>16;
   DEBUG((EFI_D_ERROR, "[Line:%d] DataAddr = %x\n",__LINE__,DataAddr));
   MmioWrite32((PCIEPhyMMIOBase|PCIEPHYCFG_BASE_ADR_OF_PEMCU_FW_FOR_DATA_SPACE),DataAddr); //set instruction base address

@@ -144,8 +144,6 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWSize
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWAddr
   gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWSize
-  gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATAAddr
-  gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUDATASize
   gEfiCpuTokenSpaceGuid.PcdFMS107B0
   
   
