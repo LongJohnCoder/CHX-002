@@ -429,6 +429,12 @@ S3SleepEntryCallBack (
 // Patch F0000 readable when S3 resume 
 // (0,0,3,83)[5:4] - F0000-FFFFFh Memory Space Access Control 
   MmioAnd32(HIF_PCI_REG(PAGE_C_SHADOW_CTRL_REG), (UINT32)~((BIT4|BIT5)<<24));
+  //Disable DCLK & MA & DQ & DQS 
+  MmioWrite16(DRAM_PCI_REG(D0F3_DCLKD_DQSI_AUTO_SEL),0x00);
+  //Disable AUTO
+  MmioAndThenOr16(DRAM_PCI_REG(D0F3_PLLIN_COMP_ESD), (UINT16)~D0F3_RAUTO, 0);
+  //disable D0F3_RCOMP_TIME_EN
+  MmioAndThenOr16(DRAM_PCI_REG(D0F3_AUTO_COMP_RELATED_CTL_Z1), (UINT16)~D0F3_RCOMP_TIME_EN, 0);
 
 
 // Set D0F3 Rx63[0]=1 to fix S3 resume fail issue. (CHX001 has deprecated this bit!!)
