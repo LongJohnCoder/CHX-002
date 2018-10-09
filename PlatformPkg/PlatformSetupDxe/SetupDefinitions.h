@@ -57,7 +57,9 @@
 #include <PlatformSetupDxe/Devices/Uart/Uart.sd>
 #include <PlatformSetupDxe/Devices/SNMI/SNMI.sd>
 #include <PlatformSetupDxe/Devices/Usb/UsbSetup.sd>
+#ifdef IOE_EXIST
 #include <PlatformSetupDxe/Devices/IOE/IOE_TOP.sd>
+#endif
 
 
 //
