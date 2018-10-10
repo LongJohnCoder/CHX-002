@@ -115,6 +115,13 @@
 	dd  00003FFFCh
 	dd  000000000h
   #endif
+  
+  #ifdef HX002EL0_05
+	dd  000000000h
+	dd  00038FFA8h
+	dd  00003FFFCh
+	dd  000000000h
+  #endif
 
 #ifdef ZX_TXT_SUPPORT
   ORG     20h           ; 0FFFFFFC0

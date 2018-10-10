@@ -63,6 +63,8 @@
     #define IRQ_ROUTING_COUNT	30	 
 #elif defined(HX002EH0_01_IOE_23)
     #define IRQ_ROUTING_COUNT	34	 	
+#elif defined(HX002EL0_05)  
+    #define IRQ_ROUTING_COUNT	21
 #else
      #define IRQ_ROUTING_COUNT 37 // temp
 #endif
@@ -355,7 +357,7 @@ STATIC PIR_DATA gPirData = {
 };
 
 
-#elif defined(HX002EE0_05) 
+#elif defined(HX002EE0_05) || defined(HX002EL0_05)
 
 
 STATIC PIR_DATA gPirData = {

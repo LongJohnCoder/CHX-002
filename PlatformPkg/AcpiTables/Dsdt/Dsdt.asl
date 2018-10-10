@@ -66,6 +66,8 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
 		include("HX002EE0_05\pcitree.asl")
 #elif defined(HX002EH0_01)
 		include("HX002EH0_01\pcitree.asl")
+#elif defined(HX002EL0_05)
+		include("HX002EL0_05\pcitree.asl")
 #endif
 //Dongbo modified, End.
 
@@ -406,6 +408,8 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
 		include("HX002EE0_05\pcie.asl")
 #elif defined(HX002EH0_01)
 		include("HX002EH0_01\pcie.asl")
+#elif defined(HX002EL0_05)
+		include("HX002EL0_05\pcie.asl")
 #endif
 //Dongbo modified, End.
             include("gfx.asl")

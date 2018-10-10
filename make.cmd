@@ -122,6 +122,12 @@ REM ********** EH0 **********
   set ZX_MBTYPE=%3
   set ZX_MBPCIECFG=01
 
+REM ********** EL0 **********
+)else if /I "%3" == "HX002EL0_05" (
+  set BOARD_ID=HX002EL0
+  set ZX_MBTYPE=%3
+  set ZX_MBPCIECFG=05
+
 )else (
   echo Please Input HX002EA0 or HX002EB0 etc
   goto ERROR
@@ -287,6 +293,7 @@ if "%3" equ "HX002ED0_10" echo DEFINE %3  = TRUE  >> %AUTOGEN_TARGET_FILE%
 if "%3" equ "HX002EE0_04" echo DEFINE %3  = TRUE  >> %AUTOGEN_TARGET_FILE%
 if "%3" equ "HX002EE0_05" echo DEFINE %3  = TRUE  >> %AUTOGEN_TARGET_FILE%
 if "%3" equ "HX002EH0_01" echo DEFINE %3  = TRUE  >> %AUTOGEN_TARGET_FILE%
+if "%3" equ "HX002EL0_05" echo DEFINE %3  = TRUE  >> %AUTOGEN_TARGET_FILE%
 
 if "%4" neq "" echo DEFINE %4  = TRUE  >> %AUTOGEN_TARGET_FILE%
 

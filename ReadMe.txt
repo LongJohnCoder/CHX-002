@@ -1,8 +1,9 @@
 ﻿1. CHX002 EVB Board introduction
    HX002EA0 : EVB#1
    HX002EB0 : EVB#2
-   HX002EC0 : EVB#3  ; SOC+IOE
+   HX002EC0 : EVB#3; SOC+IOE
    HX002ED0 : EVB#4
-   HX002EE0 : EVB#5 ;
+   HX002EE0 : EVB#5;
+   HX002EH0 : CRB#1; SOC+IOE
+   HX002EL0 : CRB#3;
    
-   Test
