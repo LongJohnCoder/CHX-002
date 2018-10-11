@@ -351,8 +351,12 @@ CHX002A0PatchSVID    PROC    NEAR    PRIVATE
   mov eax,0FEB320h
   mov [edi],eax
   ;Set VID
-  mov ecx, 1440h
+  mov ecx, 1444h
+ReadPTx:
   rdmsr
+  dec ecx
+  cmp al,00h
+  jz ReadPTx
   mov edi,0FEB3210Fh
   mov [edi],al
 
