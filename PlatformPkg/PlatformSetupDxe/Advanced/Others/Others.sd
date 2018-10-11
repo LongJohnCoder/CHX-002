@@ -113,7 +113,7 @@ Revision History:
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
        endoneof;
  
-     #if defined(HX002EA0_03)||defined(HX002EC0_01)||defined(HX002EC0_10)||defined(HX002ED0_02)||defined(HX002ED0_10)||defined(HX002EE0_04)||defined(HX002EE0_05)||defined(HX002EH0)
+     #if defined(HX002EA0_03)||defined(HX002EC0_01)||defined(HX002EC0_10)||defined(HX002ED0_02)||defined(HX002ED0_10)||defined(HX002EE0_04)||defined(HX002EE0_05)||defined(HX002EH0_01)||defined(HX002EL0_05)
         subtitle text = STRING_TOKEN(STR_EMPTY);
 	      text
 	      help   = STRING_TOKEN(STR_EMPTY),
