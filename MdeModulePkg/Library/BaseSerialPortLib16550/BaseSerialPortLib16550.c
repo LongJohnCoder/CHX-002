@@ -64,7 +64,7 @@ SerialPortReadRegister (
 		SerialRegisterBase = 0x3F8;
 	}
 
-#ifdef HX002EH0_01
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
 	SerialRegisterBase = 0x3F8;
 #endif
 
@@ -104,7 +104,7 @@ SerialPortWriteRegister (
 	  SerialRegisterBase = 0x3F8;
   }
 
-#ifdef HX002EH0_01
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
 	SerialRegisterBase = 0x3F8;
 #endif
 

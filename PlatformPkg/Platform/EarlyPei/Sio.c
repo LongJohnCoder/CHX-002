@@ -345,7 +345,7 @@ VOID InitSioEnvironment()
 
 VOID SioInit()
 {
-#if defined(HX002EH0_01)
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
 
 // For SuperIO Uart---Ives add 201703071752
   InitSioUart1Uart2();

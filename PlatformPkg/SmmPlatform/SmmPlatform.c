@@ -279,7 +279,7 @@ VOID SleepCommonHandler(UINT8 SleepType)
 
   //clear SuperIO Kb/Ms event detected status.
   //20170717-IVES:if not clear the status of SIO,PS2 KB/MS can not Enter Sx state.
-  #ifdef HX002EH0_01
+  #if defined(HX002EH0_01)||defined(HX002EL0_05)
   if(SleepType == 3 || SleepType == 1 || SleepType == 4)
   {
   	//;EnterCfg Mode

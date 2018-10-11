@@ -293,7 +293,7 @@ PlatformHookSerialPortInitialize (
   )
 {
 
-#if defined(HX002EH0_01)
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
 	  SuperIOUart_Init();
 #else
 	// For CHX002 EVBs, UART0's pin mux with PCIE-RST, so default use onboard UART1 as DEBUG BIOS's log output port.

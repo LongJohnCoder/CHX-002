@@ -919,7 +919,7 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
                 }
                 
 
-#ifdef HX002EH0_01   
+#if defined(HX002EH0_01)||defined(HX002EL0_05)   
 
 	#include "Ite.asl"
 
@@ -1583,7 +1583,7 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
       Store (Zero, Index (WAKP, One))
       ASL_COM((1, "PTSE", 0))    
     }
-#ifdef HX002EH0_01
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
     Method (_WAK, 1, NotSerialized)
     {
     	\_SB.PCI0.SBRG.ENFG()

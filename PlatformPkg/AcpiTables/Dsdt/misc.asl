@@ -55,7 +55,7 @@
 #ifndef MDEPKG_NDEBUG                                   // debug mode  
 
 
-#if defined(HX002EH0_01)
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
     Method(TCOM, 1, Serialized)
     {
       OperationRegion(COM3, SystemIO, 0x3F8, 0x08)

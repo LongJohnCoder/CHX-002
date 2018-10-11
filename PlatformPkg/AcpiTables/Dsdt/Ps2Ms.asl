@@ -45,7 +45,7 @@ Device (PS2M)
     {
         Store (Arg0, MSFG)
     }
-#ifdef HX002EH0_01
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
     Method (_PRW, 0, NotSerialized)  
     {
         Return (GPRW(0x05, \MXDW))

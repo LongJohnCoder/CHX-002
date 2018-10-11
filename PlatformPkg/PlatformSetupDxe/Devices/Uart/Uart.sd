@@ -21,13 +21,13 @@ $END--------------------------------------------------------------------
 **/
 #ifdef DEVICES_FORM_SET
   #ifdef FORM_SET_GOTO
-     #ifdef HX002EH0_01
+     #if defined(HX002EH0_01)||defined(HX002EL0_05)
        suppressif TRUE;
      #endif
         goto CHIPSET_SB_UART_FORM_ID,
         prompt = STRING_TOKEN(STR_UART_FORM),
         help = STRING_TOKEN(STR_EMPTY);
-     #ifdef HX002EH0_01
+     #if defined(HX002EH0_01)||defined(HX002EL0_05)
        endif;
      #endif
   #endif
@@ -39,7 +39,7 @@ $END--------------------------------------------------------------------
 
       subtitle text = STRING_TOKEN(STR_COM_EMPTY);
       
-#ifdef HX002EH0_01
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
         oneof varid   = SETUP_DATA.OnChipUartMode,
         prompt   = STRING_TOKEN(STR_UART_MODE),
         help   = STRING_TOKEN(STR_UART_MODE_HELP),

@@ -124,7 +124,7 @@ Revision History:
         flags  = 0, 
         key    = 0;  
 
-#ifndef HX002EH0_01
+#if (!defined(HX002EH0_01))||(!defined(HX002EL0_05))
 	  oneof varid = SETUP_DATA.CpuFanStartTemperature,
         prompt      = STRING_TOKEN(STR_CPU_CPU_FAN_START_TEMP),
         help        = STRING_TOKEN(STR_CPU_CPU_FAN_START_TEMP_HELP),

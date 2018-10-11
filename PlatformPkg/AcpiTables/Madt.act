@@ -5,7 +5,7 @@
 #define EFI_ACPI_LOCAL_APIC_ADDRESS 0xFEE00000
 #define EFI_ACPI_1_0_MULTIPLE_APIC_FLAGS             (EFI_ACPI_1_0_PCAT_COMPAT)
 
-#if defined(HX002EH0_01)
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
 #define EFI_ACPI_INTERRUPT_SOURCE_OVERRIDE_COUNT      7
 #else
 #define EFI_ACPI_INTERRUPT_SOURCE_OVERRIDE_COUNT      6
@@ -131,7 +131,7 @@ EFI_ACPI_1_0_MULTIPLE_APIC_DESCRIPTION_TABLE Madt = {
       0x00000002,                                               // Global System Interrupt - IRQ2
       0x0000                                                    // Flags - Conforms to specifications of the bus
     }, 
-    #if defined(HX002EH0_01)
+    #if defined(HX002EH0_01)||defined(HX002EL0_05)
 	{
       EFI_ACPI_1_0_INTERRUPT_SOURCE_OVERRIDE,                   // Type
       sizeof (EFI_ACPI_1_0_INTERRUPT_SOURCE_OVERRIDE_STRUCTURE),// Length

@@ -17,7 +17,7 @@
 #define ONBOARD_LAN_BRIDGE_DEV_NUM     5
 
 //ives_20170628
-#if defined(HX002EH0_01)
+#if defined(HX002EH0_01)||defined(HX002EL0_05)
 	#define THERMAL_IC_SUPPORT             0
 #else
 	#define THERMAL_IC_SUPPORT             1

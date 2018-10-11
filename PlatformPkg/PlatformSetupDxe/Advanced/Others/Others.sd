@@ -301,7 +301,7 @@ Revision History:
 #endif
 //HYL-2018062901-end 
 
-	#ifdef HX002EH0_01
+	#if defined(HX002EH0_01)||defined(HX002EL0_05)
 	subtitle text = STRING_TOKEN(STR_EMPTY);
      oneof varid = SETUP_DATA.LPTControl,
       prompt   = STRING_TOKEN(STR_LPT_CTRL),
