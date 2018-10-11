@@ -36,15 +36,6 @@ Revision History:
       
   
     subtitle text = STRING_TOKEN(STR_EMPTY);		
- 
-     oneof varid = SETUP_DATA.ApplicationModeSelection,
-        prompt      = STRING_TOKEN(STR_APP_MODE_SEL),
-        help        = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_NOTEBOOK),   value = 0, flags = RESET_REQUIRED ;
-        option text = STRING_TOKEN(STR_DT_EMBEDED), value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;          
-       endoneof;    
-     
-    subtitle text = STRING_TOKEN(STR_EMPTY);		
     text
       help   = STRING_TOKEN(STR_EMPTY),
       text   = STRING_TOKEN(STR_NORTH_BRIDGE),

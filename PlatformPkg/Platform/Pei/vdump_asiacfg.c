@@ -14,7 +14,7 @@ VOID VPei_DumpAsiaNbCfg(
 {
 	////
 	DEBUG((DEBUG_ERROR,"ASIA_NB_CONFIGURATION struct : \n ----------\n"));
-	/*DEBUG((DEBUG_ERROR,"ApplicationModeSelection = %x \n",NbCfg->ApplicationModeSelection));
+	/*
 	DEBUG((DEBUG_ERROR,"NBSPEValue = %x \n",NbCfg->NBSPEValue));	
 	DEBUG((DEBUG_ERROR,"D0F0SPEValue = %x \n",NbCfg->D0F0SPEValue));	
 	
@@ -189,7 +189,6 @@ VOID VPei_DumpAsiaSbCfg(
 {
 	////
 	DEBUG((DEBUG_ERROR,"ASIA_SB_CONFIGURATION struct : \n ----------\n"));
-	DEBUG((DEBUG_ERROR,"ApplicationModeSelection = %x \n",SbCfg->ApplicationModeSelection));
 	DEBUG((DEBUG_ERROR,"SBSPEValue = %x \n",SbCfg->SBSPEValue));	
 	DEBUG((DEBUG_ERROR,"VARTSPEValue = %x \n",SbCfg->VARTSPEValue));	
 	
