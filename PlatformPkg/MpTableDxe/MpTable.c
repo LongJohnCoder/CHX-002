@@ -1315,7 +1315,7 @@ STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 
 
 
-#elif defined(HX002EE0_05)
+#elif defined(HX002EE0_05) || defined(HX002EL0_05)
 
 STATIC MP_TABLE_INT_ASSIGN_ENTRY gType3List[] = {
 //				EntryTYPE			   IntType	   Flag  SrcBusId  SrcBusIrq   DestApicId	DestApicIn
