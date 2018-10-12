@@ -201,8 +201,12 @@ GotSetupVariable:
     SbCfg->Uart0Enable= SetupData->Uart0Enable;
     SbCfg->Uart0IoBaseSelection= SetupData->Uart0IoBaseSelection;
     SbCfg->Uart0IRQSelection= SetupData->Uart0IRQSelection;
-	
-    SbCfg->Uart1Enable= SetupData->Uart1Enable;
+	SbCfg->Uart0_8PinEnable = SetupData->Uart0_8PinEnable;
+
+	if(SbCfg->Uart0_8PinEnable)
+	    SbCfg->Uart1Enable= FALSE;
+	else
+    	SbCfg->Uart1Enable= SetupData->Uart1Enable;
     SbCfg->Uart1IoBaseSelection= SetupData->Uart1IoBaseSelection;
     SbCfg->Uart1IRQSelection= SetupData->Uart1IRQSelection;
 	

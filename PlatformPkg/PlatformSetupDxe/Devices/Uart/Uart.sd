@@ -66,8 +66,7 @@ $END--------------------------------------------------------------------
        endoneof;       
      
     subtitle text = STRING_TOKEN(STR_EMPTY);
-   //grayoutif
-   // ideqval SETUP_DATA.UartModuleSelection == 1;   
+  
        oneof varid   = SETUP_DATA.Uart0Enable,
         prompt   = STRING_TOKEN(STR_UART0_EN),
         help   = STRING_TOKEN(STR_UART0_EN),
@@ -94,10 +93,21 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_7), value = 7, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_11), value = 11, flags = RESET_REQUIRED;
        endoneof; 
-	  endif;
- //endif;   //end gray out  
+	  endif; // end suppressif //PCI mode need hide IOBase and Irq.
+ 
+ 
+       oneof varid   = SETUP_DATA.Uart0_8PinEnable,
+        prompt   = STRING_TOKEN(STR_UART0_EN_8PIN),
+        help   = STRING_TOKEN(STR_UART0_EN_8PIN_SEL_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =  RESET_REQUIRED;
+       endoneof; 
+ 		
       
     subtitle text = STRING_TOKEN(STR_EMPTY);
+
+	suppressif
+		ideqval SETUP_DATA.Uart0_8PinEnable == 1;
     
        oneof varid   = SETUP_DATA.Uart1Enable,
         prompt   = STRING_TOKEN(STR_UART1_EN),
@@ -127,7 +137,9 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_11), value = 11, flags = RESET_REQUIRED;
         endoneof; 
          
-   endif;
+   endif; // end suppressif  // PCI mode need hide IOBase and Irq.
+
+   endif; // end suppressif  // 8Pin Uart0 mode , need hide uart1 info.
 	 
     subtitle text = STRING_TOKEN(STR_EMPTY);
     /*
@@ -193,7 +205,8 @@ $END--------------------------------------------------------------------
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
        endoneof;
 	endif; // end suppressif FLREn Item.
-		endif;//end suppressif
+	
+		endif;//end suppressif . hide all uart info
      endform;//end CHIPSET_SB_UART_FORM_ID
 
   #endif  //end, FORM_SET_FORM

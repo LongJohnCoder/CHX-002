@@ -325,6 +325,7 @@ typedef struct {
 	 UINT8 Uart3IoBaseSelection;
 	 UINT8 Uart3IRQSelection;  
 	 UINT8 UartFLREn; 	 
+	 UINT8 Uart0_8PinEnable; //IVS-20181012 For 8pin uart0
 
 	 //RAIDA
 	 UINT8	RAIDA0En;
