@@ -63,7 +63,7 @@ gPlatformModuleTokenSpaceGuid.PcdBootConfigBase|gPlatformModuleTokenSpaceGuid.Pc
 
 !if $(ZX_TXT_SUPPORT) == TRUE
 0x002FF000|0x00050000
-FILE = $(ASIA_SOURCE)/../ZxPlatformBin/Txt/ZX_TXT_FW.bin
+FILE = $(ASIA_SOURCE)/../ZxPlatformBin/Txt/ZX_TXT_FW_R01.bin
 !endif 
 
 #NV_VARIABLE_STORE
