@@ -15,6 +15,12 @@
 #include <Library/HobLib.h>
 #include <Protocol/LegacyBios.h>
 #include <Protocol/LegacyInterruptHandler.h>
+#include <Library/IoLib.h>
+#include <PlatformDefinition.h>
+
+
+
+
 
 
 UINT8 ChipsetInt15Handler[] = {
@@ -56,8 +62,11 @@ InstallChipsetInt15 (
   INTERRUPT_HANDLER         *NewHandler;
   LEGACY_VECTOR             *Vector;
   EFI_BOOT_MODE             BootMode;    
+  UINT32                    IfCallINT15;
     
     DEBUG((EFI_D_ERROR, "(L%d) %a() , Hook INT 15 \n", __LINE__, __FUNCTION__));
+	  //IVS-20181015 Judge whether to Call INT15
+	IfCallINT15 = MmioRead32(SCRCH_PCI_REG(D0F6_BIOS_SCRATCH_REG_12))&(BIT0);
 
     BootMode = GetBootModeHob();
     if(BootMode == BOOT_IN_RECOVERY_MODE || BootMode == BOOT_ON_FLASH_UPDATE){
@@ -79,6 +88,8 @@ InstallChipsetInt15 (
     ASSERT_EFI_ERROR (Status);
     DEBUG((EFI_D_ERROR, "(L%d) %a()\n", __LINE__, __FUNCTION__));
 
+		if(IfCallINT15)
+		{
     Status = LegacyBios->GetLegacyRegion (
                             LegacyBios,
                             sizeof(ChipsetInt15Handler)/sizeof(ChipsetInt15Handler[0]),
@@ -102,5 +113,6 @@ InstallChipsetInt15 (
  
     Vector->Segment = (UINT16) ((UINTN) &NewHandler->Code >> 4);
     Vector->Offset  = (UINT16) ((UINTN) &NewHandler->Code & 0xF); 
+		}
     return EFI_SUCCESS;
 }

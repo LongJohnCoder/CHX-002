@@ -24,7 +24,7 @@
   IntelFrameworkPkg/IntelFrameworkPkg.dec
   MdeModulePkg/MdeModulePkg.dec
   ByoModulePkg/ByoModulePkg.dec
-
+  PlatformPkg/PlatformPkg.dec
   
 [LibraryClasses]
   BaseLib
@@ -33,7 +33,11 @@
   DebugLib
   DxeServicesLib
   HobLib
+  IoLib
+  PcdLib
   
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
 
 [Protocols]
    gEfiLegacyBiosProtocolGuid                             # PROTOCOL ALWAYS_CONSUMED

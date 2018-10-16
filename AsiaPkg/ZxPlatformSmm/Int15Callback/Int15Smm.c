@@ -387,10 +387,15 @@ InitializeChipsetInt15Smm (
   EFI_SMM_SW_DISPATCH2_PROTOCOL     *SwDispatch;
   EFI_SMM_SW_REGISTER_CONTEXT       SwContext;
   EFI_HANDLE                        SwHandle;
-  EFI_BOOT_MODE                     BootMode;  
+  EFI_BOOT_MODE                     BootMode;
+  UINT32                           IfCallINT15;
 
 
   DEBUG((EFI_D_INFO, "(L%d) %a()\n", __LINE__, __FUNCTION__));
+
+  //IVS-20181015 Judge whether to Call INT15
+  IfCallINT15 = MmioRead32(SCRCH_PCI_REG(D0F6_BIOS_SCRATCH_REG_12))&BIT0;
+  DEBUG((EFI_D_INFO, "[IVES] IfCallINT15 = 0x%x\n",IfCallINT15));
 
   BootMode = GetBootModeHob();
   if(BootMode == BOOT_IN_RECOVERY_MODE || BootMode == BOOT_ON_FLASH_UPDATE){
@@ -406,15 +411,17 @@ InitializeChipsetInt15Smm (
                     (VOID**)&SwDispatch
                     );
   ASSERT_EFI_ERROR (Status);
-  SwContext.SwSmiInputValue = CHIPSET_INT15_SW_SMI;
-  Status = SwDispatch->Register (SwDispatch, ChipsetInt15SmmDispatcher, &SwContext, &SwHandle);
-  DEBUG((EFI_D_ERROR, "(L%d) %a() %r\n", __LINE__, __FUNCTION__, Status));
+  if(IfCallINT15)
+  {
+	  SwContext.SwSmiInputValue = CHIPSET_INT15_SW_SMI;
+	  Status = SwDispatch->Register (SwDispatch, ChipsetInt15SmmDispatcher, &SwContext, &SwHandle);
+	  DEBUG((EFI_D_ERROR, "(L%d) %a() %r\n", __LINE__, __FUNCTION__, Status));
 
-  ASSERT_EFI_ERROR (Status);
-  if (EFI_ERROR (Status)) {
-    return Status;
+	  ASSERT_EFI_ERROR (Status);
+	  if (EFI_ERROR (Status)) {
+	    return Status;
+	  }
   }
-
    //
   // Locate SmmVariableProtocol
   //
