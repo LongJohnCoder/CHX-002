@@ -14,6 +14,9 @@
 #ifdef ZX_SECRET_CODE
 #include <Ppi/CpuMpConfig.h>
 #endif
+#ifdef ZX_TXT_SUPPORT
+#include <AsiaVariable.h>
+#endif
 
 
 
@@ -819,6 +822,9 @@ CpuMpPeiCallback (
   UINTN  NumberOfProcessors, NumberOfEnabledProcessors;
   EFI_PEI_HOB_POINTERS  GuidHob;
  //YKN-20160627 -E
+ #ifdef ZX_TXT_SUPPORT
+  ASIA_VARIABLE              *AsiaVariable;
+ #endif
 
   Status = PeiServicesGetBootMode(&BootMode);
   ASSERT_EFI_ERROR (Status);
@@ -836,6 +842,9 @@ CpuMpPeiCallback (
   SbCfg = (ASIA_SB_CONFIGURATION*)(SbPpi->SbCfg);
   NbCfg = (ASIA_NB_CONFIGURATION*)(NbPpi->NbCfg);
   SetupHob = (SETUP_DATA*)GetSetupDataHobData();
+#ifdef ZX_TXT_SUPPORT
+  AsiaVariable = (ASIA_VARIABLE*)GetAsiaVariableHobData();
+#endif
   S3Record = (PLATFORM_S3_RECORD*)GetS3RecordTable();
 #ifdef ZX_SECRET_CODE
 		 {
@@ -918,6 +927,9 @@ CpuMpPeiCallback (
   //YKN-20160627 +e
   CpuFeature->TscDeadlineModeEnable = SetupHob->TSC_Deadline_mode;
   CpuFeature->ExecuteDisableBit &= SetupHob->ExecuteDisable;
+#ifdef ZX_TXT_SUPPORT
+  CpuFeature->TxtEnable          = AsiaVariable->TXT;
+#endif
   
 
 DumpCpuFeature(CpuFeature);

@@ -25,7 +25,9 @@
 #include <PlatformDefinition.h>
 #include <PlatS3Record.h>
 #include <SetupVariable.h>
-
+#ifdef ZX_TXT_SUPPORT
+#include <AsiaVariable.h>
+#endif
 
 extern EFI_GUID gPlatformSetupVariableGuid;
 extern EFI_GUID gEfiConsoleOutDeviceGuid;
@@ -270,6 +272,20 @@ VOID *GetSetupDataHobData(VOID)
   return SetupData;
 }
 
+#ifdef ZX_TXT_SUPPORT
+VOID *GetAsiaVariableHobData(VOID)
+{
+  EFI_PEI_HOB_POINTERS  GuidHob;
+  VOID                  *AsiaVariable;
+  EFI_GUID              gAsiaVariableGuid = ASIA_VARIABLE_GUID;
+
+  GuidHob.Raw = GetFirstGuidHob(&gAsiaVariableGuid);
+  ASSERT(GuidHob.Raw != NULL);
+  AsiaVariable = (VOID *)(GuidHob.Guid + 1);
+
+  return AsiaVariable;
+}
+#endif
 
 VOID *GetAcpiRam(VOID)
 {

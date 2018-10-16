@@ -106,6 +106,9 @@ VOID *GetAcpiRam(VOID);
 VOID *GetAcpiTableScat(VOID);
 VOID GetS3Cr3Stack(UINT32 *S3Cr3, UINT32 *S3StackBase, UINT32 *S3StackSize);
 VOID *GetSetupDataHobData(VOID);
+#ifdef ZX_TXT_SUPPORT
+VOID *GetAsiaVariableHobData(VOID);
+#endif
 VOID PlatRecordS3DebugData(CHAR8 *Name, UINT32 Data32);
 VOID *GetS3RecordTable();
 VOID *GetS3MtrrTable();
