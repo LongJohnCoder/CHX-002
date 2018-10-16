@@ -101,6 +101,8 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdXhciFWSize
   gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWAddr
   gEfiMdeModulePkgTokenSpaceGuid.PcdIoeXhciFWSize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWAddr
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPEMCUFWSize 
 
 [Depex]
   TRUE

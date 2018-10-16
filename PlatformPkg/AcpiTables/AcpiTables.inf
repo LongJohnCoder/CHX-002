@@ -35,7 +35,8 @@
   Facs.act
   Hpet.act  
   Dsdt/Dsdt.asl
-  Ssdt/Ssdt_PEMCU.asl
+  #Pemcu will not be reported as an ACPI device any more, so comment the line below. JRZ-20181016
+  #Ssdt/Ssdt_PEMCU.asl
   Ssdt/Ssdt_SPIC.asl
   Madt.act
   Fadt5.0.act

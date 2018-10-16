@@ -1034,6 +1034,10 @@ STATIC EFI_STATUS HandlePeMcuFw(VOID)
   PeMcuFw = (VOID*)(UINTN)ALIGN_VALUE(Address, SIZE_64KB);		
   DEBUG((EFI_D_ERROR, " PeMcuFw = %x  FwSize = %d[0x%x]Byte\n",PeMcuFw,Size,Size));
 
+  //jerry add
+  PcdSet64(PcdPEMCUFWAddr, (UINT64)PeMcuFw);
+  PcdSet32(PcdPEMCUFWSize,(UINT32)(SIZE_64KB + SIZE_64KB));
+
   CopyMem(PeMcuFw, Buffer, Size); //Copy FW from Buffer to the space we allocated
   gBS->FreePool(Buffer);
 

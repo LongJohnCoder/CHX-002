@@ -784,8 +784,6 @@ EFI_STATUS LoadPeMcuFw(
   //
   FwAddr= (UINT32)((UINT64)((UINT32*)PeMcuFw));
   DEBUG((EFI_D_ERROR, "[Line:%d] FwAddr = %x\n",__LINE__,FwAddr));
-  PcdSet64(PcdPEMCUFWAddr, (UINT64)FwAddr);			//For TA RMRR tbl - jerry add
-  PcdSet32(PcdPEMCUFWSize,(UINT32)(SIZE_64KB + SIZE_64KB));	//For TA RMRR tbl - jerry add
   
   FwAddr=FwAddr>>16;
   DEBUG((EFI_D_ERROR, "[Line:%d] FwAddr = %x\n",__LINE__,FwAddr));

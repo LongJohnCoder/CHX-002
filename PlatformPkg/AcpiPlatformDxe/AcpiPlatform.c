@@ -72,15 +72,17 @@ STATIC UINT8 gS3AmlArray[] = {
 BOOLEAN SkipSSDTInstallation(EFI_ACPI_DESCRIPTION_HEADER * AcpiTableDesciptor)
 {
 	BOOLEAN rel = FALSE;
-	
-	if(PEMCU_OEMTABLEID == AcpiTableDesciptor->OemTableId)//pemcu ssdt
-	{
-		if(!(gSetupData->PEMCU_LoadFW_WhenBoot == 1 && gSetupData->IOVEnable == 1))
-			rel = TRUE;
-		else
-			rel = FALSE;
-	}
-	else if(SPIC_OEMTABLEID == AcpiTableDesciptor->OemTableId)//SPIC ssdt
+
+	//Pemcu will not be reported as an ACPI device, so comment the code below. JRZ-20181016
+	//if(PEMCU_OEMTABLEID == AcpiTableDesciptor->OemTableId)//pemcu ssdt
+	//{
+	//	if(!(gSetupData->PEMCU_LoadFW_WhenBoot == 1 && gSetupData->IOVEnable == 1))
+	//		rel = TRUE;
+	//	else
+	//		rel = FALSE;
+	//}
+	//else 
+	if(SPIC_OEMTABLEID == AcpiTableDesciptor->OemTableId)//SPIC ssdt
 	{
 		if(!gSetupData->IOVEnable)
 			rel = TRUE;

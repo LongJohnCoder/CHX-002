@@ -38,11 +38,7 @@
 #define HPET_DEV		0x10
 #define HPET_FUN		0x0
 
-#define PEMCU_EnumID	0x1
-#define PEMCU_DEV		0x0
-#define PEMCU_FUN		0x7
-
-#define SPIC_EnumID		0x3
+#define SPIC_EnumID		0x1
 #define SPIC_DEV		0x11
 #define SPIC_FUN		0x0
 
@@ -169,8 +165,6 @@ EFI_STATUS InstallAcpiTableDmar()
 
   DmarTableSize += sizeof(DMAR_DRHD_TABLE_HEADER);
   DmarTableSize += sizeof(DMAR_DEVICE_SCOPE) * 3;//for NBIOAPIC/SBIOAPIC/HPET device scope
-  if(PEMCU_RMRR_flag)//if PEMCU will be used, a device scope must be reported in DRHD table in form of ACPI namespace device.
-  	DmarTableSize += sizeof(DMAR_DEVICE_SCOPE);
 
   if(SPIC_flag)
   	DmarTableSize += sizeof(DMAR_DEVICE_SCOPE);
@@ -189,12 +183,10 @@ EFI_STATUS InstallAcpiTableDmar()
 	}
 #endif
 
-  if(PEMCU_RMRR_flag)//if PEMCU will be used, a RMRR table and a andd table for PEMCU must be reported.
+  if(PEMCU_RMRR_flag)//if PEMCU will be used, a RMRR table for PEMCU must be reported.
   {
     DmarTableSize += sizeof(DMAR_RMRR_TABLE_HEADER);
 	DmarTableSize += sizeof(DMAR_DEVICE_SCOPE);
-
-	DmarTableSize += sizeof(DMAR_ANDD_TABLE);
   }
   
   if(SPIC_flag)
@@ -268,18 +260,6 @@ EFI_STATUS InstallAcpiTableDmar()
 	  DeviceScopePointer->Path[0] 	= HPET_DEV;
 	  DeviceScopePointer->Path[1] 	= HPET_FUN;
 	  TablePointer += sizeof(DMAR_DEVICE_SCOPE);  
-
-	  if(PEMCU_RMRR_flag)
-	  {
-		  DeviceScopePointer = (DMAR_DEVICE_SCOPE*)TablePointer;
-		  DeviceScopePointer->Type 		= DMAR_DEV_SCOPE_TYPE_ACPI_NAMESPACE_DEVICE;
-		  DeviceScopePointer->Length 	= sizeof(DMAR_DEVICE_SCOPE);
-		  DeviceScopePointer->EnumID 	= PEMCU_EnumID;
-		  DeviceScopePointer->StartBusNo= PLATFORM_START_BUS;
-		  DeviceScopePointer->Path[0] 	= PEMCU_DEV;
-		  DeviceScopePointer->Path[1] 	= PEMCU_FUN;
-		  TablePointer += sizeof(DMAR_DEVICE_SCOPE);
-	  }
 	  
 	  if(SPIC_flag)
 	  {
@@ -391,29 +371,17 @@ EFI_STATUS InstallAcpiTableDmar()
 	DEBUG((EFI_D_ERROR,"[JRZ]PEMCU RmrrTableLimit = 0x%016X\n", RmrrTableHeaderPointer->Reserved_mem_limit_addr));	
 
 	DeviceScopePointer = (DMAR_DEVICE_SCOPE *)TablePointer;
-	DeviceScopePointer->Type 		= DMAR_DEV_SCOPE_TYPE_ACPI_NAMESPACE_DEVICE;
+	DeviceScopePointer->Type 		= DMAR_DEV_SCOPE_TYPE_PCI_EP;
 	DeviceScopePointer->Length 		= sizeof(DMAR_DEVICE_SCOPE);
 	//Skip initialization of Reserved field
-	DeviceScopePointer->EnumID 		= PEMCU_EnumID;
+	DeviceScopePointer->EnumID 		= 0;
 	DeviceScopePointer->StartBusNo 	= PLATFORM_START_BUS;
-	DeviceScopePointer->Path[0] 	= PEMCU_DEV;
-	DeviceScopePointer->Path[1] 	= PEMCU_FUN;
+	DeviceScopePointer->Path[0] 	= 0;
+	DeviceScopePointer->Path[1] 	= 6;//Now PEMCU is reported as an PCI endpoint, and PEMCU will use B0D0F6 as its source ID, because there is a real PCI device with B0D0F6. JRZ-20181016
 	TablePointer += sizeof(DMAR_DEVICE_SCOPE);
 
 	RmrrTableHeaderPointer->Length = (UINT16)(TablePointer - (UINT8 *)RmrrTableHeaderPointer);
   }  
-
-  //fill the memory buffer with ANDD table for PEMCU if it is necessary.
-  if(PEMCU_RMRR_flag)
-  {
-	AnddTablePointer = (DMAR_ANDD_TABLE *)TablePointer;
-    AnddTablePointer->Type 				= REMAPPING_TYPE_ANDD;
-	AnddTablePointer->Length 			= sizeof(DMAR_ANDD_TABLE);
-	//Skip initialization of Reserved field
-	AnddTablePointer->ACPIDeviceNumber 	= PEMCU_EnumID;
-	CopyMem(AnddTablePointer->ACPIObjectName, "\\_SB.MPEC", strlen("\\_SB.MPEC"));
-	TablePointer += sizeof(DMAR_ANDD_TABLE);
-  }
   
   //fill the memory buffer with ANDD table for SPIC if it is necessary.
   if(SPIC_flag)
