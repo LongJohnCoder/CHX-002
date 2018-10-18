@@ -201,8 +201,8 @@ $END--------------------------------------------------------------------
        oneof varid = SETUP_DATA.UartFLREn,
         prompt = STRING_TOKEN(STR_UART_FLR_EN),
         help   = STRING_TOKEN(STR_EMPTY),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
        endoneof;
 	endif; // end suppressif FLREn Item.
 	
