@@ -646,8 +646,9 @@ STATIC EFI_STATUS AddSmbiosType1(EFI_SMBIOS_PROTOCOL *Smbios)
   EFI_SMBIOS_HANDLE                 SmbiosHandle;
   SMBIOS_TABLE_TYPE1                *SmbiosRecord;
 // {A7199A69-E522-46bf-BE96-3F49BC97F755}  
-  STATIC EFI_GUID gMyTestSmbiosType1Guid = { 0xa7199a69, 0xe522, 0x46bf, { 0xbe, 0x96, 0x3f, 0x49, 0xbc, 0x97, 0xf7, 0x55}};
-
+//  STATIC EFI_GUID gMyTestSmbiosType1Guid = { 0xa7199a69, 0xe522, 0x46bf, { 0xbe, 0x96, 0x3f, 0x49, 0xbc, 0x97, 0xf7, 0x55}};
+// {5B40F68E-2A6F-42ca-9E70-497D25AECD39}
+  STATIC EFI_GUID gMyTestSmbiosType1Guid = {0x5b40f68e, 0x2a6f, 0x42ca, { 0x9e, 0x70, 0x49, 0x7d, 0x25, 0xae, 0xcd, 0x39}};
 
   Manufacturer = TKN2STR(DMI_MANUFACTURER);
   ManuStrLen = AsciiStrLen(Manufacturer);
