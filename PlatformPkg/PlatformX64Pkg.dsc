@@ -676,7 +676,11 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
 
 [Components.X64]
 
+!if $(ZX_SECRET_CODE) == TRUE
+  AsiaPkg/ZxPlatformBin/MicroCode/MicrocodeUpdatesS.inf
+!else
   AsiaPkg/ZxPlatformBin/MicroCode/MicrocodeUpdates.inf
+!endif
 
   MdeModulePkg/Core/Dxe/DxeMain.inf {
     <LibraryClasses>
