@@ -518,17 +518,31 @@ DisableObLan (
   PmioBase = MmioRead16(PCI_DEV_MMBASE(0,17,0)|D17F0_PMU_PM_IO_BASE) & D17F0_PMU_PMIOBA;  
   NbCfg = (ASIA_NB_CONFIGURATION*)(NbPpi->NbCfg);
   SbCfg = (ASIA_SB_CONFIGURATION*)(SbPpi->SbCfg); 
+
+  #ifdef HX002EH0_01
+  Data32 = IoRead32(PmioBase + PMIO_GPIO_PAD_CTL);//PMIO GPIO 14 RxB4[2:0] = 3'b000
+  Data32 &= (~PMIO_PAD_GPIO14_2_1_0);
+  IoWrite32(PmioBase + PMIO_GPIO_PAD_CTL, Data32);
+  
+  if(ObLanEn || !NbCfg->PciePE6 ){
+  	Data32 = IoRead32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT );//PMIO Rx4c 
+    Data32 |= BIT27;
+    IoWrite32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT, Data32);//PMIO Rx4c[27] = 1
+  	return;
+  }
+  #else
+  
   if(ObLanEn || !NbCfg->PciePE6 || SbCfg->XhcUartCtrl){
-    Data32 = IoRead32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT );//PMIO Rx4e[7] 
+    Data32 = IoRead32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT );//PMIO Rx4c[23] 
     Data32 |= BIT23;
-    IoWrite32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT, Data32);//PMIO Rx4E[7] = 1
+    IoWrite32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT, Data32);//PMIO Rx4c[23] = 1
     return;
   }
-  
   
   Data32 = IoRead32(PmioBase + PMIO_CR_GPIO_PAD_CTL);//PMIO GPIO 12 RxB4[26:24] = 3'b000
   Data32 &= (~PMIO_PAD_GPIO12_2_1_0);
   IoWrite32(PmioBase + PMIO_CR_GPIO_PAD_CTL, Data32);
+  #endif
 
   Base = PEG2_PCI_REG(0);
   if(MmioRead16(Base+PCI_VID_REG) == 0xFFFF){
@@ -561,9 +575,17 @@ DisableObLan (
   MmioWrite16(Base+0x1C, 0);
   MmioWrite32(Base+PCI_PBN_REG, 0);
 
-  Data32 = IoRead32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT );//PMIO Rx4e[7] 
+  #ifdef HX002EH0_01
+  Data32 = IoRead32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT );//PMIO Rx4c[27] 
+  Data32 &= (~BIT27);
+  IoWrite32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT, Data32);//PMIO Rx44c[27]= 0
+  
+  #else
+  Data32 = IoRead32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT );//PMIO Rx4c[23] 
   Data32 &= (~BIT23);
-  IoWrite32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT, Data32);//PMIO Rx4E[7] = 0
+  IoWrite32(PmioBase + PMIO_GENERAL_PURPOSE_OUTPUT, Data32);//PMIO Rx4c[23] = 0
+  #endif
+  
   return;
 }
 
@@ -647,7 +669,7 @@ MemoryDiscoveredPpiNotifyCallback (
 
 //UpdateSsid();
   #ifdef CHX002_A0
-  #ifndef HX002EB0
+  #if !defined(HX002EB0_00) && !defined(HX002EB0_11)
   DisableObLan(NbPpi,SbPpi,SetupData->OnboardLan);
   #endif
   #endif

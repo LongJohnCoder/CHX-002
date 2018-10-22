@@ -1,0 +1,34 @@
+#ifndef _EEPROM_INFO_H_
+#define _EEPROM_INFO_H_
+
+typedef
+EFI_STATUS (EFIAPI *EFI_EEPROM_INIT) (
+  IN EFI_PCI_IO_PROTOCOL *PciIo
+  );
+
+#define EFI_VARIABLE_NON_VOLATILE       0x00000001
+#define EFI_VARIABLE_BOOTSERVICE_ACCESS 0x00000002
+#define EFI_VARIABLE_RUNTIME_ACCESS     0x00000004
+#define EEMAX	16
+#define PCI_Rx58_REG                    0x58
+#define PCI_Rx5C_REG                    0x5C
+#define MMIO_Rx93_REG					0x93
+#define MMIO_Rx5D8_REG					0x5D8
+
+#define EEPROM_INFO_VARIABLE_NAME                  L"EEPROMINFOVAR"
+
+#define EEPROM_INFO_VARIABLE_GUID \
+  { \
+     0x99ff0112, 0x30d6, 0x43de, 0xbd, 0xca, 0x4d, 0xd6, 0xf8, 0xdb, 0x1a, 0xd2 \
+  }
+
+#define EEPROM_INFO_VARIABLE_ATTRIBUTE      (EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_RUNTIME_ACCESS | EFI_VARIABLE_NON_VOLATILE);
+
+typedef  struct
+{
+	UINT16    Index[16];
+} EEPROM_INFO_SAVE;
+
+extern EFI_GUID gEepromInfoGuid;
+
+#endif

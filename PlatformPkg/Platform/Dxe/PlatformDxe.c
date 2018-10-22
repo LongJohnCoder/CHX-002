@@ -23,7 +23,9 @@
 #ifdef ZX_SECRET_CODE
 #include <Protocol/MpConfig.h>
 #endif
-
+#ifdef IOE_EXIST
+#include <EepromInfo.h>
+#endif
 VOID
 SmbiosCallback (
   IN EFI_EVENT    Event,
@@ -82,6 +84,181 @@ SaveBridgeRegistersForS3 (
   ASSERT_EFI_ERROR(Status);  
 }
 
+#ifdef IOE_EXIST
+VOID
+EFIAPI
+EepromInitCallBack (
+  IN      EFI_EVENT                 Event,
+  IN      VOID                      *Context
+  )
+{
+	VOID		*Interface;
+	EFI_STATUS	Status;
+	UINT16 		PciVID, PciDID;
+	UINTN					  HandleCount;
+	EFI_HANDLE				  *HandleBuffer;
+	UINTN					  Index;
+    EFI_PCI_IO_PROTOCOL       *PciIo;
+	UINT32		temp32;
+	UINTN Size = sizeof(EEPROM_INFO_SAVE);
+	EEPROM_INFO_SAVE EepromSave;	
+	UINT8		temp8;
+
+ 	DEBUG((EFI_D_INFO, "EepromInitCallBack!!! \n"));		
+
+	Status = gBS->LocateProtocol(&gBdsAllDriversConnectedProtocolGuid, NULL, &Interface);
+	if (EFI_ERROR (Status)) {
+	  return;
+	}
+	gBS->CloseEvent(Event);
+
+    //
+    // Find the IOE GNIC controller
+    //
+    Status = gBS->LocateHandleBuffer (
+                    ByProtocol,
+                    &gEfiPciIoProtocolGuid,
+                    NULL,
+                    &HandleCount,
+                    &HandleBuffer
+                    );
+	ASSERT_EFI_ERROR(Status);	
+
+    for (Index = 0; Index < HandleCount; Index++) 
+	{
+		Status = gBS->HandleProtocol (HandleBuffer[Index], &gEfiPciIoProtocolGuid, &PciIo);
+		if (!EFI_ERROR (Status))
+		{
+	        // Step1.
+	        // Check for IOE GNIC
+	        //
+	        Status = PciIo->Pci.Read (
+	                          PciIo,
+	                          EfiPciIoWidthUint16,
+	                          PCI_VID_REG,
+	                          1,
+	                          &PciVID
+	                          );
+	        Status = PciIo->Pci.Read (
+	                          PciIo,
+	                          EfiPciIoWidthUint16,
+	                          PCI_DID_REG,
+	                          1,
+	                          &PciDID
+	                          );
+			
+	        if (!EFI_ERROR (Status) && (PciVID==0x1D17) && (PciDID==0x9180)) 
+			{
+				DEBUG((EFI_D_INFO, "IOE GNIC Found!!! \n", PciVID, PciDID));	
+
+				// Step2.
+				// Check for VEEPROM configuration
+				//
+				PciIo->Mem.Read (
+				           PciIo,
+				           EfiPciIoWidthUint8,
+				           1,
+				           MMIO_Rx5D8_REG,
+				           1,
+				           &temp8
+				           );		  
+
+				DEBUG((EFI_D_INFO, "IOE GNIC Mem.Read 0x5D8: %02x \n", temp8));		  
+				  
+				if((temp8&0x02))
+				{
+					// Step3.
+					// Check for VEEPROM shadow
+					//
+					Status = PciIo->Pci.Read (
+									  PciIo,
+									  EfiPciIoWidthUint8,
+									  PCI_Rx5C_REG+3,
+									  1,
+									  &temp8
+									  );
+
+					if((temp8&0x03)!=0x03)
+					{
+						//need shadow process
+						Status = gRT->GetVariable(
+										  EEPROM_INFO_VARIABLE_NAME, 
+										  &gEepromInfoGuid, 
+										  NULL, 
+										  &Size, 
+										  &EepromSave
+										  );
+						if(Status){
+							DEBUG((EFI_D_ERROR, "No EEPROM Variable found!!! Status: %x \n", Status));
+						}
+						else
+						{			
+							//case of VEEPROM Enable and EEPROM Variable found!!
+							DEBUG((EFI_D_ERROR, "EEPROM Variable found!!! Status: %x \n", Status));
+							temp32 = 0;
+							
+							//enable SEEPR first Bit[24]
+							temp32 |= BIT24;
+							PciIo->Pci.Write (PciIo, EfiPciIoWidthUint32, PCI_Rx5C_REG, 1, &temp32);				
+
+							//shadow VEEPROM
+							for(Index=0;Index<EEMAX;Index++)
+							{
+								DEBUG((EFI_D_ERROR, "EepromInfoSave.Index[0]: %4x\n", EepromSave.Index[Index]));
+								temp32 = EepromSave.Index[Index] | (UINT32) Index<<16;
+								DEBUG((EFI_D_ERROR, "temp32 write to 0x58: %8x\n", temp32));					
+								PciIo->Pci.Write (PciIo, EfiPciIoWidthUint32, PCI_Rx58_REG, 1, &temp32);
+
+								/*
+								temp32 = (UINT32) (Index<<16)|BIT27;
+								PciIo->Pci.Write (PciIo, EfiPciIoWidthUint32, PCI_Rx5C_REG, 1, &temp32);
+								Status = PciIo->Pci.Read (PciIo, EfiPciIoWidthUint32, PCI_Rx5C_REG, 1, &temp32);
+								DEBUG((EFI_D_ERROR, "Read from to 0x5C: %8x\n", temp32));										
+								*/
+							}
+						
+
+							PciIo->Mem.Read (
+							           PciIo,
+							           EfiPciIoWidthUint8,
+							           1,
+							           MMIO_Rx93_REG,
+							           1,
+							           &temp8
+							           );		  			
+							DEBUG((EFI_D_ERROR, "temp8 read from MMIO 0x93: %02x\n", temp8));
+							
+							temp8 |= BIT5;
+							DEBUG((EFI_D_ERROR, "temp8 write to MMIO 0x93: %02x\n", temp8)); 			
+							PciIo->Mem.Write(
+							           PciIo,
+							           EfiPciIoWidthUint8,
+							           1,
+							           MMIO_Rx93_REG,
+							           1,
+							           &temp8
+							           );		  														
+						
+							//Read SEELD Bit[25], RELOAD[5]
+							do{
+								Status = PciIo->Pci.Read (PciIo, EfiPciIoWidthUint32, PCI_Rx5C_REG, 1, &temp32);					
+								DEBUG((EFI_D_ERROR, "Read from 0x5C: %8x\n", temp32));					
+
+								PciIo->Mem.Read(PciIo, EfiPciIoWidthUint8, 1, MMIO_Rx93_REG, 1, &temp8);																
+								DEBUG((EFI_D_ERROR, "temp8 read from 0x93: %02x\n", temp8)); 						
+							}while(!(temp32&BIT25)||(temp8&BIT5));	
+						}
+					}				
+		  		} 		  
+	            break;
+			}
+		}
+    }
+	
+    FreePool (HandleBuffer);	 
+
+}
+#endif
 
 
 VOID
@@ -980,6 +1157,16 @@ PlatformDxeEntry (
     NULL,
     &Registration
     );      
+
+#ifdef IOE_EXIST
+  EfiCreateProtocolNotifyEvent (
+    &gBdsAllDriversConnectedProtocolGuid,
+    TPL_CALLBACK,
+    EepromInitCallBack,
+    NULL,
+    &Registration
+    );      
+#endif
   EfiCreateProtocolNotifyEvent (
     &gEfiSmbiosProtocolGuid,
     TPL_CALLBACK,

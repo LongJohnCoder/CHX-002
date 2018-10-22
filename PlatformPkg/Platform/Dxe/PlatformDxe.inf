@@ -81,6 +81,9 @@
   gEfiAcpiTableGuid
   gEfiAcpiS3ContextGuid
   gEfiSetupEnterGuid
+  #ifdef IOE_EXIST
+  gEepromInfoGuid
+  #endif
   
 [Protocols]
   gEfiLegacyInterruptProtocolGuid
