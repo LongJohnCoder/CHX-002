@@ -47,7 +47,7 @@ $END--------------------------------------------------------------------
 
   subtitle text = STRING_TOKEN(STR_COM_EMPTY);
 
-  #if (defined HX002EB0) || (defined HX002EC0) || (defined HX002EH0)
+  #if (defined MB_TYPE_HX002EB) || (defined MB_TYPE_HX002EC) || (defined MB_TYPE_HX002EH)
    
   oneof varid   = SETUP_DATA.SataEn,
     prompt      = STRING_TOKEN(STR_SATA_CONTROLLER),
