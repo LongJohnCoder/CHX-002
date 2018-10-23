@@ -123,33 +123,28 @@ mov eax, 0FEB30000h + 1h
 mov [edi], eax
 
 
-;Program SPI Clock to 27Mhz start
+;Program SPI Clock to 48Mhz start
+;MMIO Rx63[0]:Fast read enable
 mov edi, 0FEB30000h + 063h
 mov al, [edi]
-and al, 0FEh
+or al, 01h
+mov [edi], al
+
+;Mmio Rx6C=00h CLKDIV
+mov edi, 0FEB30000h + 06Ch
+mov al, 00h
 mov [edi], al
 
 ; SPI0MMIO_SPI_BUS_0_MISC_CTL_1
+;Mmio Rx6D[7]=1 SPI_48EN
+;Mmio Rx6D[5]=0 SPI_66EN
 mov edi, 0FEB30000h + 06Dh
-mov al, 00h
+mov al, [edi]
+or al, 80h
+and al, 0DFh
 mov [edi], al
 
 
-mov edi, 0FEB30000h + 06Ch
-#ifdef ZX_SPICLK_SLOWDOWN
-;27/4Mhz
-mov al, 02h
-;27/2Mhz
-;mov al, 01h
-; 27/32 equal 843Khz
-;mov al, 010h
-; 27/64 equal 421Khz
-;mov al, 020h
-#else
-;27Mhz
-mov al, 00h
-#endif
-mov [edi], al
 
 
 ;Program SPI Clock  end

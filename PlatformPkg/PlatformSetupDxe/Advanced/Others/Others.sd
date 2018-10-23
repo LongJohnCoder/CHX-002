@@ -271,8 +271,8 @@ Revision History:
         prompt      = STRING_TOKEN(STR_SPIBUS_CLK_SEL),
         help        = STRING_TOKEN(STR_EMPTY),
         option text = STRING_TOKEN(STR_13M), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_27M), value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT ;          
-        option text = STRING_TOKEN(STR_48M), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_27M), value = 1, flags = RESET_REQUIRED ;          
+        option text = STRING_TOKEN(STR_48M), value = 2, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
         option text = STRING_TOKEN(STR_66M), value = 3, flags = RESET_REQUIRED;
        endoneof;         
        
