@@ -1003,6 +1003,7 @@ InstallLegacyIrqHandler (
   UINTN                     RegisterAddress;
   UINT32                    Granularity;
 
+  UINT16                    Data16;
   PrimaryMaster   = 0;
   SecondaryMaster = 0;
   Legacy8259      = Private->Legacy8259;
@@ -1076,9 +1077,14 @@ InstallLegacyIrqHandler (
 
     //
     // Clear pending interrupts in Bus Master registers
-    //
-    IoWrite16 (PrimaryMaster, 0x04);
-    IoWrite16 (SecondaryMaster, 0x04);
+    //20181022-ZYC patch for ODD work in PIO mode in XP s
+    Data16 = IoRead16(PrimaryMaster);
+	Data16 |= 0x04;
+    IoWrite16 (PrimaryMaster, Data16);
+	Data16 = IoRead16(SecondaryMaster);
+	Data16 |= 0x04;
+    IoWrite16 (SecondaryMaster, Data16);
+    //20181022-ZYC patch for ODD work in PIO mode in XP e
 
   }
 

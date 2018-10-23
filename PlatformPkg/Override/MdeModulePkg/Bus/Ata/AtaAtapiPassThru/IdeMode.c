@@ -2660,6 +2660,31 @@ FastCheckDevicePresent(
 }
 
 
+//20181022-ZYC patch for ODD work in PIO mode in XP s
+BOOLEAN DMACapable(
+    IN EFI_IDENTIFY_DATA             *IdentifyData,
+    EFI_ATA_COLLECTIVE_MODE          *SupportedModes,
+    EFI_ATA_DEVICE_TYPE               DeviceType
+    )
+{
+    if ( DeviceType == EfiIdeCdrom ) {
+        //
+        // For Atapi Devices check Bit 8 in Word 49 =  DMA	Supported or not
+        //
+        if ((IdentifyData->AtapiData.capabilities_49  & 0x100) == 0 ) {
+			DEBUG((EFI_D_ERROR,"Zoey1\n"));
+            return FALSE;
+        }
+    }
+
+    if ((SupportedModes->UdmaMode.Mode != 0x00)
+        ||(SupportedModes->MultiWordDmaMode.Mode != 0x00)) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+//20181022-ZYC patch for ODD work in PIO mode in XP e
 
 /**
   This function is used for detect whether the IDE device exists in the
@@ -2706,6 +2731,8 @@ DetectAndConfigIdeDevice (
   EFI_ATA_COLLECTIVE_MODE           *SupportedModes;
   EFI_ATA_TRANSFER_MODE             TransferMode;
   EFI_ATA_DRIVE_PARMS               DriveParameters;
+
+  UINT8                             Data8;
 
   DEBUG((EFI_D_INFO, __FUNCTION__"\n"));
 
@@ -2853,7 +2880,18 @@ DetectAndConfigIdeDevice (
         continue;
       }
     }
-    
+    //20181022-ZYC patch for ODD work in PIO mode in XP s
+	if(DMACapable(&Buffer,SupportedModes,DeviceType)){
+		
+        Data8 = IdeReadPortB (PciIo, IdeRegisters->BusMasterBaseAddr | 0x02);
+		if(IdeDevice){
+		   Data8 |= 0x40;
+		}else{
+		   Data8 |= 0x20;
+		}
+		IdeWritePortB(PciIo,IdeRegisters->BusMasterBaseAddr | 0x02,Data8);
+	}
+    //20181022-ZYC patch for ODD work in PIO mode in XP e
     //
     // Set Parameters for the device:
     // 1) Init
