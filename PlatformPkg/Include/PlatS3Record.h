@@ -52,6 +52,8 @@ typedef struct {
   UINT32  SmmUcDataSize;
   UINT32  SmrrBase;
   UINT32  SmrrSize;
+  UINT32  SmrrEnabledArray;
+  UINT32  SmrrEnabledArraySize;
   UINT32  CpuApVector;
   UINT32  CpuApicId[PLATFORM_MAX_CPU_PROC_COUNT];
   UINT32  CpuSmBase[PLATFORM_MAX_CPU_PROC_COUNT];

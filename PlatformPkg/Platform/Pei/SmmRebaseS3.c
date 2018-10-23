@@ -107,7 +107,7 @@ ACpuInitSmrr (
   )
 {
   AsmWriteMsr64(EFI_MSR_SMRR_PHYS_BASE, SmrrBase | SmrrType);
-  AsmWriteMsr64(EFI_MSR_SMRR_PHYS_MASK, (~(SmrrSize - 1) & EFI_MSR_SMRR_MASK)| EFI_MSR_SMRR_PHYS_MASK_VALID);
+  AsmWriteMsr64(EFI_MSR_SMRR_PHYS_MASK, (~(SmrrSize - 1) & EFI_MSR_SMRR_MASK));
 }
 
 
@@ -142,7 +142,12 @@ SmmInitHandler (
       } else {
         if((VOID*)(UINTN)gS3Record->SmmUcData != NULL){
           ZeroMem((VOID*)(UINTN)gS3Record->SmmUcData, gS3Record->SmmUcDataSize);
-        }					
+        }		
+
+        if(gS3Record->SmrrEnabledArraySize){
+          ZeroMem((VOID*)(UINTN)gS3Record->SmrrEnabledArray, gS3Record->SmrrEnabledArraySize);
+        }
+        
       }
 
       return;

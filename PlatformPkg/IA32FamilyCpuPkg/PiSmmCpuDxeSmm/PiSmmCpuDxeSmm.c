@@ -767,12 +767,10 @@ PiCpuSmmEntry (
   if(gFeatureContext.SmrrEnabled){
     S3Record->SmrrBase = gSmmCpuPrivate->SmrrBase;
     S3Record->SmrrSize = gSmmCpuPrivate->SmrrSize;
+    S3Record->SmrrEnabledArray = (UINT32)(UINTN)&mSmrrEnabled[0];
+    S3Record->SmrrEnabledArraySize = sizeof(mSmrrEnabled);
   }
-  else
-  {
-	S3Record->SmrrBase = 0;
-    S3Record->SmrrSize = 0;
-  }
+  
   return EFI_SUCCESS;
 }
 
