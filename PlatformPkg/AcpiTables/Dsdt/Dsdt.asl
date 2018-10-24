@@ -311,8 +311,9 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
                     Memory32Fixed (ReadWrite, 0x00000000, 0x00000000, PCIB)  // PCIE Base
                     Memory32Fixed (ReadWrite, 0xFEE00000, 0x00100000 )       // LocalApic
                     Memory32Fixed (ReadWrite, 0xFECC0000, 0x00001000 )       // NbIoApic
-                    Memory32Fixed (ReadWrite, 0xFE014000, 0x00004000 )       // PcieEPHY
-                    Memory32Fixed (ReadWrite, 0xFE011000, 0x00002000 )       // RCRB
+                    Memory32Fixed (ReadWrite, 0xFEB14000, 0x00004000 )       // PcieEPHY
+                    Memory32Fixed (ReadWrite, 0xFEB11000, 0x00002000 )       // RCRB
+		    Memory32Fixed (ReadWrite, 0xFE020000, 0x00001000 )       // CRMCA
                 })
                 
                 Method (_CRS, 0, NotSerialized)  
@@ -575,19 +576,26 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
                             Name (_STA, 0x0F)
                             Name (VSBR, ResourceTemplate ()
                             {
-                                IO (Decode16,                     // PMBase
-                                    0x0000,             
-                                    0x0000,             
-                                    0x00,               
-                                    0x00,               
-                                    _Y0D)
-                                    
+				WordIO (ResourceProducer, MinFixed, MaxFixed, PosDecode, EntireRange,	// PMBase
+					0x0000,
+					0x0000, 			
+					0x0000, 			
+					0x0000,
+					0x0000, 			
+					,, _Y0D, TypeStatic)
+								
                                 IO(Decode16, 0x00, 0x00, 0x00, 0x00, _Y0E)
 
                                 Memory32Fixed (ReadWrite,         // SbIoApic
                                     0xFEC00000,
                                     0x00001000,
                                     )
+
+				 Memory32Fixed (ReadWrite,         // D17F0 MMIO 
+                                    0xFEB32000,
+                                    0x00000200,
+                                    )
+                                    
                                 Memory32Fixed (ReadWrite,         // Bios FW MMIO
                                     0x00000000,
                                     0x00000000,
@@ -596,12 +604,13 @@ DefinitionBlock ("DSDT.aml", "DSDT", 2, "_BYO_ ", "ZX_PLAT", 0x00000001)
                             
                             Method (_CRS, 0, NotSerialized)  
                             {
-                                CreateWordField (VSBR, \_SB.PCI0.VTSB._Y0D._MIN, PBB)  
-                                CreateWordField (VSBR, \_SB.PCI0.VTSB._Y0D._MAX, PBH)  
-                                CreateByteField (VSBR, \_SB.PCI0.VTSB._Y0D._LEN, PML)  
-                                Store (PMBS, PBB)
-                                Store (PMBS, PBH)
-                                Store (PMLN, PML)
+				CreateWordField (VSBR, \_SB.PCI0.VTSB._Y0D._MIN, PBB)  
+				CreateWordField (VSBR, \_SB.PCI0.VTSB._Y0D._MAX, PBH)  
+				CreateWordField (VSBR, \_SB.PCI0.VTSB._Y0D._LEN, PML)  
+				Store (PMBS, PBB)
+				Store (PMLN, PML)
+				Store (PML, Local0)
+				Add (PBB, Decrement(Local0), PBH)
 
                                 If(LNotEqual(^^SBRG.SCIS, One))
                                 {
