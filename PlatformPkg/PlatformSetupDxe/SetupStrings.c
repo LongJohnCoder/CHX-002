@@ -512,6 +512,10 @@ GetSataPortInfo (
   UINTN			                  PortDev;
   BOOLEAN                         FoundSatacontroller;
   EFI_DEVICE_PATH_PROTOCOL        *DevicePathNodeBak;
+  UINTN                           i;
+  UINT8                           cfg;
+  UINT8                           IOE_FLag=0;
+  
   
   String = AllocateZeroPool (0x100);
   ASSERT(String != NULL);
@@ -557,15 +561,22 @@ GetSataPortInfo (
 
     // Check whether onboard SATA Device, exclude no-oprom pcie ssd device
     DevicePathNode = DevicePath;
+	i=0;
+	IOE_FLag=0;
     while (!IsDevicePathEndType (DevicePathNode)) {
       if ((DevicePathNode->Type == HW_MEMMAP_DP) && (DevicePathNode->SubType == MSG_SATA_DP || DevicePathNode->SubType == MSG_ATAPI_DP)) {
        	  FoundSatacontroller = TRUE;
 		  PortDev = *((UINT8*)((UINT8*)DevicePathNodeBak+0x5))&0xff;
 	      PortFunc = *((UINT8*)((UINT8*)DevicePathNodeBak+0x4))&0xff;
+		  if(i>2)//add by gary20181026 to check is it Onboard sata.
+		  {
+		    IOE_FLag=1;
+		  }
 		  break;
       }
       DevicePathNodeBak = DevicePathNode;
       DevicePathNode = NextDevicePathNode (DevicePathNode);
+	  i++;
     }
 
 	if((FoundSatacontroller==FALSE)||(PortDev!=0xF)||(PortFunc!=0x0)){
@@ -591,7 +602,14 @@ GetSataPortInfo (
       DEBUG((EFI_D_ERROR,"No Disk!\n"));
       continue;
     }
-    if (pSystemConfiguration->SataCfg == 0) {
+
+	if(IOE_FLag){
+	  cfg=pSystemConfiguration->IOESataCfg;
+	}
+	else{
+	  cfg=pSystemConfiguration->SataCfg;
+	}
+    if (cfg == 0) {
         PortIndex = IdeChannel*2 + SataPortIndex;
     } else {
         PortIndex = IdeChannel;
@@ -642,22 +660,55 @@ GetSataPortInfo (
        AsciiSPrint (String, 0x100, "Hard Disk %a", ModelNumber);
      } else {
        AsciiSPrint(String, 0x100, "CD/DVD ROM %a", ModelNumber);
-	 } 
-     if (PortIndex == 0) {
-         InitString(
-           HiiHandle,
-           STRING_TOKEN(STR_SATA_DRIVE0_VALUE), 
-           L"%a", 
-           String
-           );
-     }else if (PortIndex == 1){
-         InitString(
-           HiiHandle,
-           STRING_TOKEN(STR_SATA_DRIVE1_VALUE), 
-           L"%a", 
-           String
-           );
-     }	 
+	 }
+	 if(IOE_FLag){
+	     if (PortIndex == 0) {
+	         InitString(
+	           HiiHandle,
+	           STRING_TOKEN(STR_IOE_SATA_DRIVE0_VALUE), 
+	           L"%a", 
+	           String
+	           );
+	     }else if (PortIndex == 1){
+	         InitString(
+	           HiiHandle,
+	           STRING_TOKEN(STR_IOE_SATA_DRIVE1_VALUE), 
+	           L"%a", 
+	           String
+	           );
+		  }else if (PortIndex == 2){
+	         InitString(
+	           HiiHandle,
+	           STRING_TOKEN(STR_IOE_SATA_DRIVE2_VALUE), 
+	           L"%a", 
+	           String
+	           );
+	      } else if (PortIndex == 3){
+	         InitString(
+	           HiiHandle,
+	           STRING_TOKEN(STR_IOE_SATA_DRIVE3_VALUE), 
+	           L"%a", 
+	           String
+	           );
+	      	}
+	 	}else{
+		     if (PortIndex == 0) {
+	         InitString(
+	           HiiHandle,
+	           STRING_TOKEN(STR_SATA_DRIVE0_VALUE), 
+	           L"%a", 
+	           String
+	           );
+	     	}else if (PortIndex == 1){
+	         InitString(
+	           HiiHandle,
+	           STRING_TOKEN(STR_SATA_DRIVE1_VALUE), 
+	           L"%a", 
+	           String
+	           );
+        }
+	  
+	 }
    }
   
   if (HandleBuffer != NULL){

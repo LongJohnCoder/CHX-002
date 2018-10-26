@@ -25,29 +25,29 @@ $END--------------------------------------------------------------------
   
   	  text
         help   = STRING_TOKEN(STR_EMPTY),
-        text   = STRING_TOKEN(STR_SATA_DRIVE0_NAME),
-        text   = STRING_TOKEN(STR_SATA_DRIVE0_VALUE),
+        text   = STRING_TOKEN(STR_IOE_SATA_DRIVE0_NAME),
+        text   = STRING_TOKEN(STR_IOE_SATA_DRIVE0_VALUE),
         flags  = 0,
         key    = 0;
   
       text
         help   = STRING_TOKEN(STR_EMPTY),
-        text   = STRING_TOKEN(STR_SATA_DRIVE1_NAME),
-        text   = STRING_TOKEN(STR_SATA_DRIVE1_VALUE),
+        text   = STRING_TOKEN(STR_IOE_SATA_DRIVE1_NAME),
+        text   = STRING_TOKEN(STR_IOE_SATA_DRIVE1_VALUE),
         flags  = 0,
         key    = 0;
   
       text
         help   = STRING_TOKEN(STR_EMPTY),
-        text   = STRING_TOKEN(STR_SATA_DRIVE2_NAME),
-        text   = STRING_TOKEN(STR_SATA_DRIVE2_VALUE),
+        text   = STRING_TOKEN(STR_IOE_SATA_DRIVE2_NAME),
+        text   = STRING_TOKEN(STR_IOE_SATA_DRIVE2_VALUE),
         flags  = 0,
         key    = 0;
   
       text
         help   = STRING_TOKEN(STR_EMPTY),
-        text   = STRING_TOKEN(STR_SATA_DRIVE3_NAME),
-        text   = STRING_TOKEN(STR_SATA_DRIVE3_VALUE),
+        text   = STRING_TOKEN(STR_IOE_SATA_DRIVE3_NAME),
+        text   = STRING_TOKEN(STR_IOE_SATA_DRIVE3_VALUE),
         flags  = 0,
         key    = 0;
 

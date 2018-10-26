@@ -24,7 +24,7 @@ $END--------------------------------------------------------------------
 
   #ifdef FORM_SET_GOTO
   
-    #if (defined MB_TYPE_HX002EB) || (defined MB_TYPE_HX002EC) || (defined MB_TYPE_HX002EH)
+    #if (defined MB_TYPE_HX002EB) 
       suppressif TRUE;
     #endif
 
@@ -32,7 +32,7 @@ $END--------------------------------------------------------------------
       prompt = STRING_TOKEN(STR_SATA_FORM),
       help   = STRING_TOKEN(STR_SATA_FORM_HELP);
     
-    #if (defined MB_TYPE_HX002EB) || (defined MB_TYPE_HX002EC) || (defined MB_TYPE_HX002EH)
+    #if (defined MB_TYPE_HX002EB)
       endif;
     #endif
     
@@ -65,6 +65,7 @@ $END--------------------------------------------------------------------
     prompt      = STRING_TOKEN(STR_SATA_CONTROLLER),
     help        = STRING_TOKEN(STR_SATA_CONTROLLER_HELP),
     option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+	option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
   endoneof;
 
   #else
