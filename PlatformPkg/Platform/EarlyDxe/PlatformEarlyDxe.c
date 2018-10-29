@@ -1020,7 +1020,7 @@ STATIC EFI_STATUS HandlePeMcuFw(VOID)
   
   //JNY-1008:allocate mcu instruction space 64KB & mcu data space 64KB
   Address = 0xFFFFFFFF;
-  Pages   = Size + SIZE_64KB + SIZE_64KB;          // need 64K align
+  Pages   = SIZE_64KB + SIZE_64KB + SIZE_64KB;          // need 64K align
   Pages   = EFI_SIZE_TO_PAGES(Pages);
   Status  = gBS->AllocatePages(
                   AllocateMaxAddress,
@@ -1029,9 +1029,8 @@ STATIC EFI_STATUS HandlePeMcuFw(VOID)
                   &Address
                   );
   ASSERT_EFI_ERROR(Status);
-  gBS->SetMem((VOID *)Address, Size + SIZE_64KB + SIZE_64KB, 0);
-  
-  PeMcuFw = (VOID*)(UINTN)ALIGN_VALUE(Address, SIZE_64KB);		
+  PeMcuFw = (VOID*)(UINTN)ALIGN_VALUE(Address, SIZE_64KB);	
+  gBS->SetMem((VOID *)Address, SIZE_64KB + SIZE_64KB, 0);	
   DEBUG((EFI_D_ERROR, " PeMcuFw = %x  FwSize = %d[0x%x]Byte\n",PeMcuFw,Size,Size));
 
   //jerry add
