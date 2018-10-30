@@ -90,6 +90,7 @@ SETUP_ITEM_CALLBACK_EX mSetupItemCallbackEx[] = {
    {ADVANCED_FORM_SET_CLASS,    0, KEY_VALUE_SBSPE , 		AdvancedFormCallback},
    {ADVANCED_FORM_SET_CLASS,    0, KEY_VALUE_IOVEN , 		AdvancedFormCallback},
    {ADVANCED_FORM_SET_CLASS,    0, KEY_VALUE_IOVQIEN , 		AdvancedFormCallback},
+   {ADVANCED_FORM_SET_CLASS,    0, KEY_VALUE_CRB_MODE_SEL , 		AdvancedFormCallback},
  //{RESET_FORM_SET_CLASS,    0, KEY_RESET_SYSTEM,                ResetFormCallback},
   //{MAIN_FORM_SET_CLASS,     0, MAIN_PAGE_KEY_LANGUAGE,          SetLanguageCallback},
   {0,                       0, 0,                               NULL}

@@ -34,7 +34,18 @@ Revision History:
     form formid = AUTO_ID(CHIPSET_FORM_ID),
       title = STRING_TOKEN(STR_CHIPSET_FORM);
       
-  
+      subtitle text = STRING_TOKEN(STR_EMPTY);		
+ 
+ 
+     oneof varid = SETUP_DATA.CRBPlatformSelection,
+        questionid = KEY_VALUE_CRB_MODE_SEL,
+        prompt      = STRING_TOKEN(STR_CRB_MODE_SEL),
+        help        = STRING_TOKEN(STR_CRB_MODE_SEL_HELP),
+        flags = INTERACTIVE,
+        option text = STRING_TOKEN(STR_NOTEBOOK_MODE),   value = 0, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT ;
+        option text = STRING_TOKEN(STR_DESKTOP_MODE), value = 1, flags = RESET_REQUIRED;          
+       endoneof;    
+     
     subtitle text = STRING_TOKEN(STR_EMPTY);		
     text
       help   = STRING_TOKEN(STR_EMPTY),

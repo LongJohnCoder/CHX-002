@@ -173,6 +173,7 @@ GotSetupVariable:
   //chipset sb
   
   ///
+  SbCfg->CRBPlatformSelection= SetupData->CRBPlatformSelection;
   SbCfg->SBSPEValue= SetupData->SBSPEValue;
   SbCfg->SATASPEValue= SetupData->SATASPEValue;
   SbCfg->VARTSPEValue= SetupData->VARTSPEValue;
@@ -357,6 +358,7 @@ GotSetupVariable:
   NbCfg->RAIDA0Enable = SetupData->RAIDA0En;
   NbCfg->RAIDA1Enable = SetupData->RAIDA1En;
 
+  NbCfg->CRBPlatformSelection= SetupData->CRBPlatformSelection;
   NbCfg->NBSPEValue= SetupData->NBSPEValue;
   NbCfg->D0F0SPEValue= SetupData->D0F0SPEValue;
   NbCfg->D0F1SPEValue= SetupData->D0F1SPEValue;

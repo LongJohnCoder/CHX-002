@@ -102,7 +102,39 @@ case KEY_VALUE_IOVQIEN:
 		CurrentSetupData.IOVINTREnable = 0;
 	 }
 		 break;
+case KEY_VALUE_CRB_MODE_SEL:
+	 if ((Type == EFI_IFR_TYPE_NUM_SIZE_8) && (Value->u8 == 0))
+	 {
+//CRB Platform Mode choose notebook mode
+		CurrentSetupData.CpuCState = 5;
+		CurrentSetupData.CxEEnable = 0;
+		CurrentSetupData.XhcU1U2Ctrl = 1;
+		CurrentSetupData.IDEHIPMEn = 1;
+		CurrentSetupData.PcieASPM = 0;
+		CurrentSetupData.PcieASPMBootArch = 0;
+		#ifdef IOE_EXIST
+		CurrentSetupData.IoeSataHIPMEn = 0;
+		CurrentSetupData.IoeSataALPMEn = 0;
+        #endif
+	 }
+	 else
+	 {
+	
+//CRB Platform Mode choose  desktop mode
+		
+		CurrentSetupData.CxEEnable = 0;
+		CurrentSetupData.CpuCState = 0;
+		CurrentSetupData.XhcU1U2Ctrl = 0;
+		CurrentSetupData.IDEHIPMEn = 0;
+		CurrentSetupData.PcieASPM = 0;
+		CurrentSetupData.PcieASPMBootArch = 0;
+		#ifdef IOE_EXIST
+		CurrentSetupData.IoeSataHIPMEn = 0;
+		CurrentSetupData.IoeSataALPMEn = 0;
+        #endif
+	 }
 
+     break;
   default:
 		 break;
 	 }

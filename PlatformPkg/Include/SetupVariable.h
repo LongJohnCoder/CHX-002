@@ -240,6 +240,7 @@ typedef struct {
    //UINT8 BurstLength;
 
    ///
+  UINT8 CRBPlatformSelection;
   UINT8 NBSPEValue;
   UINT8 D0F0SPEValue;
   UINT8 D0F1SPEValue;

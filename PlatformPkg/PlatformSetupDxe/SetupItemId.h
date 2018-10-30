@@ -54,6 +54,8 @@
 #define   KEY_VALUE_SBSPE                  4376
 #define   KEY_VALUE_IOVEN                  4377
 #define   KEY_VALUE_IOVQIEN                4378
+#define   KEY_VALUE_CRB_MODE_SEL                4711
+
 
 #define  DEVICES_MAIN_FORM_ID          4608
 #define  CHIPSET_NB_FORM_ID            4609

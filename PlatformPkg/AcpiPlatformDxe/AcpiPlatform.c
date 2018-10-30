@@ -195,6 +195,10 @@ PlatformUpdateTables (
 	}
 	//LNA-2016110801-E
 	DEBUG((EFI_D_ERROR,"New       IaPcBootArch = %x \n",pzxFadt->IaPcBootArch));
+	pzxFadt->PreferredPmProfile = gSetupData->CRBPlatformSelection ? \
+		EFI_ACPI_5_0_PM_PROFILE_DESKTOP : EFI_ACPI_5_0_PM_PROFILE_MOBILE;
+    
+	
 	break;	
     /// TGR-2016062702+E
     case EFI_ACPI_2_0_DIFFERENTIATED_SYSTEM_DESCRIPTION_TABLE_SIGNATURE:  

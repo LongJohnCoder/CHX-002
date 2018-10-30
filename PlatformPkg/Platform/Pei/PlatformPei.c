@@ -931,7 +931,11 @@ CpuMpPeiCallback (
   CpuFeature->TxtEnable          = AsiaVariable->TXT;
 #endif
   
-
+ if(SetupHob->CRBPlatformSelection == CRB_PLATFORM_MODE_SELECTION_DESKTOP) {
+    CpuFeature->ProcessorCState = 0;
+    CpuFeature->C5Control          = 0;
+    CpuFeature->ProcessorCxeEnable =0;
+  }
 DumpCpuFeature(CpuFeature);
 
   CpuPpi->CpuFeatureInit(CpuFeature);
