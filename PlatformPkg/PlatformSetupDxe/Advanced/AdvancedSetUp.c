@@ -113,8 +113,8 @@ case KEY_VALUE_CRB_MODE_SEL:
 		CurrentSetupData.PcieASPM = 0;
 		CurrentSetupData.PcieASPMBootArch = 0;
 		#ifdef IOE_EXIST
-		CurrentSetupData.IoeSataHIPMEn = 0;
-		CurrentSetupData.IoeSataALPMEn = 0;
+		CurrentSetupData.IOESataHIPMEn = 0;
+		CurrentSetupData.IOESataALPMEn = 0;
         #endif
 	 }
 	 else
@@ -129,8 +129,8 @@ case KEY_VALUE_CRB_MODE_SEL:
 		CurrentSetupData.PcieASPM = 0;
 		CurrentSetupData.PcieASPMBootArch = 0;
 		#ifdef IOE_EXIST
-		CurrentSetupData.IoeSataHIPMEn = 0;
-		CurrentSetupData.IoeSataALPMEn = 0;
+		CurrentSetupData.IOESataHIPMEn = 0;
+		CurrentSetupData.IOESataALPMEn = 0;
         #endif
 	 }
 
