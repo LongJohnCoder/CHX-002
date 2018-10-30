@@ -257,6 +257,10 @@ VOID SetExternalTemperatureSensorCfg()
 	SioWrite(0x6C,0x2F);  //Slope of PWM
 	SioWrite(0x6D,0x40); //Temperature Interval set to 0
 
+	//IVS-20181030 Offset Adjustment For THERMD[+|-],SIO need to decrease 10 degree
+	SioWrite(0x5C,SioRead(0x5C)|BIT7); //BIT7 need set to 1 to enable 0x56 Write Access.
+	SioWrite(0x56,0xF4); // F4 is 10's complement value.
+
 }
 
 VOID InitVoltageMonitor()
