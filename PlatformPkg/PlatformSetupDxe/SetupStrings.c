@@ -265,21 +265,24 @@ GetCpuInfo (
   InitString(
 	 HiiHandle,
 	 STRING_TOKEN(STR_CACHE_L1I_SIZE_VALUE), 
-	 L"%d KB", 
+	 L"%d * %d KB", 
+        NumCores,
 	 CacheSize[0]
    );
 
     InitString(
 	 HiiHandle,
 	 STRING_TOKEN(STR_CACHE_L1D_SIZE_VALUE), 
-	 L"%d KB", 
+	 L"%d * %d KB", 
+        NumCores,
 	 CacheSize[1]
    );
 
     InitString(
 	 HiiHandle,
 	 STRING_TOKEN(STR_CACHE_L2_SIZE_VALUE), 
-	 L"%d KB", 
+	 L"%d * %d KB", 
+        NumClusters,
 	 CacheSize[2]
    );
 
