@@ -1,0 +1,130 @@
+/** @file
+
+Copyright (c) 2006 - 2014, Byosoft Corporation.<BR>
+All rights reserved.This software and associated documentation (if any)
+is furnished under a license and may only be used or copied in
+accordance with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be reproduced,
+stored in a retrieval system, or transmitted in any form or by any
+means without the express written consent of Byosoft Corporation.
+
+File Name:
+   Audio.sd
+
+Abstract:
+   Audio setting.
+
+Revision History:
+
+$END--------------------------------------------------------------------
+
+**/
+
+    form formid = IOE_USB_FORM_ID,
+      title = STRING_TOKEN(STR_IOE_USB_FORM);
+
+      subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+	      oneof varid = SETUP_DATA.IOEUsbModeSelect,
+	        prompt = STRING_TOKEN(STR_IOE_USB_MODE),
+	        help   = STRING_TOKEN(STR_IOE_USB_MODE_HELP),
+	        option text = STRING_TOKEN(STR_IOE_USB_DISABLED), value = 0, flags = RESET_REQUIRED;
+	        option text = STRING_TOKEN(STR_IOE_USB_MODE1), value = 1, flags = RESET_REQUIRED;
+	        option text = STRING_TOKEN(STR_IOE_USB_MODE2), value = 2, flags = RESET_REQUIRED;
+	        option text = STRING_TOKEN(STR_IOE_USB_MODE3), value = 3, flags = RESET_REQUIRED;
+	        option text = STRING_TOKEN(STR_IOE_USB_MODE4), value = 4, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+	      endoneof;
+    
+    suppressif TRUE;
+      oneof varid   = SETUP_DATA.IOETRBCacheBypass,
+        prompt   = STRING_TOKEN(STR_IOE_TRB_CACHE),
+        help   = STRING_TOKEN(STR_IOE_TRB_CACHE_HELP),
+        option text = STRING_TOKEN(STR_NOT_BYPASS), value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_BYPASS),     value = 1, flags =RESET_REQUIRED;
+       endoneof;     
+
+       oneof varid   = SETUP_DATA.IOEXhciOutBurstEn,
+        prompt   = STRING_TOKEN(STR_IOE_XHCI_OUTBURST_EN),
+        help   = STRING_TOKEN(STR_IOE_XHCI_OUTBURST_EN_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+       endoneof;     
+
+        oneof varid   = SETUP_DATA.IOEXhciMaxBurstSize,
+        prompt   = STRING_TOKEN(STR_IOE_XHCI_MAXBURST_EN),
+        help   = STRING_TOKEN(STR_IOE_XHCI_MAXBURST_EN_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),     value = 1, flags =RESET_REQUIRED;
+       endoneof;     
+
+       oneof varid   = SETUP_DATA.IOEUSBCFLRControl,
+        prompt   = STRING_TOKEN(STR_IOE_USBC_FLRSUP),
+        help   = STRING_TOKEN(STR_IOE_USBC_FLRSUP_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+     endoneof;
+		
+      oneof varid   = SETUP_DATA.IOEXHCIFLRControl,
+        prompt   = STRING_TOKEN(STR_IOE_XHCI_FLRSUP),
+        help   = STRING_TOKEN(STR_IOE_XHCI_FLRSUP_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      endoneof; 
+   
+
+     oneof varid   = SETUP_DATA.IOERTD3Control,
+        prompt   = STRING_TOKEN(STR_IOE_RTD3_CONTROL),
+        help   = STRING_TOKEN(STR_IOE_RTD3_CONTROL_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      endoneof; 
+    endif;
+  
+    oneof varid   = SETUP_DATA.IOEUsbS4Wakeup,
+        prompt   = STRING_TOKEN(STR_IOE_USB_S4WAKEUP),
+        help   = STRING_TOKEN(STR_IOE_USB_S4WAKEUP_HELP),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+      endoneof; 
+      
+  suppressif TRUE;
+    oneof varid   = SETUP_DATA.IOEUsbC4Block,
+        prompt   = STRING_TOKEN(STR_IOE_USB_C4BLOCK),
+        help   = STRING_TOKEN(STR_IOE_USB_C4BLOCK_HELP),
+       option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      endoneof; 
+  endif;
+      
+//#if defined(HX001EK3_09)||defined(HX001ER0_09)||defined(HX001EP0_09)//EK3 ER0 EP0 10G Enable
+     oneof varid = SETUP_DATA.IOEUsb10GSupport,
+        prompt = STRING_TOKEN(STR_IOE_USB_10G_SUPP),
+        help   = STRING_TOKEN(STR_IOE_USB_10G_SUPP_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT | MANUFACTURING |RESET_REQUIRED;
+       endoneof;
+//#else //Others: 10G Disable
+//     oneof varid = SETUP_DATA.IOEUsb10GSupport,
+//        prompt = STRING_TOKEN(STR_IOE_USB_10G_SUPP),
+//        help   = STRING_TOKEN(STR_IOE_USB_10G_SUPP_HELP),
+//        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+//        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
+//       endoneof;
+//#endif
+     oneof varid = SETUP_DATA.IOEUsbOCEn,
+        prompt = STRING_TOKEN(STR_IOE_USB_OCEN),
+        help   = STRING_TOKEN(STR_IOE_USB_OCEN_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
+       endoneof;
+
+    suppressif TRUE;
+      oneof varid = SETUP_DATA.IOEUsbEITRN,
+        prompt = STRING_TOKEN(STR_IOE_USB_EITRN),
+        help   = STRING_TOKEN(STR_IOE_USB_EITRN_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
+       endoneof;
+     endif;
+ 
+    endform;  //end IOE_USB_FORM_ID
+

@@ -1,0 +1,193 @@
+/** @file
+
+Copyright (c) 2006 - 2014, Byosoft Corporation.<BR>
+All rights reserved.This software and associated documentation (if any)
+is furnished under a license and may only be used or copied in
+accordance with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be reproduced,
+stored in a retrieval system, or transmitted in any form or by any
+means without the express written consent of Byosoft Corporation.
+
+File Name:
+   UsbSetup.sd
+
+Abstract:
+   USB setting.
+
+Revision History:
+
+$END--------------------------------------------------------------------
+
+**/
+
+
+
+
+
+#ifdef DEVICES_FORM_SET
+
+    #ifdef FORM_SET_GOTO
+
+    goto CHIPSET_SB_USB_FORM_ID,
+    prompt = STRING_TOKEN(STR_USB_FORM),
+    help = STRING_TOKEN(STR_USB_FORM_HELP);
+
+    #endif
+
+    #ifdef FORM_SET_FORM
+
+    form formid = CHIPSET_SB_USB_FORM_ID,
+    title = STRING_TOKEN(STR_USB_FORM);
+
+    subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+
+        //
+        // Common
+        //
+        oneof varid     = SETUP_DATA.LegacyUsbEnable,
+            prompt      = STRING_TOKEN(STR_LEGACY_USB_EN),
+            help        = STRING_TOKEN(STR_LEGACY_USB_EN_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+#if defined(HX002EB0_00)
+        oneof varid     = SETUP_DATA.UsbModeSelect,
+            prompt      = STRING_TOKEN(STR_USB_MODE),
+            help        = STRING_TOKEN(STR_USB_MODE_HELP),
+            option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE1),    value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE2),    value = 2, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE3),    value = 3, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE4),    value = 4, flags =  RESET_REQUIRED;
+        endoneof;
+#else
+        oneof varid     = SETUP_DATA.UsbModeSelect,
+            prompt      = STRING_TOKEN(STR_USB_MODE),
+            help        = STRING_TOKEN(STR_USB_MODE_HELP),
+            option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE1),    value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE2),    value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE3),    value = 3, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_USB_MODE4),    value = 4, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+#endif
+        oneof varid     = SETUP_DATA.UsbS4WakeupCtrl,
+            prompt      = STRING_TOKEN(STR_USB_S4WAKEUP_CTRL),
+            help        = STRING_TOKEN(STR_USB_S4WAKEUP_CTRL_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        oneof varid     = SETUP_DATA.UsbOCCtrl,
+            prompt      = STRING_TOKEN(STR_USB_OC_CTRL),
+            help        = STRING_TOKEN(STR_USB_OC_CTRL_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+      suppressif TRUE;
+        //
+        // USBC
+        //
+        oneof varid     = SETUP_DATA.USBCFLRCtrl,
+            prompt      = STRING_TOKEN(STR_USBC_FLRSUP_CTRL),
+            help        = STRING_TOKEN(STR_USBC_FLRSUP_CTRL_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+
+        //
+        // xHCI
+        //
+        //suppressif ideqval SETUP_DATA.UsbModeSelect==0 OR ideqval SETUP_DATA.UsbModeSelect==1;
+            oneof varid     = SETUP_DATA.XhcSupport,
+                prompt      = STRING_TOKEN(STR_XHC_SUPPORT),
+                help        = STRING_TOKEN(STR_XHC_SUPPORT_HELP),
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            endoneof;
+
+            oneof varid     = SETUP_DATA.XhcMcuDmaPathCtrl,
+                prompt      = STRING_TOKEN(STR_XHC_MCU_DMA_PATH_CTRL),
+                help        = STRING_TOKEN(STR_XHC_MCU_DMA_PATH_CTRL_HELP),
+                option text = STRING_TOKEN(STR_XHC_MCU_DMA_PATH_NONSNOOP), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_XHC_MCU_DMA_PATH_SNOOP),    value = 1, flags = RESET_REQUIRED;
+            endoneof;
+
+            oneof varid     = SETUP_DATA.XhcTRBCacheBypassCtrl,
+                prompt      = STRING_TOKEN(STR_XHC_TRB_CACHE_CTRL),
+                help        = STRING_TOKEN(STR_XHC_TRB_CACHE_CTRL_HELP),
+                option text = STRING_TOKEN(STR_XHC_TRB_CACHE_NOT_BYPASS), value = 0, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_XHC_TRB_CACHE_BYPASS),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            oneof varid     = SETUP_DATA.XhcBurstCtrl,
+                prompt      = STRING_TOKEN(STR_XHC_BURST_CTRL),
+                help        = STRING_TOKEN(STR_XHC_BURST_CTRL_HELP),
+                option text = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            oneof varid     = SETUP_DATA.XhcPerfModeCtrl,
+                prompt      = STRING_TOKEN(STR_XHC_PERF_MODE_CTRL),
+                help        = STRING_TOKEN(STR_XHC_PERF_MODE_CTRL_HELP),
+                option text = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+            endoneof;
+
+            //suppressif ideqval SETUP_DATA.XhcPerfModeCtrl==1;
+                oneof varid     = SETUP_DATA.XhcU1U2Ctrl,
+                    prompt      = STRING_TOKEN(STR_XHC_U1U2_CTRL),
+                    help        = STRING_TOKEN(STR_XHC_U1U2_CTRL_HELP),
+                    option text = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                endoneof;
+            //endif;
+
+            oneof varid     = SETUP_DATA.XhcMsiFlushCtrl,
+                prompt      = STRING_TOKEN(STR_XHC_MSIFLUSH_CTRL),
+                help        = STRING_TOKEN(STR_XHC_MSIFLUSH_CTRL_HELP),
+                option text = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+            endoneof;
+
+            oneof varid     = SETUP_DATA.XhcUartCtrl,
+                prompt      = STRING_TOKEN(STR_XHC_UART_CTRL),
+                help        = STRING_TOKEN(STR_XHC_UART_CTRL_HELP),
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+            endoneof;
+
+            oneof varid     = SETUP_DATA.XhcFLRCtrl,
+                prompt      = STRING_TOKEN(STR_XHC_FLRSUP_CTRL),
+                help        = STRING_TOKEN(STR_XHC_FLRSUP_CTRL_HELP),
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            oneof varid     = SETUP_DATA.XhcRTD3Ctrl,
+                prompt      = STRING_TOKEN(STR_XHC_RTD3_CTRL),
+                help        = STRING_TOKEN(STR_XHC_RTD3_CTRL_HELP),
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            oneof varid     = SETUP_DATA.XhcC4BlockCtrl,
+                prompt      = STRING_TOKEN(STR_XHC_C4BLOCK_CTRL),
+                help        = STRING_TOKEN(STR_XHC_C4BLOCK_CTRL_HELP),
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            oneof varid = SETUP_DATA.XhcEITRNCtrl,
+                prompt = STRING_TOKEN(STR_XHC_EITRN_CTRL),
+                help   = STRING_TOKEN(STR_XHC_EITRN_CTRL_HELP),
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags =RESET_REQUIRED;
+            endoneof;
+        endif;
+
+    endform;  //end CHIPSET_SB_USB_FORM_ID
+
+    #endif  //end, FORM_SET_FORM
+#endif  //end, DEVICES_FORM_SET

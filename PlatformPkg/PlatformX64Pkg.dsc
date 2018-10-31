@@ -73,6 +73,10 @@ DEFINE ZX_TXT_SUPPORT = FALSE
 DEFINE PCIE_ACPI_SHPC_SUPPORT_CHX002 = FALSE
 DEFINE PCIE_ACPI_SHPC_SUPPORT_IOE = FALSE
 
+#
+# This macro is used for demo board.
+#
+DEFINE ZX_DEMO_BOARD = FALSE
 
 #-------------------------------------------------------------------------------
 # Those variable define the PCIE port visable or not on SETUP UI
@@ -940,7 +944,13 @@ DEFINE SECURE_KEY_PATH   = SecurityPkg/VariableAuthenticated/SecureKey
   MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
   ByoModulePkg/Graphics/JpegDecoderDxe/JpegDecoder.inf
   ByoModulePkg/Setup/TextBrowserDxe/SetupBrowserDxe.inf
+
+!if $(ZX_DEMO_BOARD) == TRUE
+  $(PLATFORM_PACKAGE)/PlatformSetupDxe_forDemoBoard/PlatformSetupDxe.inf
+!else
   $(PLATFORM_PACKAGE)/PlatformSetupDxe/PlatformSetupDxe.inf
+!endif
+
   $(PLATFORM_PACKAGE)/UiApp/UiApp.inf
   $(PLATFORM_PACKAGE)/BootManagerMenuApp/BootManagerMenuApp.inf
 

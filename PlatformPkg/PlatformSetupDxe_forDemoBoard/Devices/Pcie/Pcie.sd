@@ -1,0 +1,1191 @@
+/** @file
+
+Copyright (c) 2006 - 2014, Byosoft Corporation.<BR>
+All rights reserved.This software and associated documentation (if any)
+is furnished under a license and may only be used or copied in
+accordance with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be reproduced,
+stored in a retrieval system, or transmitted in any form or by any
+means without the express written consent of Byosoft Corporation.
+
+File Name:
+  Pcie.sd
+
+Abstract:
+  Via North Bridge setting.
+
+Revision History:
+
+
+$END--------------------------------------------------------------------
+
+**/
+
+
+
+
+
+#ifdef DEVICES_FORM_SET
+  #ifdef FORM_SET_GOTO
+      goto CHIPSET_PCIE_FORM_ID,
+        prompt = STRING_TOKEN(STR_PCIE_FORM),
+        help = STRING_TOKEN(STR_PCIE_FORM_HELP);
+  #endif
+
+  #ifdef FORM_SET_FORM
+
+    form formid = CHIPSET_PCIE_FORM_ID,
+    title = STRING_TOKEN(STR_PCIE_FORM);
+
+      suppressif TRUE;
+				oneof varid 	= SETUP_DATA.PcieFPGAMode,
+				 prompt 	= STRING_TOKEN(STR_PCIE_FPGA_MODE),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =  RESET_REQUIRED;
+				endoneof;  
+			endif;
+
+       oneof varid = SETUP_DATA.Pci64,
+        prompt = STRING_TOKEN(STR_PCI64),
+        help   = STRING_TOKEN(STR_PCI64_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
+       endoneof;  
+
+       suppressif TRUE;
+       //suppressif ideqval SETUP_DATA.Pci64==0;
+       oneof varid = SETUP_DATA.Pci64Location,
+        prompt = STRING_TOKEN(STR_PCI64_LOCATION),
+        help   = STRING_TOKEN(STR_PCI64_LOCATION_HELP),
+        option text = STRING_TOKEN(STR_BELOW_1T), value = 0, flags = DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_BELOW_512G),  value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_BELOW_256G),  value = 2, flags = RESET_REQUIRED;
+      //  option text = STRING_TOKEN(STR_BELOW_128G),  value = 3, flags = RESET_REQUIRED;
+      //  option text = STRING_TOKEN(STR_BELOW_64G),  value = 4, flags = RESET_REQUIRED;
+       endoneof;
+       endif;
+
+      subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+       oneof varid   = SETUP_DATA.PcieRst,
+       	questionid = KEY_VALUE_PCIERST,
+        prompt   = STRING_TOKEN(STR_PCIERST),
+        help   = STRING_TOKEN(STR_EMPTY),
+        flags = INTERACTIVE,
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof;      
+
+
+     suppressif NOT ideqval SETUP_DATA.PcieRst==1;      
+        
+#ifdef SETUP_VISABLE_PCIE_RP_PE0
+       oneof varid   = SETUP_DATA.PcieRstPE0,
+        prompt   = STRING_TOKEN(STR_PCIE_RST_PE0),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE1
+       oneof varid   = SETUP_DATA.PcieRstPE1,
+        prompt   = STRING_TOKEN(STR_PCIE_RST_PE1),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE2      
+       oneof varid   = SETUP_DATA.PcieRstPE2,
+        prompt   = STRING_TOKEN(STR_PCIE_RST_PE2),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE3      
+       oneof varid   = SETUP_DATA.PcieRstPE3,
+        prompt   = STRING_TOKEN(STR_PCIE_RST_PE3),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE4
+
+	    oneof varid   = SETUP_DATA.PcieRstPE4,
+        prompt   = STRING_TOKEN(STR_PCIE_RST_PE4),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof;        
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE5             
+ 	    oneof varid   = SETUP_DATA.PcieRstPE5,
+        prompt   = STRING_TOKEN(STR_PCIE_RST_PE4),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof;        
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE6                 
+	    oneof varid   = SETUP_DATA.PcieRstPE6,
+        prompt   = STRING_TOKEN(STR_PCIE_RST_PE6),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =  RESET_REQUIRED;
+       endoneof;        
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE7            
+       oneof varid   = SETUP_DATA.PcieRstPE7,
+        prompt   = STRING_TOKEN(STR_PCIE_RST_PE7),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;    
+       endoneof; 
+#endif	   
+     endif;//end PcieRst==1;
+     
+    	oneof varid   = SETUP_DATA.PcieRP,
+        questionid = KEY_VALUE_PCIERP,
+        prompt   = STRING_TOKEN(STR_PCIE_RP),
+        help   = STRING_TOKEN(STR_EMPTY),
+        flags = INTERACTIVE,
+ 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
+       endoneof;
+   
+     suppressif NOT ideqval SETUP_DATA.PcieRP==1;  
+      
+       // oneof varid   = SETUP_DATA.PciePEG,
+        // questionid  = KEY_VALUE_PCIE_PEG,
+        // prompt   = STRING_TOKEN(STR_PCIE_PEG),
+        // help   = STRING_TOKEN(STR_EMPTY),
+ 		    // option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =INTERACTIVE;
+        // option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
+       // endoneof; 
+#ifdef SETUP_VISABLE_PCIE_RP_PE0      
+       oneof varid   = SETUP_DATA.PciePE0,
+        questionid  = KEY_VALUE_PCIE_PE0,
+        prompt   = STRING_TOKEN(STR_PCIE_PE0),
+        help   = STRING_TOKEN(STR_PCIE_PE0_HELP),
+ 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE1 
+       oneof varid   = SETUP_DATA.PciePE1,
+        questionid  = KEY_VALUE_PCIE_PE1,
+        prompt   = STRING_TOKEN(STR_PCIE_PE1),
+        help   = STRING_TOKEN(STR_EMPTY),
+  		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE2      
+       oneof varid   = SETUP_DATA.PciePE2,
+        questionid  = KEY_VALUE_PCIE_PE2,
+        prompt   = STRING_TOKEN(STR_PCIE_PE2),
+        help   = STRING_TOKEN(STR_EMPTY),
+ 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT|INTERACTIVE ;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE3       
+       oneof varid   = SETUP_DATA.PciePE3,
+        questionid  = KEY_VALUE_PCIE_PE3,
+        prompt   = STRING_TOKEN(STR_PCIE_PE3),
+        help   = STRING_TOKEN(STR_EMPTY),
+ 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT| INTERACTIVE ;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE4       
+      oneof varid   = SETUP_DATA.PciePE4,
+       questionid  = KEY_VALUE_PCIE_PE4,
+        prompt   = STRING_TOKEN(STR_PCIE_PE4),
+        help   = STRING_TOKEN(STR_PCIE_PE4_HELP),
+ 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT| INTERACTIVE ;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE5 
+       oneof varid   = SETUP_DATA.PciePE5,
+        questionid  = KEY_VALUE_PCIE_PE5,
+        prompt   = STRING_TOKEN(STR_PCIE_PE5),
+        help   = STRING_TOKEN(STR_EMPTY),
+ 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
+       endoneof;
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE6	   
+       oneof varid   = SETUP_DATA.PciePE6,
+       questionid  = KEY_VALUE_PCIE_PE6,
+        prompt   = STRING_TOKEN(STR_PCIE_PE6),
+        help   = STRING_TOKEN(STR_PCIE_PE6_HELP),
+ 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =DEFAULT| INTERACTIVE ;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE7
+
+       oneof varid   = SETUP_DATA.PciePE7,
+        questionid  = KEY_VALUE_PCIE_PE7,
+        prompt   = STRING_TOKEN(STR_PCIE_PE7),
+        help   = STRING_TOKEN(STR_EMPTY),
+ 		    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT|INTERACTIVE ;
+       endoneof; 
+#endif
+    endif;//end PcieRP==1;
+      
+
+      
+       subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+        oneof varid   = SETUP_DATA.PcieLinkSpeed,
+        prompt   = STRING_TOKEN(STR_PCIE_LINK_SPD),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_AUTO), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags =RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_BY_PORT), value = 4, flags =  RESET_REQUIRED;
+       endoneof;
+
+     suppressif NOT ideqval SETUP_DATA.PcieLinkSpeed==4;  
+      // oneof varid   = SETUP_DATA.PciePEGLinkSpeed,
+        // prompt   = STRING_TOKEN(STR_PCIE_PEG_LINK_SPD),
+        // help   = STRING_TOKEN(STR_EMPTY),
+        // option text = STRING_TOKEN(STR_AUTO), value = 0, flags = DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        // option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags =RESET_REQUIRED;
+        // option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
+        // option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+       // endoneof; 
+#ifdef SETUP_VISABLE_PCIE_RP_PE0       
+        oneof varid   = SETUP_DATA.PciePE0LinkSpeed,
+        prompt   = STRING_TOKEN(STR_PCIE_PE0_LINK_SPD),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_AUTO), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags =RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE1
+        oneof varid   = SETUP_DATA.PciePE1LinkSpeed,
+        prompt   = STRING_TOKEN(STR_PCIE_PE1_LINK_SPD),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_AUTO), value = 0, flags =DEFAULT | MANUFACTURING |   RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags =RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE2              
+        oneof varid   = SETUP_DATA.PciePE2LinkSpeed,
+        prompt   = STRING_TOKEN(STR_PCIE_PE2_LINK_SPD),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_AUTO), value = 0, flags = MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags = DEFAULT |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE3
+        oneof varid   = SETUP_DATA.PciePE3LinkSpeed,
+        prompt   = STRING_TOKEN(STR_PCIE_PE3_LINK_SPD),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_AUTO), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags =RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+      endoneof;        
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE4
+        oneof varid   = SETUP_DATA.PciePE4LinkSpeed,
+        prompt   = STRING_TOKEN(STR_PCIE_PE4_LINK_SPD),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_AUTO), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags =RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE5
+        oneof varid   = SETUP_DATA.PciePE5LinkSpeed,
+        prompt   = STRING_TOKEN(STR_PCIE_PE5_LINK_SPD),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_AUTO), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags =RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE6
+        oneof varid   = SETUP_DATA.PciePE6LinkSpeed,
+        prompt   = STRING_TOKEN(STR_PCIE_PE6_LINK_SPD),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_AUTO), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags =RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+       endoneof; 
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE7
+        oneof varid   = SETUP_DATA.PciePE7LinkSpeed,
+        prompt   = STRING_TOKEN(STR_PCIE_PE7_LINK_SPD),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_AUTO), value = 0, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN1), value = 1, flags =RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN2), value = 2, flags =  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_FORCE_GEN3), value = 3, flags = RESET_REQUIRED;
+       endoneof;
+#endif
+	   
+     endif; //end PcieLinkSpeed==4;    
+ 
+
+ 
+     
+    
+    
+    
+
+
+  
+
+    
+        
+    suppressif TRUE;
+
+      oneof varid = SETUP_DATA.PcieForceLinkWidth,
+        prompt = STRING_TOKEN(STR_PCIE_FORCE_LINK_WIDTH),
+        help   = STRING_TOKEN(STR_PCIE_FORCE_LINK_WIDTH),
+        option text = STRING_TOKEN(STR_PCIE_FORCE_DEFAULT),       	value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_PCIE_FORCE_X1),  			value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+    
+     oneof varid   = SETUP_DATA.PcieHotReset,
+        prompt   = STRING_TOKEN(STR_PCIE_HOTRST),
+        help   = STRING_TOKEN(STR_EMPTY),
+     		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof; 
+       
+      oneof varid   = SETUP_DATA.PcieOBFFCtrl_PCIE,
+        prompt   = STRING_TOKEN(STR_PCIE_OBFF_CTRL_PCIE),
+        help   = STRING_TOKEN(STR_EMPTY),
+     		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OBFF_WITH_PEXWAKE), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OBFF_WITH_MESSAGEA), value =2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OBFF_WITH_MESSAGEB), value =3, flags = RESET_REQUIRED;      
+      endoneof; 
+     
+       oneof varid   = SETUP_DATA.PcieOBFFCtrl_PMU,
+        prompt   = STRING_TOKEN(STR_PCIE_OBFF_CTRL_PMU),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_OBFF_CXCMD_MODE), value = 0, flags = DEFAULT|RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OBFF_CXSIGNAL_MODE), value = 1, flags = RESET_REQUIRED;
+       endoneof;
+
+
+    oneof varid   = SETUP_DATA.SelectableDeEmphasis,
+        prompt   = STRING_TOKEN(STR_SELECT_DE_EMPHASIS),
+        help   = STRING_TOKEN(STR_SELECT_DE_EMPHASIS_HELP),
+     	 option text = STRING_TOKEN(STR_DE_EMPHESIS_SI_TABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+     	 option text = STRING_TOKEN(STR_M3P5DB), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_M6P0DB), value = 2, flags = RESET_REQUIRED;
+       endoneof; 
+      
+      oneof varid   = SETUP_DATA.SPECIALLY_SI_SETTING,
+        prompt   = STRING_TOKEN(STR_SPECIALLY_SI_SETTING),
+        help   = STRING_TOKEN(STR_EMPTY),
+     		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PCIE_SPECIALLY_SI_BIST), value = 1, flags = RESET_REQUIRED;
+       endoneof; 
+
+
+			//	subtitle text = STRING_TOKEN(STR_COM_EMPTY);
+									
+		//		subtitle text = STRING_TOKEN(STR_MSI_INT_CTRL);
+
+	/*			oneof varid 	= SETUP_DATA.MsiEnable,
+				 prompt 	= STRING_TOKEN(STR_MSI_INT_CTRL),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+	*/		
+			//DLA_ADD_061107_S			
+				oneof varid 	= SETUP_DATA.PcieASPMBootArch,
+				 prompt 	= STRING_TOKEN(STR_PCIE_ASPM_BOOT_ARCH),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =  RESET_REQUIRED;
+				endoneof;  
+			//DLA_ADD_061107_E
+		/*
+    goto PCIE_RP_LOCK_BIT_CTRL_FORM_ID,
+      prompt = STRING_TOKEN(STR_RP_LOCK_BIT_CTRL),
+      help = STRING_TOKEN(STR_RP_LOCK_BIT_CTRL);  
+		*/
+
+
+	oneof varid   = SETUP_DATA.PcieCrsMech,
+		prompt	 = STRING_TOKEN(STR_PCIE_CRS_MECH),
+		help   = STRING_TOKEN(STR_PCIE_CRS_MECH_HELP),
+		 option text = STRING_TOKEN(STR_PCIE_CRS_MECH_SW_VISIABLE), value = 0, flags = RESET_REQUIRED;
+		 option text = STRING_TOKEN(STR_PCIE_CRS_MECH_HW_RETRY), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+		 option text = STRING_TOKEN(STR_PCIE_CRS_MECH_ALL_FF), value = 2, flags = RESET_REQUIRED;
+	endoneof; 
+
+	oneof varid 	= SETUP_DATA.PcieOptimalTLS,
+	 prompt 	= STRING_TOKEN(STR_PCIE_OPTIMAL_TLS),
+	 help	= STRING_TOKEN(STR_PCIE_OPTIMAL_TLS_HELP),
+	 option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+	 option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =  RESET_REQUIRED;
+	endoneof;  
+
+  endif;
+
+	oneof varid 	= SETUP_DATA.PciePHYA_SSC_EN,
+	 prompt 	= STRING_TOKEN(STR_PCIE_PHYA_SSC_EN),
+	 help	= STRING_TOKEN(STR_PCIE_PHYA_SSC_EN_HELP),
+	 option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+	 option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =  DEFAULT | MANUFACTURING |RESET_REQUIRED;
+	endoneof; 
+#ifdef CHX002_A0
+#ifdef SETUP_PHYB_SSC_ENABLE
+	oneof varid 	= SETUP_DATA.PciePHYB_SSC_EN,
+	 prompt 	= STRING_TOKEN(STR_PCIE_PHYB_SSC_EN),
+	 help	= STRING_TOKEN(STR_PCIE_PHYB_SSC_EN_HELP),
+	 option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+	 option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+	endoneof;  
+#else	
+	oneof varid 	= SETUP_DATA.PciePHYB_SSC_EN,
+	 prompt 	= STRING_TOKEN(STR_PCIE_PHYB_SSC_EN),
+	 help	= STRING_TOKEN(STR_PCIE_PHYB_SSC_EN_HELP),
+	 option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+	 option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+	endoneof;  
+#endif
+#else
+	oneof varid 	= SETUP_DATA.PciePHYB_SSC_EN,
+	 prompt 	= STRING_TOKEN(STR_PCIE_PHYB_SSC_EN),
+	 help	= STRING_TOKEN(STR_PCIE_PHYB_SSC_EN_HELP),
+	 option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+	 option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+	endoneof;  
+#endif
+
+
+
+
+  suppressif TRUE;
+	goto PCIE_RP_INT_ROUTING_CTRL_FORM_ID,
+		prompt	 = STRING_TOKEN(STR_PCIE_ROUT_CTRL),
+		help   = STRING_TOKEN(STR_PCIE_ROUT_CTRL);
+
+	goto PCIE_GEN3_EQ_CTRL_FORM_ID,
+		prompt = STRING_TOKEN(STR_PCIE_GEN3_EQ_CTRL),
+		help = STRING_TOKEN(STR_PCIE_GEN3_EQ_CTRL);
+	endif;
+
+    goto PCIE_KERNAL_CTRL_FORM_ID,
+      prompt = STRING_TOKEN(STR_KERNAL_CTRL_ITEMS),
+      help = STRING_TOKEN(STR_KERNAL_CTRL_ITEMS);
+
+
+ endform;  //end
+
+
+
+// Hidden in demo board.
+//2 Interrupt Routing Test items
+   form formid = PCIE_RP_INT_ROUTING_CTRL_FORM_ID,
+     title = STRING_TOKEN(STR_PCIE_ROUT_CTRL);
+
+	oneof varid   = SETUP_DATA.PcieRoutingCtrl,
+	  prompt   = STRING_TOKEN(STR_PCIE_ROUT_CTRL),
+	  help	 = STRING_TOKEN(STR_PCIE_ROUT_CTRL),
+		  option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+	  option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+	 endoneof; 
+   
+   	suppressif NOT ideqval SETUP_DATA.PcieRoutingCtrl==1;	 
+	   goto PCIE_MSGC_PIC_INTROUT_CTRL_FORM_ID,
+			prompt = STRING_TOKEN(STR_MSGC_PIC_INTROUT_CTRL),
+			help = STRING_TOKEN(STR_MSGC_PIC_INTROUT_CTRL); 
+   
+   
+	  goto PCIE_PE67_APIC_INT_CTRL_FORM_ID,
+			prompt = STRING_TOKEN(STR_PE67_APIC_INT_CTRL),
+			help = STRING_TOKEN(STR_PE67_APIC_INT_CTRL); 
+	
+	endif;
+
+   endform;//end PCIE_RP_INT_ROUTING_CTRL_FORM_ID
+
+
+// Hidden in demo board.
+//2  Gen3 EQ control 
+   form formid = PCIE_GEN3_EQ_CTRL_FORM_ID,
+     title = STRING_TOKEN(STR_PCIE_GEN3_EQ_CTRL);
+
+   
+   oneof varid = SETUP_DATA.PcieEQ,
+	   prompt = STRING_TOKEN(STR_PCIE_EQ),
+	   help   = STRING_TOKEN(STR_EMPTY),
+	   option text = STRING_TOKEN(STR_DO_EQ),			 value = 0, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_SKIP_WITH_TABLE),  value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING ;
+	   option text = STRING_TOKEN(STR_SKIP_WITH_MANUAL), value = 2, flags = RESET_REQUIRED;
+	 endoneof;
+   
+	suppressif NOT ideqval SETUP_DATA.PcieEQ==0;   
+	
+	  oneof    varid   = SETUP_DATA.EQTxPreset,
+	   prompt  = STRING_TOKEN(STR_TX_PRESET_PROMPT),
+	   help    = STRING_TOKEN(STR_EMPTY),
+	   option text = STRING_TOKEN(STR_TXPRESET0), value = 0, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_TXPRESET1), value = 1, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_TXPRESET2), value = 2, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_TXPRESET3), value = 3, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_TXPRESET4), value = 4, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_TXPRESET5), value = 5, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_TXPRESET6), value = 6, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_TXPRESET7), value = 7, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+	   option text = STRING_TOKEN(STR_TXPRESET8), value = 8, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_TXPRESET9), value = 9, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_TXPRESET10), value = 10, flags = RESET_REQUIRED;
+	 endoneof;
+
+#ifdef SETUP_VISABLE_PCIE_RP_PE0
+		oneof varid 	= SETUP_DATA.PcieEQPE0,
+		 prompt 	= STRING_TOKEN(STR_DO_EQ_PE0),
+		 help 	= STRING_TOKEN(STR_COM_EMPTY),
+			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags =RESET_REQUIRED;
+		 	option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =   DEFAULT | MANUFACTURING |RESET_REQUIRED;
+		endoneof;  	
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE1
+		oneof varid 	= SETUP_DATA.PcieEQPE1,
+		 prompt 	= STRING_TOKEN(STR_DO_EQ_PE1),
+		 help	= STRING_TOKEN(STR_COM_EMPTY),
+			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+		endoneof;
+#endif		
+#ifdef SETUP_VISABLE_PCIE_RP_PE2
+		oneof varid 	= SETUP_DATA.PcieEQPE2,
+		 prompt 	= STRING_TOKEN(STR_DO_EQ_PE2),
+		 help	= STRING_TOKEN(STR_COM_EMPTY),
+			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+		endoneof;
+#endif		
+#ifdef SETUP_VISABLE_PCIE_RP_PE3
+		oneof varid 	= SETUP_DATA.PcieEQPE3,
+		 prompt 	= STRING_TOKEN(STR_DO_EQ_PE3),
+		 help	= STRING_TOKEN(STR_COM_EMPTY),
+			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+		endoneof;
+#endif		
+#ifdef SETUP_VISABLE_PCIE_RP_PE4
+		oneof varid 	= SETUP_DATA.PcieEQPE4,
+		 prompt 	= STRING_TOKEN(STR_DO_EQ_PE4),
+		 help	= STRING_TOKEN(STR_COM_EMPTY),
+			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+		endoneof;
+#endif		
+#ifdef SETUP_VISABLE_PCIE_RP_PE5
+
+
+		oneof varid 	= SETUP_DATA.PcieEQPE5,
+		 prompt 	= STRING_TOKEN(STR_DO_EQ_PE5),
+		 help	= STRING_TOKEN(STR_COM_EMPTY),
+			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+		endoneof;	
+#endif
+#ifdef SETUP_VISABLE_PCIE_RP_PE6
+
+		oneof varid 	= SETUP_DATA.PcieEQPE6,
+		 prompt 	= STRING_TOKEN(STR_DO_EQ_PE6),
+		 help	= STRING_TOKEN(STR_COM_EMPTY),
+			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+		endoneof;
+#endif		
+#ifdef SETUP_VISABLE_PCIE_RP_PE7
+		oneof varid 	= SETUP_DATA.PcieEQPE7,
+		 prompt 	= STRING_TOKEN(STR_DO_EQ_PE7),
+		 help	= STRING_TOKEN(STR_COM_EMPTY),
+			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+		endoneof;		
+#endif
+		oneof varid 	= SETUP_DATA.PcieEMEQDebug,
+		 prompt 	= STRING_TOKEN(STR_DO_EQ_EMEQ_DBG),
+		 help	= STRING_TOKEN(STR_DO_EQ_EMEQ_DBG_HELF),
+			option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_ENABLE_CLR_AER), value = 2, flags =	RESET_REQUIRED;
+		endoneof;			
+
+		numeric varid=SETUP_DATA.PcieEMEQScanTime,
+		 prompt   = STRING_TOKEN(STR_EYE_SCAN_TIME),
+		 help	= STRING_TOKEN(STR_EYE_SCAN_TIME_HELP),
+		 flags = DISPLAY_UINT_HEX,
+		 minimum=0x1B,
+		 maximum=0xFF,
+		 step=0,
+		 default=0x72,
+		 endnumeric;
+
+
+
+	 
+   
+	endif;	 //end PcieEQ==0  
+	 
+	suppressif NOT ideqval SETUP_DATA.PcieEQ==2;   
+
+
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL0,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL1,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L1),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL2,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L2),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL3,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L3),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL4,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L4),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL5,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L5),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL6,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L6),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL7,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L7),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL8,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L8),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL9,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L9),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL10,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L10),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL11,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L11),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL12,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L12),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL13,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L13),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL14,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L14),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+	  numeric varid=SETUP_DATA.PcieEqCtlOrgValL15,
+	   prompt	= STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L15),
+	   help   = STRING_TOKEN(STR_EQ_CTL_ORG_VAL_L0_HELP),
+	   flags = DISPLAY_UINT_HEX,
+	   minimum=0,
+	   maximum=0x7FFF,
+	   step=0,
+	   default=0x7F7F,
+	   endnumeric;
+
+	 endif;   //end PcieEQ==2  
+   
+   oneof varid	 = SETUP_DATA.PEMCU_LoadFW_WhenBoot,
+	   prompt	= STRING_TOKEN(STR_PEMCU_LOADFW_WHENBOOT),
+	   help   = STRING_TOKEN(STR_EMPTY),
+	   option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =	DEFAULT | MANUFACTURING |RESET_REQUIRED;
+	  endoneof; 
+	  
+   suppressif NOT ideqval SETUP_DATA.PEMCU_LoadFW_WhenBoot == 1;  
+	 oneof varid   = SETUP_DATA.PEMCU_RstSys_WhenFail,
+	   prompt	= STRING_TOKEN(STR_PEMCU_RSTSYS_WHENFAIL),
+	   help   = STRING_TOKEN(STR_EMPTY),
+	   option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+	  endoneof; 
+	   endif;
+
+   oneof varid = SETUP_DATA.PcieEQTS2,
+	   prompt = STRING_TOKEN(STR_PCIE_EQ_TS2),
+	   help   = STRING_TOKEN(STR_EMPTY),
+	   option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+	   option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+
+	 endoneof;
+
+
+
+   endform;//end PCIE_GEN3_EQ_CTRL_FORM_ID
+
+
+
+
+   //////////////////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////////////////
+   ////////////////////////////Second Level Setup Items////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//2 Kernal Control 	
+   form formid = PCIE_KERNAL_CTRL_FORM_ID,
+     title = STRING_TOKEN(STR_KERNAL_CTRL_ITEMS);
+     
+       oneof varid = SETUP_DATA.MaxPayloadSize,
+        prompt = STRING_TOKEN(STR_MAT_PAYLOAD_SIZE),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_MAX_128M), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_MAX_256M), value = 1, flags = RESET_REQUIRED;
+       endoneof; 
+          
+     suppressif TRUE;
+       oneof varid   = SETUP_DATA.PcieASPM,
+        prompt   = STRING_TOKEN(STR_PCIE_ASPM),
+        help   = STRING_TOKEN(STR_EMPTY),
+     		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof; 
+       
+       oneof varid = SETUP_DATA.RelaxedOrder,
+        prompt = STRING_TOKEN(STR_RELAX_ORDER),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
+       endoneof; 
+       
+       oneof varid   = SETUP_DATA.ExtTag,
+        prompt   = STRING_TOKEN(STR_EXT_TAG),
+        help   = STRING_TOKEN(STR_EMPTY),
+    		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof; 
+          
+       oneof varid   = SETUP_DATA.NoSnoop,
+        prompt   = STRING_TOKEN(STR_NO_SNOOP),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+       endoneof;  
+       
+       oneof varid   = SETUP_DATA.ExtSync,
+        prompt   = STRING_TOKEN(STR_EXT_SYNC),
+        help   = STRING_TOKEN(STR_EMPTY),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =RESET_REQUIRED;
+       endoneof; 
+     endif;
+   endform;//end PCIE_KERNAL_CTRL_FORM_ID
+     
+     /*
+    form formid = PCIE_RP_LOCK_BIT_CTRL_FORM_ID,
+     title = STRING_TOKEN(STR_RP_LOCK_BIT_CTRL);
+     
+ 			// oneof varid 	= SETUP_DATA.PEG_ID_Lock,
+				 // prompt 	= STRING_TOKEN(STR_PEG_ID_LOCK),
+				 // help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 // option text = STRING_TOKEN(STR_UNLOCK), value = 0, flags = RESET_REQUIRED;
+				 // option text = STRING_TOKEN(STR_LOCK), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				// endoneof;  
+
+				oneof varid 	= SETUP_DATA.PE0_ID_Lock,
+				 prompt 	= STRING_TOKEN(STR_PE0_ID_LOCK),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_UNLOCK), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_LOCK), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+
+
+				oneof varid 	= SETUP_DATA.PE1_ID_Lock,
+				 prompt 	= STRING_TOKEN(STR_PE1_ID_LOCK),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_UNLOCK), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_LOCK), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+
+				oneof varid 	= SETUP_DATA.PE2_ID_Lock,
+				 prompt 	= STRING_TOKEN(STR_PE2_ID_LOCK),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_UNLOCK), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_LOCK), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+
+				oneof varid 	= SETUP_DATA.PE3_ID_Lock,
+				 prompt 	= STRING_TOKEN(STR_PE3_ID_LOCK),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_UNLOCK), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_LOCK), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+
+				oneof varid 	= SETUP_DATA.PE4_ID_Lock,
+				 prompt 	= STRING_TOKEN(STR_PE4_ID_LOCK),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_UNLOCK), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_LOCK), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+				
+				oneof varid 	= SETUP_DATA.PE5_ID_Lock,
+				 prompt 	= STRING_TOKEN(STR_PE5_ID_LOCK),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_UNLOCK), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_LOCK), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+
+				oneof varid 	= SETUP_DATA.PE6_ID_Lock,
+				 prompt 	= STRING_TOKEN(STR_PE6_ID_LOCK),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_UNLOCK), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_LOCK), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+				
+				oneof varid 	= SETUP_DATA.PE7_ID_Lock,
+				 prompt 	= STRING_TOKEN(STR_PE7_ID_LOCK),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_UNLOCK), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_LOCK), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+     endform;//end PCIE_RP_LOCK_BIT_CTRL_FORM_ID
+     
+     */
+
+// Hidden in demo board.
+//3 Interrupt Routing sub-items	 
+     form formid = PCIE_MSGC_PIC_INTROUT_CTRL_FORM_ID,
+     title = STRING_TOKEN(STR_MSGC_PIC_INTROUT_CTRL); 
+ 
+     
+				// oneof varid 	= SETUP_DATA.PEG_Msgc2PcieIntx,
+				 // prompt 	= STRING_TOKEN(STR_PEG_MSG2PCIE_INTX),
+				 // help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 // option text = STRING_TOKEN(STR_PCIE_INTA), value = 0, flags = RESET_REQUIRED;
+				 // option text = STRING_TOKEN(STR_PCIE_INTB), value = 1, flags = RESET_REQUIRED;
+				 // option text = STRING_TOKEN(STR_PCIE_INTC), value = 2, flags = RESET_REQUIRED;
+				 // option text = STRING_TOKEN(STR_PCIE_INTD), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				// endoneof;  
+
+				oneof varid 	= SETUP_DATA.PE0_Msgc2PcieIntx,
+				 prompt 	= STRING_TOKEN(STR_PE0_MSG2PCIE_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_PCIE_INTA), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTD), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;  
+	
+	
+				oneof varid 	= SETUP_DATA.PE1_Msgc2PcieIntx,
+				 prompt 	= STRING_TOKEN(STR_PE1_MSG2PCIE_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_PCIE_INTA), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTD), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;
+				
+	
+				oneof varid 	= SETUP_DATA.PE2_Msgc2PcieIntx,
+				 prompt 	= STRING_TOKEN(STR_PE2_MSG2PCIE_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_PCIE_INTA), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTD), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;
+				
+				
+	
+				oneof varid 	= SETUP_DATA.PE3_Msgc2PcieIntx,
+				 prompt 	= STRING_TOKEN(STR_PE3_MSG2PCIE_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_PCIE_INTA), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTD), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;
+				
+				
+	
+				oneof varid 	= SETUP_DATA.PE4_Msgc2PcieIntx,
+				 prompt 	= STRING_TOKEN(STR_PE4_MSG2PCIE_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_PCIE_INTA), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTD), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;
+				
+				
+	
+				oneof varid 	= SETUP_DATA.PE5_Msgc2PcieIntx,
+				 prompt 	= STRING_TOKEN(STR_PE5_MSG2PCIE_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_PCIE_INTA), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTD), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;
+				
+				
+	
+				oneof varid 	= SETUP_DATA.PE6_Msgc2PcieIntx,
+				 prompt 	= STRING_TOKEN(STR_PE6_MSG2PCIE_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_PCIE_INTA), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTD), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;
+				
+				
+
+				oneof varid 	= SETUP_DATA.PE7_Msgc2PcieIntx,
+				 prompt 	= STRING_TOKEN(STR_PE7_MSG2PCIE_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_PCIE_INTA), value = 0, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_PCIE_INTD), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				endoneof;
+				
+				
+				
+				// oneof varid 	= SETUP_DATA.PEG_PcieIntx2Nb2sbIntx,
+				 // prompt 	= STRING_TOKEN(STR_PEG_PCIE_INTX2NB2SB_INTX),
+				 // help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 // option text = STRING_TOKEN(STR_NB2SB_INTA), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 // option text = STRING_TOKEN(STR_NB2SB_INTB), value = 1, flags = RESET_REQUIRED;
+				 // option text = STRING_TOKEN(STR_NB2SB_INTC), value = 2, flags = RESET_REQUIRED;
+				 // option text = STRING_TOKEN(STR_NB2SB_INTD), value = 3, flags =  RESET_REQUIRED;
+				// endoneof; 
+				
+				oneof varid 	= SETUP_DATA.PE0_PcieIntx2Nb2sbIntx,
+				 prompt 	= STRING_TOKEN(STR_PE0_PCIE_INTX2NB2SB_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_NB2SB_INTA), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTD), value = 3, flags =  RESET_REQUIRED;
+				endoneof; 
+				
+				oneof varid 	= SETUP_DATA.PE1_PcieIntx2Nb2sbIntx,
+				 prompt 	= STRING_TOKEN(STR_PE1_PCIE_INTX2NB2SB_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_NB2SB_INTA), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTD), value = 3, flags =  RESET_REQUIRED;
+				endoneof; 
+				
+				
+				oneof varid 	= SETUP_DATA.PE2_PcieIntx2Nb2sbIntx,
+				 prompt 	= STRING_TOKEN(STR_PE2_PCIE_INTX2NB2SB_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_NB2SB_INTA), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTD), value = 3, flags =  RESET_REQUIRED;
+				endoneof; 
+				
+				
+				oneof varid 	= SETUP_DATA.PE3_PcieIntx2Nb2sbIntx,
+				 prompt 	= STRING_TOKEN(STR_PE3_PCIE_INTX2NB2SB_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_NB2SB_INTA), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTD), value = 3, flags =  RESET_REQUIRED;
+				endoneof; 
+				
+				
+				oneof varid 	= SETUP_DATA.PE4_PcieIntx2Nb2sbIntx,
+				 prompt 	= STRING_TOKEN(STR_PE4_PCIE_INTX2NB2SB_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_NB2SB_INTA), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTD), value = 3, flags =  RESET_REQUIRED;
+				endoneof; 
+				
+				
+			 oneof varid 	= SETUP_DATA.PE5_PcieIntx2Nb2sbIntx,
+				 prompt 	= STRING_TOKEN(STR_PE5_PCIE_INTX2NB2SB_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_NB2SB_INTA), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTD), value = 3, flags =  RESET_REQUIRED;
+				endoneof; 
+				
+				
+				oneof varid 	= SETUP_DATA.PE6_PcieIntx2Nb2sbIntx,
+				 prompt 	= STRING_TOKEN(STR_PE6_PCIE_INTX2NB2SB_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_NB2SB_INTA), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTD), value = 3, flags =  RESET_REQUIRED;
+				endoneof; 
+				
+				
+				oneof varid 	= SETUP_DATA.PE7_PcieIntx2Nb2sbIntx,
+				 prompt 	= STRING_TOKEN(STR_PE7_PCIE_INTX2NB2SB_INTX),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_NB2SB_INTA), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTB), value = 1, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTC), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_NB2SB_INTD), value = 3, flags =  RESET_REQUIRED;
+				endoneof; 
+	
+  endform;//end PCIE_MSGC_PIC_INTROUT_CTRL_FORM_ID
+
+  // Hidden in demo board.
+  form formid = PCIE_PE67_APIC_INT_CTRL_FORM_ID,
+     title = STRING_TOKEN(STR_PE67_APIC_INT_CTRL); 
+     
+				// oneof varid 	= SETUP_DATA.PegApciIrq,
+				 // prompt 	= STRING_TOKEN(STR_PEG_APIC_IRQ),
+				 // help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 // option text = STRING_TOKEN(STR_INA_IRQ8), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 // option text = STRING_TOKEN(STR_INA_IRQ9), value = 1, flags = RESET_REQUIRED;				 
+				 // option text = STRING_TOKEN(STR_INA_IRQ10), value = 2, flags = RESET_REQUIRED;
+				 // option text = STRING_TOKEN(STR_INA_IRQ11), value = 3, flags =  RESET_REQUIRED;
+				// endoneof;  
+
+				oneof varid 	= SETUP_DATA.Pe6ApciIrq,
+				 prompt 	= STRING_TOKEN(STR_PE6_APIC_IRQ),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_INA_IRQ0), value = 0, flags = DEFAULT | MANUFACTURING |  RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_INA_IRQ1), value = 1, flags = RESET_REQUIRED;				 
+				 option text = STRING_TOKEN(STR_INA_IRQ2), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_INA_IRQ3), value = 3, flags =RESET_REQUIRED;
+				endoneof;  
+				
+				oneof varid 	= SETUP_DATA.Pe7ApciIrq,
+				 prompt 	= STRING_TOKEN(STR_PE7_APIC_IRQ),
+				 help 	= STRING_TOKEN(STR_COM_EMPTY),
+				 option text = STRING_TOKEN(STR_INA_IRQ4), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_INA_IRQ5), value = 1, flags = RESET_REQUIRED;				 
+				 option text = STRING_TOKEN(STR_INA_IRQ6), value = 2, flags = RESET_REQUIRED;
+				 option text = STRING_TOKEN(STR_INA_IRQ7), value = 3, flags =  RESET_REQUIRED;
+				endoneof;  	   
+  		endform;//end PCIE_PE67_APIC_INT_CTRL_FORM_ID
+  #endif  //end, FORM_SET_FORM
+#endif  //end, DEVICES_FORM_SET

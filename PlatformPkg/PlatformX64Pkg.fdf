@@ -564,7 +564,12 @@ INF  $(PLATFORM_PACKAGE)/AcpiPlatformDxe/AcpiPlatformDxe.inf
 
 INF  $(PLATFORM_PACKAGE)/UiApp/UiApp.inf
 INF  $(PLATFORM_PACKAGE)/BootManagerMenuApp/BootManagerMenuApp.inf
+
+!if $(ZX_DEMO_BOARD) == TRUE
+INF  $(PLATFORM_PACKAGE)/PlatformSetupDxe_forDemoBoard/PlatformSetupDxe.inf
+!else
 INF  $(PLATFORM_PACKAGE)/PlatformSetupDxe/PlatformSetupDxe.inf
+!endif
 
 INF  ByoModulePkg/Graphics/JpegDecoderDxe/JpegDecoder.inf
 
