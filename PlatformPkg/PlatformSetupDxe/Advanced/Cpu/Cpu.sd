@@ -109,6 +109,13 @@ Revision History:
         text   = STRING_TOKEN(STR_CPU_MICROCODE_REV_VALUE),
         flags  = 0, 
         key    = 0;  
+     text 
+        help   = STRING_TOKEN(STR_EMPTY),
+        text   = STRING_TOKEN(STR_CPU_MICROCODE_REV_FULL_STRING),
+        text   = STRING_TOKEN(STR_CPU_MICROCODE_REV_FULL_VALUE),
+        flags  = 0, 
+        key    = 0;  
+
                 
      // text 
      //   help   = STRING_TOKEN(STR_EMPTY),

@@ -26,6 +26,28 @@ Revision History:
 
 STATIC ACPU_MICROCODE_UPDATE_HEADER  gDummyCpuMicroCodeHdr;
 
+UINT32 HexToChar(UINT32 hex_byte){
+       
+      UINT16 result = 0;
+      UINT8   pdata,a[4];
+      UINTN   i;
+
+      for(i=0;i<4;i++){
+      a[i] = (hex_byte>>(8*i)) & 0xFF;
+      if((a[i]>=0x30)&&(a[i]<=0x39))
+	  	pdata = a[i]-0x30;
+	  else if((a[i]>=0x41)&&(a[i]<=0x46))
+	  	pdata = a[i]-0x37;
+	  	  else if((a[i]>=0x61)&&(a[i]<=0x66))
+	  	pdata = a[i]-0x57;
+	  else
+	  	pdata=0;
+	     result = (result<<4)|pdata;
+	}
+      return    result;
+
+}
+
 VOID 
 InitCpuStrings(
   EFI_HII_HANDLE    HiiHandle, 
@@ -87,6 +109,17 @@ Returns:
       CpuMc->Month,
       CpuMc->Day,
       CpuMc->Year
-      );      
+      );  
+#ifdef ZX_SECRET_CODE
+    InitString (
+      HiiHandle,
+      STRING_TOKEN(STR_CPU_MICROCODE_REV_FULL_VALUE), 
+      L"%4X%2X", 
+       HexToChar(CpuMc->Reserved2),
+       ((HexToChar(CpuMc->Reserved3))>>8)&0xFF
+      ); 
+#endif
+//HexCharToUintn(IN CHAR16 Char)
+//hex_to_string(unsigned char * buffer, long len)
   }
 }
