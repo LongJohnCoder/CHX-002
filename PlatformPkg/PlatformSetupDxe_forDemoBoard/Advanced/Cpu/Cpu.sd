@@ -198,9 +198,11 @@ Revision History:
       endoneof;
     endif;
 
-//     goto POWER_CX_C4P_FORM_ID, 
-//      prompt = STRING_TOKEN(STR_CX_C4P_CTRL),
-//      help   = STRING_TOKEN(STR_CX_C4P_CTRL);
+    suppressif TRUE;
+     goto POWER_CX_C4P_FORM_ID, 
+      prompt = STRING_TOKEN(STR_CX_C4P_CTRL),
+      help   = STRING_TOKEN(STR_CX_C4P_CTRL);
+    endif;
 
   endform;  // CPU_FORM_ID
     
