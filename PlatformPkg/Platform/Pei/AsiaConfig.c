@@ -240,7 +240,7 @@ GotSetupVariable:
   SbCfg->LPTControl = SetupData->LPTControl;
   ///
   SbCfg->SBDynamicClkControl  = SetupData->SBDynamicClkControl;  
-  SbCfg->TMRCDynamicClkControl  = SetupData->TMRCDynamicClkControl;
+  //SbCfg->TMRCDynamicClkControl  = SetupData->TMRCDynamicClkControl;
   SbCfg->GoNonSnoopPath       = SetupData->GoNonSnoopPath; 
 
   SbCfg->eBMCSettleTime       = SetupData->eBMCSettleTime; 

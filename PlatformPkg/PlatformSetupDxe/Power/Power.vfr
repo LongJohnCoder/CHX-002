@@ -337,12 +337,12 @@ endif;
       option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING ;
      endoneof;
     //IVS-20180620-S
-	 oneof varid = SETUP_DATA.TMRCDynamicClkControl,
-      prompt   = STRING_TOKEN(STR_TMRC_DYNAMIC_CLK_CTRL),
-      help     = STRING_TOKEN(STR_TMRC_DYNAMIC_CLK_CTRL_HELP),
-      option text = STRING_TOKEN(STR_DISABLED),  value = 0, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
-      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED ;
-     endoneof;  
+	// oneof varid = SETUP_DATA.TMRCDynamicClkControl,
+      //prompt   = STRING_TOKEN(STR_TMRC_DYNAMIC_CLK_CTRL),
+      //help     = STRING_TOKEN(STR_TMRC_DYNAMIC_CLK_CTRL_HELP),
+      //option text = STRING_TOKEN(STR_DISABLED),  value = 0, flags = RESET_REQUIRED| DEFAULT | MANUFACTURING;
+      //option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED ;
+     //endoneof;  
 	 //IVS-20180620-E
 	 
   endform;//end POWER_DYNAMIC_CLK_CTRL_FORM_ID

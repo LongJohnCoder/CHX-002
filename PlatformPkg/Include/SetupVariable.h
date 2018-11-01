@@ -473,7 +473,7 @@ typedef struct {
    UINT8 VRDSLPtoDPSLP;
    UINT8 DynamicT05;
    UINT8 SBDynamicClkControl;
-   UINT8 TMRCDynamicClkControl;
+   //UINT8 TMRCDynamicClkControl;
    UINT8 MobileCenterControl;
    UINT8 ACAdapterControl;
    UINT8 CpuFanStartTemperature;
