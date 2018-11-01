@@ -504,16 +504,18 @@ Revision History:
         step=0,
         default=0x40000,
        endnumeric;
+       
+       numeric varid=SETUP_DATA.CPU_TRACER_DUMP_MEMORY_BASE,
+        prompt   = STRING_TOKEN(STR_CPU_TRACER_DUMP_MEMORY_BASE),
+        help   = STRING_TOKEN(STR_EMPTY),
+        flags = DISPLAY_UINT_HEX,
+        minimum=0,
+        maximum=0xFFFFFFFFFF,
+        step=0,
+        default=0x40000000,
+        endnumeric;
  		
-	   /*
-        oneof varid   = SETUP_DATA.CPU_TRACER_DUMP_MEMORY_BASE,
-                prompt      = STRING_TOKEN(STR_CPU_TRACER_DUMP_MEMORY_BASE),
-                help        = STRING_TOKEN(STR_EMPTY),
-                option text = STRING_TOKEN(STR_TRACER_MEMORY_BASE_1G),  value=0, flags=RESET_REQUIRED;
-                option text = STRING_TOKEN(STR_TRACER_MEMORY_BASE_1.5G), value=1, flags=DEFAULT | MANUFACTURING|RESET_REQUIRED;
-                option text = STRING_TOKEN(STR_TRACER_MEMORY_BASE_2G), value=2, flags=RESET_REQUIRED;
-        endoneof;
-        */
+
 	 endif;
     
  	 endform;  //end CPU DEBUG FORM

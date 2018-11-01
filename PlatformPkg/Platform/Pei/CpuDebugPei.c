@@ -181,7 +181,7 @@ EnableMPTracer(
 )
 {
 	EFI_STATUS				SpcStatus;
-	UINTN    				MasterFsbcAddress,SlaveFsbcAddress;
+	UINT64    				MasterFsbcAddress,SlaveFsbcAddress;
 	FSBC_CONFIG_PARA		FsbcConfig;
 	FSBC_TRIGGER_CONDITION  FsbcTrigger;
 	UINT64 					MsrValue;
@@ -223,7 +223,8 @@ EnableMPTracer(
 	
 	//master socket
 	IoWrite8(0x80,0xab);
-	MasterFsbcAddress = 0x40000000; // Hardcode temporatively, should get it from Setup UI edit box.
+//	MasterFsbcAddress = 0x40000000; // Hardcode temporatively, should get it from Setup UI edit box.
+	MasterFsbcAddress =(UINT64)SetupHob->CPU_TRACER_DUMP_MEMORY_BASE;
 	
 //		MasterBase=AllocateReservedAndUcMemory(MasterAddress,UC_SIZE_512MB);	
 	FsbcConfig.MasterFsbcBase = (UINTN)MasterFsbcAddress;

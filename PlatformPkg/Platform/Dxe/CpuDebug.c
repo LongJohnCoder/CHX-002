@@ -294,7 +294,8 @@ CpuDebug()
 	
 	//master socket
 	IoWrite8(0x80,0xab);
-	MasterAddress = 0x40000000;
+//	MasterAddress = 0x40000000;
+    MasterAddress = gSetupData->CPU_TRACER_DUMP_MEMORY_BASE;
 	FsbcConfig.MasterFsbcBase=AllocateReservedAndUcMemory(MasterAddress,UC_SIZE_512MB);	
 	
 	IoWrite8(0x80,(AsmReadMsr64(0x1610)&0x03));

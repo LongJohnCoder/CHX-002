@@ -74,8 +74,8 @@ typedef struct _FSBC_TRIGGER_CONDITION{
 
 typedef struct _FSBC_CONFIG_PARA{
 	FSBC_TRIGGER_CONDITION		*FsbcTriggerCondition;
-	UINTN        				MasterFsbcBase;
-	UINTN        				SlaveFsbcBase;
+	UINT64        				MasterFsbcBase;
+	UINT64        				SlaveFsbcBase;
 	UINT8						FsbcSize;
 	BOOLEAN						IsMasterEn;
 	BOOLEAN						IsSlaveEn;	
